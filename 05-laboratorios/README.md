@@ -14,10 +14,13 @@ fpc tema-1.pas
 
 Grupo **Los Chimichurris**: Gustavo Fernández Calvi, Braian Leonel Wolkowyski y Luciano García (2023).
 
+<img src="c-los-chimichurris/equipo.jpg" alt="Los Chimichurris" width="420">
+
 Sistema de votación para elegir entre 5 candidatos a gerente: carga de candidatos, votación con validación de votos y resultados con el ganador.
 
 - [`c-los-chimichurris/tema-3-pseudocodigo.pseudo`](c-los-chimichurris/tema-3-pseudocodigo.pseudo): el pseudocódigo.
 - [`c-los-chimichurris/tema-3.c`](c-los-chimichurris/tema-3.c): el programa en C.
+- [`c-los-chimichurris/informe-lab-c-tema-3.pdf`](c-los-chimichurris/informe-lab-c-tema-3.pdf): el informe que entregamos (enunciado, pseudocódigo y código). También está el [`.docx`](c-los-chimichurris/informe-lab-c-tema-3.docx) original.
 - Videos del informe: [video grupal](https://youtu.be/7NXWcJI3-60) · [video extra](https://youtu.be/AJ3MDhPL1wU).
 
 ```

@@ -1,0 +1,288 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 / 2.3 - Actualización de archivos: esquemas
+//
+//  Resumen de la teoría de actualización (secuencial unitaria, secuencial
+//  por lotes e indexada), con un ejemplo de alumnos para que los esquemas
+//  tengan campos concretos.
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Conceptos
+// --------------------------------------------------------------------------
+// Actualizar es aplicarle a un archivo MAESTRO los cambios que vienen en un
+// archivo de MOVIMIENTOS (o que se ingresan por teclado, en la indexada).
+//
+// Tipos de movimiento: ALTA (registro nuevo), BAJA (se elimina o se marca),
+// MODIFICACIÓN (cambian algunos campos).
+//
+// Según cuántos movimientos puede tener cada registro del maestro:
+//   - UNITARIA: como mucho un movimiento por registro del maestro.
+//   - POR LOTES: puede haber varios movimientos para el mismo registro.
+//
+// Archivos: al menos dos de entrada (maestro y movimientos) y al menos uno
+// de salida (el maestro actualizado). Ambos de entrada deben estar
+// ordenados por la misma clave: es un apareo, como la mezcla.
+//   Maestro: histórico (guarda todo, las bajas son lógicas) o común.
+//   Movimientos: general o combinado (trae altas, bajas y modificaciones
+//   juntas, con un código de movimiento) o parcial (un archivo por tipo).
+//
+// Baja lógica: el registro sigue en el archivo pero con una marca (un "*",
+// la fecha de baja, etc.). Baja física: el registro desaparece (en la
+// secuencial no se graba en la salida; en la indexada se usa BORRAR).
+//
+// Se usa el ciclo INCLUYENTE: cuando un archivo termina, su clave toma HV
+// (High Value, mayor que cualquier clave real), y el ciclo sigue mientras
+// alguno de los dos no haya llegado a HV.
+
+// Ejemplo para los esquemas
+//   Maestro ALUMNOS ordenado por legajo: legajo, nombre, carrera, marca_baja
+//   Movimientos MOVS ordenado por legajo: legajo, nombre, carrera, cod_mov
+//   (cod_mov: "A" alta, "B" baja, "M" modificación; en una modificación, los
+//   campos que no cambian vienen vacíos)
+
+
+// --------------------------------------------------------------------------
+// 1. Actualización secuencial UNITARIA
+// --------------------------------------------------------------------------
+
+Acción Actualizacion_Unitaria es
+    Ambiente
+        Alumno = Registro
+            legajo: N(6)
+            nombre: AN(30)
+            carrera: AN(20)
+            marca_baja: AN(1)
+        FinRegistro
+        Mov = Registro
+            legajo: N(6)
+            nombre: AN(30)
+            carrera: AN(20)
+            cod_mov: ("A","B","M")
+        FinRegistro
+        ALUMNOS, NUEVO: archivo de Alumno ordenado por legajo
+        MOVS: archivo de Mov ordenado por legajo
+        reg_mae, reg_sal: Alumno
+        reg_mov: Mov
+
+        Procedimiento Leer_Maestro es
+            Leer(ALUMNOS, reg_mae)
+            Si FDA(ALUMNOS) entonces
+                reg_mae.legajo:= HV
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Leer_Movimiento es
+            Leer(MOVS, reg_mov)
+            Si FDA(MOVS) entonces
+                reg_mov.legajo:= HV
+            FinSi
+        FinProcedimiento
+
+        // solo se pisan los campos que vienen cargados en el movimiento
+        Procedimiento Modificar es
+            Si reg_mov.nombre <> "" entonces
+                reg_mae.nombre:= reg_mov.nombre
+            FinSi
+            Si reg_mov.carrera <> "" entonces
+                reg_mae.carrera:= reg_mov.carrera
+            FinSi
+        FinProcedimiento
+
+        // misma clave en los dos: el registro existe
+        Procedimiento Proceso_Iguales es
+            Segun reg_mov.cod_mov hacer
+                ="A": Escribir("Error: alta de un legajo que ya existe ", reg_mov.legajo)
+                ="M": Modificar()
+                ="B": reg_mae.marca_baja:= "*"      // baja lógica
+            FinSegun
+            reg_sal:= reg_mae
+            Escribir(NUEVO, reg_sal)
+            Leer_Maestro()
+            Leer_Movimiento()
+        FinProcedimiento
+
+        // movimiento sin maestro: solo puede ser un alta
+        Procedimiento Proceso_Distintos es
+            Si reg_mov.cod_mov = "A" entonces
+                // campo por campo: el movimiento y el maestro tienen distinto formato
+                reg_sal.legajo:= reg_mov.legajo
+                reg_sal.nombre:= reg_mov.nombre
+                reg_sal.carrera:= reg_mov.carrera
+                reg_sal.marca_baja:= " "
+                Escribir(NUEVO, reg_sal)
+            SiNo
+                Escribir("Error: baja o modificación de un legajo inexistente ", reg_mov.legajo)
+            FinSi
+            Leer_Movimiento()
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(ALUMNOS)
+        Abrir E/(MOVS)
+        Abrir /S(NUEVO)
+        Leer_Maestro()
+        Leer_Movimiento()
+        Mientras (reg_mae.legajo <> HV) o (reg_mov.legajo <> HV) hacer
+            Si reg_mae.legajo = reg_mov.legajo entonces
+                Proceso_Iguales()
+            SiNo
+                Si reg_mae.legajo < reg_mov.legajo entonces
+                    reg_sal:= reg_mae               // maestro sin movimiento: pasa igual
+                    Escribir(NUEVO, reg_sal)
+                    Leer_Maestro()
+                SiNo
+                    Proceso_Distintos()
+                FinSi
+            FinSi
+        FinMientras
+        Cerrar(ALUMNOS)
+        Cerrar(MOVS)
+        Cerrar(NUEVO)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// 2. Actualización secuencial POR LOTES
+// --------------------------------------------------------------------------
+// Puede haber varios movimientos por clave. El esquema de la cátedra supone:
+//   - si hay un alta, es el primer movimiento de esa clave;
+//   - después puede haber varias modificaciones;
+//   - si hay una baja, es el último movimiento.
+// Todos los movimientos de una clave se aplican sobre un registro auxiliar
+// (aux) y recién al terminar con esa clave se graba.
+// Mismo ambiente que el anterior, más:  aux: Alumno
+
+Acción Actualizacion_Por_Lotes es
+    // (Ambiente igual al de Actualizacion_Unitaria, con aux: Alumno)
+
+        Procedimiento Proceso_Movimiento es     // aplica reg_mov sobre aux
+            Segun reg_mov.cod_mov hacer
+                ="M": Si reg_mov.nombre <> "" entonces
+                          aux.nombre:= reg_mov.nombre
+                      FinSi
+                      Si reg_mov.carrera <> "" entonces
+                          aux.carrera:= reg_mov.carrera
+                      FinSi
+                ="B": aux.marca_baja:= "*"
+                ="A": Escribir("Error: alta de un legajo que ya existe ", reg_mov.legajo)
+            FinSegun
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(ALUMNOS)
+        Abrir E/(MOVS)
+        Abrir /S(NUEVO)
+        Leer_Maestro()
+        Leer_Movimiento()
+        Mientras (reg_mae.legajo <> HV) o (reg_mov.legajo <> HV) hacer
+            Si reg_mae.legajo < reg_mov.legajo entonces
+                reg_sal:= reg_mae                   // maestro sin movimientos
+                Escribir(NUEVO, reg_sal)
+                Leer_Maestro()
+            SiNo
+                Si reg_mae.legajo = reg_mov.legajo entonces
+                    aux:= reg_mae
+                    Mientras aux.legajo = reg_mov.legajo hacer
+                        Proceso_Movimiento()
+                        Leer_Movimiento()
+                    FinMientras
+                    reg_sal:= aux
+                    Escribir(NUEVO, reg_sal)
+                    Leer_Maestro()
+                SiNo
+                    // movimientos sin maestro: el primero tiene que ser el alta
+                    Si reg_mov.cod_mov = "A" entonces
+                        aux.legajo:= reg_mov.legajo
+                        aux.nombre:= reg_mov.nombre
+                        aux.carrera:= reg_mov.carrera
+                        aux.marca_baja:= " "
+                        Leer_Movimiento()
+                        Mientras aux.legajo = reg_mov.legajo hacer
+                            Proceso_Movimiento()
+                            Leer_Movimiento()
+                        FinMientras
+                        reg_sal:= aux
+                        Escribir(NUEVO, reg_sal)
+                    SiNo
+                        Escribir("Error: movimiento de un legajo inexistente ", reg_mov.legajo)
+                        Leer_Movimiento()
+                    FinSi
+                FinSi
+            FinSi
+        FinMientras
+        Cerrar(ALUMNOS)
+        Cerrar(MOVS)
+        Cerrar(NUEVO)
+FinAcción
+
+// Variante que suele pedirse: que las altas no estén siempre primero y las
+// bajas no estén siempre al final. Se resuelve con una bandera "existe" en
+// el auxiliar: un alta solo vale si existe = falso (y la pone en verdadero),
+// una modificación o baja solo vale si existe = verdadero, y al terminar la
+// clave se graba aux solo si existe. (Así está resuelto, por ejemplo, el
+// ejercicio 2 de ../../03-finales/practica/final-febrero/octubre.pseudo.)
+
+
+// --------------------------------------------------------------------------
+// 3. Actualización INDEXADA (interactiva)
+// --------------------------------------------------------------------------
+// No hay archivo de salida: el maestro está indexado por la clave, se abre
+// de entrada/salida y se modifica en el lugar. Los movimientos se ingresan
+// por teclado. Después de una lectura directa, EXISTE dice si la clave está.
+//   Alta: ESCRIBIR (Grabar)   Modificación: REGRABAR   Baja física: BORRAR
+//   Baja lógica: se marca y se REGRABA.
+
+Acción Actualizacion_Indexada es
+    Ambiente
+        Alumno = Registro
+            legajo: N(6)
+            nombre: AN(30)
+            carrera: AN(20)
+            marca_baja: AN(1)
+        FinRegistro
+        ALUMNOS: archivo de Alumno indexado por legajo
+        reg: Alumno
+        leg: N(6)
+        cod_mov: AN(1)
+        nombre: AN(30)
+        carrera: AN(20)
+
+    Proceso
+        Abrir E/S(ALUMNOS)
+        Escribir("Legajo y movimiento (A alta, B baja, M modificación; otra letra termina)")
+        Leer(leg, cod_mov)
+        Mientras (cod_mov = "A") o (cod_mov = "B") o (cod_mov = "M") hacer
+            reg.legajo:= leg
+            Leer(ALUMNOS, reg)                      // lectura directa por clave
+            Si No EXISTE entonces
+                Si cod_mov = "A" entonces
+                    Escribir("Nombre y carrera:")
+                    Leer(reg.nombre, reg.carrera)
+                    reg.marca_baja:= " "
+                    Escribir(ALUMNOS, reg)
+                SiNo
+                    Escribir("Error: el legajo no existe")
+                FinSi
+            SiNo
+                Segun cod_mov hacer
+                    ="A": Escribir("Error: el legajo ya existe")
+                    ="M": Escribir("Nuevos datos (vacío = no cambia):")
+                          Leer(nombre, carrera)
+                          Si nombre <> "" entonces
+                              reg.nombre:= nombre
+                          FinSi
+                          Si carrera <> "" entonces
+                              reg.carrera:= carrera
+                          FinSi
+                          Regrabar(ALUMNOS, reg)
+                    ="B": reg.marca_baja:= "*"      // baja lógica...
+                          Regrabar(ALUMNOS, reg)
+                          // ...o baja física: Borrar(ALUMNOS, reg)
+                FinSegun
+            FinSi
+            Escribir("Legajo y movimiento (A alta, B baja, M modificación; otra letra termina)")
+            Leer(leg, cod_mov)
+        FinMientras
+        Cerrar(ALUMNOS)
+FinAcción

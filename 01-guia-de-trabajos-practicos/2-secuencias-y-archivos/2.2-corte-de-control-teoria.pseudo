@@ -7,6 +7,38 @@
 //  Esquema: lectura anticipada -> tratar corte -> tratar registro -> leer.
 // ==========================================================================
 
+// --------------------------------------------------------------------------
+// Esquema general
+// --------------------------------------------------------------------------
+// El archivo está ordenado por varias claves (la primera es la de mayor
+// peso). Se necesita un RESGUARDO por cada clave de corte y contadores o
+// acumuladores por nivel.
+//
+// Proceso:
+//     Abrir y leer el primer registro (lectura anticipada)
+//     Inicializar totalizadores y resguardos (resguardo := clave del 1er registro)
+//     Mientras NFDA(Arch) hacer
+//         Tratar_Corte
+//         Tratar_Registro          // acumular en el nivel más bajo
+//         Leer(Arch, Reg)
+//     FinMientras
+//     Corte del nivel MAYOR        // cierra todos los grupos que quedaron abiertos
+//     Emitir el total general
+//
+// Tratar_Corte pregunta de la clave de mayor peso a la de menor:
+//     Si Reg.clave3 <> Res3 entonces Corte3
+//     SiNo Si Reg.clave2 <> Res2 entonces Corte2
+//          SiNo Si Reg.clave1 <> Res1 entonces Corte1 ...
+//
+// Cada CorteN:
+//     llamar a CorteN-1            // (no lo hace el corte de menor nivel)
+//     emitir los resultados del nivel N
+//     acumular sus totales en el nivel N+1
+//     poner en cero los totales del nivel N
+//     resguardar la clave nueva
+//
+// Abajo, el ejemplo de clase con dos niveles (país y día).
+
 Accion Desafio_Clase es
 Ambiente
 	Venta = Registro

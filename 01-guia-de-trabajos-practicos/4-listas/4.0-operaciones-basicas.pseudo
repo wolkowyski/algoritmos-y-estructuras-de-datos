@@ -75,3 +75,85 @@ Acción Carga_Ordenada es
             Leer(valor)
         FinMientras
 FinAcción
+
+
+// Carga encolada (cada nodo nuevo va al final: se mantiene el orden de llegada)
+// Se guarda un puntero al último para no recorrer la lista en cada alta.
+Acción Carga_Encolada es
+    Ambiente
+        Nodo = Registro
+            dato: entero
+            prox: puntero a Nodo
+        FinRegistro
+        prim, ult, p: puntero a Nodo
+        valor: entero
+
+    Proceso
+        prim:= nil
+        Leer(valor)
+        Mientras valor <> 0 hacer
+            Nuevo(p)
+            p^.dato:= valor
+            p^.prox:= nil
+            Si prim = nil entonces // primer nodo
+                prim:= p
+            SiNo
+                ult^.prox:= p
+            FinSi
+            ult:= p
+            Leer(valor)
+        FinMientras
+FinAcción
+
+
+// Búsqueda de un valor (lista ordenada de menor a mayor: se corta en el
+// primer nodo mayor; si no está ordenada, la condición es solo p^.dato <> buscado)
+Acción Busqueda es
+    Ambiente
+        // (Nodo como arriba)
+        prim, p: puntero a Nodo
+        buscado: entero
+
+    Proceso
+        Leer(buscado)
+        p:= prim
+        Mientras (p <> nil) y (p^.dato < buscado) hacer // p <> nil siempre primero
+            p:= p^.prox
+        FinMientras
+        Si (p <> nil) y (p^.dato = buscado) entonces
+            Escribir("Encontrado")
+        SiNo
+            Escribir("No está en la lista")
+        FinSi
+FinAcción
+
+
+// Eliminación de un valor: se busca guardando el anterior y se desengancha
+Acción Eliminacion es
+    Ambiente
+        // (Nodo como arriba)
+        prim, p, anterior: puntero a Nodo
+        buscado: entero
+
+    Proceso
+        Leer(buscado)
+        anterior:= nil
+        p:= prim
+        Mientras (p <> nil) y (p^.dato <> buscado) hacer
+            anterior:= p
+            p:= p^.prox
+        FinMientras
+        Si p = nil entonces
+            Escribir("No está en la lista")
+        SiNo
+            Si anterior = nil entonces // era el primero
+                prim:= p^.prox
+            SiNo
+                anterior^.prox:= p^.prox
+            FinSi
+            Disponer(p)
+        FinSi
+FinAcción
+
+// Listas dobles (inserción y eliminación): ver
+// ../../02-parciales/3er-parcial/manejo-de-listas/esquemas-de-listas.pseudo

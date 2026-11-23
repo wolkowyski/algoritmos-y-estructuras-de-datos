@@ -6,6 +6,33 @@
 //  Nro_Pelicula, se mezclan en un único archivo Totales.
 // ==========================================================================
 
+// --------------------------------------------------------------------------
+// Conceptos
+// --------------------------------------------------------------------------
+// Mezclar es combinar dos o más archivos en uno con la técnica de APAREO:
+// todos tienen un campo en común (la clave de apareo) y están ordenados por
+// esa clave, así que se van leyendo en paralelo y en cada paso se procesa
+// el de clave menor. Entrada: al menos dos archivos. Salida: uno.
+//
+// Tipos:
+//   - DIRECTA: los registros de entrada tienen todos el mismo formato y la
+//     salida también; la salida tiene exactamente la suma de los registros
+//     de entrada (como el ejemplo de las películas).
+//   - INDIRECTA: las entradas tienen formatos distintos y la salida es igual
+//     a alguna de ellas o una combinación; no se puede saber de antemano
+//     cuántos registros va a tener (por ejemplo, si las claves iguales se
+//     juntan en un solo registro).
+//
+// Ciclos de apareo:
+//   - EXCLUYENTE (versión 1): un ciclo principal mientras NINGUNO terminó y
+//     después un ciclo por archivo para lo que quedó. Con 3 archivos hacen
+//     falta 7 ciclos: el de los tres, los tres de a pares (1-2, 1-3, 2-3) y
+//     los tres de a uno.
+//   - INCLUYENTE (versión 2): un solo ciclo mientras ALGUNO no terminó, con
+//     HV en la clave del que ya terminó. Es el más usado porque no crece con
+//     la cantidad de archivos:
+//       Mientras (Clave1 <> HV) o (Clave2 <> HV) ... o (ClaveN <> HV) hacer
+
 
 // --------------------------------------------------------------------------
 // Versión 1: mezcla "excluyente" (sin High Value)

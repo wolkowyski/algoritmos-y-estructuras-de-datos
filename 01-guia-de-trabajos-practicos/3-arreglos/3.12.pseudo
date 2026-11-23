@@ -1,0 +1,45 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.12
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.12
+// A partir del arreglo de videos descrito en el ejercicio anterior, diseñe
+// un algoritmo que permita atender un pedido de alquiler, para lo cual debe
+// verificar si es posible o no y, cuando corresponda, actualizar la cantidad
+// de personas que vieron dicha película.
+// --------------------------------------------------------------------------
+
+// Mismo arreglo que el 3.11, ordenado por título: búsqueda binaria.
+Acción Ejercicio3_12 es
+	Ambiente
+		// (mismo tipo Video y arreglo Videos que el 3.11)
+		titulo: AN(50)
+		iz, de, centro: entero
+	Proceso
+		Escribir("Título de la película a alquilar")
+		Leer(titulo)
+		iz:= 1; de:= 100
+		centro:= (iz + de) div 2
+		Mientras (iz <= de) y (Videos[centro].Titulo <> titulo) hacer
+			Si Videos[centro].Titulo > titulo entonces
+				de:= centro - 1
+			Sino
+				iz:= centro + 1
+			FinSi
+			centro:= (iz + de) div 2
+		FinMientras
+		Si iz > de entonces
+			Escribir("La película no existe")
+		Sino
+			Si Videos[centro].Alquilado = "si" entonces
+				Escribir("La película está alquilada")
+			Sino
+				Videos[centro].Alquilado:= "si"
+				Videos[centro].Vistas:= Videos[centro].Vistas + 1
+				Escribir("Alquiler registrado")
+			FinSi
+		FinSi
+FinAcción

@@ -1,0 +1,53 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.13
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.13
+// Se precisa ordenar un arreglo de *N* alumnos de mayor a menor, de acuerdo
+// a la cantidad de materias aprobadas. Cada elemento del arreglo contiene
+// Nro. de Legajo y Cantidad de materias aprobadas. Escriba por lo menos dos
+// algoritmos que permitan solucionar el problema; especifique cuál de las
+// formas considera más eficiente y por qué.
+// --------------------------------------------------------------------------
+
+// Dos soluciones: selección e inserción (de mayor a menor por materias).
+Acción Ejercicio3_13 es
+	Ambiente
+		N = 100
+		Alumno = Registro
+			Legajo: N(5)
+			Aprobadas: N(2)
+		FinRegistro
+		A: arreglo de [1..N] de Alumno
+		i, j, pos: entero
+		x: Alumno
+	Proceso
+		// Versión 1: selección (busca el mayor de lo que falta y lo pone en i)
+		Para i:= 1 a N - 1 hacer
+			pos:= i
+			Para j:= i + 1 a N hacer
+				Si A[j].Aprobadas > A[pos].Aprobadas entonces
+					pos:= j
+				FinSi
+			FinPara
+			x:= A[i]; A[i]:= A[pos]; A[pos]:= x
+		FinPara
+
+		// Versión 2: inserción (cada alumno se inserta en la parte ya ordenada)
+		Para i:= 2 a N hacer
+			x:= A[i]
+			j:= i - 1
+			Mientras (j > 0) y (A[j].Aprobadas < x.Aprobadas) hacer
+				A[j + 1]:= A[j]
+				j:= j - 1
+			FinMientras
+			A[j + 1]:= x
+		FinPara
+FinAcción
+// ¿Cuál es más eficiente? Las dos son O(N^2) en el peor caso, pero la
+// inserción deja de comparar en cuanto encuentra el lugar: si el arreglo ya
+// está casi ordenado hace muy pocas comparaciones. La selección siempre hace
+// todas las comparaciones, aunque hace menos intercambios (uno por vuelta).

@@ -1,0 +1,104 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.18
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.18
+// Se precisa diseñar una agenda electrónica, donde se archivará el nombre,
+// la dirección y el teléfono de hasta 50 personas. Diseñe un algoritmo que
+// permita efectuar consultas, modificaciones, eliminaciones de los datos de
+// una persona y agregados de nuevas personas (sólo será posible incorporar
+// una persona si hay menos de 50 archivadas en la agenda). Los datos se
+// hallan almacenados en una secuencia. Considere que la agenda siempre debe
+// mantenerse ordenada alfabéticamente.
+// --------------------------------------------------------------------------
+
+// La agenda se carga en un arreglo ordenado; al terminar se vuelve a grabar.
+Acción Ejercicio3_18 es
+	Ambiente
+		Persona = Registro
+			Nombre: AN(40)
+			Direccion: AN(60)
+			Telefono: N(12)
+		FinRegistro
+		AGENDA, AGENDA_NUEVA: Archivo de Persona ordenado por Nombre
+		R: Persona
+		A: arreglo de [1..50] de Persona
+		n, i, pos: entero
+		nombre: AN(40)
+		op: 1..5
+
+		// Búsqueda lineal con centinela: deja en pos el lugar donde está o
+		// donde debería ir el nombre (primer elemento >= nombre)
+		Función Buscar (nom: AN(40)): entero es
+			Ambiente
+				k: entero
+			Proceso
+				k:= 1
+				Mientras (k <= n) y (A[k].Nombre < nom) hacer
+					k:= k + 1
+				FinMientras
+				Buscar:= k
+		FinFunción
+
+	Proceso
+		Abrir E/(AGENDA); Leer(AGENDA, R)
+		n:= 0
+		Mientras No FDA(AGENDA) hacer
+			n:= n + 1; A[n]:= R
+			Leer(AGENDA, R)
+		FinMientras
+		Cerrar(AGENDA)
+		Repetir
+			Escribir("1- Consultar 2- Modificar 3- Eliminar 4- Agregar 5- Salir")
+			Leer(op)
+			Si op <> 5 entonces
+				Escribir("Nombre")
+				Leer(nombre)
+				pos:= Buscar(nombre)
+				Según op hacer
+					1: Si (pos <= n) y (A[pos].Nombre = nombre) entonces
+					       Escribir(A[pos].Direccion, " - ", A[pos].Telefono)
+					   Sino
+					       Escribir("No existe")
+					   FinSi
+					2: Si (pos <= n) y (A[pos].Nombre = nombre) entonces
+					       Escribir("Nueva dirección y teléfono")
+					       Leer(A[pos].Direccion, A[pos].Telefono)
+					   Sino
+					       Escribir("No existe")
+					   FinSi
+					3: Si (pos <= n) y (A[pos].Nombre = nombre) entonces
+					       Para i:= pos a n - 1 hacer // corro los siguientes un lugar
+					           A[i]:= A[i + 1]
+					       FinPara
+					       n:= n - 1
+					   Sino
+					       Escribir("No existe")
+					   FinSi
+					4: Si n = 50 entonces
+					       Escribir("La agenda está llena")
+					   Sino
+					       Si (pos <= n) y (A[pos].Nombre = nombre) entonces
+					           Escribir("Ya existe")
+					       Sino
+					           Para i:= n a pos, -1 hacer // abro lugar
+					               A[i + 1]:= A[i]
+					           FinPara
+					           A[pos].Nombre:= nombre
+					           Escribir("Dirección y teléfono")
+					           Leer(A[pos].Direccion, A[pos].Telefono)
+					           n:= n + 1
+					       FinSi
+					   FinSi
+				FinSegún
+			FinSi
+		Hasta que op = 5
+		Abrir /S(AGENDA_NUEVA)
+		Para i:= 1 a n hacer
+			Escribir(AGENDA_NUEVA, A[i])
+		FinPara
+		Cerrar(AGENDA_NUEVA)
+FinAcción

@@ -1,0 +1,43 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.5
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.5
+// Dados 2 vectores:
+//
+// `A: arreglo [1 .. 30] de reales`
+// `B: arreglo [1 .. 30] de reales`
+//
+// Ambos ordenados de forma creciente, escribir un algoritmo que realice la
+// mezcla de ambos para obtener otro vector tambien ordenado de forma
+// creciente
+//
+// `C: arreglo [1 .. 60] de reales`
+// --------------------------------------------------------------------------
+
+// Mezcla de dos arreglos ordenados: la misma idea que la mezcla de archivos.
+Acción Ejercicio3_5 es
+	Ambiente
+		A, B: arreglo de [1..30] de real
+		C: arreglo de [1..60] de real
+		i, j, k: entero
+	Proceso
+		i:= 1; j:= 1; k:= 0
+		Mientras (i <= 30) y (j <= 30) hacer
+			k:= k + 1
+			Si A[i] <= B[j] entonces
+				C[k]:= A[i]; i:= i + 1
+			Sino
+				C[k]:= B[j]; j:= j + 1
+			FinSi
+		FinMientras
+		Mientras i <= 30 hacer // lo que quedó de A
+			k:= k + 1; C[k]:= A[i]; i:= i + 1
+		FinMientras
+		Mientras j <= 30 hacer // lo que quedó de B
+			k:= k + 1; C[k]:= B[j]; j:= j + 1
+		FinMientras
+FinAcción

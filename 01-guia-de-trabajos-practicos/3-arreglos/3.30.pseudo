@@ -1,0 +1,74 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.30
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.30
+// Teniendo en cuenta el ejercicio 1.20 del TP2:
+//
+// *Se posee 2 secuencias (S1 y S2) con las cuales se desea generar una nueva
+// secuencia (SAL) donde se intercalen las palabras de las secuencias de
+// entrada, de la siguiente manera: copiar de S1 aquellas palabras que
+// empiezan y terminan con la misma letra y de S2 aquellas palabras que
+// posean al menos un digito numérico y además estén en posición par.*
+//
+// Escribir un algoritmo que lo resuelva, considerando que las palabras
+// tienen como máximo 10 caracteres.
+// --------------------------------------------------------------------------
+
+// Con palabras de hasta 10 caracteres cada palabra se guarda en un arreglo:
+// así se puede mirar su última letra (S1) o buscar un dígito (S2) antes de
+// decidir si se copia.
+Acción Ejercicio3_30 es
+	Ambiente
+		S1, S2, SAL: secuencia de caracteres
+		v1, v2: caracter
+		Pal: arreglo [1..10] de caracter
+		largo, pos2, i: entero
+		hay_digito: booleano
+
+		Procedimiento LeerPalabra (Var S: secuencia de caracteres; Var v: caracter) es
+			Mientras NFDS(S) y (v = " ") hacer
+				AVZ(S, v)
+			FinMientras
+			largo:= 0
+			Mientras NFDS(S) y (v <> " ") hacer
+				largo:= largo + 1
+				Pal[largo]:= v
+				AVZ(S, v)
+			FinMientras
+		FinProcedimiento
+
+		Procedimiento CopiarPalabra es
+			Para i:= 1 a largo hacer
+				ESC(SAL, Pal[i])
+			FinPara
+			ESC(SAL, " ")
+		FinProcedimiento
+
+	Proceso
+		ARR(S1); AVZ(S1, v1)
+		ARR(S2); AVZ(S2, v2)
+		CREAR(SAL)
+		pos2:= 0
+		Mientras NFDS(S1) o NFDS(S2) hacer
+			Repetir // una palabra de S1 que empiece y termine con la misma letra
+				LeerPalabra(S1, v1)
+			Hasta que (largo = 0) o (Pal[1] = Pal[largo])
+			Si largo > 0 entonces CopiarPalabra FinSi
+			Repetir // una palabra de S2 en posición par con algún dígito
+				LeerPalabra(S2, v2)
+				Si largo > 0 entonces
+					pos2:= pos2 + 1
+					hay_digito:= Falso
+					Para i:= 1 a largo hacer
+						Si Pal[i] en {"0".."9"} entonces hay_digito:= Verdadero FinSi
+					FinPara
+				FinSi
+			Hasta que (largo = 0) o ((pos2 mod 2 = 0) y hay_digito)
+			Si largo > 0 entonces CopiarPalabra FinSi
+		FinMientras
+		CERRAR(S1); CERRAR(S2); CERRAR(SAL)
+FinAcción

@@ -1,0 +1,29 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.22
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.22
+// Dada una matriz cuadrada de 5 x 5 de números, sumar filas y columnas y
+// guardar en una matriz de 2 x 5, de modo que la fila 1 contenga la suma de
+// cada fila y la fila 2, la suma de cada columna)
+// --------------------------------------------------------------------------
+
+Acción Ejercicio3_22 es
+	Ambiente
+		M: arreglo de [1..5, 1..5] de real
+		S: arreglo de [1..2, 1..5] de real
+		i, j: entero
+	Proceso
+		Para j:= 1 a 5 hacer
+			S[1,j]:= 0; S[2,j]:= 0
+		FinPara
+		Para i:= 1 a 5 hacer
+			Para j:= 1 a 5 hacer
+				S[1,i]:= S[1,i] + M[i,j] // fila 1: suma de la fila i
+				S[2,j]:= S[2,j] + M[i,j] // fila 2: suma de la columna j
+			FinPara
+		FinPara
+FinAcción

@@ -1,0 +1,80 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.26 (estadístico)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.26
+// Se dispone de un archivo secuencial de facturas de una empresa de energía
+// eléctrica, correspondientes a un año, con el siguiente formato:
+//
+// * Nro_Factura* Nro_Usuario* Zona* Fecha* Consumo
+//
+// Se desea obtener un cuadro estadístico que informe los consumos y los
+// importes totales facturados por mes discriminados por zona, con el
+// siguiente formato:
+//
+// |  | Zona A | Zona B | Zona C | Zona D | Total por mes |
+// | --- | --- | --- | --- | --- | --- |
+// | Enero | ... | ... | ... | ... | ... |
+// | Febrero | ... | ... | ... | ... | ... |
+// | ... | ... | ... | ... | ... | ... |
+// | Diciembre | ... | ... | ... | ... | ... |
+// | Total por zona | ... | ... | ... | ... | Total General |
+//
+// La ciudad está dividida en 4 Zonas (A,B,C,D), la tarifa por Kw. que cobra
+// la empresa en cada una de ellas es: Zona A:  0,05, Zona B:  0,07, Zona C:
+// 0,09 y Zona D:  0,13.
+// --------------------------------------------------------------------------
+
+// Se arman dos matrices (consumo e importe) de 13 x 5: meses + total, zonas
+// + total. La tarifa de cada zona se guarda en un arreglo.
+Acción Ejercicio3_26 es
+	Ambiente
+		Fecha = Registro
+			dd: 1..31; mm: 1..12; aa: N(4)
+		FinRegistro
+		Factura = Registro
+			Nro_Factura, Nro_Usuario: N(8)
+			Zona: "A".."D"
+			Fecha: Fecha
+			Consumo: real
+		FinRegistro
+		FACTURAS: Archivo de Factura
+		R: Factura
+		Consumo, Importe: arreglo [1..13, "A".."E"] de real // E = total por mes
+		Tarifa: arreglo ["A".."D"] de real
+		m: entero
+		z: caracter
+		imp: real
+	Proceso
+		Tarifa["A"]:= 0,05; Tarifa["B"]:= 0,07; Tarifa["C"]:= 0,09; Tarifa["D"]:= 0,13
+		Para m:= 1 a 13 hacer
+			Para z:= "A" a "E" hacer
+				Consumo[m,z]:= 0; Importe[m,z]:= 0
+			FinPara
+		FinPara
+		Abrir E/(FACTURAS); Leer(FACTURAS, R)
+		Mientras No FDA(FACTURAS) hacer
+			m:= R.Fecha.mm; z:= R.Zona
+			imp:= R.Consumo * Tarifa[z]
+			Consumo[m,z]:= Consumo[m,z] + R.Consumo
+			Consumo[m,"E"]:= Consumo[m,"E"] + R.Consumo
+			Consumo[13,z]:= Consumo[13,z] + R.Consumo
+			Consumo[13,"E"]:= Consumo[13,"E"] + R.Consumo
+			Importe[m,z]:= Importe[m,z] + imp
+			Importe[m,"E"]:= Importe[m,"E"] + imp
+			Importe[13,z]:= Importe[13,z] + imp
+			Importe[13,"E"]:= Importe[13,"E"] + imp
+			Leer(FACTURAS, R)
+		FinMientras
+		Cerrar(FACTURAS)
+		Escribir("Mes | Zona A | Zona B | Zona C | Zona D | Total por mes   (consumo / importe)")
+		Para m:= 1 a 13 hacer
+			Si m < 13 entonces Escribir("Mes ", m) Sino Escribir("Total por zona") FinSi
+			Para z:= "A" a "E" hacer
+				Escribir(Consumo[m,z], " / $", Importe[m,z])
+			FinPara
+		FinPara
+FinAcción

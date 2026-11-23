@@ -1,0 +1,66 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.16
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.16
+// Una empresa que comercializa una cierta cantidad de artículos diferentes
+// desea confeccionar un ranking de ventas de los mismos, a partir de una
+// secuencia ordenada por articulo que contiene:
+//
+// | NRO_ARTICULO | TIPO | CANT_VENDIDA |
+// | --- | --- | --- |
+// |  |  |  |
+//
+// Escribir un algoritmo que emita el ranking deseado en orden decreciente
+// por cantidad.
+// --------------------------------------------------------------------------
+
+// La secuencia tiene una venta por registro y está ordenada por artículo:
+// con un corte de control se totaliza cada artículo en el arreglo y después
+// se ordena el arreglo de mayor a menor.
+Acción Ejercicio3_16 es
+	Ambiente
+		MAX = 500
+		Venta = Registro
+			Nro_Articulo: N(6)
+			Tipo: AN(20)
+			Cant_Vendida: N(5)
+		FinRegistro
+		Ranking = Registro
+			Nro_Articulo: N(6)
+			Total: N(7)
+		FinRegistro
+		VENTAS: Archivo de Venta ordenado por Nro_Articulo
+		R: Venta
+		Rank: arreglo de [1..MAX] de Ranking
+		x: Ranking
+		n, i, j: entero
+	Proceso
+		Abrir E/(VENTAS); Leer(VENTAS, R)
+		n:= 0
+		Mientras No FDA(VENTAS) hacer
+			n:= n + 1
+			Rank[n].Nro_Articulo:= R.Nro_Articulo
+			Rank[n].Total:= 0
+			Mientras No FDA(VENTAS) y (R.Nro_Articulo = Rank[n].Nro_Articulo) hacer
+				Rank[n].Total:= Rank[n].Total + R.Cant_Vendida
+				Leer(VENTAS, R)
+			FinMientras
+		FinMientras
+		Cerrar(VENTAS)
+		Para i:= 2 a n hacer // inserción de mayor a menor
+			x:= Rank[i]
+			j:= i - 1
+			Mientras (j > 0) y (Rank[j].Total < x.Total) hacer
+				Rank[j + 1]:= Rank[j]
+				j:= j - 1
+			FinMientras
+			Rank[j + 1]:= x
+		FinPara
+		Para i:= 1 a n hacer
+			Escribir(i, "º - artículo ", Rank[i].Nro_Articulo, ": ", Rank[i].Total, " unidades")
+		FinPara
+FinAcción

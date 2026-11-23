@@ -1,0 +1,134 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.32 (estadístico)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.32
+// La municipalidad posee un archivo secuencial con los datos de todos los
+// estacionamientos realizados en el mes de Octubre de 2018
+//
+// ESTACIONAMIENTOS
+//
+// | FECHA: fecha | PATENTE: AN(7) | HoraDesde: N(2) | HoraHasta: N(2) | Posta: 1..100 |
+// | --- | --- | --- | --- | --- |
+// |  |  |  |  |  |
+//
+// El costo es por multiplos de 1 hora. El costo por hora se calcula
+// considerando la franja horaria del estacionamiento (siempre tomar el mayor
+// costo), las franjas horarias son:
+//
+// * de 00 a 06: costo por hora $9
+// * de 07 a 13: costo por hora $14
+// * de 14 a 19: costo por hora $12
+// * de 20 a 23: costo por hora $6
+//
+// Ejemplo: si una persona estaciona desde las 5 hasta las 10, son 6 horas de
+// estacionamiento (10 - 5 + 1) y como se encuentra en dos franajas horarias
+// se tiene que tomar la de mayor costo ($14 por hora). Por lo tanto el
+// importe generado es 14 x 6 = 84. (NOTA a efectos de simplificar los
+// calculos, solo calcular el costo de la franja horaria con respecto a la
+// hora desde y la hora hasta).
+//
+// Se pide realizar un algoritmo que permita determinar:
+//
+// * Posta con mayor importe generado
+// * Día con mayor cantidad de estacionamientos.
+// * En qué día y en que posta se generó la mayor cantidad de
+// estacionamientos
+//
+// Otras Preguntas:
+//
+// * ¿Es posible calcular cual fue la zona horaria con mayor cantidad de
+// estacionamientos? En caso de ser posible, realizar el algoritmo.
+// * ¿Es posible determinar la cantidad maxima de permanencia que tienen los
+// autos estacionados? En caso de ser posible, realizar el algoritmo.
+// --------------------------------------------------------------------------
+
+// Matriz de cantidades día (1..31) x posta (1..100) y arreglo de importes por
+// posta. El costo por hora es el de la franja más cara entre HoraDesde y
+// HoraHasta (como pide la nota, solo se miran esas dos horas).
+Acción Ejercicio3_32 es
+	Ambiente
+		Fecha = Registro
+			dd: 1..31; mm: 1..12; aa: N(4)
+		FinRegistro
+		Estac = Registro
+			Fecha: Fecha
+			Patente: AN(7)
+			HoraDesde, HoraHasta: 0..23
+			Posta: 1..100
+		FinRegistro
+		ESTACIONAMIENTOS: Archivo de Estac
+		R: Estac
+		Cant: arreglo [1..32, 1..101] de entero // fila 32 y columna 101 = totales
+		ImpPosta: arreglo [1..100] de real
+		PorFranja: arreglo [1..4] de entero
+		d, p, max_cant, dia_max, posta_max, horas, max_horas: entero
+		max_imp: real
+
+		Función Franja (h: entero): entero es
+			Si h <= 6 entonces Franja:= 1
+			Sino Si h <= 13 entonces Franja:= 2
+			Sino Si h <= 19 entonces Franja:= 3
+			Sino Franja:= 4
+			FinSi FinSi FinSi
+		FinFunción
+
+		Función Costo (f: entero): real es
+			Según f hacer 1: Costo:= 9  2: Costo:= 14  3: Costo:= 12  4: Costo:= 6 FinSegún
+		FinFunción
+
+		Función Mayor (a, b: real): real es
+			Si a > b entonces Mayor:= a Sino Mayor:= b FinSi
+		FinFunción
+
+	Proceso
+		Para d:= 1 a 32 hacer Para p:= 1 a 101 hacer Cant[d,p]:= 0 FinPara FinPara
+		Para p:= 1 a 100 hacer ImpPosta[p]:= 0 FinPara
+		Para p:= 1 a 4 hacer PorFranja[p]:= 0 FinPara
+		max_horas:= 0
+		Abrir E/(ESTACIONAMIENTOS); Leer(ESTACIONAMIENTOS, R)
+		Mientras No FDA(ESTACIONAMIENTOS) hacer
+			d:= R.Fecha.dd; p:= R.Posta
+			horas:= R.HoraHasta - R.HoraDesde + 1
+			ImpPosta[p]:= ImpPosta[p] + horas * Mayor(Costo(Franja(R.HoraDesde)), Costo(Franja(R.HoraHasta)))
+			Cant[d,p]:= Cant[d,p] + 1
+			Cant[d,101]:= Cant[d,101] + 1 // total del día
+			PorFranja[Franja(R.HoraDesde)]:= PorFranja[Franja(R.HoraDesde)] + 1
+			Si horas > max_horas entonces max_horas:= horas FinSi
+			Leer(ESTACIONAMIENTOS, R)
+		FinMientras
+		Cerrar(ESTACIONAMIENTOS)
+
+		max_imp:= -1
+		Para p:= 1 a 100 hacer
+			Si ImpPosta[p] > max_imp entonces max_imp:= ImpPosta[p]; posta_max:= p FinSi
+		FinPara
+		Escribir("Posta con mayor importe: ", posta_max, " ($", max_imp, ")")
+
+		max_cant:= -1
+		Para d:= 1 a 31 hacer
+			Si Cant[d,101] > max_cant entonces max_cant:= Cant[d,101]; dia_max:= d FinSi
+		FinPara
+		Escribir("Día con más estacionamientos: ", dia_max)
+
+		max_cant:= -1
+		Para d:= 1 a 31 hacer
+			Para p:= 1 a 100 hacer
+				Si Cant[d,p] > max_cant entonces
+					max_cant:= Cant[d,p]; dia_max:= d; posta_max:= p
+				FinSi
+			FinPara
+		FinPara
+		Escribir("Mayor cantidad: día ", dia_max, " en la posta ", posta_max)
+
+		// Otras preguntas: sí, las dos se pueden calcular durante el recorrido
+		max_cant:= -1
+		Para p:= 1 a 4 hacer
+			Si PorFranja[p] > max_cant entonces max_cant:= PorFranja[p]; d:= p FinSi
+		FinPara
+		Escribir("Franja horaria con más estacionamientos (por hora de inicio): ", d)
+		Escribir("Permanencia máxima: ", max_horas, " horas")
+FinAcción

@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.28 (estadístico)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.28
+// La Municipalidad de Resistencia desea obtener una estadística de los
+// valores (en $) de los terrenos de la ciudad, discriminados por zona y
+// ubicación dentro de la manzana (en esquina, interna, etc.), y los totales
+// por zona y ubicación.
+// El valor de cada final de cada terreno es igual a:
+//
+// Valor del Terreno = Superficie terreno (en M2) * valor del M2 *
+// coeficiente de incremento
+//
+// Para ello cuenta con la siguiente información:
+//
+// 1. Un archivo de los terrenos con los siguientes datos:
+//
+//    * Nro_Terreno* Zona* Ubicacion* Superficie
+//
+//    Zona: codificadas de A a F
+//    Ubicación: codificada de 1 a 10
+// 2. Un arreglo V que contiene los valores del M2 por zona.
+// --------------------------------------------------------------------------
+
+// El coeficiente de incremento no está en ningún archivo: se asume un
+// arreglo C con un coeficiente por ubicación (ya cargado), igual que V.
+Acción Ejercicio3_28 (V: arreglo ["A".."F"] de real; C: arreglo [1..10] de real) es
+	Ambiente
+		Terreno = Registro
+			Nro_Terreno: N(8)
+			Zona: "A".."F"
+			Ubicacion: 1..10
+			Superficie: real
+		FinRegistro
+		TERRENOS: Archivo de Terreno
+		R: Terreno
+		T: arreglo ["A".."G", 1..11] de real // G = total por ubicación, 11 = total por zona
+		z: caracter
+		u: entero
+		valor: real
+	Proceso
+		Para z:= "A" a "G" hacer
+			Para u:= 1 a 11 hacer
+				T[z,u]:= 0
+			FinPara
+		FinPara
+		Abrir E/(TERRENOS); Leer(TERRENOS, R)
+		Mientras No FDA(TERRENOS) hacer
+			valor:= R.Superficie * V[R.Zona] * C[R.Ubicacion]
+			T[R.Zona, R.Ubicacion]:= T[R.Zona, R.Ubicacion] + valor
+			T[R.Zona, 11]:= T[R.Zona, 11] + valor
+			T["G", R.Ubicacion]:= T["G", R.Ubicacion] + valor
+			T["G", 11]:= T["G", 11] + valor
+			Leer(TERRENOS, R)
+		FinMientras
+		Cerrar(TERRENOS)
+		Para z:= "A" a "G" hacer
+			Si z < "G" entonces Escribir("Zona ", z) Sino Escribir("Total por ubicación") FinSi
+			Para u:= 1 a 11 hacer
+				Escribir(T[z,u])
+			FinPara
+		FinPara
+FinAcción

@@ -3,29 +3,40 @@
 //  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.19
 // ==========================================================================
 
-// Dada una matriz A de m x n enteros (20 x 20), encontrar el mayor elemento e
-// informar su valor y en qué fila y columna se encuentra.
-// (Enunciado reconstruido a partir de la resolución empezada.)
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.19
+// Escribir un algoritmo que emita cuál es y dónde está ubicado el mayor
+// elemento de cada fila de una matriz, e imprima un mensaje si todos los
+// mayores se encuentran en la misma columna.
+// --------------------------------------------------------------------------
 
 Acción Ejercicio3_19 es
     Ambiente
         m = 20
         n = 20
         A: Arreglo de [1..m, 1..n] de entero
-        i, j, Fila_Mayor, Columna_Mayor: 1..20
-        Maximo: entero
+        i, j, col_mayor, col_primera: entero
+        misma_columna: booleano
     Proceso
-        Maximo:= A[1,1] // supongo que el mayor es el primer elemento de la matriz
-        Fila_Mayor:= 1
-        Columna_Mayor:= 1
-        Para i:= 1 a m hacer // recorrido natural: fila por fila
-            Para j:= 1 a n hacer
-                Si A[i,j] > Maximo entonces
-                    Maximo:= A[i,j]
-                    Fila_Mayor:= i
-                    Columna_Mayor:= j
+        misma_columna:= Verdadero
+        Para i:= 1 a m hacer // por cada fila
+            col_mayor:= 1 // supongo que el mayor es el primero de la fila
+            Para j:= 2 a n hacer
+                Si A[i,j] > A[i,col_mayor] entonces
+                    col_mayor:= j
                 FinSi
             FinPara
+            Escribir("Fila ", i, ": el mayor es ", A[i,col_mayor], " en la columna ", col_mayor)
+            Si i = 1 entonces
+                col_primera:= col_mayor
+            Sino
+                Si col_mayor <> col_primera entonces
+                    misma_columna:= Falso
+                FinSi
+            FinSi
         FinPara
-        Escribir("El mayor es ", Maximo, " en la fila ", Fila_Mayor, " y columna ", Columna_Mayor)
+        Si misma_columna entonces
+            Escribir("Todos los mayores están en la columna ", col_primera)
+        FinSi
 FinAcción

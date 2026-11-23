@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.15
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.15
+// Se precisa ordenar un arreglo de enteros de menor a mayor, eliminando los
+// números repetidos
+// --------------------------------------------------------------------------
+
+// Primero se ordena (inserción) y después se compactan los repetidos, que
+// quedaron juntos. n pasa a ser la cantidad de elementos distintos.
+Acción Ejercicio3_15 es
+	Ambiente
+		N = 100
+		A: arreglo de [1..N] de entero
+		i, j, x, n: entero
+	Proceso
+		Para i:= 2 a N hacer
+			x:= A[i]
+			j:= i - 1
+			Mientras (j > 0) y (A[j] > x) hacer
+				A[j + 1]:= A[j]
+				j:= j - 1
+			FinMientras
+			A[j + 1]:= x
+		FinPara
+		n:= 1
+		Para i:= 2 a N hacer
+			Si A[i] <> A[n] entonces // distinto del último guardado
+				n:= n + 1
+				A[n]:= A[i]
+			FinSi
+		FinPara
+		Para i:= 1 a n hacer
+			Escribir(A[i])
+		FinPara
+FinAcción

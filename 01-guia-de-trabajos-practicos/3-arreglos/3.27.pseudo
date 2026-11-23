@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.27 (estadístico)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.27
+// Se desea efectuar una estadística de ventas. Se cuenta para ello con una
+// secuencia de las facturas emitidas, las cuales son identificadas por un
+// Número; dicha secuencia contiene información relativa al cliente: su
+// Número y Zona a la cual pertenece, como así también el Tipo de mercadería
+// entregada, la Cantidad de unidades, el total gravado, el total exento de
+// IVA y el valor del IVA. Construya un algoritmo que emita por zona, y
+// dentro de la zona por tipo de mercadería el total de unidades vendidas, el
+// total gravado, el total exento y el total de IVA, y además un total
+// general con la misma información. Hay 9 zonas y 4 tipos de mercadería.
+// --------------------------------------------------------------------------
+
+// Cada celda guarda cuatro totales, así que la matriz es de registros:
+// zonas (1..9, +10 total) x tipos (1..4, +5 total).
+Acción Ejercicio3_27 es
+	Ambiente
+		Factura = Registro
+			Nro_Factura, Nro_Cliente: N(8)
+			Zona: 1..9
+			Tipo: 1..4
+			Cantidad: N(6)
+			Gravado, Exento, IVA: real
+		FinRegistro
+		Totales = Registro
+			Unidades: N(8)
+			Gravado, Exento, IVA: real
+		FinRegistro
+		FACTURAS: Archivo de Factura
+		R: Factura
+		T: arreglo [1..10, 1..5] de Totales
+		z, t: entero
+
+		Procedimiento Sumar (i, j: entero) es
+			T[i,j].Unidades:= T[i,j].Unidades + R.Cantidad
+			T[i,j].Gravado:= T[i,j].Gravado + R.Gravado
+			T[i,j].Exento:= T[i,j].Exento + R.Exento
+			T[i,j].IVA:= T[i,j].IVA + R.IVA
+		FinProcedimiento
+
+	Proceso
+		Para z:= 1 a 10 hacer
+			Para t:= 1 a 5 hacer
+				T[z,t].Unidades:= 0; T[z,t].Gravado:= 0; T[z,t].Exento:= 0; T[z,t].IVA:= 0
+			FinPara
+		FinPara
+		Abrir E/(FACTURAS); Leer(FACTURAS, R)
+		Mientras No FDA(FACTURAS) hacer
+			Sumar(R.Zona, R.Tipo)
+			Sumar(R.Zona, 5)
+			Sumar(10, R.Tipo)
+			Sumar(10, 5)
+			Leer(FACTURAS, R)
+		FinMientras
+		Cerrar(FACTURAS)
+		Para z:= 1 a 10 hacer
+			Si z < 10 entonces Escribir("Zona ", z) Sino Escribir("TOTAL GENERAL") FinSi
+			Para t:= 1 a 5 hacer
+				Si t < 5 entonces Escribir("  Tipo ", t) Sino Escribir("  Total zona") FinSi
+				Escribir("    Unidades ", T[z,t].Unidades, " - Gravado ", T[z,t].Gravado, " - Exento ", T[z,t].Exento, " - IVA ", T[z,t].IVA)
+			FinPara
+		FinPara
+FinAcción

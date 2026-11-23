@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.3
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.3
+// Dados un vector de reales *a* de *n* elementos, con *n* ∈ N0, y un número
+// real *x* >= 0, calcular el valor y tal que:
+//
+// y = \sum_{i=1}^n (a_i \times x^i)
+// --------------------------------------------------------------------------
+
+// y = a1*x + a2*x^2 + ... + an*x^n. La potencia se va acumulando en cada
+// vuelta para no recalcular x^i desde cero.
+Acción Ejercicio3_3 es
+	Ambiente
+		N = 100
+		a: arreglo de [1..N] de real
+		n, i: entero
+		x, y, potencia: real
+	Proceso
+		Escribir("Cantidad de elementos n (0 a 100) y el valor de x (>= 0)")
+		Leer(n, x)
+		Para i:= 1 a n hacer
+			Leer(a[i])
+		FinPara
+		y:= 0 // si n = 0 la sumatoria vale 0
+		potencia:= 1
+		Para i:= 1 a n hacer
+			potencia:= potencia * x // x^i
+			y:= y + a[i] * potencia
+		FinPara
+		Escribir("y = ", y)
+FinAcción

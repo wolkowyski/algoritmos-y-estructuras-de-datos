@@ -1,0 +1,89 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.31 (arreglo de 4 dimensiones)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.31
+// Se lleva a cabo una encuesta a fin de anticipar los posibles porcentajes
+// de votos que obtendrán cada uno de los 4 partidos políticos de mayor peso
+// en las elecciones. Los datos solicitados a los encuestados son: partido al
+// que Algoritmos y Estructuras de Datos 2019 votara, edad, sexo y partido al
+// que votó en las elecciones anteriores. Las respuestas se tabulan de
+// acuerdo a los siguientes criterios:
+//
+// * Partidos: P1, P2, P3, P4, Otro, En Blanco, Indeciso
+// * Edad: 18-25, 26-35, 36-45, 46-55, 56-65, +65
+// * Sexo: Femenino, Masculino
+//
+// Diseñe un algoritmo que, utilizando un arreglo de 4 dimensiones (partido
+// al que votara, edad, sexo , partido al que votó), permita responder a las
+// siguientes consultas:
+//
+// * Cantidad de personas de cierta edad que votarán a un Partido dado.
+// * Cantidad de personas de un sexo dado que votarán a un determinado
+// Partido.
+// * Cantidad de personas de cierta edad que votaron a un determinado Partido
+// y actualmente votarán a otro Partido dado.
+// * Cantidad de personas de un sexo dado que votaron a un determinado
+// Partido y actualmente votarán a otro Partido dado.
+// --------------------------------------------------------------------------
+
+// E[partido que votará, rango de edad, sexo, partido que votó]
+// Partidos: 1..7 (P1, P2, P3, P4, Otro, En blanco, Indeciso)
+// Edad: 1..6 (18-25, 26-35, 36-45, 46-55, 56-65, +65) - Sexo: 1 F, 2 M
+Acción Ejercicio3_31 es
+	Ambiente
+		Encuesta = Registro
+			Votara: 1..7
+			Edad: N(3)
+			Sexo: 1..2
+			Voto: 1..7
+		FinRegistro
+		ENCUESTAS: Archivo de Encuesta
+		R: Encuesta
+		E: arreglo [1..7, 1..6, 1..2, 1..7] de entero
+		a, b, c, d, rango, p, q, s, total: entero
+
+		Función Rango (edad: entero): entero es
+			Si edad <= 25 entonces Rango:= 1
+			Sino Si edad <= 35 entonces Rango:= 2
+			Sino Si edad <= 45 entonces Rango:= 3
+			Sino Si edad <= 55 entonces Rango:= 4
+			Sino Si edad <= 65 entonces Rango:= 5
+			Sino Rango:= 6
+			FinSi FinSi FinSi FinSi FinSi
+		FinFunción
+
+	Proceso
+		Para a:= 1 a 7 hacer Para b:= 1 a 6 hacer Para c:= 1 a 2 hacer Para d:= 1 a 7 hacer
+			E[a,b,c,d]:= 0
+		FinPara FinPara FinPara FinPara
+		Abrir E/(ENCUESTAS); Leer(ENCUESTAS, R)
+		Mientras No FDA(ENCUESTAS) hacer
+			E[R.Votara, Rango(R.Edad), R.Sexo, R.Voto]:= E[R.Votara, Rango(R.Edad), R.Sexo, R.Voto] + 1
+			Leer(ENCUESTAS, R)
+		FinMientras
+		Cerrar(ENCUESTAS)
+
+		// 1. personas de cierta edad que votarán al partido p
+		Leer(rango, p)
+		total:= 0
+		Para c:= 1 a 2 hacer Para d:= 1 a 7 hacer total:= total + E[p, rango, c, d] FinPara FinPara
+		Escribir(total)
+		// 2. personas de un sexo que votarán al partido p
+		Leer(s, p)
+		total:= 0
+		Para b:= 1 a 6 hacer Para d:= 1 a 7 hacer total:= total + E[p, b, s, d] FinPara FinPara
+		Escribir(total)
+		// 3. de cierta edad, votaron a q y votarán a p
+		Leer(rango, q, p)
+		total:= E[p, rango, 1, q] + E[p, rango, 2, q]
+		Escribir(total)
+		// 4. de un sexo, votaron a q y votarán a p
+		Leer(s, q, p)
+		total:= 0
+		Para b:= 1 a 6 hacer total:= total + E[p, b, s, q] FinPara
+		Escribir(total)
+FinAcción

@@ -1,0 +1,55 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.14
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.14
+// El mes que viene se realizará en Buenos Aires el desfile “Alta Moda 2018”,
+// el cual reúne a los diseñadores más reconocidos del país. Para organizar
+// las pasadas, se dispone de un arreglo por diseñador, con la siguiente
+// información: nombre de el/la modelo y altura. La directora del evento
+// necesita que se imprima cada lista ordenada de acuerdo a la altura de
+// el/la modelo. Escribir un algoritmo que permita ingresar los datos de cada
+// diseñador e imprimirlos de acuerdo a lo solicitado.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio3_14 es
+	Ambiente
+		MAX = 30
+		Modelo = Registro
+			Nombre: AN(30)
+			Altura: real
+		FinRegistro
+		Lista: arreglo de [1..MAX] de Modelo
+		x: Modelo
+		disenador: AN(30)
+		n, i, j: entero
+	Proceso
+		Escribir("Diseñador (FIN para terminar)")
+		Leer(disenador)
+		Mientras disenador <> "FIN" hacer
+			Escribir("Cantidad de modelos")
+			Leer(n)
+			Para i:= 1 a n hacer
+				Escribir("Nombre y altura del modelo ", i)
+				Leer(Lista[i].Nombre, Lista[i].Altura)
+			FinPara
+			Para i:= 2 a n hacer // inserción por altura (de menor a mayor)
+				x:= Lista[i]
+				j:= i - 1
+				Mientras (j > 0) y (Lista[j].Altura > x.Altura) hacer
+					Lista[j + 1]:= Lista[j]
+					j:= j - 1
+				FinMientras
+				Lista[j + 1]:= x
+			FinPara
+			Escribir("Pasadas de ", disenador, ":")
+			Para i:= 1 a n hacer
+				Escribir(Lista[i].Nombre, " - ", Lista[i].Altura)
+			FinPara
+			Escribir("Diseñador (FIN para terminar)")
+			Leer(disenador)
+		FinMientras
+FinAcción

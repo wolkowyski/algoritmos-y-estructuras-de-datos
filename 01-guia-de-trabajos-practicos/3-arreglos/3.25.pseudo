@@ -1,0 +1,76 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.25 (estadístico en 3 dimensiones)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.25
+// Una Fábrica que posee 4 plantas de producción en nuestro país y compra
+// materia prima a 3 proveedores distintos, desea realizar un control de los
+// montos totales correspondientes a compras realizadas en cada planta
+// durante el último año, discriminados por proveedor y por mes.
+// Para ello dispone de un archivo con los datos de las facturas
+// correspondientes. (Aclaración: el archivo no está ordenado por ningún
+// criterio)
+//
+// COMPRAS
+//
+// * Nro_Factura* Proveedor (A,B,C)* Fecha dd/mm/aaaa* Nro_Planta 1..4*
+// Importe
+// --------------------------------------------------------------------------
+
+// Matriz de 3 dimensiones: planta (1..4, +1 de totales) x proveedor (A..C,
+// +D de totales) x mes (1..12, +13 de totales). La versión simplificada en
+// 2 dimensiones (sin meses) está en estadistico-3.25-simplificado.pseudo.
+Acción Ejercicio3_25 es
+	Ambiente
+		Fecha = Registro
+			dd: 1..31; mm: 1..12; aaaa: N(4)
+		FinRegistro
+		Factura = Registro
+			Nro_Factura: N(8)
+			Proveedor: "A".."C"
+			Fecha: Fecha
+			Planta: 1..4
+			Importe: real
+		FinRegistro
+		COMPRAS: Archivo de Factura
+		R: Factura
+		T: arreglo [1..5, "A".."D", 1..13] de real
+		p, m: entero
+		v: caracter
+	Proceso
+		Para p:= 1 a 5 hacer
+			Para v:= "A" a "D" hacer
+				Para m:= 1 a 13 hacer
+					T[p,v,m]:= 0
+				FinPara
+			FinPara
+		FinPara
+		Abrir E/(COMPRAS); Leer(COMPRAS, R)
+		Mientras No FDA(COMPRAS) hacer
+			p:= R.Planta; v:= R.Proveedor; m:= R.Fecha.mm
+			// cada importe se suma en su celda y en todas las de totales
+			T[p,v,m]:= T[p,v,m] + R.Importe
+			T[p,v,13]:= T[p,v,13] + R.Importe
+			T[p,"D",m]:= T[p,"D",m] + R.Importe
+			T[p,"D",13]:= T[p,"D",13] + R.Importe
+			T[5,v,m]:= T[5,v,m] + R.Importe
+			T[5,v,13]:= T[5,v,13] + R.Importe
+			T[5,"D",m]:= T[5,"D",m] + R.Importe
+			T[5,"D",13]:= T[5,"D",13] + R.Importe
+			Leer(COMPRAS, R)
+		FinMientras
+		Cerrar(COMPRAS)
+		Para p:= 1 a 5 hacer
+			Si p < 5 entonces Escribir("PLANTA ", p) Sino Escribir("TOTAL DE PLANTAS") FinSi
+			Escribir("Proveedor | Ene ... Dic | Total")
+			Para v:= "A" a "D" hacer
+				Si v < "D" entonces Escribir(v) Sino Escribir("Total") FinSi
+				Para m:= 1 a 13 hacer
+					Escribir(T[p,v,m])
+				FinPara
+			FinPara
+		FinPara
+FinAcción

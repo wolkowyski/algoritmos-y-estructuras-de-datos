@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.2
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.2
+// Genere un único algoritmo que resuelva las 3 consignas del ejercicio
+// anterior.
+// --------------------------------------------------------------------------
+
+// Las tres consignas del 3.1 en un solo recorrido después de la carga.
+Acción Ejercicio3_2 es
+	Ambiente
+		num: arreglo de [1..100] de entero
+		i, posmax, posmin: 1..100
+		max, min, suma, cont: entero
+	Proceso
+		Para i:= 1 a 100 hacer // a. carga
+			Escribir("Elemento ", i)
+			Leer(num[i])
+		FinPara
+		max:= num[1]; min:= num[1]
+		posmax:= 1; posmin:= 1
+		suma:= 0; cont:= 0
+		Para i:= 1 a 100 hacer
+			Si num[i] > max entonces // b. mayor y menor
+				max:= num[i]; posmax:= i
+			FinSi
+			Si num[i] < min entonces
+				min:= num[i]; posmin:= i
+			FinSi
+			Si num[i] mod 2 = 0 entonces // c. pares
+				suma:= suma + num[i]
+				cont:= cont + 1
+			FinSi
+		FinPara
+		Escribir("Mayor: ", max, " en la posición ", posmax, " - Menor: ", min, " en la posición ", posmin)
+		Escribir("Pares: ", cont, " - suma: ", suma)
+FinAcción

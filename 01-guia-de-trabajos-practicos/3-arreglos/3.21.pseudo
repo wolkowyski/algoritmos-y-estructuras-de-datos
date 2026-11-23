@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.21
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.21
+// Dada una matriz de 6 x 6 de enteros, cuya última fila y columna contienen
+// ceros, calcular la suma de cada fila y guardar en la última celda de la
+// misma; y la suma de cada columna y guardar en la última celda de la misma.
+// Calcular también el total general y guardar en la posición (6,6).
+// --------------------------------------------------------------------------
+
+Acción Ejercicio3_21 es
+	Ambiente
+		M: arreglo de [1..6, 1..6] de entero
+		i, j: entero
+	Proceso
+		// La fila 6 y la columna 6 vienen en cero
+		Para i:= 1 a 5 hacer
+			Para j:= 1 a 5 hacer
+				M[i,6]:= M[i,6] + M[i,j] // suma de la fila
+				M[6,j]:= M[6,j] + M[i,j] // suma de la columna
+				M[6,6]:= M[6,6] + M[i,j] // total general
+			FinPara
+		FinPara
+FinAcción

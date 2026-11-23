@@ -1,0 +1,47 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.8
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.8
+// Repita el ejercicio anterior, pero suponiendo que se precisa localizar
+// todos los nombres que comienzan con una letra dada.
+// --------------------------------------------------------------------------
+
+// El arreglo está ordenado: con una búsqueda binaria se encuentra algún
+// nombre que empiece con la letra; después se retrocede hasta el primero y
+// se avanza listando mientras la primera letra coincida.
+Acción Ejercicio3_8 es
+	Ambiente
+		N = 100
+		Nombres: arreglo de [1..N] de AN(10)
+		letra: caracter
+		iz, de, centro, i: entero
+	Proceso
+		Escribir("Ingrese la letra")
+		Leer(letra)
+		iz:= 1; de:= N
+		centro:= (iz + de) div 2
+		Mientras (iz <= de) y (Nombres[centro][1] <> letra) hacer
+			Si Nombres[centro][1] > letra entonces
+				de:= centro - 1
+			Sino
+				iz:= centro + 1
+			FinSi
+			centro:= (iz + de) div 2
+		FinMientras
+		Si iz > de entonces
+			Escribir("No hay nombres que empiecen con ", letra)
+		Sino
+			i:= centro
+			Mientras (i > 1) y (Nombres[i - 1][1] = letra) hacer // primero de la letra
+				i:= i - 1
+			FinMientras
+			Mientras (i <= N) y (Nombres[i][1] = letra) hacer
+				Escribir(Nombres[i], " en la posición ", i)
+				i:= i + 1
+			FinMientras
+		FinSi
+FinAcción

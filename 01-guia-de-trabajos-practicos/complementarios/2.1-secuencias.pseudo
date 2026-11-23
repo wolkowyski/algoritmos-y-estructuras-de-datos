@@ -1,0 +1,757 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.1
+// Dada una secuencia TEXTO construir un algoritmo que cuente e informe por
+// oración cuántas palabras terminan con la sílaba "LA".
+// --------------------------------------------------------------------------
+
+// Las palabras se separan con blancos y las oraciones terminan en "." pegado
+// a la última palabra. Se guardan las dos últimas letras de cada palabra.
+Acción Complementario2_1_1 es
+Ambiente
+    TEXTO: secuencia de caracteres
+    v, ant, ult: caracter
+    cont, nro_or: entero
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    nro_or:= 0
+    Mientras NFDS(TEXTO) hacer
+        nro_or:= nro_or + 1
+        cont:= 0
+        Mientras NFDS(TEXTO) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(TEXTO, v) FinMientras
+            ant:= " "; ult:= " "
+            Mientras (v <> " ") y (v <> ".") hacer
+                ant:= ult; ult:= v
+                AVZ(TEXTO, v)
+            FinMientras
+            Si (ant = "L") y (ult = "A") entonces cont:= cont + 1 FinSi
+        FinMientras
+        Escribir("Oración ", nro_or, ": ", cont, " palabras terminan en LA")
+        AVZ(TEXTO, v) // paso el punto
+    FinMientras
+    CERRAR(TEXTO)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.2
+// Dada una secuencia de caracteres que contiene un texto compuesto por
+// oraciones, crear una secuencia de salida que contenga sólo las palabras
+// que comiencen con la sílaba "MA". Informar para cada oración cuántas
+// palabras cumplen con la condición.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_2 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    cont, nro_or: entero
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    nro_or:= 0
+    Mientras NFDS(TEXTO) hacer
+        nro_or:= nro_or + 1
+        cont:= 0
+        Mientras NFDS(TEXTO) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(TEXTO, v) FinMientras
+            Si v = "M" entonces
+                AVZ(TEXTO, v)
+                Si v = "A" entonces // empieza con MA: la copio entera
+                    cont:= cont + 1
+                    ESC(Salida, "M")
+                    Mientras (v <> " ") y (v <> ".") hacer
+                        ESC(Salida, v); AVZ(TEXTO, v)
+                    FinMientras
+                    ESC(Salida, " ")
+                FinSi
+            FinSi
+            Mientras (v <> " ") y (v <> ".") hacer AVZ(TEXTO, v) FinMientras
+        FinMientras
+        Escribir("Oración ", nro_or, ": ", cont, " palabras empiezan con MA")
+        AVZ(TEXTO, v)
+    FinMientras
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.3
+// Dada una secuencia de caracteres que contiene un texto compuesto por
+// oraciones; crear una secuencia de salida que contenga solo las palabras
+// con 4 letras, informar para cada oración cuantas palabras cumplen con la
+// condición. El fin de cada oración esta dado por un "."
+// --------------------------------------------------------------------------
+
+// Una palabra se copia recién al saber que tiene 4 letras: se guardan sus
+// primeras letras en un arreglo de 4.
+Acción Complementario2_1_3 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    P: arreglo [1..4] de caracter
+    largo, i, cont, nro_or: entero
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    nro_or:= 0
+    Mientras NFDS(TEXTO) hacer
+        nro_or:= nro_or + 1
+        cont:= 0
+        Mientras NFDS(TEXTO) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(TEXTO, v) FinMientras
+            largo:= 0
+            Mientras (v <> " ") y (v <> ".") hacer
+                largo:= largo + 1
+                Si largo <= 4 entonces P[largo]:= v FinSi
+                AVZ(TEXTO, v)
+            FinMientras
+            Si largo = 4 entonces
+                cont:= cont + 1
+                Para i:= 1 hasta 4 hacer ESC(Salida, P[i]) FinPara
+                ESC(Salida, " ")
+            FinSi
+        FinMientras
+        Escribir("Oración ", nro_or, ": ", cont, " palabras de 4 letras")
+        AVZ(TEXTO, v)
+    FinMientras
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.4
+// Dada una secuencia de texto de entrada, desarrollar un algoritmo que
+// produzca una secuencia oración de salida; la que contendrá palabras
+// numéricas formadas con los dígitos impares que contenga la palabra
+// correspondiente de entrada . Ej. Si la entrada viniera "A125EB%" en la
+// salida debería ir "15". Al final del proceso informar cuál es el promedio
+// de palabras por oración encontradas en la secuencia de entrada.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_4 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    palabras, oraciones: entero
+    escribio: booleano
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    palabras:= 0; oraciones:= 0
+    Mientras NFDS(TEXTO) hacer
+        Mientras NFDS(TEXTO) y (v = " ") hacer AVZ(TEXTO, v) FinMientras
+        Si NFDS(TEXTO) entonces
+            palabras:= palabras + 1
+            escribio:= Falso
+            Mientras NFDS(TEXTO) y (v <> " ") y (v <> ".") hacer
+                Si v en {"1", "3", "5", "7", "9"} entonces
+                    ESC(Salida, v); escribio:= Verdadero
+                FinSi
+                AVZ(TEXTO, v)
+            FinMientras
+            Si escribio entonces ESC(Salida, " ") FinSi
+            Si v = "." entonces
+                oraciones:= oraciones + 1
+                AVZ(TEXTO, v)
+            FinSi
+        FinSi
+    FinMientras
+    ESC(Salida, ".")
+    Si oraciones > 0 entonces
+        Escribir("Promedio de palabras por oración: ", palabras / oraciones)
+    FinSi
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.5
+// Escribir un algoritmo que: dado un fichero de texto que contiene letras y
+// números, permita distinguir palabras de enteros de hasta 5 cifras y
+// desglosarlos en dos secuencias que contengan respectivamente las palabras
+// pares y las impares.
+// --------------------------------------------------------------------------
+
+// Una "palabra" es numérica si todos sus caracteres son dígitos (hasta 5).
+// Su paridad la da el último dígito.
+Acción Complementario2_1_5 es
+Ambiente
+    Fichero, Pares, Impares: secuencia de caracteres
+    v, ultimo: caracter
+    P: arreglo [1..5] de caracter
+    largo, i: entero
+    es_numero: booleano
+Proceso
+    ARR(Fichero); AVZ(Fichero, v)
+    CREAR(Pares); CREAR(Impares)
+    Mientras NFDS(Fichero) hacer
+        Mientras NFDS(Fichero) y (v = " ") hacer AVZ(Fichero, v) FinMientras
+        largo:= 0
+        es_numero:= Verdadero
+        Mientras NFDS(Fichero) y (v <> " ") hacer
+            largo:= largo + 1
+            Si No (v en {"0".."9"}) entonces es_numero:= Falso FinSi
+            Si largo <= 5 entonces P[largo]:= v FinSi
+            ultimo:= v
+            AVZ(Fichero, v)
+        FinMientras
+        Si es_numero y (largo >= 1) y (largo <= 5) entonces
+            Si ultimo en {"0", "2", "4", "6", "8"} entonces
+                Para i:= 1 hasta largo hacer ESC(Pares, P[i]) FinPara
+                ESC(Pares, " ")
+            Sino
+                Para i:= 1 hasta largo hacer ESC(Impares, P[i]) FinPara
+                ESC(Impares, " ")
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Fichero); CERRAR(Pares); CERRAR(Impares)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.6
+// Escribir un algoritmo que permita desglosar una secuencia que contiene
+// monotonías crecientes (series de elementos consecutivos ordenados
+// crecientemente; cada serie está constituida por un elemento como mínimo),
+// en dos secuencias de salida, de tal modo que tales monotonías sean
+// copiadas alternativamente en una de las secuencias resultado o en otra.
+// --------------------------------------------------------------------------
+
+// Es el mismo desglose que el 2.1.3 de las secuencias extra
+// (../2-secuencias-y-archivos/2.1-secuencias-extra.pseudo), sin las sumas:
+Acción Complementario2_1_6 es
+Ambiente
+    Sec, Sal1, Sal2: secuencia de enteros
+    v, anterior: entero
+    en_sal1: booleano
+Proceso
+    ARR(Sec); CREAR(Sal1); CREAR(Sal2)
+    en_sal1:= Verdadero
+    AVZ(Sec, v)
+    anterior:= v
+    Mientras NFDS(Sec) hacer
+        Si v < anterior entonces en_sal1:= No en_sal1 FinSi // empieza otra monotonía
+        Si en_sal1 entonces ESC(Sal1, v) Sino ESC(Sal2, v) FinSi
+        anterior:= v
+        AVZ(Sec, v)
+    FinMientras
+    CERRAR(Sec); CERRAR(Sal1); CERRAR(Sal2)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.7
+// Dada una secuencia texto de entrada, desarrollar un algoritmo que produzca
+// una secuencia oración de salida; la que contendrá palabras numéricas
+// formadas con los dígitos pares que contenga las palabras correspondientes
+// de entrada. Ej.: entrada (q12w34e58) → salida (248). Al final del proceso
+// informar cual es el promedio de palabras por oración encontradas en la
+// secuencia de entrada.
+// --------------------------------------------------------------------------
+
+// Igual al 2.1.4 de esta guía, con los dígitos pares.
+Acción Complementario2_1_7 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    palabras, oraciones: entero
+    escribio: booleano
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    palabras:= 0; oraciones:= 0
+    Mientras NFDS(TEXTO) hacer
+        Mientras NFDS(TEXTO) y (v = " ") hacer AVZ(TEXTO, v) FinMientras
+        Si NFDS(TEXTO) entonces
+            palabras:= palabras + 1
+            escribio:= Falso
+            Mientras NFDS(TEXTO) y (v <> " ") y (v <> ".") hacer
+                Si v en {"0", "2", "4", "6", "8"} entonces
+                    ESC(Salida, v); escribio:= Verdadero
+                FinSi
+                AVZ(TEXTO, v)
+            FinMientras
+            Si escribio entonces ESC(Salida, " ") FinSi
+            Si v = "." entonces
+                oraciones:= oraciones + 1
+                AVZ(TEXTO, v)
+            FinSi
+        FinSi
+    FinMientras
+    ESC(Salida, ".")
+    Si oraciones > 0 entonces
+        Escribir("Promedio de palabras por oración: ", palabras / oraciones)
+    FinSi
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.8
+// Escribir un algoritmo que a partir de una secuencia de palabras dada,
+// genere dos secuencias de salida. Una de ellas contendrá solo las palabras
+// de la secuencia original que comienzan con vocal y la otra será una
+// secuencia numérica en la que se almacenarán las longitudes de las palabras
+// que cumplieron tal condición. Por final de proceso se deberá informar la
+// cantidad de palabras de ambas secuencias de palabras y la longitud de la
+// palabra más larga que cumplió la condición enunciada.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_8 es
+Ambiente
+    Sec, SalPal: secuencia de caracteres
+    SalLong: secuencia de enteros
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    total, cumplen, largo, max_largo: entero
+    cumple: booleano
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(SalPal); CREAR(SalLong)
+    total:= 0; cumplen:= 0; max_largo:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer AVZ(Sec, v) FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            cumple:= v en vocales
+            largo:= 0
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                largo:= largo + 1
+                Si cumple entonces ESC(SalPal, v) FinSi
+                AVZ(Sec, v)
+            FinMientras
+            Si cumple entonces
+                ESC(SalPal, " ")
+                ESC(SalLong, largo)
+                cumplen:= cumplen + 1
+                Si largo > max_largo entonces max_largo:= largo FinSi
+            FinSi
+        FinSi
+    FinMientras
+    Escribir("Palabras de entrada: ", total, " - de salida: ", cumplen)
+    Escribir("Palabra más larga que empieza con vocal: ", max_largo, " letras")
+    CERRAR(Sec); CERRAR(SalPal); CERRAR(SalLong)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.9
+// Escribir un algoritmo que a partir de una secuencia de palabras dada,
+// genere una secuencia de igual tipo conteniendo solo las palabras de la
+// secuencia original que NO comienzan con vocal . Por final de proceso se
+// deberá informar la cantidad de palabras de ambas secuencias de palabras y
+// el porcentaje de palabras que no cumplieron con la condición enunciada.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_9 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    total, copiadas: entero
+    copiar: booleano
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0; copiadas:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer AVZ(Sec, v) FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            copiar:= No (v en vocales)
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                Si copiar entonces ESC(Salida, v) FinSi
+                AVZ(Sec, v)
+            FinMientras
+            Si copiar entonces
+                ESC(Salida, " ")
+                copiadas:= copiadas + 1
+            FinSi
+        FinSi
+    FinMientras
+    Escribir("Palabras de entrada: ", total, " - de salida: ", copiadas)
+    Si total > 0 entonces
+        // las que no cumplieron la condición (no empezar con vocal) son las que empiezan con vocal
+        Escribir("No cumplieron la condición: ", (total - copiadas) * 100 / total, "%")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.10
+// Escribir un algoritmo que permita efectuar la operación de diferencia
+// entre dos secuencias (ordenadas crecientes), esto es, que genere el
+// conjunto de los elementos no comunes a las dos secuencias.
+// --------------------------------------------------------------------------
+
+// Diferencia simétrica de dos secuencias ordenadas: es una mezcla en la que
+// los elementos comunes no se copian.
+Acción Complementario2_1_10 es
+Ambiente
+    S1, S2, Dif: secuencia de enteros
+    a, b: entero
+Proceso
+    ARR(S1); AVZ(S1, a)
+    ARR(S2); AVZ(S2, b)
+    CREAR(Dif)
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Si a < b entonces
+            ESC(Dif, a); AVZ(S1, a)
+        Sino
+            Si a > b entonces
+                ESC(Dif, b); AVZ(S2, b)
+            Sino // común a las dos: no va
+                AVZ(S1, a); AVZ(S2, b)
+            FinSi
+        FinSi
+    FinMientras
+    Mientras NFDS(S1) hacer ESC(Dif, a); AVZ(S1, a) FinMientras
+    Mientras NFDS(S2) hacer ESC(Dif, b); AVZ(S2, b) FinMientras
+    CERRAR(S1); CERRAR(S2); CERRAR(Dif)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.11
+// Escribir un algoritmo que dado dos ficheros de texto (caracter, palabra,
+// oraciones) denominadas TEX1 y TEX2 genere otro fichero oración, mediante
+// la composición de palabras en posiciones pares dentro de las oraciones del
+// TEX1 y palabras en posiciones impares dentro del TEX2. Al final del
+// proceso emitir los siguientes contadores:
+//
+// 1. Cantidad de palabras del archivo de salida.
+// 2. Promedio de palabras por oración de TEX1 Y TEX2.
+// --------------------------------------------------------------------------
+
+// Por cada par de oraciones (una de TEX1 y una de TEX2) se arma una oración
+// de salida: primero las palabras pares de TEX1 y después las impares de TEX2.
+Acción Complementario2_1_11 es
+Ambiente
+    TEX1, TEX2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    pos, pal_sal, pal1, pal2, or1, or2: entero
+
+    // Copia de la oración actual las palabras en posiciones de la paridad pedida
+    Procedimiento Oracion (Var T: secuencia de caracteres; Var v: caracter; par: booleano; Var cont_pal, cont_or: entero) es
+        pos:= 0
+        Mientras NFDS(T) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(T, v) FinMientras
+            pos:= pos + 1
+            cont_pal:= cont_pal + 1
+            Si (pos mod 2 = 0) = par entonces
+                Mientras (v <> " ") y (v <> ".") hacer ESC(Salida, v); AVZ(T, v) FinMientras
+                ESC(Salida, " ")
+                pal_sal:= pal_sal + 1
+            Sino
+                Mientras (v <> " ") y (v <> ".") hacer AVZ(T, v) FinMientras
+            FinSi
+        FinMientras
+        Si NFDS(T) entonces
+            cont_or:= cont_or + 1
+            AVZ(T, v) // paso el punto
+        FinSi
+    FinProcedimiento
+
+Proceso
+    ARR(TEX1); AVZ(TEX1, v1)
+    ARR(TEX2); AVZ(TEX2, v2)
+    CREAR(Salida)
+    pal_sal:= 0; pal1:= 0; pal2:= 0; or1:= 0; or2:= 0
+    Mientras NFDS(TEX1) o NFDS(TEX2) hacer
+        Oracion(TEX1, v1, Verdadero, pal1, or1) // posiciones pares de TEX1
+        Oracion(TEX2, v2, Falso, pal2, or2)     // posiciones impares de TEX2
+        ESC(Salida, ".")
+    FinMientras
+    Escribir("Palabras de la salida: ", pal_sal)
+    Si or1 > 0 entonces Escribir("Promedio de palabras por oración de TEX1: ", pal1 / or1) FinSi
+    Si or2 > 0 entonces Escribir("Promedio de palabras por oración de TEX2: ", pal2 / or2) FinSi
+    CERRAR(TEX1); CERRAR(TEX2); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.12
+// Dada una secuencia de caracteres con datos de personas con el siguiente
+// formato:
+//
+// `Nombre | Domicilio | DNI (8 caracteres) Región (1-2-3) Nombre | Domicilio
+// | DNI (8 caracteres) Región (1-2-3).......*(marca de fin)`
+//
+// DNI, Región y Nombre de la siguiente persona no están separados por ningún
+// carácter, Región tiene un solo carácter.
+// Generar una secuencia de caracteres de salida que contenga todos los DNI
+// que comiencen con dígito par y pertenezcan a la Región 1.
+// Al final informar cantidad de personas de cada región y porcentaje de las
+// mismas sobre el total de personas
+// --------------------------------------------------------------------------
+
+// Formato: Nombre|Domicilio|DNI(8)Región(1)Nombre|... * . El DNI se guarda
+// en un arreglo porque la región (que decide si se copia) viene después.
+Acción Complementario2_1_12 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    D: arreglo [1..8] de caracter
+    i, total, r1, r2, r3: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0; r1:= 0; r2:= 0; r3:= 0
+    Mientras v <> "*" hacer
+        Mientras v <> "|" hacer AVZ(Sec, v) FinMientras // nombre
+        AVZ(Sec, v)
+        Mientras v <> "|" hacer AVZ(Sec, v) FinMientras // domicilio
+        AVZ(Sec, v)
+        Para i:= 1 hasta 8 hacer D[i]:= v; AVZ(Sec, v) FinPara
+        total:= total + 1
+        Según v hacer // región
+            "1": r1:= r1 + 1
+                 Si D[1] en {"0", "2", "4", "6", "8"} entonces
+                     Para i:= 1 hasta 8 hacer ESC(Salida, D[i]) FinPara
+                     ESC(Salida, " ")
+                 FinSi
+            "2": r2:= r2 + 1
+            "3": r3:= r3 + 1
+        FinSegún
+        AVZ(Sec, v) // empieza la siguiente persona (o la marca de fin)
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Región 1: ", r1, " (", r1 * 100 / total, "%)")
+        Escribir("Región 2: ", r2, " (", r2 * 100 / total, "%)")
+        Escribir("Región 3: ", r3, " (", r3 * 100 / total, "%)")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.13
+// Se tiene una secuencia de caracteres que finaliza con el carácter "*", el
+// problema es que este carácter puede aparecer dentro de la secuencia, para
+// poder distinguirlo con el fin de secuencia se utiliza otro símbolo
+// especial "\" (carácter de escape). Se pide realizar un algoritmo que
+// permita escribir en una secuencia de salida todos los caracteres excepto
+// los de escape, y contar la cantidad de escapes que existen.
+// --------------------------------------------------------------------------
+
+// Un "\" significa que el caracter siguiente es un dato (aunque sea "*").
+Acción Complementario2_1_13 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    escapes: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    escapes:= 0
+    Mientras v <> "*" hacer
+        Si v = "\" entonces
+            escapes:= escapes + 1
+            AVZ(Sec, v) // el caracter escapado se copia sin interpretarlo
+        FinSi
+        ESC(Salida, v)
+        AVZ(Sec, v)
+    FinMientras
+    Escribir("Caracteres de escape: ", escapes)
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.14
+// Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que
+// produzca una secuencia de salida de caracteres; la que contendrá sólo los
+// caracteres “numéricos” correspondientes a dígitos impares encontrados en
+// la secuencia de entrada.
+//
+// Al final del proceso informar total de caracteres “numéricos” (dígitos) y
+// porcentaje de pares e impares sobre el total de caracteres numéricos
+// --------------------------------------------------------------------------
+
+// Mismo ejercicio que el 2.1.1 de las secuencias extra
+// (../2-secuencias-y-archivos/2.1-secuencias-extra.pseudo).
+Acción Complementario2_1_14 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    pares, impares: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    pares:= 0; impares:= 0
+    Mientras NFDS(Sec) hacer
+        Si v en {"1", "3", "5", "7", "9"} entonces
+            impares:= impares + 1
+            ESC(Salida, v)
+        Sino
+            Si v en {"0", "2", "4", "6", "8"} entonces pares:= pares + 1 FinSi
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Escribir("Total de dígitos: ", pares + impares)
+    Si pares + impares > 0 entonces
+        Escribir("Pares: ", pares * 100 / (pares + impares), "% - Impares: ", impares * 100 / (pares + impares), "%")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.15
+// Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que
+// produzca dos secuencias de salida de caracteres. La primera secuencia de
+// salida contendrá los caracteres numéricos pares y la segunda secuencia de
+// salida contendrá los caracteres numéricos impares. Al final del proceso
+// calcular e informar el porcentaje de caracteres numericos pares e impares
+// sobre el total de caracteres numericos.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_15 es
+Ambiente
+    Sec, SalPares, SalImpares: secuencia de caracteres
+    v: caracter
+    pares, impares: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(SalPares); CREAR(SalImpares)
+    pares:= 0; impares:= 0
+    Mientras NFDS(Sec) hacer
+        Si v en {"0", "2", "4", "6", "8"} entonces
+            pares:= pares + 1; ESC(SalPares, v)
+        Sino
+            Si v en {"1", "3", "5", "7", "9"} entonces
+                impares:= impares + 1; ESC(SalImpares, v)
+            FinSi
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Si pares + impares > 0 entonces
+        Escribir("Pares: ", pares * 100 / (pares + impares), "% - Impares: ", impares * 100 / (pares + impares), "%")
+    FinSi
+    CERRAR(Sec); CERRAR(SalPares); CERRAR(SalImpares)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.16
+// Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que
+// produzca dos secuencias de salida de caracteres; en donde la primera
+// contendrá todos los caracteres numéricos y la segunda los demás. Al final
+// del proceso calcular e informar el porcentaje de caracteres numéricos
+// sobre el total.
+// --------------------------------------------------------------------------
+
+// Mismo ejercicio que el 2.1.2 de las secuencias extra, con el porcentaje.
+Acción Complementario2_1_16 es
+Ambiente
+    Sec, SalNum, SalOtros: secuencia de caracteres
+    v: caracter
+    numericos, total: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(SalNum); CREAR(SalOtros)
+    numericos:= 0; total:= 0
+    Mientras NFDS(Sec) hacer
+        total:= total + 1
+        Si v en {"0".."9"} entonces
+            numericos:= numericos + 1; ESC(SalNum, v)
+        Sino
+            ESC(SalOtros, v)
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Caracteres numéricos: ", numericos * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec); CERRAR(SalNum); CERRAR(SalOtros)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.17
+// Escribir un algoritmo que permita desglosar una secuencia de enteros que
+// contiene monotonías crecientes (series de elementos consecutivos ordenados
+// crecientemente; cada serie está constituida por un elemento como mínimo),
+// en dos secuencias de salida, de tal modo que tales monotonías sean
+// copiadas alternativamente en una de las secuencias resultado o en otra.
+//
+// Ejemplo secuencia de entrada
+//
+// `2, 5, 8, 11, 14, 17, 15, 10, 11, 20, 44, 12, 14, 16, ...`
+//
+// Secuencia de salida 1
+//
+// `2, 5, 8, 11, 14, 17, 10, 11, 20, 44, ...`
+//
+// Secuencia de salida 2
+//
+// `15, 12, 14, 16, ...`
+//
+// Obtener la suma de cada monotonia e informar aquella de mayor valor.
+// --------------------------------------------------------------------------
+
+// Como el 2.1.6, sumando cada monotonía por separado.
+Acción Complementario2_1_17 es
+Ambiente
+    Sec, Sal1, Sal2: secuencia de enteros
+    v, anterior, suma, max_suma: entero
+    en_sal1: booleano
+Proceso
+    ARR(Sec); CREAR(Sal1); CREAR(Sal2)
+    en_sal1:= Verdadero
+    AVZ(Sec, v)
+    anterior:= v
+    suma:= 0
+    max_suma:= v // al menos la primera monotonía tiene un elemento
+    Mientras NFDS(Sec) hacer
+        Si v < anterior entonces // terminó una monotonía
+            Si suma > max_suma entonces max_suma:= suma FinSi
+            suma:= 0
+            en_sal1:= No en_sal1
+        FinSi
+        suma:= suma + v
+        Si en_sal1 entonces ESC(Sal1, v) Sino ESC(Sal2, v) FinSi
+        anterior:= v
+        AVZ(Sec, v)
+    FinMientras
+    Si suma > max_suma entonces max_suma:= suma FinSi // la última
+    Escribir("La monotonía de mayor suma suma ", max_suma)
+    CERRAR(Sec); CERRAR(Sal1); CERRAR(Sal2)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.18
+// Se dispone de 2 secuencias de caracteres, una contiene caracteres,
+// incluidos espacios y otra contiene caracteres “numéricos”. Se pide crear
+// una nueva secuencia de salida de caracteres donde se copien los caracteres
+// de ambas secuencias en forma alternada, o sea un carácter, un dígito, un
+// carácter, un dígito, etc.
+//
+// Ejemplo:
+// Sec1: `Para habilitar la función de Salas para grupos pequeños para su
+// uso*`
+// Sec2: `13481460918460846161334868461086*`
+// Salida: `P1a3r4a8 1h4...`
+//
+// 1. Analice y responda: Que pasaría en el caso de que una secuencia de
+// entrada termine antes que la otra? se podría cumplir con la consigna?
+// 2. Como modificaría el algoritmo en el caso de que solicite contar la
+// cantidad de caracteres de cada secuencia y mostrar por pantalla al final
+// del proceso?
+// --------------------------------------------------------------------------
+
+// Mismo ejercicio que el 2.1.4 de las secuencias extra
+// (../2-secuencias-y-archivos/2.1-secuencias-extra.pseudo), donde están
+// resueltas las dos preguntas: si una secuencia termina antes, la
+// alternancia ya no se puede cumplir y se copia el resto de la otra; y para
+// contar los caracteres se usa un contador por secuencia.

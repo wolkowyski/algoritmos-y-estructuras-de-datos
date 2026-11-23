@@ -1,0 +1,132 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.1 (secuencial + indexado)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.1.a
+// Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y
+// Nro. de Factura, con la siguiente estructura:
+//
+// FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+//
+// * Nro_Cliente* Nro_Factura* Fecha* Importe
+//
+// Se desea un listado con el siguiente detalle:
+//
+// | Nro. Cliente | Nombre Cliente | Numero Factura |
+// | --- | --- | --- |
+// |  |  |  |
+//
+// Los datos del cliente se encuentran en un fichero indexado por Nro. de
+// Cliente, que tiene la siguiente estructura:
+//
+// CLIENTES Indexado por Nro_Cliente
+//
+// * Nro_Cliente* Nombre* DNI* CUIT* Domicilio
+// --------------------------------------------------------------------------
+
+// Operaciones con indexados: se carga la clave en el registro, se hace Leer
+// (lectura directa) y EXISTE indica si se encontró.
+Accion Ejercicio2_3_1_a es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Factura = Registro
+		Nro_Cliente: N(6)
+		Nro_Factura: N(8)
+		Fecha: Fecha
+		Importe: real
+	FinRegistro
+	Cliente = Registro
+		Nro_Cliente: N(6)
+		Nombre: AN(50)
+		DNI: N(8)
+		CUIT: N(11)
+		Domicilio: AN(60)
+	FinRegistro
+	FACTURAS: Archivo de Factura ordenado por Nro_Cliente, Nro_Factura
+	CLIENTES: Archivo de Cliente indexado por Nro_Cliente
+	RF: Factura
+	RC: Cliente
+Proceso
+	Abrir E/(FACTURAS); Leer(FACTURAS, RF)
+	Abrir E/(CLIENTES)
+	Escribir("Nro. Cliente | Nombre Cliente | Número Factura")
+	Mientras No FDA(FACTURAS) hacer
+		RC.Nro_Cliente:= RF.Nro_Cliente
+		Leer(CLIENTES, RC) // acceso directo
+		Si EXISTE entonces
+			Escribir(RF.Nro_Cliente, " | ", RC.Nombre, " | ", RF.Nro_Factura)
+		Sino
+			Escribir(RF.Nro_Cliente, " | (cliente inexistente) | ", RF.Nro_Factura)
+		FinSi
+		Leer(FACTURAS, RF)
+	FinMientras
+	Cerrar(FACTURAS); Cerrar(CLIENTES)
+Fin Acción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.1.b
+// Dado un fichero secuencial de Facturas, ordenado por Nro. de Cliente y
+// Nro. de Factura, con la siguiente estructura:
+//
+// FACTURAS Ordenado por Nro_Cliente, Nro_Factura
+//
+// * Nro_Cliente* Nro_Factura* Fecha* Importe
+//
+// Se desea un listado con el siguiente detalle:
+//
+// | Nro. Cliente | Nombre Cliente | Total Facturado | Cantidad de Facturas |
+// | --- | --- | --- | --- |
+// |  |  |  |  |
+//
+// Los datos del cliente se encuentran en un fichero indexado por Nro. de
+// Cliente, que tiene la siguiente estructura:
+//
+// CLIENTES Indexado por Nro_Cliente
+//
+// * Nro_Cliente* Nombre* DNI* CUIT* Domicilio
+// --------------------------------------------------------------------------
+
+// Como FACTURAS está ordenado por cliente, se hace un corte de control por
+// Nro_Cliente y el nombre se busca una sola vez por cliente.
+Accion Ejercicio2_3_1_b es
+Ambiente
+	// (mismos tipos y archivos que el 2.3.1.a)
+	ResCliente: N(6)
+	total: real
+	cant: entero
+
+	Procedimiento CorteCliente es
+		RC.Nro_Cliente:= ResCliente
+		Leer(CLIENTES, RC)
+		Si No EXISTE entonces
+			RC.Nombre:= "(cliente inexistente)"
+		FinSi
+		Escribir(ResCliente, " | ", RC.Nombre, " | ", total, " | ", cant)
+		total:= 0
+		cant:= 0
+		ResCliente:= RF.Nro_Cliente
+	FinProcedimiento
+
+Proceso
+	Abrir E/(FACTURAS); Leer(FACTURAS, RF)
+	Abrir E/(CLIENTES)
+	Escribir("Nro. Cliente | Nombre Cliente | Total Facturado | Cantidad de Facturas")
+	total:= 0; cant:= 0
+	ResCliente:= RF.Nro_Cliente
+	Mientras No FDA(FACTURAS) hacer
+		Si RF.Nro_Cliente <> ResCliente entonces
+			CorteCliente
+		FinSi
+		total:= total + RF.Importe
+		cant:= cant + 1
+		Leer(FACTURAS, RF)
+	FinMientras
+	CorteCliente
+	Cerrar(FACTURAS); Cerrar(CLIENTES)
+Fin Acción

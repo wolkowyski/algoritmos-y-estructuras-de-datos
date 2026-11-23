@@ -1,0 +1,105 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.2 (corte de control + indexado)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.2
+// Una empresa dispone de un fichero secuencial con datos de sus empleados,
+// ordenado por número de sucursal, y categoría, con los siguientes datos:
+//
+// EMPLEADOS Ordenado por Nro_Sucursal, Categoria
+//
+// * Nro_Sucursal* Categoria (A,B,C)* Nombre_Empleado* Cod_Curso* Tecnico
+// (si,no)
+//
+// Y un fichero con datos de cursos, indexado por código de curso:
+//
+// CURSO Indexado por Cod_Curso
+//
+// * Cod_Curso* Nombre* Fecha* Cant_Horas
+//
+// Emitir un listado informando:
+//
+// 1. Para cada empleado: sucursal, categoría, nombre del empleado y nombre
+// del curso que debe realizar.
+// 2. Por sucursal, categoría y toda la empresa:
+//    1. Total empleados técnicos
+//    2. Total empleados no técnicos
+//    3. Total empleados
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_3_2 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Empleado = Registro
+		Nro_Sucursal: N(3)
+		Categoria: ("A", "B", "C")
+		Nombre_Empleado: AN(50)
+		Cod_Curso: N(4)
+		Tecnico: ("si", "no")
+	FinRegistro
+	Curso = Registro
+		Cod_Curso: N(4)
+		Nombre: AN(50)
+		Fecha: Fecha
+		Cant_Horas: N(3)
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Nro_Sucursal, Categoria
+	CURSO: Archivo de Curso indexado por Cod_Curso
+	RE: Empleado
+	RC: Curso
+	ResSuc: N(3)
+	ResCat: caracter
+	// técnicos y no técnicos por categoría, sucursal y empresa
+	tecCat, noCat, tecSuc, noSuc, tecTot, noTot: entero
+
+	Procedimiento CorteCategoria es
+		Escribir("  Categoría ", ResCat, ": técnicos ", tecCat, " - no técnicos ", noCat, " - total ", tecCat + noCat)
+		tecSuc:= tecSuc + tecCat; noSuc:= noSuc + noCat
+		tecCat:= 0; noCat:= 0
+		ResCat:= RE.Categoria
+	FinProcedimiento
+
+	Procedimiento CorteSucursal es
+		CorteCategoria
+		Escribir("Sucursal ", ResSuc, ": técnicos ", tecSuc, " - no técnicos ", noSuc, " - total ", tecSuc + noSuc)
+		tecTot:= tecTot + tecSuc; noTot:= noTot + noSuc
+		tecSuc:= 0; noSuc:= 0
+		ResSuc:= RE.Nro_Sucursal
+	FinProcedimiento
+
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, RE)
+	Abrir E/(CURSO)
+	tecCat:= 0; noCat:= 0; tecSuc:= 0; noSuc:= 0; tecTot:= 0; noTot:= 0
+	ResSuc:= RE.Nro_Sucursal
+	ResCat:= RE.Categoria
+	Mientras No FDA(EMPLEADOS) hacer
+		Si RE.Nro_Sucursal <> ResSuc entonces
+			CorteSucursal
+		Sino
+			Si RE.Categoria <> ResCat entonces
+				CorteCategoria
+			FinSi
+		FinSi
+		RC.Cod_Curso:= RE.Cod_Curso
+		Leer(CURSO, RC)
+		Si No EXISTE entonces
+			RC.Nombre:= "(curso inexistente)"
+		FinSi
+		Escribir(RE.Nro_Sucursal, " - ", RE.Categoria, " - ", RE.Nombre_Empleado, " - ", RC.Nombre)
+		Si RE.Tecnico = "si" entonces
+			tecCat:= tecCat + 1
+		Sino
+			noCat:= noCat + 1
+		FinSi
+		Leer(EMPLEADOS, RE)
+	FinMientras
+	CorteSucursal
+	Escribir("Empresa: técnicos ", tecTot, " - no técnicos ", noTot, " - total ", tecTot + noTot)
+	Cerrar(EMPLEADOS); Cerrar(CURSO)
+Fin Acción

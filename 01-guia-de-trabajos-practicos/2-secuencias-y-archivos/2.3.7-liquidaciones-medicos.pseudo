@@ -1,0 +1,129 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.7 (corte de control + indexados)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.7
+// Crear un algoritmo que imprima un reporte como el que se indica,
+// incluyendo totales por Obra Social y Clínica de liquidaciones a médicos.
+// Los archivos que intervienen son:
+//
+// LIQUIDACIONES Ordenado por O.S. y Clinica
+//
+// * O.S.* Clinica* Nro_Leg* Mes* Anio* Bruto* Descuento_AFIP* Descuento_DGR
+//
+// Neto = Bruto – (Desc_AFIP + Desc_DGR)
+//
+// OBRAS_SOCIALES Indexado por Cod_Os
+//
+// * Cod_OS* Nombre
+//
+// CLÍNICAS Indexado por Cod_Cli
+//
+// * Cod_Cli* Nombre
+//
+// MÉDICOS Indexado por Nro_Leg
+//
+// * Nro_Leg* ApyNom* Especialidad* DNI
+//
+// Reporte:
+//
+// | Obra Social: |  | | |
+// | --- | --- | --- | --- |
+// |  | Clinica: |  | |
+// |  | | Médicos |  | |
+//   | Nro Legajo | Nombre | Neto |
+//   | ............................ | ................... | ................... |
+//   | ............................ | ................... | ................... |
+//   | Total Clínica |  | ................... |
+//  Total Obra Social |  |  | ................... |
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_3_7 es
+Ambiente
+	Liquidacion = Registro
+		OS, Clinica: N(4)
+		Nro_Leg: N(6)
+		Mes: 1..12; Anio: N(4)
+		Bruto, Descuento_AFIP, Descuento_DGR: real
+	FinRegistro
+	Nombre = Registro // mismo formato para obras sociales y clínicas
+		Codigo: N(4)
+		Nombre: AN(50)
+	FinRegistro
+	Medico = Registro
+		Nro_Leg: N(6)
+		ApyNom: AN(50)
+		Especialidad: AN(30)
+		DNI: N(8)
+	FinRegistro
+	LIQUIDACIONES: Archivo de Liquidacion ordenado por OS y Clinica
+	OBRAS_SOCIALES: Archivo de Nombre indexado por Codigo
+	CLINICAS: Archivo de Nombre indexado por Codigo
+	MEDICOS: Archivo de Medico indexado por Nro_Leg
+	RL: Liquidacion
+	RO, RCl: Nombre
+	RM: Medico
+	ResOS, ResCli: N(4)
+	neto, totCli, totOS: real
+
+	Procedimiento TituloOS es
+		RO.Codigo:= RL.OS
+		Leer(OBRAS_SOCIALES, RO)
+		Si No EXISTE entonces RO.Nombre:= "(inexistente)" FinSi
+		Escribir("Obra Social: ", RO.Nombre)
+	FinProcedimiento
+
+	Procedimiento TituloClinica es
+		RCl.Codigo:= RL.Clinica
+		Leer(CLINICAS, RCl)
+		Si No EXISTE entonces RCl.Nombre:= "(inexistente)" FinSi
+		Escribir("    Clínica: ", RCl.Nombre)
+		Escribir("        Nro Legajo | Nombre | Neto")
+	FinProcedimiento
+
+	Procedimiento CorteClinica es
+		Escribir("        Total Clínica: ", totCli)
+		totOS:= totOS + totCli
+		totCli:= 0
+		ResCli:= RL.Clinica
+	FinProcedimiento
+
+	Procedimiento CorteOS es
+		CorteClinica
+		Escribir("    Total Obra Social: ", totOS)
+		totOS:= 0
+		ResOS:= RL.OS
+	FinProcedimiento
+
+Proceso
+	Abrir E/(LIQUIDACIONES); Leer(LIQUIDACIONES, RL)
+	Abrir E/(OBRAS_SOCIALES); Abrir E/(CLINICAS); Abrir E/(MEDICOS)
+	totCli:= 0; totOS:= 0
+	ResOS:= RL.OS; ResCli:= RL.Clinica
+	Si No FDA(LIQUIDACIONES) entonces
+		TituloOS; TituloClinica
+	FinSi
+	Mientras No FDA(LIQUIDACIONES) hacer
+		Si RL.OS <> ResOS entonces
+			CorteOS
+			TituloOS; TituloClinica // los títulos van al empezar cada grupo
+		Sino
+			Si RL.Clinica <> ResCli entonces
+				CorteClinica
+				TituloClinica
+			FinSi
+		FinSi
+		RM.Nro_Leg:= RL.Nro_Leg
+		Leer(MEDICOS, RM)
+		Si No EXISTE entonces RM.ApyNom:= "(inexistente)" FinSi
+		neto:= RL.Bruto - (RL.Descuento_AFIP + RL.Descuento_DGR)
+		Escribir("        ", RL.Nro_Leg, " | ", RM.ApyNom, " | ", neto)
+		totCli:= totCli + neto
+		Leer(LIQUIDACIONES, RL)
+	FinMientras
+	CorteOS
+	Cerrar(LIQUIDACIONES); Cerrar(OBRAS_SOCIALES); Cerrar(CLINICAS); Cerrar(MEDICOS)
+Fin Acción

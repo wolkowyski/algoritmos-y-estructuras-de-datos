@@ -1,0 +1,112 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.8 (UTNBook con archivo indexado)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.8
+// Los alumnos que desarrollaban el proyecto UTNBook (ejercicio 2.23) han
+// decidido modificar parte de la aplicación para que esta tenga mayor
+// interacción con el usuario. Es así que decidieron eliminar el archivo de
+// Notificaciones, provocando así que la inserción nuevos amigos, la
+// eliminación de amistades y la escritura en los muros de otras personas
+// esté a cargo del usuario.
+//
+// Con estas consideraciones trabajaron con el siguiente archivo:
+//
+// AMIGOS Indexado por Cod_Usuario y Cod_Amigo
+//
+// * Cod_Usuario* Cod_Amigo* Fecha_Amistad* Mensaje_Muro
+//
+// El proceso para agregar o eliminar amigos y escribir en los muros de estos
+// es ahora el siguiente:
+// El usuario, al iniciar la sesión, ingresa su Código de Usuario y el Código
+// del amigo. Luego, puede seleccionar tres opciones distintas: Agregar
+// Amigo; Eliminar Amigo y Escribir en el Muro.
+//
+// Si selecciona Agregar Amigo se realizan las acciones necesarias para
+// incorporar esta nueva amistad al usuario, y en caso de no poder
+// realizarse, se muestra un mensaje por pantalla explicando el motivo que
+// imposibilita la amistad. (por ej. Cod_Usuario inexistente, Amistad entre
+// Usuario y Amigo ya existente, etc.).
+// En cambio, si selecciona Eliminar Amigo el algoritmo deberá eliminar la
+// amistad en caso de existir, en caso contrario informar el error por
+// pantalla.
+//
+// Por último, al seleccionar Escribir en el Muro el usuario debe ingresar el
+// mensaje que desea escribir a su amigo y luego el algoritmo deberá
+// registrar este mensaje. De ser necesario informar algún error que pueda
+// ocurrir (por ej. Amistad entre el Usuario y Amigo inexistente, etc).
+// --------------------------------------------------------------------------
+
+// Para saber si un código de usuario existe se busca cualquier registro con
+// ese Cod_Usuario (posicionando con la clave parcial).
+Accion Ejercicio2_3_8 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Amigo = Registro
+		Cod_Usuario, Cod_Amigo: N(6)
+		Fecha_Amistad: Fecha
+		Mensaje_Muro: AN(255)
+	FinRegistro
+	AMIGOS: Archivo de Amigo indexado por Cod_Usuario y Cod_Amigo
+	RA: Amigo
+	usuario, amigo: N(6)
+	opcion: 1..4
+	hoy: Fecha
+
+	Función UsuarioExiste (u: N(6)): booleano es
+		RA.Cod_Usuario:= u
+		RA.Cod_Amigo:= 0
+		Leer(AMIGOS, RA) // posiciona en el primer registro >= (u, 0)
+		UsuarioExiste:= No FDA(AMIGOS) y (RA.Cod_Usuario = u)
+	FinFunción
+
+Proceso
+	Escribir("Fecha de hoy (aa, mm, dd)")
+	Leer(hoy.aa, hoy.mm, hoy.dd)
+	Abrir E/S(AMIGOS)
+	Escribir("Ingrese su código de usuario y el código del amigo")
+	Leer(usuario, amigo)
+	Repetir
+		Escribir("1- Agregar amigo  2- Eliminar amigo  3- Escribir en el muro  4- Salir")
+		Leer(opcion)
+		RA.Cod_Usuario:= usuario
+		RA.Cod_Amigo:= amigo
+		Según opcion hacer
+			1: Si No UsuarioExiste(amigo) entonces
+			       Escribir("Error: el código de amigo no existe")
+			   Sino
+			       RA.Cod_Usuario:= usuario; RA.Cod_Amigo:= amigo
+			       Leer(AMIGOS, RA)
+			       Si EXISTE entonces
+			           Escribir("Error: la amistad ya existe")
+			       Sino
+			           RA.Fecha_Amistad:= hoy
+			           RA.Mensaje_Muro:= ""
+			           Escribir(AMIGOS, RA) // alta
+			           Escribir("Amistad agregada")
+			       FinSi
+			   FinSi
+			2: Leer(AMIGOS, RA)
+			   Si EXISTE entonces
+			       Borrar(AMIGOS, RA) // baja física
+			       Escribir("Amistad eliminada")
+			   Sino
+			       Escribir("Error: la amistad no existe")
+			   FinSi
+			3: Leer(AMIGOS, RA)
+			   Si EXISTE entonces
+			       Escribir("Escriba el mensaje")
+			       Leer(RA.Mensaje_Muro)
+			       Regrabar(AMIGOS, RA)
+			   Sino
+			       Escribir("Error: no son amigos, no puede escribir en el muro")
+			   FinSi
+		FinSegún
+	Hasta que opcion = 4
+	Cerrar(AMIGOS)
+Fin Acción

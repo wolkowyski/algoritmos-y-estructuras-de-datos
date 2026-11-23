@@ -1,17 +1,45 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.10 (archivos indexados)
-//
-//  Programa de puntos de una estación de servicio: por cada $100 de carga el
-//  cliente suma 10 puntos; con 100 puntos puede pedir un descuento de $100.
-//  Si el DNI no existe, se da de alta el cliente. Al final se informa cuántos
-//  clientes nuevos hubo en el día.
-//  (Enunciado reconstruido a partir de la resolución.)
-//
-//  Con archivos indexados se accede directo por clave: se carga la clave en
-//  el registro y se hace Leer; la variable EXISTE indica si se encontró.
 // ==========================================================================
 
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.10
+// Una empresa dedicada a la venta de combustibles para automotores anunció
+// una promoción mediante la cual los clientes pueden acceder a descuentos
+// importantes.
+// En cada carga los clientes suman 10 puntos por cada 100 de combustible, y
+// una vez que el cliente llega a los 100 puntos, este los puede canjear por
+// un descuento de 100 en el importe total.
+// La cantidad de puntos que tiene cada cliente está almacenado en el archivo
+// indexado PUNTOS el cual tiene el siguiente formato:
+//
+// PUNTOS Indexado por DNI
+//
+// * DNI* Cant_Puntos* Ult_Carga
+//
+// Los datos de cada cliente se encuentran almacenados en el archivo CLIENTE
+// también indexado con el siguiente formato
+//
+// CLIENTE Indexado por DNI
+//
+// * DNI* Ape_Nom* Edad* Ciudad
+//
+// Se pide realizar el algoritmo que permita:
+//
+// 1. Realizar la carga interactiva de las cargas de combustible (ingresando
+// monto), actualizando la cantidad de Puntos y la Fecha de Última Carga en
+// el archivo PUNTOS. Si no existe el Cliente, se lo debe inicializar en
+// ambos archivos con los datos correspondientes.
+// 2. Permitir al cliente aplicar descuentos a las cargas realizadas siempre
+// y cuando tenga puntos suficientes (sólo se puede canjear 100 puntos por
+// carga).
+// 3. Determinar la cantidad de cargas realizadas de usuarios no existentes.
+// --------------------------------------------------------------------------
+
+// Con archivos indexados se accede directo por clave: se carga la clave en
+// el registro y se hace Leer; la variable EXISTE indica si se encontró.
 Acción 2.3.10 es
     Ambiente
         Fecha = Registro

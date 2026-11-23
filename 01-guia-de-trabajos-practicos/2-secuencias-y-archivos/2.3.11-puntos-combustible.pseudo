@@ -1,0 +1,111 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.11 (actualización de indexados)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.11
+// Una empresa dedicada a la venta de combustibles para automotores anunció
+// una promoción mediante la cual los clientes pueden acceder a beneficios
+// importantes.
+// En cada carga los clientes suman 10 puntos por cada $100 de combustible y
+// dependiendo del medio de pago se le aplica un factor multiplicador, el
+// cual se encuentra en un arreglo (ya está cargado). Los medios de pago
+// posible son: Efectivo, Debito o Credito
+// La cantidad de puntos que tiene cada cliente están almacenados en el
+// archivo indexado PUNTOS el cual tiene el siguiente formato:
+//
+// PUNTOS Indexado por DNI
+//
+// * DNI* Cant_Puntos* Ult_Carga
+//
+// Los datos de cada cliente se encuentran almacenados en el archivo CLIENTE
+// también indexado con el siguiente formato
+//
+// CLIENTE Indexado por DNI
+//
+// * DNI* Ape_Nom* Edad* Ciudad
+//
+// Se pide realizar el algoritmo que permita:
+//
+// 1. Actualizar el archivo PUNTOS a partir del siguiente archivo secuencial
+// (puede haber más de una carga por cliente), agregando los clientes que no
+// existen en los archivos anteriores cuando sea necesario
+//
+// CARGAS Indexado por DNI
+//
+// * DNI* Medio_Pago* Ape_Nom* Fecha* Ciudad
+//
+// 1. Determinar la cantidad de cargas mayor a $1000
+// 2. Informar la cantidad de Clientes nuevos cargados
+// --------------------------------------------------------------------------
+
+// El enunciado no da el monto en CARGAS; se asume un campo Monto en cada carga.
+// Factor: arreglo ya cargado con el multiplicador de cada medio de pago.
+Accion Ejercicio2_3_11 (Factor: arreglo ["E", "D", "C"] de real) es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Punto = Registro
+		DNI: N(8)
+		Cant_Puntos: N(6)
+		Ult_Carga: Fecha
+	FinRegistro
+	Cliente = Registro
+		DNI: N(8)
+		Ape_Nom: AN(30)
+		Edad: N(2)
+		Ciudad: AN(30)
+	FinRegistro
+	Carga = Registro
+		DNI: N(8)
+		Medio_Pago: ("E", "D", "C") // efectivo, débito, crédito
+		Ape_Nom: AN(30)
+		Fecha: Fecha
+		Ciudad: AN(30)
+		Monto: real
+	FinRegistro
+	PUNTOS: Archivo de Punto indexado por DNI
+	CLIENTE: Archivo de Cliente indexado por DNI
+	CARGAS: Archivo de Carga
+	RP: Punto
+	RCl: Cliente
+	RCa: Carga
+	puntos, mayores_1000, nuevos: entero
+Proceso
+	Abrir E/S(PUNTOS); Abrir E/S(CLIENTE)
+	Abrir E/(CARGAS); Leer(CARGAS, RCa)
+	mayores_1000:= 0; nuevos:= 0
+	Mientras No FDA(CARGAS) hacer
+		puntos:= TRUNC(RCa.Monto / 100) * 10 * Factor[RCa.Medio_Pago]
+		Si RCa.Monto > 1000 entonces
+			mayores_1000:= mayores_1000 + 1
+		FinSi
+		RCl.DNI:= RCa.DNI
+		Leer(CLIENTE, RCl)
+		Si No EXISTE entonces // cliente nuevo: alta en CLIENTE
+			RCl.Ape_Nom:= RCa.Ape_Nom
+			RCl.Ciudad:= RCa.Ciudad
+			RCl.Edad:= 0 // dato desconocido en la carga
+			Escribir(CLIENTE, RCl)
+			nuevos:= nuevos + 1
+		FinSi
+		RP.DNI:= RCa.DNI
+		Leer(PUNTOS, RP)
+		Si EXISTE entonces
+			RP.Cant_Puntos:= RP.Cant_Puntos + puntos
+			RP.Ult_Carga:= RCa.Fecha
+			Regrabar(PUNTOS, RP)
+		Sino
+			RP.Cant_Puntos:= puntos
+			RP.Ult_Carga:= RCa.Fecha
+			Escribir(PUNTOS, RP)
+		FinSi
+		Leer(CARGAS, RCa)
+	FinMientras
+	Escribir("Cargas mayores a $1000: ", mayores_1000)
+	Escribir("Clientes nuevos: ", nuevos)
+	Cerrar(PUNTOS); Cerrar(CLIENTE); Cerrar(CARGAS)
+Fin Acción

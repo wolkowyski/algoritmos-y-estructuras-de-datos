@@ -1,0 +1,123 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.9 (secuencial que actualiza indexados)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.9
+// Pepsico S.A.I.C. desea que Ud. realice el algoritmo para poner al
+// corriente los saldos de sus clientes y el stock de la empresa. Para ello
+// cuentan con:
+//
+// CLIENTES Indexado por ClienteID
+//
+// * ClienteID* Cliente_Nombre* Cliente_CUIT* Cliente_Saldo
+//
+// DETALLE_CLIENTES Indexado por Nro_Operacion
+//
+// * Nro_Operacion* Fecha_Operacion* ClienteID* Importe* Factura_Numero
+//
+// VENTAS Ordenado por Venta_Numero
+//
+// * Venta_Numero* Venta_Fecha* Factura_Numero* ProductoID* Cantidad_Vendida*
+// ClienteID
+//
+// PRODUCTOS Indexado por ProductoID
+//
+// * ProductoID* Stock* Producto_Detalle* Costo_Unitario
+//
+// Se debe actualizar el saldo del cliente y además agregar el detalle de la
+// compra que figura en el archivo de Ventas al archivo Detalle_Clientes, por
+// cada venta realizada se deberá descontar la cantidad vendida del stock.
+// Por final del proceso se desea saber el total de productos vendidos, y un
+// listado de los clientes con su saldo actualizado.
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_3_9 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Cliente = Registro
+		ClienteID: N(6)
+		Cliente_Nombre: AN(50)
+		Cliente_CUIT: N(11)
+		Cliente_Saldo: real
+	FinRegistro
+	Detalle = Registro
+		Nro_Operacion: N(8)
+		Fecha_Operacion: Fecha
+		ClienteID: N(6)
+		Importe: real
+		Factura_Numero: N(8)
+	FinRegistro
+	Venta = Registro
+		Venta_Numero: N(8)
+		Venta_Fecha: Fecha
+		Factura_Numero: N(8)
+		ProductoID: N(6)
+		Cantidad_Vendida: N(5)
+		ClienteID: N(6)
+	FinRegistro
+	Producto = Registro
+		ProductoID: N(6)
+		Stock: N(6)
+		Producto_Detalle: AN(60)
+		Costo_Unitario: real
+	FinRegistro
+	CLIENTES: Archivo de Cliente indexado por ClienteID
+	DETALLE_CLIENTES: Archivo de Detalle indexado por Nro_Operacion
+	VENTAS: Archivo de Venta ordenado por Venta_Numero
+	PRODUCTOS: Archivo de Producto indexado por ProductoID
+	RC: Cliente
+	RD: Detalle
+	RV: Venta
+	RP: Producto
+	importe: real
+	tot_vendidos, nro_op: entero
+Proceso
+	Abrir E/S(CLIENTES); Abrir E/S(DETALLE_CLIENTES); Abrir E/S(PRODUCTOS)
+	Abrir E/(VENTAS); Leer(VENTAS, RV)
+	tot_vendidos:= 0
+	Escribir("Último número de operación registrado")
+	Leer(nro_op)
+	Mientras No FDA(VENTAS) hacer
+		RC.ClienteID:= RV.ClienteID
+		Leer(CLIENTES, RC)
+		Si EXISTE entonces // el cliente existe
+			RP.ProductoID:= RV.ProductoID
+			Leer(PRODUCTOS, RP)
+			Si EXISTE entonces
+				importe:= RV.Cantidad_Vendida * RP.Costo_Unitario
+				RP.Stock:= RP.Stock - RV.Cantidad_Vendida // descuento del stock
+				Regrabar(PRODUCTOS, RP)
+				RC.Cliente_Saldo:= RC.Cliente_Saldo + importe // saldo deudor del cliente
+				Regrabar(CLIENTES, RC)
+				nro_op:= nro_op + 1
+				RD.Nro_Operacion:= nro_op
+				RD.Fecha_Operacion:= RV.Venta_Fecha
+				RD.ClienteID:= RV.ClienteID
+				RD.Importe:= importe
+				RD.Factura_Numero:= RV.Factura_Numero
+				Escribir(DETALLE_CLIENTES, RD) // alta del detalle
+				tot_vendidos:= tot_vendidos + RV.Cantidad_Vendida
+			Sino
+				Escribir("Error: producto ", RV.ProductoID, " inexistente")
+			FinSi
+		Sino
+			Escribir("Error: cliente ", RV.ClienteID, " inexistente")
+		FinSi
+		Leer(VENTAS, RV)
+	FinMientras
+	Escribir("Total de productos vendidos: ", tot_vendidos)
+	// Listado de clientes: recorrido secuencial del indexado
+	Cerrar(CLIENTES)
+	Abrir E/(CLIENTES)
+	Leer(CLIENTES, RC)
+	Mientras No FDA(CLIENTES) hacer
+		Escribir(RC.ClienteID, " - ", RC.Cliente_Nombre, " - saldo $", RC.Cliente_Saldo)
+		Leer(CLIENTES, RC)
+	FinMientras
+	Cerrar(CLIENTES); Cerrar(DETALLE_CLIENTES); Cerrar(PRODUCTOS); Cerrar(VENTAS)
+Fin Acción

@@ -1,0 +1,215 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.5 (indexados con clave compuesta)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.5
+// Para poder comprar dólares en una entidad bancaria al precio oficial
+// (9,40), el beneficiario, debe tener un ingreso promedio en los últimos 12
+// meses equivalente a dos veces el sueldo mínimo vital y móvil (el cual en
+// la actualidad es de 5000 por mes). Luego, con el sueldo del mes actual,
+// solo se permite comprar por un importe no superior al 30% del mismo.
+// Por ej.: si una persona tiene un sueldo de 10.000, desde septiembre del
+// año pasado, al dia de hoy esa persona cumple la condición para comprar y
+// puede comprar dólares por un monto máximo de 3.000 (equivalente a U$S
+// 319).
+// Para ello se cuenta con dos archivos indexados:
+//
+// CABECERA_SUELDO Indexado por DNI, Periodo, Nro_Recibo
+//
+// * DNI N(8)* Periodo N(6)* Nro_Recibo N(15)* ApyNom AN(50)* Empresa AN(50)
+//
+// El periodo está representado por 6 caracteres numéricos dispuestos de
+// forma de año/mes (aaaamm). El número de recibo (Nro_Recibo) es único. Una
+// persona puede tener varios recibos de sueldo. La clave de este archivo es
+// DNI, Periodo y Nro_Recibo.
+//
+// RECIBO Indexado por Nro_Recibo
+//
+// * Nro_Recibo N(15)* Concepto N(8)* Tipo (0..2)* Monto N(15,2)
+//
+// El campo tipo puede contener los siguientes valores: 0 - Sueldo básico, 1
+// – Otros Ingresos, 2 – Descuentos. Para calcular el sueldo mínimo se suman
+// el sueldo (tipo 0), y los otros ingresos (tipo 1), NO se restan los
+// descuentos. La clave es Nro_Recibo.
+//
+// Dado el escenario descripto, se pide escribir dos algoritmos:
+//
+// 1. 1. Que el empleado del Banco ingrese un número de documento de algún
+// interesado en comprar dólares, y le devuelva si está habilitado o no para
+// comprar y, en caso positivo, cuál es el monto máximo en pesos que se le
+// autoriza.
+//    2. Si el interesado desea comprar, solicite el monto en pesos que
+//    destinará a la compra, el cual deberá ser descontado de su cuenta. Los
+//    datos de la cuenta están en un archivo indexado con la siguiente
+//    estructura (indexado por DNI):
+//
+//       * DNI N(8)* Nro_Cuenta N(25)* Saldo N(15,2)
+//    3. Los puntos a) y b) se repiten hasta que el operador (empleado del
+//    Banco) indique que desea finalizar.
+// 2. 1. Procesar peticiones de compra, de acuerdo a un archivo de entrada de
+// peticiones, evaluando si es posible realizar la operación o no. Si no es
+// posible, indicar cual es el motivo: 1 – No tiene el ingreso promedio
+// suficiente, o 2 – Pide más del 30 % de su sueldo actual.
+//
+//       PETICIONES
+//       * DNI N(8)* Cant_Soli N(15,2)
+//    2. El resultado de la evaluación se debe grabar en un nuevo archivo de
+//    salida con el siguiente formato:
+//
+//       SALIDA
+//       * DNI N(8)* Cant_Soli N(15,2)* Pudo (si,no)* Error 1..2
+// --------------------------------------------------------------------------
+
+// CABECERA_SUELDO tiene clave compuesta (DNI, Periodo, Nro_Recibo): para
+// recorrer los recibos de un DNI se posiciona con la clave parcial y se lee
+// secuencialmente (Leer siguiente) mientras el DNI sea el mismo.
+// Se asume que hay a lo sumo un recibo por período.
+Accion Ejercicio2_3_5 es
+Ambiente
+	Cabecera = Registro
+		DNI: N(8)
+		Periodo: N(6) // aaaamm
+		Nro_Recibo: N(15)
+		ApyNom, Empresa: AN(50)
+	FinRegistro
+	Recibo = Registro
+		Nro_Recibo: N(15)
+		Concepto: N(8)
+		Tipo: 0..2
+		Monto: real
+	FinRegistro
+	Cuenta = Registro
+		DNI: N(8)
+		Nro_Cuenta: N(25)
+		Saldo: real
+	FinRegistro
+	CABECERA_SUELDO: Archivo de Cabecera indexado por DNI, Periodo, Nro_Recibo
+	RECIBO: Archivo de Recibo indexado por Nro_Recibo
+	CUENTAS: Archivo de Cuenta indexado por DNI
+	RCab: Cabecera
+	RRec: Recibo
+	RCta: Cuenta
+	SMVM = 5000
+	DOLAR = 9,40
+	dni, periodo_actual: N(8)
+	sueldo_actual, suma12, maximo, monto: real
+	meses: entero
+	op: ("S", "N")
+
+	// Suma sueldo básico + otros ingresos de un recibo (no resta descuentos).
+	// Se asume que RECIBO puede tener varias líneas (conceptos) por recibo.
+	Función IngresoRecibo (nro: N(15)): real es
+		Ambiente
+			suma: real
+		Proceso
+			suma:= 0
+			RRec.Nro_Recibo:= nro
+			Leer(RECIBO, RRec)
+			Mientras EXISTE y (RRec.Nro_Recibo = nro) hacer
+				Si RRec.Tipo <= 1 entonces
+					suma:= suma + RRec.Monto
+				FinSi
+				LeerSiguiente(RECIBO, RRec)
+			FinMientras
+			IngresoRecibo:= suma
+	FinFunción
+
+	// Calcula el promedio de los últimos 12 meses y el sueldo del mes actual.
+	Procedimiento Evaluar (d: N(8)) es
+		suma12:= 0; meses:= 0; sueldo_actual:= 0
+		RCab.DNI:= d
+		RCab.Periodo:= periodo_actual - 100 // mismo mes del año anterior
+		RCab.Nro_Recibo:= 0
+		Leer(CABECERA_SUELDO, RCab) // posiciona en la primera clave >= a esa
+		Mientras No FDA(CABECERA_SUELDO) y (RCab.DNI = d) y (RCab.Periodo <= periodo_actual) hacer
+			Si RCab.Periodo = periodo_actual entonces
+				sueldo_actual:= IngresoRecibo(RCab.Nro_Recibo)
+			Sino
+				suma12:= suma12 + IngresoRecibo(RCab.Nro_Recibo)
+				meses:= meses + 1
+			FinSi
+			LeerSiguiente(CABECERA_SUELDO, RCab)
+		FinMientras
+	FinProcedimiento
+
+Proceso
+	Escribir("Período actual (aaaamm)")
+	Leer(periodo_actual)
+	Abrir E/(CABECERA_SUELDO); Abrir E/(RECIBO); Abrir E/S(CUENTAS)
+
+	// Algoritmo 1: atención por ventanilla
+	Repetir
+		Escribir("DNI del interesado")
+		Leer(dni)
+		Evaluar(dni)
+		Si (meses = 0) o (suma12 / 12 < 2 * SMVM) entonces
+			Escribir("No está habilitado para comprar")
+		Sino
+			maximo:= sueldo_actual * 0,30
+			Escribir("Habilitado. Monto máximo: $", maximo, " (U$S ", maximo / DOLAR, ")")
+			Escribir("¿Cuánto desea destinar? (0 para no comprar)")
+			Leer(monto)
+			Si (monto > 0) y (monto <= maximo) entonces
+				RCta.DNI:= dni
+				Leer(CUENTAS, RCta)
+				Si EXISTE y (RCta.Saldo >= monto) entonces
+					RCta.Saldo:= RCta.Saldo - monto
+					Regrabar(CUENTAS, RCta)
+					Escribir("Compra realizada: U$S ", monto / DOLAR)
+				Sino
+					Escribir("Cuenta inexistente o saldo insuficiente")
+				FinSi
+			FinSi
+		FinSi
+		Escribir("¿Atender a otro interesado? S/N")
+		Leer(op)
+	Hasta que op = "N"
+	Cerrar(CABECERA_SUELDO); Cerrar(RECIBO); Cerrar(CUENTAS)
+Fin Acción
+
+
+// Algoritmo 2: procesar un archivo de peticiones
+Accion Ejercicio2_3_5_b es
+Ambiente
+	// (mismos archivos, Evaluar e IngresoRecibo que el algoritmo 1)
+	Peticion = Registro
+		DNI: N(8)
+		Cant_Soli: real
+	FinRegistro
+	Resultado = Registro
+		DNI: N(8)
+		Cant_Soli: real
+		Pudo: ("si", "no")
+		Error: 0..2 // 0 = sin error
+	FinRegistro
+	PETICIONES: Archivo de Peticion
+	SALIDA: Archivo de Resultado
+	RPet: Peticion
+	RSal: Resultado
+Proceso
+	Escribir("Período actual (aaaamm)")
+	Leer(periodo_actual)
+	Abrir E/(CABECERA_SUELDO); Abrir E/(RECIBO)
+	Abrir E/(PETICIONES); Leer(PETICIONES, RPet)
+	Abrir /S(SALIDA)
+	Mientras No FDA(PETICIONES) hacer
+		Evaluar(RPet.DNI)
+		RSal.DNI:= RPet.DNI
+		RSal.Cant_Soli:= RPet.Cant_Soli
+		Si (meses = 0) o (suma12 / 12 < 2 * SMVM) entonces
+			RSal.Pudo:= "no"; RSal.Error:= 1 // ingreso promedio insuficiente
+		Sino
+			Si RPet.Cant_Soli > sueldo_actual * 0,30 entonces
+				RSal.Pudo:= "no"; RSal.Error:= 2 // pide más del 30%
+			Sino
+				RSal.Pudo:= "si"; RSal.Error:= 0
+			FinSi
+		FinSi
+		Escribir(SALIDA, RSal)
+		Leer(PETICIONES, RPet)
+	FinMientras
+	Cerrar(CABECERA_SUELDO); Cerrar(RECIBO); Cerrar(PETICIONES); Cerrar(SALIDA)
+Fin Acción

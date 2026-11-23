@@ -1,0 +1,113 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.4 (altas y modificaciones en indexados)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.4
+// Crear un algoritmo que simule el trabajo de una caja de supermercado. El
+// algoritmo debe permitir imprimir el ticket de compra y realizar el
+// descuento de stock del producto. Al generar el comprobante del ticket debe
+// guardar los datos en los archivos TICKET y DETALLE_TICKET (el cliente es:
+// "consumidor final" y el NroTicket se genera automáticamente, mediante la
+// función OBTENER_TICKET).
+// Archivos:
+//
+// PRODUCTOS Indexado por Cod_Prod
+//
+// * Cod_Prod* Nombre* Stock* Precio
+//
+// TICKET Indexado por Nro_Ticket
+//
+// * Nro_Ticket* Fecha* Cliente
+//
+// DETALLE_TICKET Indexado por Nro_Ticket
+//
+// * Nro_Ticket* Nro_Linea* Cod_Prod* Cantidad
+//
+// Comprobante:
+//
+// |  |  |  |  |  |  |
+// | --- | --- | --- | --- | --- | --- |
+// | Empresa: | ...................................... | CUIT: | .... - ............ - ... | Fecha: | ... / ... / ... |
+// | Cliente | ................................................................................................................................. | | | | |
+// | Producto | | Cantidad | | Subtotal | |
+// | .............................. | | .............................. | | .............................. | |
+// | .............................. | | .............................. | | .............................. | |
+// | .............................. | | .............................. | | .............................. | |
+// |  | | | Total | .............................. | |
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_3_4 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Producto = Registro
+		Cod_Prod: N(6)
+		Nombre: AN(40)
+		Stock: N(5)
+		Precio: real
+	FinRegistro
+	Ticket = Registro
+		Nro_Ticket: N(8)
+		Fecha: Fecha
+		Cliente: AN(30)
+	FinRegistro
+	Detalle = Registro
+		Nro_Ticket: N(8)
+		Nro_Linea: N(3)
+		Cod_Prod: N(6)
+		Cantidad: N(4)
+	FinRegistro
+	PRODUCTOS: Archivo de Producto indexado por Cod_Prod
+	TICKET: Archivo de Ticket indexado por Nro_Ticket
+	DETALLE_TICKET: Archivo de Detalle indexado por Nro_Ticket
+	RP: Producto
+	RT: Ticket
+	RD: Detalle
+	cod, cant: entero
+	subtotal, total: real
+Proceso
+	Abrir E/S(PRODUCTOS); Abrir E/S(TICKET); Abrir E/S(DETALLE_TICKET)
+	RT.Nro_Ticket:= OBTENER_TICKET() // función dada
+	Escribir("Fecha (aa, mm, dd)")
+	Leer(RT.Fecha.aa, RT.Fecha.mm, RT.Fecha.dd)
+	RT.Cliente:= "consumidor final"
+	Escribir(TICKET, RT)
+	Escribir("Empresa: ..........  CUIT: ..........  Fecha: ", RT.Fecha.dd, "/", RT.Fecha.mm, "/", RT.Fecha.aa)
+	Escribir("Cliente: ", RT.Cliente)
+	Escribir("Producto | Cantidad | Subtotal")
+	total:= 0
+	RD.Nro_Ticket:= RT.Nro_Ticket
+	RD.Nro_Linea:= 0
+	Escribir("Código de producto (0 para cerrar el ticket)")
+	Leer(cod)
+	Mientras cod <> 0 hacer
+		RP.Cod_Prod:= cod
+		Leer(PRODUCTOS, RP)
+		Si No EXISTE entonces
+			Escribir("Producto inexistente")
+		Sino
+			Escribir("Cantidad")
+			Leer(cant)
+			Si cant > RP.Stock entonces
+				Escribir("No hay stock suficiente (", RP.Stock, ")")
+			Sino
+				RP.Stock:= RP.Stock - cant // descuento de stock
+				Regrabar(PRODUCTOS, RP)
+				RD.Nro_Linea:= RD.Nro_Linea + 1
+				RD.Cod_Prod:= cod
+				RD.Cantidad:= cant
+				Escribir(DETALLE_TICKET, RD)
+				subtotal:= cant * RP.Precio
+				total:= total + subtotal
+				Escribir(RP.Nombre, " | ", cant, " | ", subtotal)
+			FinSi
+		FinSi
+		Leer(cod)
+	FinMientras
+	Escribir("Total: ", total)
+	Cerrar(PRODUCTOS); Cerrar(TICKET); Cerrar(DETALLE_TICKET)
+Fin Acción

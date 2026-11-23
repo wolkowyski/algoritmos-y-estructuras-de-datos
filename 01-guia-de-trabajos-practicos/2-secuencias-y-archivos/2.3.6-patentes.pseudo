@@ -1,0 +1,136 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.6 (corte de control + indexados)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.3.6
+// Una Municipalidad debe liquidar las patentes de su parque automotor para
+// el cuarto trimestre del año e imprimir un padrón de cobros y deudas, con
+// cortes de importe por grupo, categoría y año de fabricación.
+//
+// Los archivos son:
+//
+// AUTOS Ordenado por CLAVE
+//
+// * Grupo N(2)* Categoria 1..50* Anio_Fab N(4)* Nro_Patente N(8)* DNI AN(8)*
+// ApyNom AN(25)* Domicilio AN(30)
+//
+// DEUDAS Indexado por CLAVED
+//
+// * Nro_Patente N(8)* Anio_Deuda N(4)* Trimestre N(1)* Importe N(5,2)
+//
+// Para el trimestre actual, la cuota a abonar viene en el siguiente archivo:
+//
+// CUOTAS Indexado por CLAVEC
+//
+// * Grupo N(2)* Categoria 1..50* Anio_Fab N(4)* Importe N(5,2)
+//
+// Antes de imprimir el renglón correspondiente a cada nro de patente se debe
+// verificar si existen deudas pendientes, en cuyo caso se sumaran todos los
+// importes adeudados y se consignarán en la columna de deudas.
+//
+// PADRON
+//
+// | CLAVE | DNI | APYNOM | DOMIC | DEUDA | 4to TRIMESTRE |
+// | --- | --- | --- | --- | --- | --- |
+// | ..... | ... | ...... | ..... |  XXX,XX |  XXX,XX |
+// |  |  |  | TOTAL |  XXX,XX |  XXX,XX |
+// --------------------------------------------------------------------------
+
+// CLAVE de AUTOS = Grupo + Categoría + Año de fabricación + Patente.
+// CLAVED de DEUDAS = Patente + Año + Trimestre (se recorren las deudas de una
+// patente posicionando con la patente y leyendo en forma secuencial).
+// CLAVEC de CUOTAS = Grupo + Categoría + Año de fabricación.
+Accion Ejercicio2_3_6 es
+Ambiente
+	Auto = Registro
+		Grupo: N(2); Categoria: 1..50; Anio_Fab: N(4)
+		Nro_Patente: N(8)
+		DNI: AN(8); ApyNom: AN(25); Domicilio: AN(30)
+	FinRegistro
+	Deuda = Registro
+		Nro_Patente: N(8); Anio_Deuda: N(4); Trimestre: N(1)
+		Importe: real
+	FinRegistro
+	Cuota = Registro
+		Grupo: N(2); Categoria: 1..50; Anio_Fab: N(4)
+		Importe: real
+	FinRegistro
+	AUTOS: Archivo de Auto ordenado por Grupo, Categoria, Anio_Fab, Nro_Patente
+	DEUDAS: Archivo de Deuda indexado por Nro_Patente, Anio_Deuda, Trimestre
+	CUOTAS: Archivo de Cuota indexado por Grupo, Categoria, Anio_Fab
+	RA: Auto
+	RD: Deuda
+	RC: Cuota
+	ResGrupo: N(2); ResCat: 1..50; ResAnio: N(4)
+	deuda: real
+	// deuda y cuota acumuladas por año, categoría, grupo y total
+	dAnio, cAnio, dCat, cCat, dGrupo, cGrupo, dTot, cTot: real
+
+	Procedimiento CorteAnio es
+		Escribir("      Total año ", ResAnio, ": deuda $", dAnio, " - 4to trimestre $", cAnio)
+		dCat:= dCat + dAnio; cCat:= cCat + cAnio
+		dAnio:= 0; cAnio:= 0
+		ResAnio:= RA.Anio_Fab
+	FinProcedimiento
+
+	Procedimiento CorteCategoria es
+		CorteAnio
+		Escribir("    Total categoría ", ResCat, ": deuda $", dCat, " - 4to trimestre $", cCat)
+		dGrupo:= dGrupo + dCat; cGrupo:= cGrupo + cCat
+		dCat:= 0; cCat:= 0
+		ResCat:= RA.Categoria
+	FinProcedimiento
+
+	Procedimiento CorteGrupo es
+		CorteCategoria
+		Escribir("  Total grupo ", ResGrupo, ": deuda $", dGrupo, " - 4to trimestre $", cGrupo)
+		dTot:= dTot + dGrupo; cTot:= cTot + cGrupo
+		dGrupo:= 0; cGrupo:= 0
+		ResGrupo:= RA.Grupo
+	FinProcedimiento
+
+Proceso
+	Abrir E/(AUTOS); Leer(AUTOS, RA)
+	Abrir E/(DEUDAS); Abrir E/(CUOTAS)
+	dAnio:= 0; cAnio:= 0; dCat:= 0; cCat:= 0; dGrupo:= 0; cGrupo:= 0; dTot:= 0; cTot:= 0
+	ResGrupo:= RA.Grupo; ResCat:= RA.Categoria; ResAnio:= RA.Anio_Fab
+	Escribir("CLAVE | DNI | APYNOM | DOMIC | DEUDA | 4to TRIMESTRE")
+	Mientras No FDA(AUTOS) hacer
+		Si RA.Grupo <> ResGrupo entonces
+			CorteGrupo
+		Sino
+			Si RA.Categoria <> ResCat entonces
+				CorteCategoria
+			Sino
+				Si RA.Anio_Fab <> ResAnio entonces
+					CorteAnio
+				FinSi
+			FinSi
+		FinSi
+		// deudas pendientes de la patente
+		deuda:= 0
+		RD.Nro_Patente:= RA.Nro_Patente
+		RD.Anio_Deuda:= 0; RD.Trimestre:= 0
+		Leer(DEUDAS, RD) // posiciona en la primera deuda de la patente
+		Mientras No FDA(DEUDAS) y (RD.Nro_Patente = RA.Nro_Patente) hacer
+			deuda:= deuda + RD.Importe
+			LeerSiguiente(DEUDAS, RD)
+		FinMientras
+		// cuota del trimestre
+		RC.Grupo:= RA.Grupo; RC.Categoria:= RA.Categoria; RC.Anio_Fab:= RA.Anio_Fab
+		Leer(CUOTAS, RC)
+		Si No EXISTE entonces
+			RC.Importe:= 0
+		FinSi
+		Escribir(RA.Grupo, "-", RA.Categoria, "-", RA.Anio_Fab, "-", RA.Nro_Patente, " | ", RA.DNI, " | ", RA.ApyNom, " | ", RA.Domicilio, " | $", deuda, " | $", RC.Importe)
+		dAnio:= dAnio + deuda
+		cAnio:= cAnio + RC.Importe
+		Leer(AUTOS, RA)
+	FinMientras
+	CorteGrupo
+	Escribir("TOTAL: deuda $", dTot, " - 4to trimestre $", cTot)
+	Cerrar(AUTOS); Cerrar(DEUDAS); Cerrar(CUOTAS)
+Fin Acción

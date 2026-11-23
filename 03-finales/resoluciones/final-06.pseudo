@@ -2,68 +2,356 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Final - Resolución del modelo de final 6
 //  Enunciado: ../enunciados/final-06.jpg
-//  Estado: incompleto (resolución sin terminar).
+//  Revisado y completado: la resolución había quedado empezada (solo la
+//  carga del título del ejercicio 1); se terminaron los dos ejercicios.
 // ==========================================================================
 
-//consigna 1
+// --------------------------------------------------------------------------
+// Ejercicio 1
+// Una empresa de producción de noticias necesita un programa que le permita
+// operar con los eventos que ha cubierto. La información de los eventos se
+// encuentra en una secuencia de caracteres con la siguiente forma: Título y
+// Resumen, en ambos casos finalizan en "@", luego un carácter que indica tipo
+// de evento (1: Deportivo, 2: Social, 3: Político, 4: Internacional,
+// 5: Tecno, 6: Musical, 7: Economía, 8: Turismo), un carácter que indica el
+// segmento donde se emitirá la noticia ("M": matinal, "N": nocturno,
+// "E": mediodía) y un carácter que indica si debe volver a solicitarse el
+// título de la noticia ("S"-Sí, "N"-No).
+// En base a lo anterior, diseñar un algoritmo que ofrezca un menú de opciones
+// con las siguientes alternativas:
+//   A. Organizar los eventos en orden de acuerdo al segmento donde se emitirá
+//      la noticia ("M", "E", "N"), teniendo en cuenta solicitar nuevamente el
+//      título en caso que corresponda.
+//   B. Informar cantidad de eventos por tipo.
+//   C. Mostrar Título y Resumen de las noticias del tipo "Político" que se
+//      emitirán en el segmento "Matinal".
+//   D. Informar cantidad de noticias combinando tipo y segmento donde se
+//      publica.
+// --------------------------------------------------------------------------
+
+// En lo que había empezado, el título y el resumen se guardaban como listas
+// de caracteres (un nodo por letra). Acá se arman como cadenas, concatenando
+// carácter a carácter, porque así el título se puede reemplazar directamente
+// cuando hay que volver a pedirlo (opción A).
+// La lista queda ordenada por segmento: primero M, después E y al final N;
+// dentro de un mismo segmento se respeta el orden de la secuencia.
 
 Accion noticias() es
 
 Ambiente
 
-	sec: secuencia de caracter de entrada
+	sec: secuencia de caracter
 	v: caracter
 
-	texto=registro
-		car:AN(1)
-		prox: puntero a texto
-	fin registro
-
 	nodo=registro
-		titulo: texto
-		desc: texto
+		titulo: AN(100)
+		resumen: AN(255)
 		tipo: 1..8
-		segmento:"M","E","N"
+		segmento: ("M","E","N")
 		prox: puntero a nodo
 	fin registro
 
-	p,q,prim,a,noc,med,mat: puntero a nodo
+	p,q,prim,a: puntero a nodo
 
-	prim2,q2,a2,p2: puntero a texto
+	A: arreglo [1..8,1..3] de entero    // tipo x segmento (1=M, 2=E, 3=N)
+	T: arreglo [1..8] de entero         // cantidad por tipo
+	nom_tipo: arreglo [1..8] de AN(15)
+	nom_seg: arreglo [1..3] de AN(10)
+	opcion, pide: caracter
+	cargado: booleano
+	i, j: entero
 
-	A: Arreglo [1..8,1..4] de entero
+	Funcion rango(s: caracter): entero es   // posición del segmento en el orden pedido
+		Segun (s) hacer
+			="M": rango:=1
+			="E": rango:=2
+			="N": rango:=3
+		Fin Segun
+	Fin Funcion
+
+	Funcion car_a_ent(c: caracter): entero es
+		Segun (c) hacer
+			="1": car_a_ent:=1
+			="2": car_a_ent:=2
+			="3": car_a_ent:=3
+			="4": car_a_ent:=4
+			="5": car_a_ent:=5
+			="6": car_a_ent:=6
+			="7": car_a_ent:=7
+			="8": car_a_ent:=8
+		Fin Segun
+	Fin Funcion
+
+	// A. lee la secuencia y arma la lista ordenada por segmento
+	Procedimiento organizar() es
+		ARR(sec)
+		AVZ(sec, v)
+		Mientras NFDS(sec) hacer
+			nuevo(q)
+			*q.titulo:=""
+			Mientras (v<>"@") hacer
+				*q.titulo:=*q.titulo + v
+				AVZ(sec, v)
+			Fin Mientras
+			AVZ(sec, v)                     // salteo el "@"
+			*q.resumen:=""
+			Mientras (v<>"@") hacer
+				*q.resumen:=*q.resumen + v
+				AVZ(sec, v)
+			Fin Mientras
+			AVZ(sec, v)
+			*q.tipo:=car_a_ent(v)
+			AVZ(sec, v)
+			*q.segmento:=v
+			AVZ(sec, v)
+			pide:=v
+			AVZ(sec, v)                     // queda en el primer carácter del evento siguiente
+
+			Si (pide="S") entonces
+				Escribir("Título actual: ", *q.titulo)
+				Escribir("Ingrese nuevamente el título")
+				Leer(*q.titulo)
+			Fin Si
+
+			// inserción: va antes del primer nodo de un segmento posterior
+			a:=nil
+			p:=prim
+			Mientras (p<>nil) y (rango(*p.segmento) <= rango(*q.segmento)) hacer
+				a:=p
+				p:=*p.prox
+			Fin Mientras
+			*q.prox:=p
+			Si (a=nil) entonces
+				prim:=q
+			Sino
+				*a.prox:=q
+			Fin Si
+		Fin Mientras
+		CERRAR(sec)
+		cargado:=verdadero
+	Fin Procedimiento
+
+	// B y D salen del mismo recorrido
+	Procedimiento contar() es
+		Para i:=1 a 8 hacer
+			T[i]:=0
+			Para j:=1 a 3 hacer
+				A[i,j]:=0
+			Fin Para
+		Fin Para
+		p:=prim
+		Mientras (p<>nil) hacer
+			T[*p.tipo]:=T[*p.tipo]+1
+			A[*p.tipo, rango(*p.segmento)]:=A[*p.tipo, rango(*p.segmento)]+1
+			p:=*p.prox
+		Fin Mientras
+	Fin Procedimiento
 
 Proceso
 
 	prim:=nil
-	prim2:=nil
+	cargado:=falso
+	nom_tipo[1]:="Deportivo"
+	nom_tipo[2]:="Social"
+	nom_tipo[3]:="Político"
+	nom_tipo[4]:="Internacional"
+	nom_tipo[5]:="Tecno"
+	nom_tipo[6]:="Musical"
+	nom_tipo[7]:="Economía"
+	nom_tipo[8]:="Turismo"
+	nom_seg[1]:="Matinal"
+	nom_seg[2]:="Mediodía"
+	nom_seg[3]:="Nocturno"
 
-	ARR(sec)
-	AVZ(sec, v)
+	Repetir
+		Escribir("A: Organizar eventos  B: Eventos por tipo  C: Políticos matinales  D: Tipo y segmento  F: Salir")
+		Leer(opcion)
+		Si (opcion<>"A") y (opcion<>"F") y (no cargado) entonces
+			Escribir("Primero hay que organizar los eventos (opción A)")
+		Sino
+			Segun (opcion) hacer
+				="A":
+					Si cargado entonces
+						Escribir("Los eventos ya están organizados")
+					Sino
+						organizar()
+					Fin Si
+				="B":
+					contar()
+					Para i:=1 a 8 hacer
+						Escribir(nom_tipo[i], ": ", T[i], " eventos")
+					Fin Para
+				="C":
+					// la lista está ordenada por segmento: los matinales están
+					// al principio, así que se corta al llegar a otro segmento
+					p:=prim
+					Mientras (p<>nil) y (*p.segmento="M") hacer
+						Si (*p.tipo=3) entonces
+							Escribir("Título: ", *p.titulo)
+							Escribir("Resumen: ", *p.resumen)
+						Fin Si
+						p:=*p.prox
+					Fin Mientras
+				="D":
+					contar()
+					Para i:=1 a 8 hacer
+						Para j:=1 a 3 hacer
+							Escribir(nom_tipo[i], " - ", nom_seg[j], ": ", A[i,j])
+						Fin Para
+					Fin Para
+			Fin Segun
+		Fin Si
+	Hasta que (opcion="F")
 
-	Para i:=1 a 8 hacer
-		Para j:=1 a 4 hacer
-			A[i,j]:=0
+Fin Accion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2
+// Una organización fabrica varios tipos de cables (8 en total) y los vende
+// mediante entregas directas a empresas de diferentes industrias (5 en
+// total). Se tiene un archivo secuencial ordenado por el campo Codigo:
+//   Codigo N(4), Cod_tipo_cable (1..8), Cod_tipo_ind (1..5),
+//   Mts_cable_ent N(4.2), Rollos_cable_ent N(3).
+// A efectos del examen se considera que existen 2 vectores cargados con los
+// nombres de los tipos de cable y los tipos de industria. En los casos donde
+// se solicite informar, se debe usar estos nombres y no sus códigos.
+// Se pide:
+//   1) Organizar los datos en la estructura que considere adecuada para
+//      obtener la información solicitada más abajo.
+//   2) Informe qué tipo de industria se destacó. Se destacan los tipos de
+//      industria en los que la sumatoria de los metros de cable entregados
+//      supera a la del tipo con código anterior (1 menos) y a la del tipo con
+//      código posterior (1 más). Notar que no todas tienen anterior o
+//      posterior. Si varias se destacan, elegir la primera. Si ninguna se
+//      destaca, informar también.
+//   3) Para el tipo de industria destacada, informar el promedio de rollos de
+//      cable entregados por cada tipo de cable, ordenados en forma ascendente.
+//   4) Informar la combinación de tipo de industria y tipo de cable que mayor
+//      cantidad de rollos se ha entregado y cuántos fueron.
+// --------------------------------------------------------------------------
+
+// 1) Matriz M[industria, cable] con los totales de cada combinación, y un
+// arreglo con los metros totales por industria. El archivo está ordenado por
+// Codigo, que no sirve para agrupar, así que se acumula todo en la matriz.
+// "Promedio de rollos por tipo de cable" = rollos entregados / cantidad de
+// entregas de ese cable a esa industria.
+
+Accion cables() es
+
+Ambiente
+
+	entrega=registro
+		codigo: N(4)
+		cod_cable: 1..8
+		cod_ind: 1..5
+		mts: N(4.2)
+		rollos: N(3)
+	fin registro
+
+	arch: archivo de entrega ordenado por codigo
+	reg: entrega
+
+	NomCable: arreglo [1..8] de AN(30)  // ya cargados (dato del enunciado)
+	NomInd: arreglo [1..5] de AN(30)
+
+	celda=registro
+		rollos: entero
+		entregas: entero
+	fin registro
+
+	M: arreglo [1..5,1..8] de celda
+	MtsInd: arreglo [1..5] de real
+
+	prom=registro
+		cable: 1..8
+		valor: real
+	fin registro
+
+	P: arreglo [1..8] de prom
+	aux: prom
+
+	i, j, k, dest, max_i, max_j, max_rollos: entero
+	supera_ant, supera_pos: booleano
+
+	// ordena P[1..k] de menor a mayor por valor (burbuja)
+	Procedimiento ordenar() es
+		Para i:=1 a k-1 hacer
+			Para j:=1 a k-i hacer
+				Si (P[j].valor > P[j+1].valor) entonces
+					aux:=P[j]
+					P[j]:=P[j+1]
+					P[j+1]:=aux
+				Fin Si
+			Fin Para
+		Fin Para
+	Fin Procedimiento
+
+Proceso
+
+	// 1) carga de la estructura
+	Para i:=1 a 5 hacer
+		MtsInd[i]:=0
+		Para j:=1 a 8 hacer
+			M[i,j].rollos:=0
+			M[i,j].entregas:=0
 		Fin Para
 	Fin Para
 
-	Mientras NFDS (sec) hacer
+	ABRIR E/ (arch)
+	LEER(arch, reg)
+	Mientras No FDA(arch) hacer
+		M[reg.cod_ind, reg.cod_cable].rollos:=M[reg.cod_ind, reg.cod_cable].rollos + reg.rollos
+		M[reg.cod_ind, reg.cod_cable].entregas:=M[reg.cod_ind, reg.cod_cable].entregas + 1
+		MtsInd[reg.cod_ind]:=MtsInd[reg.cod_ind] + reg.mts
+		LEER(arch, reg)
+	Fin Mientras
+	CERRAR(arch)
 
-		nuevo(q)
-		nuevo(q2)
+	// 2) industria destacada: la primera que supera a sus vecinas
+	dest:=0
+	i:=1
+	Mientras (i<=5) y (dest=0) hacer
+		supera_ant:=(i=1) o (MtsInd[i] > MtsInd[i-1])
+		supera_pos:=(i=5) o (MtsInd[i] > MtsInd[i+1])
+		Si supera_ant y supera_pos entonces
+			dest:=i
+		Fin Si
+		i:=i+1
+	Fin Mientras
 
-		(*q.titulo)*q2.car:=v
-		prim2:=q2
-		*q2.prox:=nil
-		p2:=q2
-		AVZ(sec, v)
+	Si (dest=0) entonces
+		Escribir("Ningún tipo de industria se destacó")
+	Sino
+		Escribir("Se destacó la industria ", NomInd[dest], " con ", MtsInd[dest], " metros")
 
-		Mientras (v<>"@") hacer
-			nuevo(q2)
-			*q2.car:=v
-			*p2.prox:=q2
-			*q2.prox:=nil
-			AVZ(sec, v)
-		Fin Mientras
+		// 3) promedio de rollos por tipo de cable, de menor a mayor
+		// (solo los cables que tuvieron entregas, para no dividir por cero)
+		k:=0
+		Para j:=1 a 8 hacer
+			Si (M[dest,j].entregas > 0) entonces
+				k:=k+1
+				P[k].cable:=j
+				P[k].valor:=M[dest,j].rollos / M[dest,j].entregas
+			Fin Si
+		Fin Para
+		ordenar()
+		Para i:=1 a k hacer
+			Escribir(NomCable[P[i].cable], ": ", P[i].valor, " rollos por entrega")
+		Fin Para
+	Fin Si
 
-		AVZ(sec, v)
+	// 4) combinación con más rollos
+	max_rollos:=-1
+	Para i:=1 a 5 hacer
+		Para j:=1 a 8 hacer
+			Si (M[i,j].rollos > max_rollos) entonces
+				max_rollos:=M[i,j].rollos
+				max_i:=i
+				max_j:=j
+			Fin Si
+		Fin Para
+	Fin Para
+	Escribir("La mayor cantidad de rollos fue de ", NomInd[max_i], " con ", NomCable[max_j], ": ", max_rollos, " rollos")
+
+Fin Accion

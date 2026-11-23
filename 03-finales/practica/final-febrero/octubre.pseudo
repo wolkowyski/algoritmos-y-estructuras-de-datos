@@ -2,139 +2,220 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Práctica para el final de febrero - octubre
 //  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
-//  Estado: incompleto (quedó para rehacer).
+//  Rehecho: el borrador había quedado a medias. No tengo la foto de este
+//  enunciado, así que las consignas de abajo están reconstruidas a partir de
+//  lo que se ve en el borrador; los supuestos están aclarados en cada una.
 // ==========================================================================
 
-ACCION
+// --------------------------------------------------------------------------
+// Ejercicio 1 (consigna reconstruida)
+// Se tiene una lista simplemente encadenada cuyos nodos guardan un carácter
+// '0' o '1' (un número binario, bit por bit). Pasarlo a hexadecimal y
+// grabarlo en una secuencia de salida, escribiendo los dos dígitos
+// hexadecimales de cada byte y separando los bytes con "-".
+// --------------------------------------------------------------------------
+
+// Supuesto: la cantidad de bits es múltiplo de 8 y el bit más significativo
+// de cada grupo viene primero.
+// Cada grupo de 4 bits es un dígito hexadecimal: se arma el valor
+// multiplicando por 2 y sumando el bit siguiente (es lo mismo que el
+// 8*b1 + 4*b2 + 2*b3 + 1*b4 del borrador).
+// Corregido respecto del borrador: la tabla de letras decía 13 = C (es
+// 12 = C ... 15 = F), el último bit de cada grupo no avanzaba el puntero y el
+// "-" quedaba también después del último byte.
+
+ACCION BinarioAHexa(prim: puntero a nodo) ES
 Ambiente
-    nodo= registro
-        caracter
+    nodo = registro
+        caracter: caracter
         prox: puntero a nodo
     finregistro
 
+    p: puntero a nodo
     salida: secuencia de caracteres
-    v: ventana
+    dig, i, k: entero
 
-    funcion convertir(x) es
-        '0': return(0)
-        '1': return(1)
+    funcion convertir(c: caracter): entero es
+        si c = '1' entonces
+            convertir := 1
+        sino
+            convertir := 0
+        finsi
     finfuncion
 
-    procedimiento obtenervalor es
-        según dig hacer
-            10: dig:= 'A'
-            11: dig:= 'B'
-            13: dig:= 'C'
-            14: dig:= 'D'
-            15: dig:= 'E'
-            16: dig:= 'F'
+    funcion obtenervalor(d: entero): caracter es
+        segun d hacer
+            0: obtenervalor := '0'
+            1: obtenervalor := '1'
+            2: obtenervalor := '2'
+            3: obtenervalor := '3'
+            4: obtenervalor := '4'
+            5: obtenervalor := '5'
+            6: obtenervalor := '6'
+            7: obtenervalor := '7'
+            8: obtenervalor := '8'
+            9: obtenervalor := '9'
+            10: obtenervalor := 'A'
+            11: obtenervalor := 'B'
+            12: obtenervalor := 'C'
+            13: obtenervalor := 'D'
+            14: obtenervalor := 'E'
+            15: obtenervalor := 'F'
         finsegun
-    fp
+    finfuncion
 
 PROCESO
-    ABRIR(salida,v)
-    p:= prim
+    CREAR(salida)
+    p := prim
     Mientras p <> nil hacer
-        Para i= 1 a 2 hacer
-            dig:= dig + (8* convertir(p.caracter))
-            p:= *p.prox
-            dig:= dig + (4* convertir(p.caracter))
-            p:= *p.prox
-            dig:= dig + (2* convertir(p.caracter))
-            p:= *p.prox
-            dig:= dig + (1* convertir(p.caracter))
-
-            si dig < 10 entonces
-                convertircaracter(dig)
-            sino
-                obtenervalor()
-            finsi
-
-            Escribir(sal, dig)
-            dig:= 0
+        Para i := 1 a 2 hacer               // dos dígitos hexa por byte
+            dig := 0
+            Para k := 1 a 4 hacer
+                dig := dig * 2 + convertir(*p.caracter)
+                p := *p.prox
+            finpara
+            ESC(salida, obtenervalor(dig))
         finpara
-        escribir(sal, '-')
+        si p <> nil entonces
+            ESC(salida, '-')
+        finsi
     finmientras
-
-    cerrar(sec)
+    CERRAR(salida)
 finproceso
 
 
+// --------------------------------------------------------------------------
+// Ejercicio 2 (consigna reconstruida)
+// Actualización secuencial. El archivo VEHICULOS, ordenado por código de
+// vehículo y código de ruta, tiene: km totales, estado y si está fuera de
+// servicio. El archivo ACTUALIZACION, ordenado igual, trae los movimientos
+// del período: estado y km de uso. Generar el maestro actualizado.
+// --------------------------------------------------------------------------
 
+// Supuestos (del borrador):
+//  - estado 1: alta de un vehículo en una ruta (no puede existir en el
+//    maestro); entra con 0 km más los km de uso del movimiento.
+//  - estado 2, 3 o 4: el vehículo anduvo: se suman los km de uso y se
+//    guarda el estado nuevo.
+//  - estado 5: el vehículo queda fuera de servicio (baja lógica: se marca y
+//    se sigue grabando).
+//  - Puede haber varios movimientos para el mismo vehículo y ruta.
+// Es el esquema de actualización con HV: se lee con un procedimiento que
+// pone HV en la clave al llegar al fin de cada archivo.
 
-
-ACCION
+ACCION ActualizarVehiculos ES
 Ambiente
-    arch-vehi= reg //ordenado por cod-vehi, cod-ru
-       clave= registro
-        cod-veh:
-        cod-rut:
-    finreg
-        km-tot:
-        estado:
-        fuera-ss:
+    clave_vr = registro
+        cod_veh: N(5)
+        cod_rut: N(3)
     finregistro
 
-    arch-act= regist
-        clave=registro
-            cod-veh:
-            cod-rut:
-        finreg
-        estado:
-        km-uso:
+    vehiculo = registro
+        clave: clave_vr
+        km_tot: N(8)
+        estado: 1..5
+        fuera_ss: ('S','N')
     finregistro
 
-    vehiculo: archivo de arch-vehi
-    v: arch-vehi
+    movimiento = registro
+        clave: clave_vr
+        estado: 1..5
+        km_uso: N(6)
+    finregistro
 
-    actualizacion: archivo de arch-act
-    a: arch-act
+    vehiculos: archivo de vehiculo ordenado por clave
+    nuevo: archivo de vehiculo ordenado por clave
+    actualizacion: archivo de movimiento ordenado por clave
+    v, aux: vehiculo
+    a: movimiento
+    existe_aux: booleano
 
-    arch-nue= registro
-        clave= registro
-            cod-veh
-            cod-rut:
-        finreg
-        km-uso
-        estado: nuevo
-    finreg
+    procedimiento leer_maestro es
+        leer(vehiculos, v)
+        si FDA(vehiculos) entonces
+            v.clave.cod_veh := HV
+            v.clave.cod_rut := HV
+        finsi
+    fp
 
-    nuevo: archivo de arch-nue
-    n: nuevo
+    procedimiento leer_mov es
+        leer(actualizacion, a)
+        si FDA(actualizacion) entonces
+            a.clave.cod_veh := HV
+            a.clave.cod_rut := HV
+        finsi
+    fp
 
-    procedimiento procesoIgual es
-        si a.estado > 1 y a.estado < 5 entonces
-            n.km-tot:= v.km-tot
-            n.km-tot:= n.km-tot + a.km-uso
-            escribir(nuevo, n)
-            leer(vehiculo, v)
-        sino
-            si a.estado = 5 entonces
-
-
-
-
-
-
-
-
-si a.estado = 1 entonces
-                n.cod-veh:= a.cod-veh
-                n.cod-rut:= a.cod-rut
-                n.km-uso:= 0
-                estado:= 'nuevo'
-            sino si a.estado = 5  entonces
-PROCESO
-    ABRIR S/E(vehiculo) ABRIR S(actualizacion) ABRIR E(arch-vehi-nue)
-        leer(vehiculo,v) leer(actualizacion, a)
-        Mientras(vehiculo.clave <> HV) o (actualizacion.clave <> HV) hacer
-            si vehiculo.clave = actualizacion.clave entonces
-                procesoIgual()
-                sino
-                    si vehiculo.clave < actualizacion.clave entonces //no movimientos
-                        tratosinMovimiento()
+    // aplica a aux todos los movimientos que tienen su misma clave
+    procedimiento aplicar_movimientos es
+        mientras a.clave = aux.clave hacer
+            segun a.estado hacer
+                1:  si existe_aux entonces
+                        escribir("Error: el vehículo ", a.clave.cod_veh, " ya existe en la ruta ", a.clave.cod_rut)
                     sino
-                        procesosDistintos()
+                        existe_aux := verdadero
+                        aux.km_tot := a.km_uso
+                        aux.estado := 1
+                        aux.fuera_ss := 'N'
                     finsi
-            finsi
+                2, 3, 4:
+                    si existe_aux entonces
+                        aux.km_tot := aux.km_tot + a.km_uso
+                        aux.estado := a.estado
+                    sino
+                        escribir("Error: movimiento de un vehículo inexistente ", a.clave.cod_veh)
+                    finsi
+                5:  si existe_aux entonces
+                        aux.estado := 5
+                        aux.fuera_ss := 'S'
+                    sino
+                        escribir("Error: baja de un vehículo inexistente ", a.clave.cod_veh)
+                    finsi
+            finsegun
+            leer_mov()
         finmientras
+    fp
+
+    procedimiento procesoIgual es           // hay maestro y movimientos
+        aux := v
+        existe_aux := verdadero
+        aplicar_movimientos()
+        escribir(nuevo, aux)
+        leer_maestro()
+    fp
+
+    procedimiento tratosinMovimiento es     // el maestro pasa sin cambios
+        escribir(nuevo, v)
+        leer_maestro()
+    fp
+
+    procedimiento procesosDistintos es      // movimientos sin maestro: solo vale el alta
+        aux.clave := a.clave
+        existe_aux := falso
+        aplicar_movimientos()
+        si existe_aux entonces
+            escribir(nuevo, aux)
+        finsi
+    fp
+
+PROCESO
+    ABRIR E/(vehiculos)
+    ABRIR E/(actualizacion)
+    ABRIR /S(nuevo)
+    leer_maestro()
+    leer_mov()
+    Mientras (v.clave.cod_veh <> HV) o (a.clave.cod_veh <> HV) hacer
+        si v.clave = a.clave entonces
+            procesoIgual()
+        sino
+            si v.clave < a.clave entonces   // vehículo sin movimientos
+                tratosinMovimiento()
+            sino
+                procesosDistintos()
+            finsi
+        finsi
+    finmientras
+    CERRAR(vehiculos)
+    CERRAR(actualizacion)
+    CERRAR(nuevo)
+finproceso

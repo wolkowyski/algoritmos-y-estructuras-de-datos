@@ -2,15 +2,53 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Final - Resolución del modelo de final 20
 //  Enunciado: ../enunciados/final-20.jpg
-//  Estado: incompleto (resolución sin terminar).
+//  Revisado y completado: la resolución del ejercicio 1 no tenía el final
+//  del proceso ni el TOP TEN, y los cortes estaban mezclados; se terminó y
+//  se agregó el ejercicio 2.
 // ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1 (35 puntos)
+// Desarrollar un algoritmo que procese las NOTAS de los alumnos de la UTN
+// FRRe definiendo el tipo de situación en cada materia. Para ello se tienen
+// dos archivos:
+//   NOTAS ordenado por Carrera, Legajo, Materia:
+//     Carrera (1..5), Legajo, Materia (1..50), Nota, Fecha Aprobación, Plan
+//   ALUMNOS indexado por Legajo:
+//     Legajo, Nombre, Fecha Ingreso, cant-mat-aprobadas, Email
+// Se necesita:
+//   - Emitir un listado por Carrera, Legajo y Materia con su respectiva
+//     situación, donde salga el nombre del alumno, de acuerdo al promedio de
+//     notas de cada materia:
+//       Mayor a 6: PROMOCIONADO   Igual a 6: REGULAR   Menos de 6: RECUPERA
+//   - Informar por Carrera y Legajo:
+//       el porcentaje de cada situación con respecto al total de materias;
+//       promedio general.
+//   - Desarrollar un listado del TOP TEN de los mejores promedios de la
+//     Carrera 1 (ISI).
+//   - Modifique en el archivo ALUMNO la cantidad de materias aprobadas.
+// --------------------------------------------------------------------------
+
+// Es un corte de control de tres niveles: Carrera > Legajo > Materia.
+// En la versión anterior los cortes se disparaban en un solo ciclo y el de
+// carrera llamaba al de legajo después de haber cambiado los resguardos, el
+// último grupo nunca se cerraba al llegar al fin de archivo, y el promedio
+// por materia se hacía con enteros. Acá cada nivel es un ciclo anidado, así
+// el cierre de cada grupo (y el del último) queda en un solo lugar.
+//
+// Supuestos:
+//  - "Materias aprobadas" = materias con situación PROMOCIONADO. Como NOTAS
+//    tiene todas las notas del alumno, el campo se recalcula (no se suma).
+//  - Promedio general = promedio de los promedios de cada materia.
+//  - El TOP TEN se arma con una lista ordenada de mayor a menor promedio
+//    con los alumnos de la carrera 1, y se muestran los 10 primeros.
 
 Accion utn() es
 
 Ambiente
 
 	fecha=registro
-		año:N(4)
+		anio:N(4)
 		mes:1..12
 		dia:1..31
 	fin registro
@@ -29,11 +67,8 @@ Ambiente
 	reg_n: notas
 	arch_n: archivo de notas ordenado por clave
 
-
 	alumnos=registro
-		clave=registro
-			legajo:N(8)
-		fin registro
+		legajo:N(8)
 		nombre:AN(20)
 		fecha_ing: fecha
 		cant_mat_ap:N(3)
@@ -43,173 +78,207 @@ Ambiente
 	reg_a: alumnos
 	arch_a: archivo de alumnos indexado por legajo
 
-	resg_car, resg_leg, resg_mat, nota, cant, cant_mat, prom_l, prom_m, prom_c, porc, cant_al: entero
-
-	A: Arreglo [1..3, 1..2] de enteros
-
-	Procedimiento corte_mat() es
-
-		Escribir("Carrera: ",resg_car)
-		Escribir("Legajo: ",resg_leg)
-		Escribir("Materia :",resg_mat)
-		Escribir("Alumno: ",reg_a.nombre)
-
-		prom_m:=nota/cant
-		Segun (prom_m) hacer
-			>6: Escribir("Situación: Promocionado")
-			    A[1,1]:=A[1,1]+1
-			    reg_a.cant_mat_ap:=reg_a.cant_mat_ap+1
-			    REGRABAR(arch_a, reg_a)
-
-			=6: Escribir("Situación: Regular")
-			    A[2,1]:=A[2,1]+1
-			<6: Escribir("Situación: Recupera")
-			    A[3,1]:=A[3,1]+3
-		Fin Segun
-
-		resg_mat:=reg_n.clave.mat
-		prom_l:=prom_l+prom_m
-		nota:=0
-		cant:=0
-
-	Fin Procedimiento
-
-	Procedimiento corte_leg()
-		corte_mat()
-
-		prom_c:=prom_c+prom_l
-
-		nuevo(q)
-		*q.legajo:=resg_leg
-		prom_l:=prom_l/cant_mat
-		*q.promedio:=prom_l
-
-		Si (prim=nil) entonces
-			prim:=q
-			*q.prox:=nil
-		Sino
-			p:=prim
-			Mientras (p<>nil) Y (*p.promedio>prom_l) hacer
-				a:=p
-				p:=*p.prox
-			Fin Mientras
-			Si (p=prim) entonces
-				*q.prox:=p
-				prim:=q
-			Sino
-				*a.prox:=q
-				*q.prox:=p
-			Fin Si
-		Fin Si
-
-		Escribir("Legajo: ",resg_leg)
-		Para i:=1 a 3 hacer
-			porc:=(A[i,1]*100)/cant_mat
-			Segun (i) hacer
-				=1: Escribir(porc ,"% de materias promocionadas")
-				=2: Escribir(porc ,"% de materias regularizadas")
-				=3: Escribir(porc ,"% de materias que debe recuperar")
-			Fin Segun
-			A[i,2]:=A[i,2]+A[i,1]
-			A[i,1]:=0
-		Fin Para
-		Escribir("Promedio general: ",prom_l)
-
-		cant_mat:=0
-		prom_l:=0
-		resg_leg:=reg_n.clave.legajo
-
-	Fin Procedimiento
-
-	Procedimiento corte_car()
-		corte_mat()
-		corte_leg()
-
-		prom_c:=prom_c/cant_al
-
-		Escribir("Carrera: ",resg_car)
-		Para i:=1 a 3 hacer
-			porc:=(A[i,2]*100)/cant_al
-			Segun (i) hacer
-				=1: Escribir(porc ,"% de materias promocionadas")
-				=2: Escribir(porc ,"% de materias regularizadas")
-				=3: Escribir(porc ,"% de materias que debe recuperar")
-			Fin Segun
-			A[i,2]:=0
-		Fin Para
-
-		Escribir("Promedio general: ",prom_c)
-
-		cant_al:=0
-		prom_c:=0
-		resg_c:=reg_n.clave.carrera
-	Fin Procedimiento
-
-
 	nodo=registro
 		legajo: N(8)
-		promedio: N(2)
+		nombre: AN(20)
+		promedio: real
 		prox: puntero a nodo
 	fin registro
 
 	prim, p, q, a: puntero a nodo
 
+	resg_car, resg_leg, resg_mat: entero
+	suma_n, cant_n, mat_leg, mat_car, sit, i: entero
+	prom_m, suma_leg, suma_car, prom_l: real
+	nombre: AN(20)
+	existe_al: booleano
+
+	SitLeg: arreglo [1..3] de entero    // 1 promocionado, 2 regular, 3 recupera
+	SitCar: arreglo [1..3] de entero
+	NomSit: arreglo [1..3] de AN(15)
+
+	Procedimiento informar(S: arreglo [1..3] de entero, total: entero, suma: real) es
+		Para i:=1 a 3 hacer
+			Escribir("   ", NomSit[i], ": ", (S[i]*100)/total, "%")
+		Fin Para
+		Escribir("   Promedio general: ", suma/total)
+	Fin Procedimiento
+
+	// inserta el alumno en la lista del TOP TEN (de mayor a menor promedio)
+	Procedimiento insertar_top() es
+		nuevo(q)
+		*q.legajo:=resg_leg
+		*q.nombre:=nombre
+		*q.promedio:=prom_l
+		a:=nil
+		p:=prim
+		Mientras (p<>nil) y (*p.promedio>=prom_l) hacer
+			a:=p
+			p:=*p.prox
+		Fin Mientras
+		*q.prox:=p
+		Si (a=nil) entonces
+			prim:=q
+		Sino
+			*a.prox:=q
+		Fin Si
+	Fin Procedimiento
 
 Proceso
 
-	Para i:=1 a 3 hacer
-		Para j:=1 a 2 hacer
-			A[i,j]:=0
-		Fin Para
-	Fin Para
-
+	NomSit[1]:="PROMOCIONADO"
+	NomSit[2]:="REGULAR"
+	NomSit[3]:="RECUPERA"
 	prim:=nil
 
 	ABRIR E/ (arch_n)
 	ABRIR E/S (arch_a)
-	LEER (arch_n, reg_n)
+	LEER(arch_n, reg_n)
 
-	nota:=0
-	cant:=0
-	cant_mat:=0
-	prom_l:=0
-	prom_c:=0
-	cant_al:=0
+	Mientras No FDA(arch_n) hacer
 
-	resg_car:=reg_n.clave.carrera
-	resg_leg:=reg_n.clave.legajo
-	resg_mat:=reg_n.clave.materia
+		// ---- inicio de carrera
+		resg_car:=reg_n.clave.carrera
+		Para i:=1 a 3 hacer
+			SitCar[i]:=0
+		Fin Para
+		suma_car:=0
+		mat_car:=0
+		Escribir("CARRERA ", resg_car)
 
-	Mientras NFDA (arch_n) hacer
+		Mientras No FDA(arch_n) y (reg_n.clave.carrera=resg_car) hacer
 
-		reg_a.clave.legajo:=reg_n.clave.legajo
-		LEER (arch_a, reg_a)
-
-		Si (existe) entonces
-
-			Si (resg_car<>reg_n.clave.carrera) entonces
-				corte_car()
+			// ---- inicio de legajo
+			resg_leg:=reg_n.clave.legajo
+			Para i:=1 a 3 hacer
+				SitLeg[i]:=0
+			Fin Para
+			suma_leg:=0
+			mat_leg:=0
+			reg_a.legajo:=resg_leg
+			LEER(arch_a, reg_a)
+			existe_al:=EXISTE
+			Si existe_al entonces
+				nombre:=reg_a.nombre
 			Sino
-				Si (resg_leg<>reg_n.clave.legajo) entonces
-					cant_al:=cant_al+1
-					corte_leg()
-				Sino
-					Si (resg_mat<>reg_n.clave.materia) entonces
-						cant_mat:=cant_mat+1
-						corte_mat()
-					Fin Si
-				Fin Si
+				nombre:="(no está en ALUMNOS)"
 			Fin Si
 
+			Mientras No FDA(arch_n) y (reg_n.clave.carrera=resg_car) y (reg_n.clave.legajo=resg_leg) hacer
 
+				// ---- inicio de materia
+				resg_mat:=reg_n.clave.materia
+				suma_n:=0
+				cant_n:=0
+				Mientras No FDA(arch_n) y (reg_n.clave.carrera=resg_car) y (reg_n.clave.legajo=resg_leg) y (reg_n.clave.materia=resg_mat) hacer
+					suma_n:=suma_n+reg_n.nota
+					cant_n:=cant_n+1
+					LEER(arch_n, reg_n)
+				Fin Mientras
 
-			nota:=nota+reg_n.nota
-			cant:=cant+1
+				// ---- fin de materia
+				prom_m:=suma_n/cant_n
+				Si (prom_m>6) entonces
+					sit:=1
+				Sino
+					Si (prom_m=6) entonces
+						sit:=2
+					Sino
+						sit:=3
+					Fin Si
+				Fin Si
+				Escribir(resg_car, "  ", resg_leg, "  ", nombre, "  Materia ", resg_mat, ": ", NomSit[sit])
+				SitLeg[sit]:=SitLeg[sit]+1
+				suma_leg:=suma_leg+prom_m
+				mat_leg:=mat_leg+1
 
-		Sino
-			Escribir("No existe el legajo en el archivo alumnos")
-		Fin Si
+			Fin Mientras
 
-		LEER (arch_n ,reg_n)
+			// ---- fin de legajo
+			prom_l:=suma_leg/mat_leg
+			Escribir("Legajo ", resg_leg, " - ", nombre)
+			informar(SitLeg, mat_leg, suma_leg)
+
+			Si existe_al entonces
+				reg_a.cant_mat_ap:=SitLeg[1]
+				REGRABAR(arch_a, reg_a)
+			Fin Si
+
+			Si (resg_car=1) entonces
+				insertar_top()
+			Fin Si
+
+			Para i:=1 a 3 hacer
+				SitCar[i]:=SitCar[i]+SitLeg[i]
+			Fin Para
+			suma_car:=suma_car+suma_leg
+			mat_car:=mat_car+mat_leg
+
+		Fin Mientras
+
+		// ---- fin de carrera
+		Escribir("Total carrera ", resg_car)
+		informar(SitCar, mat_car, suma_car)
 
 	Fin Mientras
+
+	// TOP TEN de la carrera 1 (ISI)
+	Escribir("TOP TEN - ISI")
+	p:=prim
+	i:=1
+	Mientras (p<>nil) y (i<=10) hacer
+		Escribir(i, ". ", *p.legajo, " ", *p.nombre, " - ", *p.promedio)
+		p:=*p.prox
+		i:=i+1
+	Fin Mientras
+
+	CERRAR(arch_n)
+	CERRAR(arch_a)
+
+Fin Accion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2
+// Desarrollar un algoritmo que haga la conversión del sistema binario al
+// hexadecimal de una palabra de 48 bits que recibe como parámetro (el tipo de
+// dato del parámetro lo elige el alumno). (El resto de la consigna quedó
+// fuera de la foto.)
+// --------------------------------------------------------------------------
+
+// Elijo un arreglo de 48 elementos 0..1 (un bit por posición, el más
+// significativo en la posición 1): es lo que menos memoria usa de los tipos
+// de la cátedra y permite tomar los bits de a 4. Cada grupo de 4 bits es un
+// dígito hexadecimal, así que la salida son 12 dígitos.
+
+Accion bin_a_hex(B: arreglo [1..48] de 0..1) es
+
+Ambiente
+
+	Hex: arreglo [0..15] de caracter
+	salida: arreglo [1..12] de caracter
+	g, k, valor: entero
+
+	Procedimiento cargar_hex() es
+		Hex[0]:="0"   Hex[1]:="1"   Hex[2]:="2"   Hex[3]:="3"
+		Hex[4]:="4"   Hex[5]:="5"   Hex[6]:="6"   Hex[7]:="7"
+		Hex[8]:="8"   Hex[9]:="9"   Hex[10]:="A"  Hex[11]:="B"
+		Hex[12]:="C"  Hex[13]:="D"  Hex[14]:="E"  Hex[15]:="F"
+	Fin Procedimiento
+
+Proceso
+
+	cargar_hex()
+	Para g:=1 a 12 hacer
+		valor:=0
+		Para k:=1 a 4 hacer
+			valor:=valor*2 + B[(g-1)*4 + k]
+		Fin Para
+		salida[g]:=Hex[valor]
+	Fin Para
+
+	Para g:=1 a 12 hacer
+		Escribir(salida[g])
+	Fin Para
+
+Fin Accion

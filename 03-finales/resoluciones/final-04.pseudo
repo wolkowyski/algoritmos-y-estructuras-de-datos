@@ -2,11 +2,30 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Final - Resolución del modelo de final 4
 //  Enunciado: ../enunciados/final-04.jpg
-//  Estado: incompleto (falta el punto b) de la consigna 1).
+//  Revisado y completado: se agregó el punto b) de la consigna 1 y se
+//  corrigieron las dos consignas (los cambios dicen "// corregido").
 // ==========================================================================
 
-//consigna 1
-//Falta la b) no entiendo a que se refiere con los promedios de ventas x mes
+// --------------------------------------------------------------------------
+// Consigna 1
+// Una empresa tiene 50 viajantes y necesita obtener información de
+// seguimiento respecto de las ventas realizadas por cada uno de ellos durante
+// los últimos 3 meses del año vencido. Para ello cuenta con un ARCHIVO
+// VIAJANTE ordenado por Nro. de Legajo y mes, con: Nro. de Legajo, mes,
+// cantidad de ventas realizadas e importe total de ventas. Además, un archivo
+// de FILIACIÓN indexado por Nro. de Legajo con: Nro. de Legajo, apellido y
+// nombre, estado civil, dirección. Se desea un listado:
+//   a) totales de ventas (cantidad e importes) por viajante
+//   b) promedio de ventas totales por mes
+//   c) cuáles son los tres viajantes que más ventas hayan realizado, en un
+//      ranking de mayor a menor.
+// Si hace falta un ordenamiento, indicarlo como una subacción.
+// --------------------------------------------------------------------------
+
+// b) "Promedio de ventas totales por mes": por cada mes (octubre, noviembre y
+// diciembre) sumo el importe vendido por todos los viajantes y lo divido por
+// la cantidad de viajantes. Es lo que muestra el ejemplo de salida
+// ("Promedio Ventas Octubre: ...").
 
 Accion viajantes() es
 
@@ -25,45 +44,44 @@ Ambiente
 	arch_v: archivo de viajante ordenado por clave
 
 	filiacion=registro
-		clave=registro
-			nro_leg:N(8)
-		fr
+		nro_leg:N(8)
 		apenom:AN(50)
 		est_civ:AN(20)
-		dirección:AN(50)
+		direccion:AN(50)
 	fr
 
-	reg_f: filiación
-	arch_f: archivo de filiación indexado por nro_leg
+	reg_f: filiacion
+	arch_f: archivo de filiacion indexado por nro_leg
 
 	info=registro
 		legajo:N(8)
 		apenom:AN(50)
 		cant_vent:N(5)
-		import_vent(8.2)
+		import_vent:N(8.2)          // corregido: faltaba el ":"
 	fr
 
-	A: Arreglo [1..50] de info
+	A: arreglo [1..50] de info
+	aux: info
+	tot_mes: arreglo [10..12] de real   // b) importe vendido en cada mes
+	nom_mes: arreglo [10..12] de AN(10)
+	cont, leg_ant, i, j, max, m: entero
 
-	cont: entero
-
-	Procedimiento selección() es
-		Para i:=1 a 49 hacer
-			x:=A[i].cant_vent
-			min:=i
-			Para j:=i+1 a 50 hacer
-				Si (A[j].cant_vent<x) entonces
-					x:=A[j].cant_vent
-					min:=j
+	// corregido: ordenaba de menor a mayor y solo movía el campo cant_vent,
+	// así que los nombres quedaban mezclados. Ahora es selección de mayor a
+	// menor y se intercambia el registro completo.
+	Procedimiento seleccion() es
+		Para i:=1 a cont-1 hacer
+			max:=i
+			Para j:=i+1 a cont hacer
+				Si (A[j].cant_vent > A[max].cant_vent) entonces
+					max:=j
 				Fin Si
 			Fin Para
-
-			A[min].cant_vent:=A[i].cant_vent
-			A[i].cant_vent:=x
+			aux:=A[max]
+			A[max]:=A[i]
+			A[i]:=aux
 		Fin Para
 	Fin Procedimiento
-
-
 
 Proceso
 
@@ -74,93 +92,117 @@ Proceso
 		A[i].cant_vent:=0
 		A[i].import_vent:=0
 	Fin Para
+	Para m:=10 a 12 hacer
+		tot_mes[m]:=0
+	Fin Para
+	nom_mes[10]:="Octubre"
+	nom_mes[11]:="Noviembre"
+	nom_mes[12]:="Diciembre"
 
 	LEER(arch_v, reg_v)
-
 	cont:=1
 
-	Mientras NFDA (arch_v) hacer
+	Mientras No FDA(arch_v) hacer
 
-		reg_f.clave.nro_leg:=reg_v.clave.nro_leg
+		// corte de control por legajo
+		leg_ant:=reg_v.clave.nro_leg
+		A[cont].legajo:=leg_ant
+
+		reg_f.nro_leg:=leg_ant
 		LEER(arch_f, reg_f)
-
-		Si (existe) entonces
-
-			A[cont].legajo:=reg_v.clave.nro_leg
+		Si EXISTE entonces
 			A[cont].apenom:=reg_f.apenom
-			A[cont].cant_vent:=reg_v.cant_vent
-			A[cont].import_vent:=reg_v.import_vent
-
-			LEER(arch_v, reg_v)
-
-			Mientras (A[cont].legajo=reg_v.clave.nro_leg) hacer
-				A[cont].cant_vent:=A[cont].cant_vent+reg_v.cant_vent
-				A[cont].import_vent:=A[cont].import_vent+reg_v.import_vent
-				LEER(arch_v, reg_v)
-			Fin Mientras
-
-
 		Sino
-			Escribir("No existe el viajante en el archivo de filiación")
-			LEER(arch_v, reg_v)
+			// corregido: antes se salteaba solo un registro y los otros meses
+			// de ese legajo se cargaban como si fueran otro viajante
+			Escribir("No existe el viajante ", leg_ant, " en el archivo de filiación")
+			A[cont].apenom:="(sin datos)"
 		Fin Si
+
+		// corregido: faltaba controlar el fin de archivo en el ciclo interno
+		Mientras No FDA(arch_v) y (reg_v.clave.nro_leg = leg_ant) hacer
+			A[cont].cant_vent:=A[cont].cant_vent+reg_v.cant_vent
+			A[cont].import_vent:=A[cont].import_vent+reg_v.import_vent
+			tot_mes[reg_v.clave.mes]:=tot_mes[reg_v.clave.mes]+reg_v.import_vent
+			LEER(arch_v, reg_v)
+		Fin Mientras
 
 		cont:=cont+1
 
 	Fin Mientras
+	cont:=cont-1        // cantidad de viajantes leídos (50)
 
-	Para i:=1 a 50 hacer
-		Escribir(i,"° viajante leg: ",A[i].legajo)
-		Escribir("Apellido y nombre: ",A[i].apenom)
-		//calculo que ventas realizadas será el importe (?
-		Escribir("Ventas realizadas: ",A[i].import_vent)
+	// a) totales por viajante
+	Para i:=1 a cont hacer
+		Escribir(i,"° Viajante Leg: ",A[i].legajo, "  Apellido y nombre: ",A[i].apenom)
+		Escribir("Ventas realizadas: ",A[i].import_vent)     // importe total
 		Escribir("Cantidad de ventas: ",A[i].cant_vent)
 	Fin Para
 
-	selección()
+	// b) promedio de ventas totales por mes
+	Para m:=10 a 12 hacer
+		Escribir("Promedio Ventas ", nom_mes[m], ": ", tot_mes[m] / cont)
+	Fin Para
 
+	// c) ranking de los tres que más vendieron (por cantidad de ventas)
+	seleccion()
+	Escribir("Ranking:")
 	Para i:=1 a 3 hacer
-		Escribir(i,"° Puesto: ",A[i].apenom)
+		Escribir(i,"° ",A[i].apenom)
 	Fin Para
 
 	CERRAR(arch_v)
 	CERRAR(arch_f)
 
-Fin Proceso
+Fin Accion
 
 
+// --------------------------------------------------------------------------
+// Consigna 2
+// SEBASTIANI AUTOS posee 2 sucursales, una en Ctes. y otra en Rcia. Para
+// manejar sus deudores dispone de una secuencia de caracteres denominada DEU:
+//   #17651785|01|FORD FIESTA 2014#29465282|02|FIAT PALIO 2015....
+// Donde cada deudor comienza con el carácter #, luego su DNI, "|", código de
+// sucursal, "|", y finalmente la marca del automóvil y su modelo (año de
+// compra). Se desea obtener 2 archivos de salida (DEU-CTES y DEU-RCIA), uno
+// por cada sucursal, que contenga los deudores que hayan comprado automóviles
+// en los 5 últimos años. El código 01 pertenece a Ctes y el 02 a Rcia.
+// El formato de cada archivo de salida deberá ser: DNI (numérico de 8),
+// MARCA (alfanumérico de 20), MODELO (formato año).
+// --------------------------------------------------------------------------
 
-
-
-//consigna 2
+// corregido: la versión anterior tenía estos problemas:
+//  - convertir_num recibía el resultado por valor, así que dni y año
+//    quedaban siempre en 0;
+//  - después de ARR se avanzaba dos veces y se perdía el primer dígito;
+//  - la marca se cortaba en el primer "2" (FIAT 128 o un modelo 2xx se
+//    rompían) y el ciclo de adentro no paraba en el fin de la secuencia.
+// Ahora los números se arman dígito a dígito (n := n*10 + dígito) y, como el
+// año es siempre la última palabra antes del próximo #, voy guardando la
+// palabra actual y su valor numérico: al terminar el deudor, esa última
+// palabra es el año y todo lo anterior es la marca.
 
 Accion sebastiani() es
 
 Ambiente
 
+	ANIO_ACTUAL = 2023          // año del examen: "5 últimos años" = 2019 a 2023
+
 	deu: secuencia de caracteres
 	v: caracter
 
-	deu_ctes=registro
-		dni:N(8)
-		marca:AN(20)
-		modelo:N(4) //no se que seria formato año?
-	fin registro
-
-	deu_rcia=registro
+	deudor=registro
 		dni:N(8)
 		marca:AN(20)
 		modelo:N(4)
 	fin registro
 
-	reg_c: deu_ctes
-	rec_r: deu_rcia
-	arch_c: archivo de deu_ctes
-	arch_r: archivo de deu_rcia
+	reg: deudor
+	arch_c: archivo de deudor   // DEU-CTES
+	arch_r: archivo de deudor   // DEU-RCIA
 
-
-	Funcion car_a_ent(y:entero) es
-		Segun (y) hacer
+	Funcion car_a_ent(c: caracter): entero es
+		Segun (c) hacer
 			="0": car_a_ent:=0
 			="1": car_a_ent:=1
 			="2": car_a_ent:=2
@@ -174,18 +216,8 @@ Ambiente
 		Fin Segun
 	Fin Funcion
 
-	num, dni, año, suc: entero
-
-	Procedimiento convertir_num(x: entero, k:entero, m:entero) es
-		Para i:=1 a x hacer
-			num:=car_a_ent(v)
-			m:=m+(num*k)
-			k:=k/10
-			AVZ(deu, v)
-		Fin Para
-	Fin Procedimiento
-
-	marca: alfanumerico
+	dni, anio, suc, valor, i: entero
+	marca, palabra: AN(20)
 
 Proceso
 
@@ -193,66 +225,64 @@ Proceso
 	ABRIR /S (arch_r)
 
 	ARR(deu)
-	AVZ(deu, v)
+	AVZ(deu, v)                 // v = "#" del primer deudor
 
 	Mientras NFDS(deu) hacer
 
-		AVZ(deu, v)
+		AVZ(deu, v)             // salteo el "#"
 
-		Mientras (v<>"#") hacer
-
-			dni:=0
-			convertir_num(8, 10000000, dni)
-
+		dni:=0
+		Para i:=1 a 8 hacer
+			dni:=dni*10 + car_a_ent(v)
 			AVZ(deu, v)
+		Fin Para
+		AVZ(deu, v)             // salteo el "|"
+
+		suc:=0
+		Para i:=1 a 2 hacer
+			suc:=suc*10 + car_a_ent(v)
 			AVZ(deu, v)
+		Fin Para
+		AVZ(deu, v)             // salteo el "|"
 
-			Si (v="1") entonces
-				suc:=1
-			Sino
-				Si (v="2") entonces
-					suc:=2
-				Fin Si
-			Fin Si
-
-			AVZ(deu, v)
-			AVZ(deu, v)
-
-			//no se como hacer para que la marca sea un alfanumerico asi que uso concatenar
-
-			marca:=v
-			AVZ(deu, v)
-
-			Mientras (v<>"2") y (v<>"#") hacer
-				marca:=marca+concatenar(v)
-				AVZ(deu, v)
-			Fin Mientras
-
-			Si (v="2") entonces
-				año:=0
-				convertir_num(4,1000,año)
-			Fin Si
-
-			Si (año>=2019) entonces
-				Si (suc=1) entonces
-					reg_c.dni:=dni
-					reg_c.marca:=marca
-					reg_c.modelo:=año
-					GRABAR(arch_c, reg_c)
+		// marca y modelo, hasta el próximo "#"
+		marca:=""
+		palabra:=""
+		valor:=0
+		Mientras NFDS(deu) y (v<>"#") hacer
+			Si (v=" ") entonces
+				Si (marca="") entonces
+					marca:=palabra
 				Sino
-					reg_r.dni:=dni
-					reg_r.marca:=marca
-					reg_r.modelo:=año
-					GRABAR(arch_r, reg_r)
+					marca:=marca + " " + palabra
+				Fin Si
+				palabra:=""
+				valor:=0
+			Sino
+				palabra:=palabra + v
+				Si (v>="0") y (v<="9") entonces
+					valor:=valor*10 + car_a_ent(v)
 				Fin Si
 			Fin Si
-
-
+			AVZ(deu, v)
 		Fin Mientras
+		anio:=valor             // la última palabra era el año
+
+		Si (anio >= ANIO_ACTUAL - 4) entonces
+			reg.dni:=dni
+			reg.marca:=marca
+			reg.modelo:=anio
+			Si (suc=1) entonces
+				GRABAR(arch_c, reg)
+			Sino
+				GRABAR(arch_r, reg)
+			Fin Si
+		Fin Si
 
 	Fin Mientras
 
+	CERRAR(deu)
 	CERRAR(arch_c)
 	CERRAR(arch_r)
 
-Fin Proceso
+Fin Accion

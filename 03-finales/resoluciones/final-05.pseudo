@@ -2,10 +2,27 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Final - Resolución del modelo de final 5
 //  Enunciado: ../enunciados/final-05.jpg
-//  Estado: incompleto (la consigna 2 quedó sin terminar).
+//  Revisado y completado: la consigna 2 se terminó y se corrigió (los
+//  cambios dicen "// corregido").
 // ==========================================================================
 
-//consigna 1
+// --------------------------------------------------------------------------
+// Consigna 1
+// Una empresa posee datos de facturas en una secuencia de caracteres.
+// Secuencia FAC1: contiene el número de la factura (12 dígitos), nombre del
+// cliente, "*" y un código de 2 dígitos que identifica el tipo de cliente
+// ('10' mayorista y '15' minorista), y a continuación la fecha de la factura
+// en formato ddmmaaaa (8 dígitos). Por ej.:
+//   000100111111FERNANDEZ*1501012005000100111112HIPERLIBERTAD*1003042005
+// Se debe crear dos secuencias de caracteres (mayorista y minorista) que
+// contengan los nombres de clientes y fechas de facturas, almacenados de la
+// siguiente forma: nombre de cliente, un blanco y fecha de factura, indicando
+// el final de cada factura con un signo de admiración (!). Al final informar
+// cantidad de clientes de cada secuencia.
+// --------------------------------------------------------------------------
+
+// El nombre se guarda en una lista porque hay que leerlo antes de saber, por
+// el código, a qué secuencia va.
 
 Accion facturas() es
 
@@ -24,7 +41,7 @@ Ambiente
 
 	prim, a, p, q: puntero a nodo
 
-	tot_min, tot_may: entero
+	tot_min, tot_may, i: entero
 
 	Procedimiento carga(s: secuencia de caracter de salida) es
 		p:=prim
@@ -80,8 +97,8 @@ Proceso
 			AVZ(sec, v)
 		Fin Mientras
 
-		AVZ(sec, v)
-		AVZ(sec, v)
+		AVZ(sec, v)             // primer dígito del código (siempre 1)
+		AVZ(sec, v)             // segundo dígito: 0 = mayorista, 5 = minorista
 
 		Si (v="0") entonces
 			carga(sec_may)
@@ -108,10 +125,62 @@ Proceso
 	Escribir("La cantidad de clientes en la secuencia mayorista es de ",tot_may)
 	Escribir("La cantidad de clientes en la secuencia minorista es de ",tot_min)
 
+	CERRAR(sec)             // corregido: faltaba cerrar las secuencias
+	CERRAR(sec_min)
+	CERRAR(sec_may)
+
 Fin Proceso
 
 
-//consigna 2
+
+
+// --------------------------------------------------------------------------
+// Consigna 2
+// En un archivo de DISTRIBUCIÓN indexado por número de remito viene la
+// información sobre los envíos que se realizan entre los distintos puntos de
+// distribución del país:
+//   Nro de remito (Punto origen 1..20, Punto destino 1..20, Mes N(2),
+//   Día N(2), Nro correlativo N(6)), LLEGADA (FECHA N(4), HORA N(2)),
+//   Cant. paquetes N, Peso N.
+// En un archivo de PUESTOS indexado por código vienen los nombres de los
+// centros de distribución (origen y/o destino):
+//   Código 1..20, Nombre distribuidor AN(30), Dirección AN(30),
+//   Empresa transportadora AN(30).
+// En el archivo TIEMPOS (desordenado) se registra, en días, el valor de la
+// distancia entre los puestos: Punto origen 1..20, Punto destino 1..20,
+// Distancia en días N(2).
+// El proceso se realiza diariamente, en forma interactiva por pantalla. Se
+// desea un algoritmo que actualice la DISTRIBUCIÓN, generando los envíos y
+// los remitos (impresos) correspondientes, calculando la fecha - hora de
+// llegada según la combinación origen-destino. Tener en cuenta que en cada
+// remito no pueden ir más de 20 paquetes, ni un peso mayor de 150 kg; caso
+// contrario deberá generar otro remito correlativo. El proceso lo termina el
+// operador emitiendo una serie de totales.
+// El usuario debe indicar: ciudad origen y hacia dónde, cantidad de paquetes
+// y peso por paquete. Los números de remito se generan en forma correlativa
+// comenzando en cero cada día. Al final del proceso diario se pide:
+//   a) Listar por cada combinación de origen destino, cantidad de remitos,
+//      cantidad de paquetes, peso total.
+//   b) Cuál es el destino con más remitos, cuál registra el mayor peso y
+//      cuál no tuvo envíos.
+// --------------------------------------------------------------------------
+
+// Supuestos:
+//  - FECHA N(4) de la llegada es ddmm. La fecha del día se pide al empezar
+//    (el proceso es diario) y la hora de cada envío la da la función
+//    HoraActual(), que se asume del sistema.
+//  - Ningún paquete pesa más de 150 kg (si no, no entraría en ningún remito).
+//
+// corregido respecto de la versión anterior:
+//  - TIEMPOS está desordenado, así que no se puede buscar leyéndolo una sola
+//    vez hacia adelante: al principio se carga entero en una matriz
+//    Dias[origen, destino].
+//  - El peso que ingresa el usuario es por paquete; el corte de remito se
+//    hace paquete por paquete (hasta 20 paquetes y hasta 150 kg). La versión
+//    anterior era recursiva y mezclaba cantidades y pesos.
+//  - Se busca origen y destino por separado (con SINO, si el destino estaba
+//    antes que el origen en el archivo, no se encontraba).
+//  - Nombres de variables que no coincidían (may_rem / mas_rem, nom_dist).
 
 Accion remitos() es
 
@@ -133,20 +202,18 @@ Ambiente
 		peso:N(3)
 	fin registro
 
-	reg_d: distribución
-	arch_d: archivo de distribución indexado por nro_rem
+	reg_d: distribucion
+	arch_d: archivo de distribucion indexado por nro_rem
 
 	puestos=registro
-		clave=registro
-			código:1..20
-		fin registro
+		codigo:1..20
 		nombre_dist:AN(30)
 		dir:AN(30)
 		emp_trans:AN(30)
 	fin registro
 
 	reg_p: puestos
-	arch_p: archivo de puestos indexado por código
+	arch_p: archivo de puestos indexado por codigo
 
 	tiempos=registro
 		pto_or:1..20
@@ -157,80 +224,86 @@ Ambiente
 	reg_t: tiempos
 	arch_t: archivo de tiempos
 
-	origen, destino, rta: alfanumerico
-	cant, peso, cont, or, dest, cant_f, peso_f, mas_rem, may_pes, no_env, mayor1, mayor2: entero
-
 	info=registro
 		cant_rem:N(5)
 		cant_paq:N(6)
 		peso_tot:N(8)
 	fin registro
 
-	A: Arreglo [1..21, 1..20] de info
+	// filas 1..20 = origen, fila 21 = total por destino
+	A: arreglo [1..21, 1..20] de info
+	Dias: arreglo [1..20, 1..20] de entero
+	dias_mes: arreglo [1..12] de entero
 
-	Procedimiento nuevo_rem(c:entero,p:entero) es
+	origen, destino, rta: AN(30)
+	cant, peso_paq, cont, or, dest, i, j: entero
+	dia_hoy, mes_hoy, dl, ml: entero
+	paq_rem, peso_rem: entero
+	mayor1, mayor2, may_rem, may_pes: entero
+
+	// fecha de llegada: le suma d días a la fecha del día (ddmm)
+	Procedimiento calcular_llegada(d: entero) es
+		dl:=dia_hoy+d
+		ml:=mes_hoy
+		Mientras (dl > dias_mes[ml]) hacer
+			dl:=dl-dias_mes[ml]
+			ml:=ml+1
+			Si (ml>12) entonces
+				ml:=1
+			Fin Si
+		Fin Mientras
+		reg_d.llegada.fecha:=dl*100+ml
+		reg_d.llegada.hora:=HoraActual()
+	Fin Procedimiento
+
+	// graba e imprime un remito con paq_rem paquetes y peso_rem kg
+	Procedimiento nuevo_rem() es
+		reg_d.nro_rem.pto_or:=or
+		reg_d.nro_rem.pto_dest:=dest
+		reg_d.nro_rem.mes:=mes_hoy
+		reg_d.nro_rem.dia:=dia_hoy
+		reg_d.nro_rem.nro_cor:=cont
+		cont:=cont+1
+		calcular_llegada(Dias[or,dest])
+		reg_d.cant_paq:=paq_rem
+		reg_d.peso:=peso_rem
+		GRABAR(arch_d, reg_d)
+
+		Escribir("REMITO ", or, "-", dest, "-", mes_hoy, "-", dia_hoy, "-", reg_d.nro_rem.nro_cor)
+		Escribir("  Origen: ", origen, "  Destino: ", destino)
+		Escribir("  Paquetes: ", paq_rem, "  Peso: ", peso_rem, " kg")
+		Escribir("  Llegada: ", reg_d.llegada.fecha, " a las ", reg_d.llegada.hora, " hs")
 
 		A[or,dest].cant_rem:=A[or,dest].cant_rem+1
 		A[21,dest].cant_rem:=A[21,dest].cant_rem+1
-
-		reg_d.nro_rem.pto_or:=or
-		reg_d.nro_rem.pto_dest:=dest
-		reg_d.nro_rem.mes:=mes_actual()
-		reg_d.nro_rem.dia:=dia_actual()
-		reg_d.nro_rem.nro_cor:=cont
-
-		cont:=cont+1
-
-		//no tengo idea que hacer si llega a FDA
-
-		Mientras (reg_t.pto_or<>or) Y (reg_t.pto_dest<>dest) hacer
-			LEER(arch_t, reg_t)
-		Fin Mientras
-
-		reg_d.llegada.fecha:=fecha_actual()+reg_t.dist_dias
-		reg_d.llegada.hora:=hora_actual()
-
-		Si (c>20) entonces
-			reg_d.cant_paq:=20
-			cant_f:=c-20
-		Sino
-			reg_d.cant_paq:=c
-			cant_f:=0
-		Fin Si
-
-		Si (p>150) entonces
-			reg_d.peso:=150
-			peso_f:=p-150
-		Sino
-			reg_d.peso:=p
-			peso_f:=0
-		Fin Si
-
-		GRABAR(arch_d, reg_d)
-
-		Si (cant_f<>0) Y (peso_f<>0) entonces
-			nuevo_rem(cant_f, peso_f)
-		Sino
-			Si (cant_f<>0) entonces
-				nuevo_rem(cant_f, p)
-			Sino
-				Si (peso_f<>0) entonces
-					nuevo_rem(c, peso_f)
-				Fin Si
-			Fin Si
-		Fin Si
 	Fin Procedimiento
-
-
 
 Proceso
 
-	ABRIR /S (arch_d)
+	ABRIR E/S (arch_d)          // se agregan remitos al archivo existente
 	ABRIR E/ (arch_p)
 	ABRIR E/ (arch_t)
-	LEER(arch_t, reg_t)
 
-	rta="si"
+	Para i:=1 a 12 hacer
+		dias_mes[i]:=31
+	Fin Para
+	dias_mes[2]:=28
+	dias_mes[4]:=30
+	dias_mes[6]:=30
+	dias_mes[9]:=30
+	dias_mes[11]:=30
+
+	// cargo TIEMPOS en memoria (está desordenado)
+	Para i:=1 a 20 hacer
+		Para j:=1 a 20 hacer
+			Dias[i,j]:=0
+		Fin Para
+	Fin Para
+	LEER(arch_t, reg_t)
+	Mientras No FDA(arch_t) hacer
+		Dias[reg_t.pto_or, reg_t.pto_dest]:=reg_t.dist_dias
+		LEER(arch_t, reg_t)
+	Fin Mientras
 
 	Para i:=1 a 21 hacer
 		Para j:=1 a 20 hacer
@@ -240,78 +313,104 @@ Proceso
 		Fin Para
 	Fin Para
 
-	cont:=0
+	Escribir("Ingrese el día y el mes de hoy")
+	Leer(dia_hoy)
+	Leer(mes_hoy)
 
+	cont:=0                     // los remitos empiezan en cero cada día
+	rta:="si"
 
 	Mientras (rta="si") hacer
 
 		Escribir("Ingrese el origen")
 		Leer(origen)
-
 		Escribir("Ingrese el destino")
-		Leer (destino)
+		Leer(destino)
 
+		or:=0
+		dest:=0
 		Para i:=1 a 20 hacer
-			reg_p.clave.codigo:=i
+			reg_p.codigo:=i
 			LEER(arch_p, reg_p)
-			Si (existe) entonces
-				Si (reg_p.nom_dist=origen) entonces
+			Si EXISTE entonces
+				Si (reg_p.nombre_dist=origen) entonces
 					or:=i
-				Sino
-					Si (reg_p.nom_dist=destino) entonces
-						dest:=i
-					Fin Si
+				Fin Si
+				Si (reg_p.nombre_dist=destino) entonces
+					dest:=i
 				Fin Si
 			Fin Si
 		Fin Para
 
+		Si (or=0) o (dest=0) entonces
+			Escribir("Origen o destino inexistente")
+		Sino
+			Escribir("Ingrese la cantidad de paquetes")
+			Leer(cant)
+			Escribir("Ingrese el peso por paquete")
+			Leer(peso_paq)
 
-		Escribir("Ingrese la cantidad de paquetes")
-		Leer(cant)
+			A[or,dest].cant_paq:=A[or,dest].cant_paq+cant
+			A[or,dest].peso_tot:=A[or,dest].peso_tot+cant*peso_paq
+			A[21,dest].peso_tot:=A[21,dest].peso_tot+cant*peso_paq
 
-		Escribir("Ingrese el peso")
-		Leer(peso)
+			// reparto los paquetes en remitos de hasta 20 paquetes y 150 kg
+			paq_rem:=0
+			peso_rem:=0
+			Para i:=1 a cant hacer
+				Si (paq_rem=20) o (peso_rem+peso_paq>150) entonces
+					nuevo_rem()
+					paq_rem:=0
+					peso_rem:=0
+				Fin Si
+				paq_rem:=paq_rem+1
+				peso_rem:=peso_rem+peso_paq
+			Fin Para
+			Si (paq_rem>0) entonces
+				nuevo_rem()         // el último remito, con lo que quedó
+			Fin Si
+		Fin Si
 
-		A[or,dest].cant_paq:=A[or,dest].cant_paq+cant
-		A[or,dest].peso_tot:=A[or,dest].peso_tot+peso
-		A[21,dest].peso_tot:=A[21,dest].peso_tot+peso
-
-		nuevo_rem(cant, peso)
-
-		Escribir("Si desea ingresar otro envio escriba 'si'")
-		Leer (rta)
+		Escribir("Si desea ingresar otro envío escriba 'si'")
+		Leer(rta)
 
 	Fin Mientras
 
-	mayor1:=0
-	mayor2:=0
-
+	// a) por combinación origen-destino (solo las que tuvieron envíos)
 	Para i:=1 a 20 hacer
-		Si (A[21,i].cant_rem>mayor1) entonces
-			mayor1:=A[21,i].cant_rem
-			may_rem:=i
-		Fin Si
-		Si (A[21,i].peso_tot>mayor2) entonces
-			mayor2:=A[21,i].peso_tot
-			may_pes:=i
-		Fin Si
-
 		Para j:=1 a 20 hacer
-			Escribir("Origen: ",i)
-			Escribir("Destino: ",j)
-			Escribir("Cantidad de remitos: ",A[i,j].cant_rem)
-			Escribir("Cantidad de paquetes: ",A[i,j].cant_paq)
-			Escribir("Peso total: ",A[i,j].peso_tot)
-			Escribir("-------------------------------")
+			Si (A[i,j].cant_rem>0) entonces
+				Escribir("Origen: ",i,"  Destino: ",j)
+				Escribir("Cantidad de remitos: ",A[i,j].cant_rem)
+				Escribir("Cantidad de paquetes: ",A[i,j].cant_paq)
+				Escribir("Peso total: ",A[i,j].peso_tot)
+				Escribir("-------------------------------")
+			Fin Si
 		Fin Para
 	Fin Para
 
-	Escribir("El destino con mas remitos es ",may_rem," con ",mayor1," remitos)
-	Escribir("El destino con mas peso es ",may_pes," con ",mayor2," peso)
+	// b) usando la fila 21 (totales por destino)
+	mayor1:=0
+	mayor2:=0
+	may_rem:=0
+	may_pes:=0
+	Para j:=1 a 20 hacer
+		Si (A[21,j].cant_rem>mayor1) entonces
+			mayor1:=A[21,j].cant_rem
+			may_rem:=j
+		Fin Si
+		Si (A[21,j].peso_tot>mayor2) entonces
+			mayor2:=A[21,j].peso_tot
+			may_pes:=j
+		Fin Si
+	Fin Para
 
-	Para i:=1 a 20 hacer
-		Si (A[21,i].cant_rem=0) entonces
-			Escribir("En el destino ",i," no hubo envios")
+	Escribir("El destino con más remitos es ",may_rem," con ",mayor1," remitos")
+	Escribir("El destino con más peso es ",may_pes," con ",mayor2," kg")
+
+	Para j:=1 a 20 hacer
+		Si (A[21,j].cant_rem=0) entonces
+			Escribir("El destino ",j," no tuvo envíos")
 		Fin Si
 	Fin Para
 

@@ -64,7 +64,7 @@ Los archivos `.pseudo` se muestran con resaltado de **Pascal** (configurado en [
 
 ## Revisión
 
-Antes de subirlo revisé todo: corregí errores de lógica, completé ejercicios que habían quedado a medio hacer y agregué comentarios, sin cambiar la forma de escribir que usábamos en la cursada. Después completé la guía contra la versión publicada de la cátedra, para que no quede ningún ejercicio sin resolver. Los que siguen incompletos lo dicen en su encabezado (*Estado: incompleto*).
+Antes de subirlo revisé todo: corregí errores de lógica, completé ejercicios que habían quedado a medio hacer y agregué comentarios, sin cambiar la forma de escribir que usábamos en la cursada. Después completé la guía contra la versión publicada de la cátedra, para que no quede ningún ejercicio sin resolver. También terminé las resoluciones de finales que habían quedado a medias y revisé a fondo los ejercicios de listas del Discord; en esos archivos cada arreglo está marcado con `// corregido`.
 
 Los laboratorios en C compilan con `gcc`. El de Pascal se compila con Free Pascal (`fpc`).
 

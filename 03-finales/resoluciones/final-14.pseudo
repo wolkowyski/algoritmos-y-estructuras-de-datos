@@ -2,20 +2,63 @@
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Final - Resolución del modelo de final 14
 //  Enunciado: ../enunciados/final-14.jpg
-//  Estado: incompleto (resolución sin terminar).
+//  Revisado y completado: el ejercicio 1 había quedado cortado y se terminó;
+//  los ejercicios 2 y 3 tienen correcciones marcadas con "// corregido".
 // ==========================================================================
 
-//Consigna 1)
-// B) y C)b)c): los datos que el enunciado no da se le piden al usuario
+// --------------------------------------------------------------------------
+// Ejercicio 1
+// Un Centro de alto rendimiento deportivo necesita un sistema que le permita
+// operar con los diferentes planes de entrenamiento que tiene disponibles.
+// Para ello nos solicitan, primeramente, desarrollar un algoritmo que permita
+// obtener información cuantitativa de los planes. Así, cuentan con una
+// secuencia de caracteres que incluye los siguientes datos: un número entre
+// 1 y 5 que indica el tipo de plan (1: Básico, 2: Mantenimiento, 3: Deporte
+// profesional, 4: Personalizado, 5: Indicación médica), a continuación otro
+// número entre 1 y 3 para indicar rango de edad (1: niños y adolescentes,
+// 2: personas entre 18 y 35 años, 3: mayores de 35 años), luego se indica el
+// nombre o título del plan que finaliza en un "-", y finalmente una letra
+// indicando nivel de popularidad del plan (A: Alta, B: Media, C: Baja). Los
+// datos de un plan se diferencian de otro con el símbolo "$". La secuencia se
+// vería algo así:
+//   12CardioPlus-A$22BoxFit-C$13FamilyTime-A$31EscuelaNatación-A#
+// Se solicita:
+//   A) Organizar los datos, separando la información de los planes
+//      disponibles por tipo de plan. Utiliza la estructura de datos que
+//      consideres apropiada para el caso.
+//   B) Por cada plan debes completar la siguiente información:
+//      a) Cupo Disponible [N(2)]   b) Monto a pagar [N(6,2)]
+//   C) Al finalizar informar:
+//      a) Porcentaje que representa los planes disponibles por tipo. Por ej:
+//         el 50% de los planes son del tipo 1.
+//      b) Cuál es el nombre del plan con mayor cupo disponible. Puede haber
+//         más de 1.
+//      c) Cuál es el plan disponible, para personas mayores de 35 años, a
+//         menor costo.
+// --------------------------------------------------------------------------
+
+// A) Un arreglo de 5 listas, una por tipo de plan (Planes[t] apunta al
+//    primero de la lista del tipo t). Cada plan se agrega al final de la
+//    lista de su tipo.
+// B) El cupo y el monto no vienen en la secuencia: se le piden al usuario
+//    al cargar cada plan.
+// "Plan disponible" = plan con cupo mayor a 0.
+//
+// corregido respecto de lo que había empezado:
+//  - el ciclo de adentro (Mientras v<>"$") no paraba en el "#" del final;
+//  - el título se guardaba en una lista de caracteres y después no se podía
+//    mostrar (*p.(*titulo.car)); ahora es una cadena armada concatenando;
+//  - la inserción en una sola lista ordenada fallaba al insertar adelante
+//    (a sin valor) y no separaba por tipo como pide el punto A.
 
 Accion centrodeportivo() es
 
 Ambiente
 
-	sec: secuencia de caracter de entrada
+	sec: secuencia de caracter
 	v: caracter
 
-	funcion car_a_ent(x:caracter):entero
+	Funcion car_a_ent(x: caracter): entero es
 		Segun (x) hacer
 			="1": car_a_ent:=1
 			="2": car_a_ent:=2
@@ -23,169 +66,134 @@ Ambiente
 			="4": car_a_ent:=4
 			="5": car_a_ent:=5
 		Fin Segun
-	Fin funcion
-
-	nodo2=registro
-		car:AN(1)
-		prox: puntero a nodo2
-	fin registro
-
-	prim2, p2, q2, a2: puntero a nodo2
+	Fin Funcion
 
 	nodo=registro
-		tipo_plan:N(1)
-		rango_edad:AN(1)
-		titulo: nodo2
-		popularidad:AN(1)
-		cupo_dis:N(2)
-		monto:N(6.2)
+		rango_edad: 1..3
+		titulo: AN(50)
+		popularidad: ("A","B","C")
+		cupo_dis: N(2)
+		monto: N(6,2)
 		prox: puntero a nodo
 	fin registro
 
-	prim, q, p, a, mej_plan: puntero a nodo
+	Planes: arreglo [1..5] de puntero a nodo   // primero de cada tipo
+	Ult: arreglo [1..5] de puntero a nodo      // último de cada tipo
+	Disp: arreglo [1..5] de entero             // planes disponibles por tipo
+	q, p, mej_plan: puntero a nodo
 
-	tipo, cupo, tot_planes, porcentaje: entero
-	monto: real
-
-	A: Arreglo [1..5] de enteros
+	tipo, tot_planes, mayor, i: entero
+	porcentaje, menor: real
 
 Proceso
 
 	Para i:=1 a 5 hacer
-		A[i]:=0
+		Planes[i]:=nil
+		Ult[i]:=nil
+		Disp[i]:=0
 	Fin Para
-
 	tot_planes:=0
 	mayor:=0
 
 	ARR(sec)
 	AVZ(sec, v)
 
-	prim:=nil
-
 	Mientras (v<>"#") hacer
 
-		Mientras (v<>"$") hacer
-
-			nuevo(q)
-			tipo:=car_a_ent(v)
-			*q.tipo_plan:=tipo
-
-			AVZ(sec, v)
-			*q.rango_edad:=v
-
-			AVZ(sec, v)
-
-			Escribir("Plan: ")
-			Escribir(v)
-
-			prim2:=nil
-
-			nuevo(q2)
-			*q.titulo:=q2
-
-			*q2.car:=v
-			prim2:=q2
-			*q2.prox:=nil
-			p2:=q2
-			AVZ(sec, v)
-
-			Mientras (v<>"-") hacer
-				Escribir(v)
-				nuevo(q2)
-				*q2.car:=v
-				*p2.prox:=q2
-				*q2.prox:=nil
-				p2:=q2
-				AVZ(sec, v)
-			Fin Mientras
-
-			Escribir("Ingrese el cupo disponible")
-			Leer(cupo)
-
-			Escribir("Ingrese el monto")
-			Leer(monto)
-
-			*q.cupo_dis:=cupo
-			*q.monto:=monto
-
-			Si (cupo>0) entonces
-				A[tipo]:=A[tipo]+1
-				tot_planes:=tot_planes+1
-			Fin Si
-
-			Si (cupo>mayor) entonces
-				mayor:=cupo
-			Fin Si
-
-			AVZ(sec, v)
-
-			*q.popularidad:=v
-
-			AVZ(sec, v)
-
-			Si (prim=nil) entonces
-				prim:=q
-				*q.prox:=nil
-			Sino
-				p:=prim
-				Mientras (p<>nil) Y (*p.tipo_plan<tipo) hacer
-					a:=p
-					p:=*p.prox
-				Fin Mientras
-
-				*a.prox:=q
-				*q.prox:=p
-			Fin Si
-
-
-		Fin Mientras
-
+		nuevo(q)
+		tipo:=car_a_ent(v)
+		AVZ(sec, v)
+		*q.rango_edad:=car_a_ent(v)
 		AVZ(sec, v)
 
-	Fin Mientras
+		*q.titulo:=""
+		Mientras (v<>"-") hacer
+			*q.titulo:=*q.titulo + v
+			AVZ(sec, v)
+		Fin Mientras
+		AVZ(sec, v)                 // salteo el "-"
+		*q.popularidad:=v
+		AVZ(sec, v)                 // queda en "$" o en "#"
+		Si (v="$") entonces
+			AVZ(sec, v)             // primer carácter del plan siguiente
+		Fin Si
 
+		// B) datos que completa el usuario
+		Escribir("Plan: ", *q.titulo)
+		Escribir("Ingrese el cupo disponible")
+		Leer(*q.cupo_dis)
+		Escribir("Ingrese el monto a pagar")
+		Leer(*q.monto)
+
+		Si (*q.cupo_dis>0) entonces
+			Disp[tipo]:=Disp[tipo]+1
+			tot_planes:=tot_planes+1
+		Fin Si
+		Si (*q.cupo_dis>mayor) entonces
+			mayor:=*q.cupo_dis
+		Fin Si
+
+		// A) lo engancho al final de la lista de su tipo
+		*q.prox:=nil
+		Si (Planes[tipo]=nil) entonces
+			Planes[tipo]:=q
+		Sino
+			*Ult[tipo].prox:=q
+		Fin Si
+		Ult[tipo]:=q
+
+	Fin Mientras
+	CERRAR(sec)
+
+	// C) a)
 	Para i:=1 a 5 hacer
-		porcentaje:=(A[i]*100)/tot_planes
-		Escribir("Los planes disponibles del tipo ",i," representan el ",porcentaje,"%")
+		Si (tot_planes>0) entonces
+			porcentaje:=(Disp[i]*100)/tot_planes
+		Sino
+			porcentaje:=0
+		Fin Si
+		Escribir("El ",porcentaje,"% de los planes disponibles son del tipo ",i)
 	Fin Para
 
-	p:=prim
+	// C) b) y c): recorro las 5 listas
 	menor:=HV
-
-	Mientras (p<>nil) hacer
-		Si (mayor=*p.cupo) entonces
-
-			Escribir("Plan con mayor disponibilidad es: ")
-
-			p2:=prim2
-			Mientras (p2<>nil) hacer
-				Escribir(*p.(*titulo.car))
-				p2:=*p2.prox
-			Fin Mientras
-
-		Fin Si
-		Si (*p.cupo>0) entonces
-			Si (*p.rango_edad="3") entonces
-				Si (*p.monto<menor) entonces
-					menor:=*p.monto
-					mej_plan:=p
-				Fin Si
+	mej_plan:=nil
+	Si (mayor>0) entonces
+		Escribir("Plan(es) con mayor cupo disponible (",mayor,"):")
+	Fin Si
+	Para i:=1 a 5 hacer
+		p:=Planes[i]
+		Mientras (p<>nil) hacer
+			Si (mayor>0) y (*p.cupo_dis=mayor) entonces
+				Escribir("  ", *p.titulo)
 			Fin Si
-		Fin Si
-		p:=*p.prox
-	Fin Mientras
+			Si (*p.cupo_dis>0) y (*p.rango_edad=3) y (*p.monto<menor) entonces
+				menor:=*p.monto
+				mej_plan:=p
+			Fin Si
+			p:=*p.prox
+		Fin Mientras
+	Fin Para
 
-	*mej_plan.(*titulo.car)
+	Si (mej_plan=nil) entonces
+		Escribir("No hay planes disponibles para mayores de 35 años")
+	Sino
+		Escribir("El plan disponible más barato para mayores de 35 años es ", *mej_plan.titulo, " ($", menor, ")")
+	Fin Si
 
-	Mientras ()
+Fin Accion
 
 
+// --------------------------------------------------------------------------
+// Ejercicio 2
+// Escriba una función recursiva que, dado un elemento de un arreglo, devuelva
+// su posición si existe o "-1" en caso contrario. Incluya el algoritmo que
+// llama a la función.
+// --------------------------------------------------------------------------
 
-
-//Consigna 2
-
-//asumo la cantidad y que es de enteros
+// Supuesto: arreglo de 50 enteros.
+// Caso base: encontré el elemento (devuelvo i) o llegué al final sin
+// encontrarlo (devuelvo -1). Caso recursivo: busco desde la posición i+1.
 Accion recursividad(numeros: Arreglo [1..50] de enteros) es
 
 Ambiente
@@ -217,7 +225,22 @@ Proceso
 Fin Proceso
 
 
-//Consigna 3
+// --------------------------------------------------------------------------
+// Ejercicio 3
+// Una empresa concesionaria de cabinas de peaje necesita información que le
+// permita llevar estadísticas de las operatorias de los diferentes cobros
+// realizados en sus puestos de peaje durante un rango de fechas. Los cobros
+// se almacenan en un archivo secuencial con los siguientes datos:
+//   ClaveCobro N(13), CabinaPeaje (Chaco, Corrientes, Misiones, Entre Ríos,
+//   Santa Fe, Neuquén, Ushuaia), Monto N(6,2), Patente AN(7), HoraCobro N(2).
+// Para simplificar, la hora en que se le cobró es un número entero entre 0
+// y 23. Se solicita:
+//   A) Informar la cabina de peaje y hora en la que se produjo la mayor
+//      recaudación.
+//   B) ¿Qué cantidad de cabinas de peaje han recaudado menos que el promedio
+//      total de recaudación por cabina?
+//   C) ¿Cuál ha sido el total de recaudación?
+// --------------------------------------------------------------------------
 
 
 Accion peaje() es
@@ -237,7 +260,8 @@ Ambiente
 
 	A: Arreglo [1..7, 1..25] de reales //24=0; 25 para la sumatoria
 
-	tot, prom, cab, mayor, may_cab, may_hor, cant_menor: entero
+	tot, prom, mayor: real          // corregido: son montos, no enteros
+	cab, may_cab, may_hor, cant_menor, i, j: entero
 
 Proceso
 
@@ -250,7 +274,7 @@ Proceso
 	ABRIR E/ (arch_c)
 	LEER(arch_c, reg_c)
 
-	Mientras NFDA(arch_c) hacer
+	Mientras No FDA(arch_c) hacer
 
 		Segun (reg_c.cabina_peaje) hacer
 			="Chaco": cab:=1
@@ -288,6 +312,10 @@ Proceso
 		Fin Para
 	Fin Para
 
+	Si (may_hor=24) entonces       // corregido: la columna 24 es la hora 0
+		may_hor:=0
+	Fin Si
+
 	Escribir("Se obtuvo la mayor recaudacion de $",mayor," a las ",may_hor," horas en la cabina de")
 
 	Segun (may_cab) hacer
@@ -300,7 +328,7 @@ Proceso
 		=7: Escribir("Ushuaia")
 	Fin Segun
 
-	//consgina b
+	//consigna b
 
 	tot:=0
 
@@ -322,7 +350,7 @@ Proceso
 
 	//consigna c
 
-	Escribir("El total de reacaudacion fue de $",tot)
+	Escribir("El total de recaudacion fue de $",tot)
 
 	CERRAR(arch_c)
 

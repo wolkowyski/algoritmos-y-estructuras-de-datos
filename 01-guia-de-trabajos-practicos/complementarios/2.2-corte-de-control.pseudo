@@ -1,0 +1,1527 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.0
+// Una empresa dispone de un archivo de registros con los siguientes datos de
+// sus empleados ordenados por planta:
+//
+// * Nombre* Categoría* Planta
+//
+// La categoría está codificada del 1 al 4. La fábrica cuenta con dos plantas
+// A y B.
+// A continuación se presenta el listado de empleados con su categoría y
+// lugar de trabajo:
+//
+// | Nombre | Categoria | Planta | Nombre | Categoria | Planta |
+// | --- | --- | --- | --- | --- | --- |
+// | Perez | 3 | A | Cassas | 2 | B |
+// | Gutierrez | 2 | A | Portales | 2 | B |
+// | Aranda | 1 | A | Morales | 3 | B |
+// | Molina | 1 | A | Arce | 2 | B |
+// | Salerno | 1 | A | Cortez | 1 | B |
+// | Mendez | 4 | A | Milan | 4 | B |
+// | Corrales | 4 | A | Davis | 1 | B |
+// | Derqui | 3 | A | Diaz | 1 | B |
+// | Biondi | 4 | A | Vera | 2 | B |
+// | Nogueria | 1 | A | Basualdo | 1 | B |
+// --------------------------------------------------------------------------
+
+// Este "ejercicio" es el juego de datos que usan los ejercicios 2.2.1 a
+// 2.2.4. Definición del archivo en el ambiente:
+//
+//   Empleado = Registro
+//       Nombre: AN(30)
+//       Categoria: 1..4
+//       Planta: ("A", "B")
+//   FinRegistro
+//   EMPLEADOS: Archivo de Empleado
+//   R: Empleado
+//
+// Según el ejercicio, el archivo está ordenado por categoría, por planta o
+// por planta y categoría: el orden define en qué campos se puede cortar.
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.1
+// Una empresa dispone de un archivo de registros con datos de sus empleados
+//
+// * Nombre* Categoría
+//
+// El archivo está ordenado por categoría
+//
+// Obtener el listado con el siguiente diseño:
+//
+// | Lista del Personal |
+// | --- |
+// | Categoria 1 |
+// | Aranda |
+// | Molina |
+// | Salerno |
+// | ----- |
+// | Categoria 2 |
+// | Gutierrez |
+// | Cassas |
+// --------------------------------------------------------------------------
+
+// Corte de un nivel: cada vez que cambia la categoría se escribe el título.
+Accion Complementario2_2_1 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Categoria
+	R: Empleado
+	ResCat: 1..4
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista del Personal")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		Escribir("Categoría ", ResCat)
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			Escribir(R.Nombre)
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("-----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.2
+// Una empresa dispone de un archivo de registros con datos de sus empleados:
+//
+// * Reg* Nombre* Categoría* Planta
+//
+// > Tomar los datos del comienzo del trabajo
+//
+// El archivo está ordenado por categorías.
+// Imprimir el siguiente Listado:
+//
+// | Lista del Personal |  |
+// | --- | --- |
+// | Categoria 1 |  |
+// | *Nombre* | *Planta* |
+// | Aranda | B |
+// | Molina | A |
+// | Salerno | A |
+// | ----- | ----- |
+// | Categoria 2 |  |
+// | *Nombre* | *Planta* |
+// | Gutierrez | B |
+// | Cassas | B |
+// | ----- | ----- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_2 es
+Ambiente
+	Empleado = Registro
+		Reg: N(5)
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Categoria
+	R: Empleado
+	ResCat: 1..4
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista del Personal")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		Escribir("Categoría ", ResCat)
+		Escribir("Nombre | Planta")
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			Escribir(R.Nombre, " | ", R.Planta)
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("----- | -----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.3
+// El archivo de la empresa está ahora ordenado por planta. Los empleados
+// cobran los siguientes sueldos según la categoría.
+//
+// 1. $1.500
+// 2. $2.000
+// 3. $3.500
+// 4. $5.000
+//
+// Imprimir el siguiente listado considerando la categoría de cada empleado:
+//
+// | Lista de sueldos |  |
+// | --- | --- |
+// | Planta A |  |
+// | *Nombre* | *Sueldo* |
+// | Aranda | 1500 |
+// | Molina | 1500 |
+// | Salerno | 5000 |
+// | ----- | ----- |
+// | Categoria 2 |  |
+// | *Nombre* | *Sueldo* |
+// | Perez | 3500 |
+// | Gutierrez | 2000 |
+// | Aranda | 1500 |
+// | ----- | ----- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_3 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Planta
+	R: Empleado
+	ResPlanta: caracter
+	Sueldo: arreglo [1..4] de real
+Proceso
+	Sueldo[1]:= 1500; Sueldo[2]:= 2000; Sueldo[3]:= 3500; Sueldo[4]:= 5000
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista de sueldos")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		Escribir("Planta ", ResPlanta)
+		Escribir("Nombre | Sueldo")
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			Escribir(R.Nombre, " | ", Sueldo[R.Categoria])
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("----- | -----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.4
+// El archivo se encuentra ordenado por planta y dentro de cada planta
+// ordenado por categoría.
+// Se supone en este caso que los sueldos que corresponden a cada categoría
+// deben ser introducidos como dato por el teclado
+//
+// | Planilla de Empleados |  |  |
+// | --- | --- | --- |
+// | Planta A |  |  |
+// |  | *Categoria 1* | *Sueldo:* __________ |
+// |  | Molinari |  |
+// |  | Salerno |  |
+// |  | ----- |  |
+// |  | *Categoria 2* | *Sueldo:* __________ |
+// |  | Arce |  |
+// | ----- | ----- | ----- |
+// | Planta B |  |  |
+// |  | *Categoria 1* | *Sueldo:* __________ |
+// |  | Aranda |  |
+// |  | Davis |  |
+// |  | ----- |  |
+// --------------------------------------------------------------------------
+
+// Dos niveles: planta y, dentro de ella, categoría. El sueldo de cada
+// categoría se pide por teclado una vez y se guarda en un arreglo.
+Accion Complementario2_2_4 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Planta y Categoria
+	R: Empleado
+	ResPlanta: caracter
+	ResCat, i: entero
+	Sueldo: arreglo [1..4] de real
+Proceso
+	Para i:= 1 hasta 4 hacer
+		Escribir("Sueldo de la categoría ", i)
+		Leer(Sueldo[i])
+	FinPara
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Planilla de Empleados")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		Escribir("Planta ", ResPlanta)
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			ResCat:= R.Categoria
+			Escribir("    Categoría ", ResCat, "   Sueldo: ", Sueldo[ResCat])
+			Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) y (R.Categoria = ResCat) hacer
+				Escribir("    ", R.Nombre)
+				Leer(EMPLEADOS, R)
+			FinMientras
+			Escribir("    -----")
+		FinMientras
+		Escribir("-----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.5
+// Una escuela dispone de un archivo con los registros de sus alumnos:
+//
+// * Nombre* Año 1..5* División A..D* Nota1 0..10* Nota2 0..10* Nota3 0..10
+//
+// Estos registros están ordenados en forma decreciente por el AÑO y dentro
+// de cada año están ordenados en forma creciente por la división.
+// Obtener el siguiente listado:
+//
+// | Lista de Promedios |  |  |
+// | --- | --- | --- |
+// | 5to Año |  |  |
+// | *Division A* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | *Division B* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | 4to Año |  |  |
+// | *Division A* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | *Division B* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | ------ | ------ | ------ |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_5 es
+Ambiente
+	Alumno = Registro
+		Nombre: AN(30)
+		Anio: 1..5
+		Division: "A".."D"
+		Nota1, Nota2, Nota3: 0..10
+	FinRegistro
+	ALUMNOS: Archivo de Alumno ordenado por Anio (decreciente) y Division
+	R: Alumno
+	ResAnio: 1..5
+	ResDiv: caracter
+Proceso
+	Abrir E/(ALUMNOS); Leer(ALUMNOS, R)
+	Escribir("Lista de Promedios")
+	Mientras No FDA(ALUMNOS) hacer
+		ResAnio:= R.Anio
+		Escribir(ResAnio, "º Año")
+		Mientras No FDA(ALUMNOS) y (R.Anio = ResAnio) hacer
+			ResDiv:= R.Division
+			Escribir("  División ", ResDiv)
+			Escribir("    Nombre | Promedio")
+			Mientras No FDA(ALUMNOS) y (R.Anio = ResAnio) y (R.Division = ResDiv) hacer
+				Escribir("    ", R.Nombre, " | ", (R.Nota1 + R.Nota2 + R.Nota3) / 3)
+				Leer(ALUMNOS, R)
+			FinMientras
+		FinMientras
+	FinMientras
+	Cerrar(ALUMNOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.6
+// Una empresa dispone de un archivo de registros con los siguientes datos de
+// los pasajeros que volaron en el día:
+//
+// * Nombre* Nro de Vuelo
+//
+// El archivo está ordenado por n° de vuelo. Imprimir la cantidad De
+// pasajeros que viajaron en cada vuelo y la cantidad total de pasajeros que
+// viajaron ese día por la compañía:
+//
+// | Cantidad de Pasajeros |  |
+// | --- | --- |
+// | Vuelo 067 | 83 |
+// | Vuelo 123 | 123 |
+// | Vuelo 451 | 321 |
+// | ------- | ------- |
+// | ------- | ------- |
+// | Total | 1432 |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_6 es
+Ambiente
+	Pasajero = Registro
+		Nombre: AN(30)
+		Nro_Vuelo: N(3)
+	FinRegistro
+	PASAJEROS: Archivo de Pasajero ordenado por Nro_Vuelo
+	R: Pasajero
+	ResVuelo: N(3)
+	cant, total: entero
+Proceso
+	Abrir E/(PASAJEROS); Leer(PASAJEROS, R)
+	total:= 0
+	Escribir("Cantidad de Pasajeros")
+	Mientras No FDA(PASAJEROS) hacer
+		ResVuelo:= R.Nro_Vuelo
+		cant:= 0
+		Mientras No FDA(PASAJEROS) y (R.Nro_Vuelo = ResVuelo) hacer
+			cant:= cant + 1
+			Leer(PASAJEROS, R)
+		FinMientras
+		Escribir("Vuelo ", ResVuelo, " | ", cant)
+		total:= total + cant
+	FinMientras
+	Escribir("Total | ", total)
+	Cerrar(PASAJEROS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.7
+// Reconsidere el problema 2.2.1. Obtener la salida:
+//
+// | Cantidad de Empleados |  |
+// | --- | --- |
+// | Categoria 1 | ------- |
+// | Categoria 2 | ------- |
+// | Categoria 3 | ------- |
+// | Categoria 4 | ------- |
+// | Total | ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_7 es
+Ambiente
+	// (mismo archivo que el 2.2.1, ordenado por categoría)
+	ResCat: 1..4
+	cant, total: entero
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Cantidad de Empleados")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		cant:= 0
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			cant:= cant + 1
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("Categoría ", ResCat, " | ", cant)
+		total:= total + cant
+	FinMientras
+	Escribir("Total | ", total)
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.8
+// Reconsidere el problema 2.2.3. La compañía debe enviar a cada planta el
+// dinero para abonar los sueldos. Para ello requiere el siguiente listado
+//
+// | Totales de Sueldo por Planta |  |
+// | --- | --- |
+// | Planta A | $ ------- |
+// | Planta B | $ ------- |
+// | Planta C | $ ------- |
+// | -------- | ------- |
+// | Total | $ ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_8 es
+Ambiente
+	// (mismo archivo y arreglo Sueldo que el 2.2.3, ordenado por planta)
+	ResPlanta: caracter
+	totPlanta, total: real
+Proceso
+	Sueldo[1]:= 1500; Sueldo[2]:= 2000; Sueldo[3]:= 3500; Sueldo[4]:= 5000
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Totales de Sueldo por Planta")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		totPlanta:= 0
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			totPlanta:= totPlanta + Sueldo[R.Categoria]
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("Planta ", ResPlanta, " | $", totPlanta)
+		total:= total + totPlanta
+	FinMientras
+	Escribir("Total | $", total)
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.9
+// Reconsidere el problema 2.2.4. La compañía desea conocer los totales de
+// los sueldos por planta discriminados por categoría, para ello se requiere
+// el siguiente listado:
+//
+// | Totales de Sueldo por Planta y Categoria |  |
+// | --- | --- |
+// | Planta A | $ ------- |
+// | Categoria 1 | $ ------- |
+// | Categoria 2 | $ ------- |
+// | -------- | ------- |
+// | Total planta A | $ ------- |
+// | Planta B | $ ------- |
+// | Categoria 1 | $ ------- |
+// | Categoria 2 | $ ------- |
+// | -------- | ------- |
+// | Total planta B | $ ------- |
+// | ------- | ------- |
+// | ------- | ------- |
+// | Total de Sueldos | $ ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_9 es
+Ambiente
+	// (mismo archivo y arreglo Sueldo que el 2.2.4, ordenado por planta y categoría)
+	ResPlanta: caracter
+	ResCat, i: entero
+	totCat, totPlanta, total: real
+Proceso
+	Para i:= 1 hasta 4 hacer
+		Escribir("Sueldo de la categoría ", i); Leer(Sueldo[i])
+	FinPara
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Totales de Sueldo por Planta y Categoría")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		totPlanta:= 0
+		Escribir("Planta ", ResPlanta)
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			ResCat:= R.Categoria
+			totCat:= 0
+			Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) y (R.Categoria = ResCat) hacer
+				totCat:= totCat + Sueldo[ResCat]
+				Leer(EMPLEADOS, R)
+			FinMientras
+			Escribir("Categoría ", ResCat, " | $", totCat)
+			totPlanta:= totPlanta + totCat
+		FinMientras
+		Escribir("Total planta ", ResPlanta, " | $", totPlanta)
+		total:= total + totPlanta
+	FinMientras
+	Escribir("Total de Sueldos | $", total)
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.10
+// Una empresa con varias sucursales que dispone de un archivo de registros
+// de sus empleados con los siguientes datos:
+//
+// * CodSuc* CodEmpl* HorasDia
+//
+// `CodSuc`: código de sucursal
+// `CodEmpl`: código de empleado
+// `HorasDía`: horas trabajadas en el día
+//
+// Teniendo en cuenta que se abona un premio a aquellos empleados que hayan
+// trabajado durante el mes más de 20 días y que cumplan simultáneamente con:
+//
+// * No menos de 180 horas trabajadas, el premio será de $200.
+// * Más de 170 horas y menos de 180 horas, el premio será de $150.
+//
+// Realizar el diagrama que leyendo el archivo de datos determine e imprima:
+//
+// * Código de sucursal, Código de empleado y premio de los empleados que
+// cumplan con las disposiciones anteriores
+// * Importe total de los premios que deben pagar cada sucursal
+// * Importe total que la empresa pagará.
+// --------------------------------------------------------------------------
+
+// Un registro por empleado y día trabajado, ordenado por sucursal y empleado.
+Accion Complementario2_2_10 es
+Ambiente
+	Dia = Registro
+		CodSuc: N(3)
+		CodEmpl: N(5)
+		HorasDia: N(2)
+	FinRegistro
+	EMPLEADOS: Archivo de Dia ordenado por CodSuc, CodEmpl
+	R: Dia
+	ResSuc: N(3)
+	ResEmpl: N(5)
+	dias, horas: entero
+	premio, totSuc, total: real
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Mientras No FDA(EMPLEADOS) hacer
+		ResSuc:= R.CodSuc
+		totSuc:= 0
+		Mientras No FDA(EMPLEADOS) y (R.CodSuc = ResSuc) hacer
+			ResEmpl:= R.CodEmpl
+			dias:= 0; horas:= 0
+			Mientras No FDA(EMPLEADOS) y (R.CodSuc = ResSuc) y (R.CodEmpl = ResEmpl) hacer
+				dias:= dias + 1
+				horas:= horas + R.HorasDia
+				Leer(EMPLEADOS, R)
+			FinMientras
+			premio:= 0
+			Si dias > 20 entonces
+				Si horas >= 180 entonces
+					premio:= 200
+				Sino
+					Si horas > 170 entonces premio:= 150 FinSi
+				FinSi
+			FinSi
+			Si premio > 0 entonces
+				Escribir(ResSuc, " | ", ResEmpl, " | $", premio)
+				totSuc:= totSuc + premio
+			FinSi
+		FinMientras
+		Escribir("Premios de la sucursal ", ResSuc, ": $", totSuc)
+		total:= total + totSuc
+	FinMientras
+	Escribir("Total que paga la empresa: $", total)
+	Cerrar(EMPLEADOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.11
+// Una empresa que vende lubricantes registra en un archivo de registros:
+//
+// * NroCli* NroLubr* CantVen* PU
+//
+// `NroCli`: N° de Cliente
+// `NroLubr`: N° de Lubricantes
+// `CantVen`: Cantidad vendida
+// `PU`: Precio por Unidad
+//
+// Toda está información está ordenada por N° de Cliente. Determinar e
+// imprimir:
+//
+// * El N° de Cliente que compró más en pesos
+// * Cuantos Clientes compraron más de 100 latas en total
+// * Cantidad de latas vendidas de lubricante 31667 entre todos los clientes.
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_11 es
+Ambiente
+	Venta = Registro
+		NroCli, NroLubr: N(6)
+		CantVen: N(4)
+		PU: real
+	FinRegistro
+	VENTAS: Archivo de Venta ordenado por NroCli
+	R: Venta
+	ResCli, cli_max: N(6)
+	latas, mas_de_100, latas_31667: entero
+	pesos, max_pesos: real
+Proceso
+	Abrir E/(VENTAS); Leer(VENTAS, R)
+	max_pesos:= -1; mas_de_100:= 0; latas_31667:= 0
+	Mientras No FDA(VENTAS) hacer
+		ResCli:= R.NroCli
+		pesos:= 0; latas:= 0
+		Mientras No FDA(VENTAS) y (R.NroCli = ResCli) hacer
+			pesos:= pesos + R.CantVen * R.PU
+			latas:= latas + R.CantVen
+			Si R.NroLubr = 31667 entonces latas_31667:= latas_31667 + R.CantVen FinSi
+			Leer(VENTAS, R)
+		FinMientras
+		Si pesos > max_pesos entonces max_pesos:= pesos; cli_max:= ResCli FinSi
+		Si latas > 100 entonces mas_de_100:= mas_de_100 + 1 FinSi
+	FinMientras
+	Escribir("Cliente que más compró: ", cli_max, " ($", max_pesos, ")")
+	Escribir("Clientes con más de 100 latas: ", mas_de_100)
+	Escribir("Latas vendidas del lubricante 31667: ", latas_31667)
+	Cerrar(VENTAS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.12
+// Se realiza una encuesta en distintas provincias. Por cada persona que
+// responde se genera un registro con:
+//
+// * Código de la provincia
+// * Edad
+// * Código de los estudios cursados: 1.Primarios; 2.Secundarios;
+// 3.Universitarios; 4.Terciarios; 5.Ninguno
+//
+// La información se ordena por provincia y se graba en un archivo. Se pide:
+//
+// * Cantidad de personas con estudios primarios
+// * Cantidad de personas con estudios secundarios
+// * Para cada provincia:
+//   1. Código de la provincia
+//   2. Total de encuestados
+// * Código de la provincia que tuvo mayor cantidad de personas sin ningún
+// estudio
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_12 es
+Ambiente
+	Encuesta = Registro
+		Provincia: N(2)
+		Edad: N(3)
+		Estudios: 1..5
+	FinRegistro
+	ENCUESTAS: Archivo de Encuesta ordenado por Provincia
+	R: Encuesta
+	ResProv, prov_max: N(2)
+	primarios, secundarios, total_prov, ninguno, max_ninguno: entero
+Proceso
+	Abrir E/(ENCUESTAS); Leer(ENCUESTAS, R)
+	primarios:= 0; secundarios:= 0; max_ninguno:= -1
+	Mientras No FDA(ENCUESTAS) hacer
+		ResProv:= R.Provincia
+		total_prov:= 0; ninguno:= 0
+		Mientras No FDA(ENCUESTAS) y (R.Provincia = ResProv) hacer
+			total_prov:= total_prov + 1
+			Según R.Estudios hacer
+				1: primarios:= primarios + 1
+				2: secundarios:= secundarios + 1
+				5: ninguno:= ninguno + 1
+			FinSegún
+			Leer(ENCUESTAS, R)
+		FinMientras
+		Escribir("Provincia ", ResProv, ": ", total_prov, " encuestados")
+		Si ninguno > max_ninguno entonces max_ninguno:= ninguno; prov_max:= ResProv FinSi
+	FinMientras
+	Escribir("Con estudios primarios: ", primarios, " - secundarios: ", secundarios)
+	Escribir("Provincia con más personas sin estudios: ", prov_max)
+	Cerrar(ENCUESTAS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.13
+// En una empresa se preparan registros por cada venta individual según se
+// indica:
+//
+// * Mes* Importe
+//
+// Estos registros, están grabados en un archivo, y están ordenados por mes.
+// Se pide calcular:
+//
+// * Total y promedio de ventas de cada mes
+// * Promedio anual de ventas
+// * Total anual de ventas
+//   Imprimir además la siguiente planilla con los títulos que se indican:
+//
+// | Empresa NNN |  |  |
+// | --- | --- | --- |
+// | Mes | Total | Promedio |
+// | Xx | Xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx |
+// |  | Promedio Anual | Xxx.xx |
+// |  | Total Anual | Xxx.xx |
+// --------------------------------------------------------------------------
+
+// Promedio anual = total anual / cantidad de ventas del año.
+Accion Complementario2_2_13 es
+Ambiente
+	Venta = Registro
+		Mes: 1..12
+		Importe: real
+	FinRegistro
+	VENTAS: Archivo de Venta ordenado por Mes
+	R: Venta
+	ResMes: 1..12
+	cant_mes, cant_anio: entero
+	tot_mes, tot_anio: real
+Proceso
+	Abrir E/(VENTAS); Leer(VENTAS, R)
+	tot_anio:= 0; cant_anio:= 0
+	Escribir("Empresa NNN")
+	Escribir("Mes | Total | Promedio")
+	Mientras No FDA(VENTAS) hacer
+		ResMes:= R.Mes
+		tot_mes:= 0; cant_mes:= 0
+		Mientras No FDA(VENTAS) y (R.Mes = ResMes) hacer
+			tot_mes:= tot_mes + R.Importe
+			cant_mes:= cant_mes + 1
+			Leer(VENTAS, R)
+		FinMientras
+		Escribir(ResMes, " | ", tot_mes, " | ", tot_mes / cant_mes)
+		tot_anio:= tot_anio + tot_mes
+		cant_anio:= cant_anio + cant_mes
+	FinMientras
+	Si cant_anio > 0 entonces
+		Escribir("Promedio Anual | ", tot_anio / cant_anio)
+	FinSi
+	Escribir("Total Anual | ", tot_anio)
+	Cerrar(VENTAS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.14
+// En una empresa se emiten comprobantes por cada venta que se realiza. Cada
+// comprobante da origen a un registro de un archivo con la siguiente
+// información:
+//
+// * Año* Mes* Día* Importe
+//
+// A fin de año se procesa el archivo que está ordenado secuencialmente por
+// mes y por día.
+// Se pide la planilla siguiente:
+//
+// | Empresa NNN |  |  |  |
+// | --- | --- | --- | --- |
+// | Año | Mes | Día | Importe |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// |  |  | Total Diario | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Mensual | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Anual | Xxx.xx |
+//
+// Cuando se produce el corte
+// Por día: dar el total diario.
+// Por cambio de mes: dar el total mensual.
+// Al final: total diario, mensual y anual.
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_14 es
+Ambiente
+	Comprobante = Registro
+		Anio: N(4)
+		Mes: 1..12
+		Dia: 1..31
+		Importe: real
+	FinRegistro
+	COMPROBANTES: Archivo de Comprobante ordenado por Mes y Dia
+	R: Comprobante
+	ResMes, ResDia: entero
+	totDia, totMes, totAnio: real
+Proceso
+	Abrir E/(COMPROBANTES); Leer(COMPROBANTES, R)
+	totAnio:= 0
+	Escribir("Empresa NNN")
+	Escribir("Año | Mes | Día | Importe")
+	Mientras No FDA(COMPROBANTES) hacer
+		ResMes:= R.Mes
+		totMes:= 0
+		Mientras No FDA(COMPROBANTES) y (R.Mes = ResMes) hacer
+			ResDia:= R.Dia
+			totDia:= 0
+			Mientras No FDA(COMPROBANTES) y (R.Mes = ResMes) y (R.Dia = ResDia) hacer
+				Escribir(R.Anio, " | ", R.Mes, " | ", R.Dia, " | ", R.Importe)
+				totDia:= totDia + R.Importe
+				Leer(COMPROBANTES, R)
+			FinMientras
+			Escribir("Total Diario | ", totDia)
+			totMes:= totMes + totDia
+		FinMientras
+		Escribir("Total Mensual | ", totMes)
+		totAnio:= totAnio + totMes
+	FinMientras
+	Escribir("Total Anual | ", totAnio)
+	Cerrar(COMPROBANTES)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.15
+// Un banco tiene varias sucursales, cada una de las cuales tiene un gran
+// número de cuentas corrientes. Al final de cada mes se desea conocer el
+// capital existente en:
+//
+// * Sucursal* CtaCte* Importe* Codigo
+//
+// * Cada cuenta corriente
+// * Cada sucursal
+// * Total en el banco
+//
+// Para ello se prepara un archivo de registros clasificado por sucursal y
+// por número de cuenta corriente:
+//
+// Puede haber más de un registro con el mismo número de cuenta corriente.
+// CODIGO puede tomar dos valores: D - depósito, E - Extracción.
+// La planilla que se pide es la siguiente
+//
+// | Empresa NNN |  |  |  |
+// | --- | --- | --- | --- |
+// | Sucursal | Cuenta Corriente | Importe | Codigo |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// |  |  | Total Cta Cte | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Sucursal | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Banco | Xxx.xx |
+// --------------------------------------------------------------------------
+
+// Los depósitos suman y las extracciones restan.
+Accion Complementario2_2_15 es
+Ambiente
+	Movimiento = Registro
+		Sucursal: N(3)
+		CtaCte: N(8)
+		Importe: real
+		Codigo: ("D", "E")
+	FinRegistro
+	MOVIMIENTOS: Archivo de Movimiento ordenado por Sucursal y CtaCte
+	R: Movimiento
+	ResSuc: N(3)
+	ResCta: N(8)
+	totCta, totSuc, totBanco, imp: real
+Proceso
+	Abrir E/(MOVIMIENTOS); Leer(MOVIMIENTOS, R)
+	totBanco:= 0
+	Escribir("Empresa NNN")
+	Escribir("Sucursal | Cuenta Corriente | Importe | Código")
+	Mientras No FDA(MOVIMIENTOS) hacer
+		ResSuc:= R.Sucursal
+		totSuc:= 0
+		Mientras No FDA(MOVIMIENTOS) y (R.Sucursal = ResSuc) hacer
+			ResCta:= R.CtaCte
+			totCta:= 0
+			Mientras No FDA(MOVIMIENTOS) y (R.Sucursal = ResSuc) y (R.CtaCte = ResCta) hacer
+				Escribir(R.Sucursal, " | ", R.CtaCte, " | ", R.Importe, " | ", R.Codigo)
+				Si R.Codigo = "D" entonces imp:= R.Importe Sino imp:= -R.Importe FinSi
+				totCta:= totCta + imp
+				Leer(MOVIMIENTOS, R)
+			FinMientras
+			Escribir("Total Cta Cte | ", totCta)
+			totSuc:= totSuc + totCta
+		FinMientras
+		Escribir("Total Sucursal | ", totSuc)
+		totBanco:= totBanco + totSuc
+	FinMientras
+	Escribir("Total Banco | ", totBanco)
+	Cerrar(MOVIMIENTOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.16
+// Una empresa de venta de accesorios de automóviles comercializa 100
+// artículos como máximo. Para controlar sus exigencias y sus ventas genera
+// un archivo con la siguiente información por cada artículo:
+//
+// Un primer registro por cada artículo con:
+//
+// * NroArt* Cant
+//
+// `NroArt`: número de artículo
+// `Cant`: cantidad de unidades en existencia
+//
+// A continuación un lote de registros, uno por cada venta, con:
+//
+// * NroArt* Cant
+//
+// `NroArt`: número de artículo
+// `Cant`: cantidad de unidades de cada venta.
+//
+// Habrá, por lo menos, un artículo con sus ventas. Puede ser que de algún
+// artículo no haya ventas. Imprimir:
+//
+// * Saldo final de cada artículo y su número
+// * Al final del proceso indicar el N° de artículo
+// * Si de algún artículo se vende más de lo que hay en existencia detener el
+// proceso con un texto aclaratorio (sin imprimir el mínimo)
+// * Indicar si se procesaron más de 100 artículos
+// * Calcular el promedio de las cantidades vendidas por artículo
+// exclusivamente para los artículos que tienen ventas
+// --------------------------------------------------------------------------
+
+// Por cada artículo: primero el registro de existencia y después sus ventas
+// (mismo NroArt). Se corta por número de artículo.
+Accion Complementario2_2_16 es
+Ambiente
+	Reg = Registro
+		NroArt: N(5)
+		Cant: N(5)
+	FinRegistro
+	ARCH: Archivo de Reg
+	R: Reg
+	ResArt: N(5)
+	saldo, vendido, articulos, con_ventas, total_vendido: entero
+	error: booleano
+Proceso
+	Abrir E/(ARCH); Leer(ARCH, R)
+	articulos:= 0; con_ventas:= 0; total_vendido:= 0
+	error:= Falso
+	Mientras No FDA(ARCH) y No error hacer
+		ResArt:= R.NroArt
+		saldo:= R.Cant // registro de existencia
+		articulos:= articulos + 1
+		vendido:= 0
+		Leer(ARCH, R)
+		Mientras No FDA(ARCH) y (R.NroArt = ResArt) y No error hacer // sus ventas
+			Si R.Cant > saldo entonces
+				Escribir("Error: el artículo ", ResArt, " vendió más de lo que había en existencia. Proceso detenido.")
+				error:= Verdadero
+			Sino
+				saldo:= saldo - R.Cant
+				vendido:= vendido + R.Cant
+				Leer(ARCH, R)
+			FinSi
+		FinMientras
+		Si No error entonces
+			Escribir("Artículo ", ResArt, " - saldo final ", saldo)
+			Si vendido > 0 entonces
+				con_ventas:= con_ventas + 1
+				total_vendido:= total_vendido + vendido
+			FinSi
+		FinSi
+	FinMientras
+	Si No error entonces
+		Escribir("Último artículo procesado: ", ResArt)
+		Si articulos > 100 entonces Escribir("Se procesaron más de 100 artículos") FinSi
+		Si con_ventas > 0 entonces
+			Escribir("Promedio vendido por artículo con ventas: ", total_vendido / con_ventas)
+		FinSi
+	FinSi
+	Cerrar(ARCH)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.17
+// Se conocen
+//
+// * Las tarifas particular y comercial del KW
+// * El consumo mínimo de ambas categorías
+//
+// Además se dispone de un archivo de usuarios en el que cada registro
+// contiene
+//
+// * NroZona* Nombre* Calle* Nro* TipoUsuario* Consumo
+//
+// Los usuarios están ordenados por zona "P" o "C". Se pide:
+//
+// * Listar para cada zona de aquellos usuarios que superen el consumo mínimo
+// lo siguiente
+//   + Tipo de Usuario
+//   + Nombre
+//   + Calle y Número
+//   + Consumo e importe
+// * Informar para cada zona
+//   + Nombre y consumo promedio de los usuarios particulares
+//   + La dirección del usuario comercial cuyo consumo haya sido el máximo
+//   registrado en esa zona.
+//   + El total facturado y la cant. De usuarios de cada categoría que abonen
+//   el mínimo.
+// * Informar además al final del listado
+//   + Zona con mayor cantidad de usuarios comerciales
+//   + Zona que registra el menor consumo.
+// --------------------------------------------------------------------------
+
+// Se interpreta: el archivo está ordenado por zona; el tipo de usuario es
+// "P" (particular) o "C" (comercial). Las tarifas y los consumos mínimos se
+// ingresan al principio. Si el consumo no supera el mínimo se abona el mínimo.
+Accion Complementario2_2_17 es
+Ambiente
+	Usuario = Registro
+		NroZona: N(3)
+		Nombre: AN(40)
+		Calle: AN(40)
+		Nro: N(5)
+		TipoUsuario: ("P", "C")
+		Consumo: real
+	FinRegistro
+	USUARIOS: Archivo de Usuario ordenado por NroZona
+	R: Usuario
+	tarifaP, tarifaC, minP, minC, importe: real
+	ResZona, zona_mas_com, zona_menor: N(3)
+	cantP, cantC, minimosP, minimosC, max_com_zona: entero
+	consP, facturado, consumo_zona, max_cons_com, menor_consumo: real
+	calle_max: AN(40)
+	nro_max: N(5)
+Proceso
+	Escribir("Tarifa particular y comercial del KW, y consumo mínimo de cada categoría")
+	Leer(tarifaP, tarifaC, minP, minC)
+	Abrir E/(USUARIOS); Leer(USUARIOS, R)
+	max_com_zona:= -1
+	menor_consumo:= 999999999
+	Mientras No FDA(USUARIOS) hacer
+		ResZona:= R.NroZona
+		cantP:= 0; cantC:= 0; minimosP:= 0; minimosC:= 0
+		consP:= 0; facturado:= 0; consumo_zona:= 0; max_cons_com:= -1
+		Escribir("Zona ", ResZona)
+		Mientras No FDA(USUARIOS) y (R.NroZona = ResZona) hacer
+			consumo_zona:= consumo_zona + R.Consumo
+			Si R.TipoUsuario = "P" entonces
+				cantP:= cantP + 1
+				consP:= consP + R.Consumo
+				Si R.Consumo > minP entonces
+					importe:= R.Consumo * tarifaP
+				Sino
+					importe:= minP * tarifaP
+					minimosP:= minimosP + 1
+				FinSi
+			Sino
+				cantC:= cantC + 1
+				Si R.Consumo > max_cons_com entonces
+					max_cons_com:= R.Consumo; calle_max:= R.Calle; nro_max:= R.Nro
+				FinSi
+				Si R.Consumo > minC entonces
+					importe:= R.Consumo * tarifaC
+				Sino
+					importe:= minC * tarifaC
+					minimosC:= minimosC + 1
+				FinSi
+			FinSi
+			Si ((R.TipoUsuario = "P") y (R.Consumo > minP)) o ((R.TipoUsuario = "C") y (R.Consumo > minC)) entonces
+				Escribir("  ", R.TipoUsuario, " | ", R.Nombre, " | ", R.Calle, " ", R.Nro, " | ", R.Consumo, " | $", importe)
+			FinSi
+			facturado:= facturado + importe
+			Leer(USUARIOS, R)
+		FinMientras
+		Si cantP > 0 entonces Escribir("  Consumo promedio de particulares: ", consP / cantP) FinSi
+		Si cantC > 0 entonces Escribir("  Comercial de mayor consumo: ", calle_max, " ", nro_max) FinSi
+		Escribir("  Total facturado: $", facturado, " - abonan el mínimo: ", minimosP, " particulares y ", minimosC, " comerciales")
+		Si cantC > max_com_zona entonces max_com_zona:= cantC; zona_mas_com:= ResZona FinSi
+		Si consumo_zona < menor_consumo entonces menor_consumo:= consumo_zona; zona_menor:= ResZona FinSi
+	FinMientras
+	Escribir("Zona con más usuarios comerciales: ", zona_mas_com)
+	Escribir("Zona con menor consumo: ", zona_menor)
+	Cerrar(USUARIOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.18
+// Dado un Archivo Maestro secuencial con datos de usuarios de una empresa
+// proveedora de energía eléctrica con la siguiente estructura:
+//
+// * Nro_U* Nombre* Domicilio* Tipo_U a,b,c* Cosumo_Prom
+//
+// El cual se actualiza, mes a mes, a partir de las novedades (altas,
+// modificaciones y bajas) almacenadas en otro archivo secuencial de
+// Movimientos. Puede haber más de una novedad para cada usuario y las bajas
+// son físicas.
+//
+// 1. Diseñe el ambiente, con todas las estructuras de datos necesarias para
+// realizar el proceso de actualización. Tenga en cuenta que los nombres de
+// variables se ajusten al algoritmo del punto 2.
+// 2. Dado los siguientes algoritmos, marque los errores que encuentre y
+// desarrolle las subacciones usadas en el mismo que están subrayadas.
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS (Reg_Mae.Nro_U <> High Value) o (Reg_Mov. Nro_U <> High Value) HACER
+//         SI Reg_Mae. Nro_U < Reg_Mov. Nro_U ENTONCES
+//             ESCRIBIR(Arch_sal, Reg_sal)
+//             Leer_Maestro
+//         SINO
+//             SI (Reg_Mae.Nro_U = Reg_Mov.Nro_U) ENTONCES
+//                 MIENTRAS (Reg_Mae.Nro_U = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMIENTRAS
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//                 Leer_Maestro
+//             SINO
+//                 Aux.Nro_U:= Reg_Mov.Nro_U
+//                 Aux.Nombre:= Reg_Mov.Nombre
+//                 Aux.Domicilio:= Reg_Mov.Domicilio
+//                 Aux.Tipo_U:= Reg_Mov.Tipo_U
+//                 Aux.Consumo_Prom:= Reg_Mov.Consumo_prom
+//                 Leer_Movimiento
+//                 MIENTRAS (Aux = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                 FMIENTRAS
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             FSI
+//         FSI
+//     FMIENTRAS
+//     Cerrar(Arch_sal)
+//
+// 2.
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS (Reg_Mae.Nro_U <> High_Value) o (Reg_Mov.Nro_U <> High_Value) HACER
+//         SI (Reg_Mae.Nro_U < Reg_Mov.Nro_U) ENTONCES
+//             Reg_sal:= Reg_mae
+//             ESCRIBIR(Arch_sal, Reg_sal)
+//         SINO
+//             SI (Reg_Mae.Nro_U = Reg_Mov.Nro_U) ENTONCES
+//                 Aux:= Reg_mae
+//                 MIENTRAS (Reg_Mae.Nro_U = Reg_Mov) HACER
+//                     Proceso_Movim
+//                 FMientras
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//                 Leer_Maestro
+//             SINO
+//                 Leer_Movimiento
+//                 MIENTRAS (Aux.Nro_U = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             FSI
+//         FSI
+//     Fmientras;
+//     Cerrar(Arch_sal)
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS ( ____________ <> High_Value) o (Reg_Mov.Nro_U <> High_Value) HACER
+//         SI Reg_Mae.Nro_U < Reg_Mov.Nro_U ENTONCES
+//             Reg_sal:= Reg_mae
+//             RE-ESCRIBIR(Arch_sal, Reg_sal)
+//             Leer_Maestro
+//         SINO
+//             SI Reg_Mae.Nro_U = Reg_Mov. Nro_U ENTONCES
+//                 Aux : = Reg_mae
+//                 MIENTRAS Reg_Mae.Nro_U = Reg_Mov.nro_U HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal : = Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             SINO
+//                 Aux.Nro_U : = Reg_Mov.Nro_U
+//                 Aux.Nombre : = Reg_Mov.Nombre
+//                 Aux.Domicilio : = Reg_Mov.Domicilio
+//                 Aux.Tipo_U : = Reg_Mov.Tipo_U
+//                 Aux.Consumo_Prom : = Reg_Mov.Consumo_prom
+//                 Leer_Movimiento
+//                 MIENTRAS Aux = Reg_Mov.Nro_U HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal : = Aux
+//                 ESCRIBIR(......................, Reg_sal)
+//                 Leer_Maestro
+//             FSI;
+//         FSI;
+//     Fmientras;
+//     Cerrar(Arch_sal)
+// --------------------------------------------------------------------------
+
+// 1. Ambiente
+//   Usuario = Registro
+//       Nro_U: N(8); Nombre: AN(40); Domicilio: AN(60)
+//       Tipo_U: ("a", "b", "c"); Consumo_Prom: real
+//   FinRegistro
+//   Movimiento = Registro
+//       Nro_U: N(8); Nombre: AN(40); Domicilio: AN(60)
+//       Tipo_U: ("a", "b", "c"); Consumo_Prom: real
+//       Cod_Mov: ("A", "B", "M")
+//   FinRegistro
+//   Arch_mae, Arch_sal: Archivo de Usuario ordenado por Nro_U
+//   Arch_mov: Archivo de Movimiento ordenado por Nro_U
+//   Reg_mae, Reg_sal, Aux: Usuario
+//   Reg_mov: Movimiento
+//   High_Value = 99999999
+//   baja: booleano
+//
+// 2. Errores de cada versión
+//   Versión 1:
+//   - En la rama "maestro < movimiento" escribe Reg_sal sin haber hecho Reg_sal:= Reg_mae.
+//   - En la rama de claves iguales nunca hace Aux:= Reg_mae antes de procesar.
+//   - En el alta compara "Aux = Reg_mov.Nro_U" (falta .Nro_U en Aux) y el
+//     ciclo no lee el siguiente movimiento: es un ciclo infinito.
+//   - Usa "High Value" con espacio (es un solo identificador).
+//   Versión 2:
+//   - En la rama "maestro < movimiento" no lee el siguiente maestro: ciclo infinito.
+//   - En claves iguales compara contra Reg_mov (falta .Nro_U) y el ciclo no
+//     lee movimientos: ciclo infinito.
+//   - En el alta lee el movimiento antes de cargar Aux, así que pierde los
+//     datos del alta, y Aux nunca se inicializa.
+//   Versión 3:
+//   - Falta la condición del Mientras principal (Reg_Mae.Nro_U).
+//   - Usa RE-ESCRIBIR sobre el archivo de salida (secuencial nuevo: es ESCRIBIR).
+//   - En claves iguales no lee el siguiente maestro después de grabar.
+//   - En el alta lee el maestro (no corresponde: el maestro no avanzó),
+//     compara "Aux = Reg_mov.Nro_U" y el ESCRIBIR no tiene archivo.
+//   - En ninguna versión se contemplan las bajas físicas (no grabar).
+//
+// Versión corregida y subacciones:
+Procedimiento Leer_Maestro es
+	Leer(Arch_mae, Reg_mae)
+	Si FDA(Arch_mae) entonces Reg_mae.Nro_U:= High_Value FinSi
+FinProcedimiento
+
+Procedimiento Leer_Movimiento es
+	Leer(Arch_mov, Reg_mov)
+	Si FDA(Arch_mov) entonces Reg_mov.Nro_U:= High_Value FinSi
+FinProcedimiento
+
+Procedimiento Proceso_Movim es // aplica un movimiento sobre Aux
+	Según Reg_mov.Cod_Mov hacer
+		"A": Si baja entonces // un alta después de una baja la reactiva
+		         Aux.Nombre:= Reg_mov.Nombre; Aux.Domicilio:= Reg_mov.Domicilio
+		         Aux.Tipo_U:= Reg_mov.Tipo_U; Aux.Consumo_Prom:= Reg_mov.Consumo_Prom
+		         baja:= Falso
+		     Sino
+		         Escribir("Error: alta de un usuario existente ", Reg_mov.Nro_U)
+		     FinSi
+		"B": baja:= Verdadero
+		"M": Aux.Nombre:= Reg_mov.Nombre; Aux.Domicilio:= Reg_mov.Domicilio
+		     Aux.Tipo_U:= Reg_mov.Tipo_U; Aux.Consumo_Prom:= Reg_mov.Consumo_Prom
+	FinSegún
+FinProcedimiento
+
+// Algoritmo
+	Abrir E/(Arch_mae); Abrir E/(Arch_mov); Abrir /S(Arch_sal)
+	Leer_Maestro
+	Leer_Movimiento
+	Mientras (Reg_mae.Nro_U <> High_Value) o (Reg_mov.Nro_U <> High_Value) hacer
+		Si Reg_mae.Nro_U < Reg_mov.Nro_U entonces
+			Reg_sal:= Reg_mae
+			Escribir(Arch_sal, Reg_sal)
+			Leer_Maestro
+		Sino
+			Si Reg_mae.Nro_U = Reg_mov.Nro_U entonces
+				Aux:= Reg_mae
+				baja:= Falso
+				Leer_Maestro
+			Sino // el usuario no está en el maestro: el primer movimiento debe ser un alta
+				baja:= Verdadero // "no existe" hasta que llegue el alta
+				Aux.Nro_U:= Reg_mov.Nro_U
+			FinSi
+			Mientras Aux.Nro_U = Reg_mov.Nro_U hacer
+				Proceso_Movim
+				Leer_Movimiento
+			FinMientras
+			Si No baja entonces
+				Reg_sal:= Aux
+				Escribir(Arch_sal, Reg_sal)
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(Arch_mae); Cerrar(Arch_mov); Cerrar(Arch_sal)
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.18 (segundo de la guía con ese número)
+// Suponer que los datos del ejercicio 2.01 se encuentran en 3 secuencias por
+// separado, correspondientes a ISI, IQ y IEM, todas ordenadas por Nro. de
+// Legajo. Generar un algoritmo que permita fusionar estas en una sola
+// secuencia, respetando el orden y la estructura.
+// --------------------------------------------------------------------------
+
+// (En la guía hay dos ejercicios numerados 2.2.18; este es el segundo.)
+// Mezcla de tres archivos con High Value: en cada vuelta se graba el menor.
+Accion Complementario2_2_18_b es
+Ambiente
+	// Datos: el mismo registro de alumnos del ejercicio 2.2.1 de la práctica
+	ISI, IQ, IEM, TODOS: Archivo de Datos ordenado por Nro_Legajo
+	R1, R2, R3: Datos
+	HV = 99999
+
+	Procedimiento Leer1 es
+		Leer(ISI, R1); Si FDA(ISI) entonces R1.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+	Procedimiento Leer2 es
+		Leer(IQ, R2); Si FDA(IQ) entonces R2.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+	Procedimiento Leer3 es
+		Leer(IEM, R3); Si FDA(IEM) entonces R3.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Abrir E/(ISI); Leer1
+	Abrir E/(IQ); Leer2
+	Abrir E/(IEM); Leer3
+	Abrir /S(TODOS)
+	Mientras (R1.Nro_Legajo <> HV) o (R2.Nro_Legajo <> HV) o (R3.Nro_Legajo <> HV) hacer
+		Si (R1.Nro_Legajo <= R2.Nro_Legajo) y (R1.Nro_Legajo <= R3.Nro_Legajo) entonces
+			Escribir(TODOS, R1); Leer1
+		Sino
+			Si R2.Nro_Legajo <= R3.Nro_Legajo entonces
+				Escribir(TODOS, R2); Leer2
+			Sino
+				Escribir(TODOS, R3); Leer3
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(ISI); Cerrar(IQ); Cerrar(IEM); Cerrar(TODOS)
+FinAccion
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.19
+// Por su gran desempeño en la cátedra de Algoritmos y Estructuras de Datos,
+// MercadoPago lo ha contratado como pasante para desempeñar una importante
+// tarea dentro de la empresa.
+//
+// Como primera actividad, se le ha solicitado desarrollar un algoritmo para
+// actualizar los saldos de las cuentas de los usuarios. Para esto, se cuenta
+// con los siguientes archivos:
+//
+// CUENTAS archivo secuencial, ordenado por nro_usuario
+//
+// * nro_usuario* apellido* nombre* cvu* cuil* monto* fecha_nacimiento*
+// fecha_alta* estado(V o F)
+//
+// y un archivo de movimientos
+//
+// MOVIMIENTOS ordenado por nro_usuario, cod_movimiento
+//
+// * nro_usuario* cod_movimiento* cuil* importe
+//
+// Donde el cod_movimiento puede ser:
+//
+// * 1: Alta de un nuevo usuario
+// * 2: Transferencia, el usuario ha realizado una transferencia de dinero
+// * 3: Ingreso, el usuario ha recibido un ingreso de dinero
+// * 4: Baja de la cuenta, la cuenta del usuario será desactivada (cambia el
+// estado a Falso)
+//
+// En caso de que se trate del alta de un nuevo usuario, los datos personales
+// del usuario serán capturados de una archivo del RENAPER, el cual se
+// encuentra indexado por el campo cuil
+//
+// RENAPER indexado por cuil
+//
+// * cuil* nombre* apellido* fecha_nacimiento* direccion
+//
+// Se le solicita además, que al finalizar, se informe:
+//
+// * Número de nuevas cuentas
+// * Porcentaje de cuentas que se dieron de baja
+//
+// Para generar la fecha_alta, considerar la existencia de una funcion HOY()
+// que devuelve como dato un registro con la fecha actual.
+//
+// Como segunda actividad, además de lo anterior, se le ha solicitado que,
+// durante el proceso, mantenga actualizado el archivo indexado de USUARIOS,
+// con los nuevos datos ingresados:
+//
+// USUARIOS indexado por cuil
+//
+// * cuil* nro_usuario* nombre* apellido* direccion* fecha_nacimiento
+// --------------------------------------------------------------------------
+
+// Actualización por lotes de CUENTAS con altas desde el RENAPER (indexado) y,
+// como segunda actividad, alta en el indexado USUARIOS.
+Accion Complementario2_2_19 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Cuenta = Registro
+		nro_usuario: N(8)
+		apellido, nombre: AN(30)
+		cvu: N(22)
+		cuil: N(11)
+		monto: real
+		fecha_nacimiento, fecha_alta: Fecha
+		estado: ("V", "F")
+	FinRegistro
+	Movimiento = Registro
+		nro_usuario: N(8)
+		cod_movimiento: 1..4
+		cuil: N(11)
+		importe: real
+	FinRegistro
+	Persona = Registro
+		cuil: N(11)
+		nombre, apellido: AN(30)
+		fecha_nacimiento: Fecha
+		direccion: AN(60)
+	FinRegistro
+	Usuario = Registro
+		cuil: N(11)
+		nro_usuario: N(8)
+		nombre, apellido: AN(30)
+		direccion: AN(60)
+		fecha_nacimiento: Fecha
+	FinRegistro
+	CUENTAS, CUENTAS_ACT: Archivo de Cuenta ordenado por nro_usuario
+	MOVIMIENTOS: Archivo de Movimiento ordenado por nro_usuario, cod_movimiento
+	RENAPER: Archivo de Persona indexado por cuil
+	USUARIOS: Archivo de Usuario indexado por cuil
+	RC, Aux: Cuenta
+	RM: Movimiento
+	RP: Persona
+	RU: Usuario
+	HV = 99999999
+	existe_cta: booleano
+	nuevas, bajas, total: entero
+
+	Procedimiento LeerCta es
+		Leer(CUENTAS, RC); Si FDA(CUENTAS) entonces RC.nro_usuario:= HV FinSi
+	FinProcedimiento
+	Procedimiento LeerMov es
+		Leer(MOVIMIENTOS, RM); Si FDA(MOVIMIENTOS) entonces RM.nro_usuario:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento Aplicar es // un movimiento sobre Aux
+		Según RM.cod_movimiento hacer
+			1: Si existe_cta entonces
+			       Escribir("Error: alta de un usuario existente ", RM.nro_usuario)
+			   Sino
+			       RP.cuil:= RM.cuil
+			       Leer(RENAPER, RP)
+			       Si EXISTE entonces
+			           Aux.nro_usuario:= RM.nro_usuario
+			           Aux.nombre:= RP.nombre; Aux.apellido:= RP.apellido
+			           Aux.cuil:= RM.cuil
+			           Aux.cvu:= 0 // lo asigna el sistema
+			           Aux.monto:= RM.importe
+			           Aux.fecha_nacimiento:= RP.fecha_nacimiento
+			           Aux.fecha_alta:= HOY()
+			           Aux.estado:= "V"
+			           existe_cta:= Verdadero
+			           nuevas:= nuevas + 1
+			           RU.cuil:= RM.cuil // segunda actividad: alta en USUARIOS
+			           Leer(USUARIOS, RU)
+			           Si No EXISTE entonces
+			               RU.nro_usuario:= RM.nro_usuario
+			               RU.nombre:= RP.nombre; RU.apellido:= RP.apellido
+			               RU.direccion:= RP.direccion
+			               RU.fecha_nacimiento:= RP.fecha_nacimiento
+			               Escribir(USUARIOS, RU)
+			           FinSi
+			       Sino
+			           Escribir("Error: el CUIL ", RM.cuil, " no está en el RENAPER")
+			       FinSi
+			   FinSi
+			2: Si existe_cta entonces Aux.monto:= Aux.monto - RM.importe FinSi // transferencia
+			3: Si existe_cta entonces Aux.monto:= Aux.monto + RM.importe FinSi // ingreso
+			4: Si existe_cta entonces Aux.estado:= "F"; bajas:= bajas + 1 FinSi // baja lógica
+		FinSegún
+	FinProcedimiento
+
+Proceso
+	Abrir E/(CUENTAS); LeerCta
+	Abrir E/(MOVIMIENTOS); LeerMov
+	Abrir E/(RENAPER); Abrir E/S(USUARIOS)
+	Abrir /S(CUENTAS_ACT)
+	nuevas:= 0; bajas:= 0; total:= 0
+	Mientras (RC.nro_usuario <> HV) o (RM.nro_usuario <> HV) hacer
+		Si RC.nro_usuario < RM.nro_usuario entonces
+			Escribir(CUENTAS_ACT, RC); total:= total + 1
+			LeerCta
+		Sino
+			Si RC.nro_usuario = RM.nro_usuario entonces
+				Aux:= RC; existe_cta:= Verdadero
+				LeerCta
+			Sino
+				Aux.nro_usuario:= RM.nro_usuario; existe_cta:= Falso
+			FinSi
+			Mientras RM.nro_usuario = Aux.nro_usuario hacer
+				Aplicar
+				LeerMov
+			FinMientras
+			Si existe_cta entonces
+				Escribir(CUENTAS_ACT, Aux); total:= total + 1
+			FinSi
+		FinSi
+	FinMientras
+	Escribir("Cuentas nuevas: ", nuevas)
+	Si total > 0 entonces Escribir("Cuentas dadas de baja: ", bajas * 100 / total, "%") FinSi
+	Cerrar(CUENTAS); Cerrar(MOVIMIENTOS); Cerrar(RENAPER); Cerrar(USUARIOS); Cerrar(CUENTAS_ACT)
+FinAccion

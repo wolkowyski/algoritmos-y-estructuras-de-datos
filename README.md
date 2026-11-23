@@ -14,6 +14,7 @@ Casi todo está escrito en el **pseudocódigo de la cátedra** (Acción / Ambien
 | [`04-desafios-y-practica`](04-desafios-y-practica) | Desafíos de clase y del campus, versiones en PSeInt y la guía de listas resuelta en el Discord del curso |
 | [`05-laboratorios`](05-laboratorios) | Laboratorio de Pascal (Tema 1) y laboratorio de C grupal (Tema 3, votación electrónica) |
 | [`06-apuntes`](06-apuntes) | Apuntes de clase propios: ciclos, registros, subsecuencias, archivos, preguntas para el final teórico |
+| [`07-algoritmos-en-c`](07-algoritmos-en-c) | Los esquemas principales (ordenamiento, búsquedas, corte de control y listas) pasados a C, listos para compilar con `gcc` |
 | [`material-de-catedra`](material-de-catedra) | Presentaciones, apuntes y guías de los profesores, ordenados por unidad |
 | [`extra`](extra) | Ejercicios resueltos de otros años, como material complementario |
 

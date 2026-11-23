@@ -1,12 +1,12 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales (extra)
-//  Ejercicios complementarios que se trabajaron en clase
+//  Página "Secuencias de datos elementales - Extra" de la guía (2.1.1 a 2.1.4)
 // ==========================================================================
 
 
 // --------------------------------------------------------------------------
-// Extra 1
+// Ejercicio 2.1.1 (extra)
 // Dada una secuencia de caracteres de entrada, producir una secuencia de
 // salida con solo los caracteres "numéricos" correspondientes a dígitos
 // impares. Ej: si en la entrada viniera A125EB% en la salida debería ir 15.
@@ -14,7 +14,7 @@
 // de dígitos y el porcentaje de pares e impares.
 // --------------------------------------------------------------------------
 
-Acción Extra_1 es
+Acción Extra2_1_1 es
     Ambiente
         PAR = {"0", "2", "4", "6", "8"}   // son caracteres, no números
         IMPAR = {"1", "3", "5", "7", "9"}
@@ -55,14 +55,14 @@ FinAcción
 
 
 // --------------------------------------------------------------------------
-// Extra 2
+// Ejercicio 2.1.2 (extra)
 // Dada una secuencia de caracteres de entrada, producir 2 secuencias de
 // salida, una con los caracteres "numéricos" y otra con los que no lo son.
 // Informar al final la cantidad de caracteres de cada secuencia de salida.
 // Ej: A125EB% -> salida1: 125 | salida2: AEB%
 // --------------------------------------------------------------------------
 
-Acción Extra_2 es
+Acción Extra2_1_2 es
     Ambiente
         NUM = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"} // faltaba el 0
         Sec, Sec1, Sec2: secuencia de caracteres
@@ -94,7 +94,7 @@ FinAcción
 
 
 // --------------------------------------------------------------------------
-// Extra 3
+// Ejercicio 2.1.3 (extra)
 // Desglosar una secuencia de enteros que contiene monotonías crecientes en dos
 // secuencias de salida, copiando las monotonías alternativamente en una y en
 // otra.
@@ -104,7 +104,7 @@ FinAcción
 // Si te animás: sumar los valores de cada salida e informar la suma mayor.
 // --------------------------------------------------------------------------
 
-Acción Extra_3 es
+Acción Extra2_1_3 es
     Ambiente
         Sec, Sal1, Sal2: secuencia de enteros
         v, anterior: entero
@@ -146,7 +146,7 @@ FinAcción
 
 
 // --------------------------------------------------------------------------
-// Extra 4
+// Ejercicio 2.1.4 (extra)
 // Se dispone de 2 secuencias de caracteres (ambas terminan en "*"): una con
 // caracteres, incluidos espacios, y otra con caracteres "numéricos". Crear una
 // secuencia de salida copiando los caracteres de ambas en forma alternada.
@@ -159,7 +159,7 @@ FinAcción
 // secuencia que se incrementa cada vez que se copia un caracter de ella.
 // --------------------------------------------------------------------------
 
-Acción Extra_4 es
+Acción Extra2_1_4 es
 Ambiente
     Sec1, Sec2, SecFinal: secuencia de caracteres
     v1, v2: caracter

@@ -1,0 +1,1160 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales (2.1.13 a 2.1.32)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.13
+// A partir del ejercicio anterior, determinar el porcentaje que representan
+// las palabras que comienzan con "ALG"
+// sobre todas las palabras de la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_13 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    total, con_alg: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    total:= 0
+    con_alg:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer // salteo blancos
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces // empieza una palabra
+            total:= total + 1
+            Si v = "A" entonces
+                AVZ(Sec, v)
+                Si v = "L" entonces
+                    AVZ(Sec, v)
+                    Si v = "G" entonces
+                        con_alg:= con_alg + 1
+                    FinSi
+                FinSi
+            FinSi
+            Mientras NFDS(Sec) y (v <> " ") hacer // termino la palabra
+                AVZ(Sec, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Palabras que empiezan con ALG: ", con_alg * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.14
+// Se dispone de una secuencia de caracteres y se desea saber la cantidad de
+// caracteres (incluidos los espacios) que existen entre una coma y la
+// siguiente. Se debe considerar que puede haber más de un par de comas, y
+// que las subsecuencias inicial y final deben descartarse por no cumplir la
+// condición enunciada. Supóngase que las comas son siempre contiguas al
+// último caracter de la palabra.
+// --------------------------------------------------------------------------
+
+// Solo se cuentan los tramos que están entre dos comas: lo que hay antes de
+// la primera coma y después de la última se descarta.
+Acción Ejercicio2_1_14 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    Mientras NFDS(Sec) y (v <> ",") hacer // descarto la subsecuencia inicial
+        AVZ(Sec, v)
+    FinMientras
+    Mientras NFDS(Sec) hacer // estoy parado en una coma
+        AVZ(Sec, v)
+        cont:= 0
+        Mientras NFDS(Sec) y (v <> ",") hacer
+            cont:= cont + 1 // incluye los espacios
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces // llegué a otra coma: el tramo es válido
+            Escribir("Caracteres entre comas: ", cont)
+        FinSi // si terminó la secuencia, era la subsecuencia final y se descarta
+    FinMientras
+    CERRAR(Sec)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.16
+// Se dispone de una secuencia de números de DNI asignados a un circuito
+// electoral, generar otra secuencia de números que contenga los DNI
+// múltiplos de 3.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_16 es
+Ambiente
+    DNIS, Mult3: secuencia de enteros
+    dni: entero
+Proceso
+    ARR(DNIS)
+    AVZ(DNIS, dni)
+    CREAR(Mult3)
+    Mientras NFDS(DNIS) hacer
+        Si dni mod 3 = 0 entonces
+            ESC(Mult3, dni)
+        FinSi
+        AVZ(DNIS, dni)
+    FinMientras
+    CERRAR(DNIS)
+    CERRAR(Mult3)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.17
+// Se desea calcular el costo de un telegrama, que se determina en función
+// del número de palabras (que vale V1 cada una), salvo que el promedio de
+// letras por palabra supere las cinco letras, caso en que cada palabra vale
+// V2.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_17 es
+Ambiente
+    Telegrama: secuencia de caracteres
+    v: caracter
+    V1, V2, costo: real
+    palabras, letras: entero
+Proceso
+    Escribir("Ingrese el valor por palabra V1 y el valor V2")
+    Leer(V1, V2)
+    ARR(Telegrama)
+    AVZ(Telegrama, v)
+    palabras:= 0
+    letras:= 0
+    Mientras NFDS(Telegrama) hacer
+        Mientras NFDS(Telegrama) y (v = " ") hacer
+            AVZ(Telegrama, v)
+        FinMientras
+        Si NFDS(Telegrama) entonces
+            palabras:= palabras + 1
+            Mientras NFDS(Telegrama) y (v <> " ") hacer
+                letras:= letras + 1
+                AVZ(Telegrama, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Si (palabras > 0) y (letras / palabras > 5) entonces
+        costo:= palabras * V2
+    Sino
+        costo:= palabras * V1
+    FinSi
+    Escribir("Costo del telegrama: ", costo)
+    CERRAR(Telegrama)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.18
+// Escribir un algoritmo que produzca una secuencia de salida que contenga
+// una oración formada por las palabras en posición par de cada oración de
+// una secuencia texto de entrada, que además comienzan con la letra 'M'.
+// --------------------------------------------------------------------------
+
+// La posición de la palabra se cuenta dentro de cada oración (las oraciones
+// terminan en "." pegado a la última palabra). En la salida las palabras se
+// separan con " " y la oración termina con ".".
+Acción Ejercicio2_1_18 es
+Ambiente
+    Texto, Salida: secuencia de caracteres
+    v: caracter
+    pos: entero
+Proceso
+    ARR(Texto)
+    AVZ(Texto, v)
+    CREAR(Salida)
+    Mientras NFDS(Texto) hacer
+        pos:= 0 // nueva oración
+        Mientras NFDS(Texto) y (v <> ".") hacer
+            Mientras v = " " hacer
+                AVZ(Texto, v)
+            FinMientras
+            pos:= pos + 1
+            Si (pos mod 2 = 0) y (v = "M") entonces // la copio
+                Mientras (v <> " ") y (v <> ".") hacer
+                    ESC(Salida, v)
+                    AVZ(Texto, v)
+                FinMientras
+                ESC(Salida, " ")
+            Sino // la descarto
+                Mientras (v <> " ") y (v <> ".") hacer
+                    AVZ(Texto, v)
+                FinMientras
+            FinSi
+        FinMientras
+        AVZ(Texto, v) // paso el punto
+    FinMientras
+    ESC(Salida, ".")
+    CERRAR(Texto)
+    CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.19
+// Dada una secuencia de caracteres, generar otra secuencia con todas las
+// palabras de tres caracteres. Informar el porcentaje de las mismas, sobre
+// el total de palabras de la secuencia de entrada. Considerar que puede
+// haber más de un blanco entre palabras.
+// --------------------------------------------------------------------------
+
+// Una palabra de 3 caracteres no se puede saber hasta terminarla: guardo los
+// 3 primeros caracteres en variables y los escribo solo si el largo es 3.
+Acción Ejercicio2_1_19 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v, c1, c2, c3: caracter
+    largo, total, de_tres: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0
+    de_tres:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer // puede haber más de un blanco
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            largo:= 0
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                largo:= largo + 1
+                Según largo hacer
+                    1: c1:= v
+                    2: c2:= v
+                    3: c3:= v
+                FinSegún
+                AVZ(Sec, v)
+            FinMientras
+            Si largo = 3 entonces
+                de_tres:= de_tres + 1
+                ESC(Salida, c1); ESC(Salida, c2); ESC(Salida, c3); ESC(Salida, " ")
+            FinSi
+        FinSi
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Palabras de 3 caracteres: ", de_tres * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec)
+    CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.20
+// Se dispone de dos secuencias texto formadas por oraciones bimembres
+// (sujeto y predicado, separados por comas ‘,’). Se desea una secuencia
+// texto de salida formada por oraciones bimembres, de la siguiente forma:
+//
+// *El sujeto, de la secuencia 1, y el predicado, de la secuencia 2.*
+//
+// Al finalizar informar cuántas oraciones tiene cada secuencia.
+// --------------------------------------------------------------------------
+
+// Las dos secuencias se recorren a la par: de S1 se copia el sujeto (hasta la
+// coma) y de S2 el predicado (desde la coma hasta el punto). Si una tiene más
+// oraciones que la otra, las que sobran solo se cuentan.
+Acción Ejercicio2_1_20 es
+Ambiente
+    S1, S2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    or1, or2: entero
+
+    Procedimiento SaltarOracion (Var S: secuencia de caracteres; Var v: caracter; Var cont: entero) es
+        Mientras v <> "." hacer
+            AVZ(S, v)
+        FinMientras
+        AVZ(S, v)
+        cont:= cont + 1
+    FinProcedimiento
+
+Proceso
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(Salida)
+    or1:= 0; or2:= 0
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Mientras v1 <> "," hacer // sujeto de la secuencia 1
+            ESC(Salida, v1)
+            AVZ(S1, v1)
+        FinMientras
+        Mientras v2 <> "," hacer // salteo el sujeto de la secuencia 2
+            AVZ(S2, v2)
+        FinMientras
+        Mientras v2 <> "." hacer // predicado de la secuencia 2 (incluye la coma)
+            ESC(Salida, v2)
+            AVZ(S2, v2)
+        FinMientras
+        ESC(Salida, ".")
+        SaltarOracion(S1, v1, or1) // termino la oración 1 (su predicado no se usa)
+        AVZ(S2, v2); or2:= or2 + 1
+    FinMientras
+    Mientras NFDS(S1) hacer
+        SaltarOracion(S1, v1, or1)
+    FinMientras
+    Mientras NFDS(S2) hacer
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Escribir("Oraciones de la secuencia 1: ", or1, " - de la secuencia 2: ", or2)
+    CERRAR(S1); CERRAR(S2); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.21
+// Se dispone de dos secuencias texto formadas por oraciones bimembres
+// (sujeto y predicado, separados por comas ‘,’). Se desea una secuencia
+// texto de salida formada por oraciones bimembres, de la siguiente forma:
+//
+// *El sujeto de la secuencia 2, y el predicado de la secuencia 1.*
+//
+// Al finalizar informar cuantas oraciones tiene cada secuencia.
+// --------------------------------------------------------------------------
+
+// Es el 2.1.20 con los papeles invertidos: el sujeto sale de S2 y el
+// predicado de S1. Solo cambia el cuerpo del ciclo principal.
+Acción Ejercicio2_1_21 es
+Ambiente
+    S1, S2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    or1, or2: entero
+    // (mismo procedimiento SaltarOracion que en el 2.1.20)
+Proceso
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(Salida)
+    or1:= 0; or2:= 0
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Mientras v2 <> "," hacer // sujeto de la secuencia 2
+            ESC(Salida, v2)
+            AVZ(S2, v2)
+        FinMientras
+        Mientras v1 <> "," hacer // salteo el sujeto de la secuencia 1
+            AVZ(S1, v1)
+        FinMientras
+        Mientras v1 <> "." hacer // predicado de la secuencia 1
+            ESC(Salida, v1)
+            AVZ(S1, v1)
+        FinMientras
+        ESC(Salida, ".")
+        AVZ(S1, v1); or1:= or1 + 1
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Mientras NFDS(S1) hacer
+        SaltarOracion(S1, v1, or1)
+    FinMientras
+    Mientras NFDS(S2) hacer
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Escribir("Oraciones de la secuencia 1: ", or1, " - de la secuencia 2: ", or2)
+    CERRAR(S1); CERRAR(S2); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.22
+// La empresa Ideas Argentinas S.A. posee datos de sus empleados en dos
+// secuencias de caracteres; la primera secuencia (Sec1) formada por los
+// nombres (uno por persona) de los empleados separados por blancos y la
+// segunda secuencia (Sec2) posee los números de documento de cada uno de los
+// empleados (palabras de 8 dígitos numéricos).
+// Ambas secuencias poseen la misma cantidad de datos, es decir al primer
+// nombre de la primera secuencia le corresponde el primer número de
+// documento de la segunda secuencia y así sucesivamente. La secuencia de
+// números de documentos no posee espacios en blanco ni ningún otro tipo de
+// caracter que separe un número de documento de otro.
+// A la empresa le interesa tener en una nueva secuencia (Sec3) los datos de
+// todas aquellas personas que cumplan la condición de que el nombre se
+// encuentre en una posición impar.
+// La nueva secuencia debe generarse de la siguiente manera: el número de
+// documento seguido (sin espacios) por una coma y luego (sin espacios) por
+// el nombre y seguido al nombre un #.
+// --------------------------------------------------------------------------
+
+// Por cada nombre de Sec1 le corresponden los 8 dígitos siguientes de Sec2.
+// En la salida el DNI va primero, pero el nombre se lee primero: para no
+// tener que guardar el nombre, leo antes el DNI (8 caracteres) en variables.
+Acción Ejercicio2_1_22 es
+Ambiente
+    Sec1, Sec2, Sec3: secuencia de caracteres
+    v1, v2: caracter
+    dni: arreglo de [1..8] de caracter // se usa solo como 8 variables para el DNI
+    i, pos: entero
+Proceso
+    ARR(Sec1); AVZ(Sec1, v1)
+    ARR(Sec2); AVZ(Sec2, v2)
+    CREAR(Sec3)
+    pos:= 0
+    Mientras NFDS(Sec1) hacer
+        Mientras NFDS(Sec1) y (v1 = " ") hacer
+            AVZ(Sec1, v1)
+        FinMientras
+        Si NFDS(Sec1) entonces
+            pos:= pos + 1
+            Para i:= 1 hasta 8 hacer // DNI de esta persona
+                dni[i]:= v2
+                AVZ(Sec2, v2)
+            FinPara
+            Si pos mod 2 = 1 entonces // posición impar: se copia
+                Para i:= 1 hasta 8 hacer
+                    ESC(Sec3, dni[i])
+                FinPara
+                ESC(Sec3, ",")
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    ESC(Sec3, v1)
+                    AVZ(Sec1, v1)
+                FinMientras
+                ESC(Sec3, "#")
+            Sino
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    AVZ(Sec1, v1)
+                FinMientras
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Sec1); CERRAR(Sec2); CERRAR(Sec3)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.23
+// Realice un algoritmo para el enunciado del ejercicio 1.22, pero
+// considerando que los datos que se deben copiar en la Sec3 son los de
+// aquellas personas que cumplan la condición de que: el número de documento
+// comienza con un número impar.
+// --------------------------------------------------------------------------
+
+// Igual al 2.1.22; solo cambia la condición: el DNI empieza con un dígito impar.
+Acción Ejercicio2_1_23 es
+Ambiente
+    Sec1, Sec2, Sec3: secuencia de caracteres
+    v1, v2: caracter
+    dni: arreglo de [1..8] de caracter
+    i: entero
+Proceso
+    ARR(Sec1); AVZ(Sec1, v1)
+    ARR(Sec2); AVZ(Sec2, v2)
+    CREAR(Sec3)
+    Mientras NFDS(Sec1) hacer
+        Mientras NFDS(Sec1) y (v1 = " ") hacer
+            AVZ(Sec1, v1)
+        FinMientras
+        Si NFDS(Sec1) entonces
+            Para i:= 1 hasta 8 hacer
+                dni[i]:= v2
+                AVZ(Sec2, v2)
+            FinPara
+            Si dni[1] en {"1", "3", "5", "7", "9"} entonces
+                Para i:= 1 hasta 8 hacer
+                    ESC(Sec3, dni[i])
+                FinPara
+                ESC(Sec3, ",")
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    ESC(Sec3, v1)
+                    AVZ(Sec1, v1)
+                FinMientras
+                ESC(Sec3, "#")
+            Sino
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    AVZ(Sec1, v1)
+                FinMientras
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Sec1); CERRAR(Sec2); CERRAR(Sec3)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.24
+// Realice un algoritmo para el enunciado del ejercicio 1.22, pero
+// considerando que los datos que se deben copiar en la Sec3 son los de
+// aquellas personas que cumplan la condición de que: el nombre no comienza
+// con una vocal.
+// --------------------------------------------------------------------------
+
+// Igual al 2.1.22; la condición se mira en la primera letra del nombre.
+Acción Ejercicio2_1_24 es
+Ambiente
+    Sec1, Sec2, Sec3: secuencia de caracteres
+    v1, v2: caracter
+    dni: arreglo de [1..8] de caracter
+    i: entero
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+Proceso
+    ARR(Sec1); AVZ(Sec1, v1)
+    ARR(Sec2); AVZ(Sec2, v2)
+    CREAR(Sec3)
+    Mientras NFDS(Sec1) hacer
+        Mientras NFDS(Sec1) y (v1 = " ") hacer
+            AVZ(Sec1, v1)
+        FinMientras
+        Si NFDS(Sec1) entonces
+            Para i:= 1 hasta 8 hacer
+                dni[i]:= v2
+                AVZ(Sec2, v2)
+            FinPara
+            Si No (v1 en vocales) entonces // v1 es la primera letra del nombre
+                Para i:= 1 hasta 8 hacer
+                    ESC(Sec3, dni[i])
+                FinPara
+                ESC(Sec3, ",")
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    ESC(Sec3, v1)
+                    AVZ(Sec1, v1)
+                FinMientras
+                ESC(Sec3, "#")
+            Sino
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    AVZ(Sec1, v1)
+                FinMientras
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Sec1); CERRAR(Sec2); CERRAR(Sec3)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.25
+// Dada una secuencia texto de entrada que contiene palabras alfanuméricas,
+// escribir un algoritmo que genere dos secuencias de salida. Una de ellas
+// contendrá solo las palabras de la secuencia original que comienzan con
+// vocal, en las cuales se reemplazarán todas las vocales por ‘#’, por
+// ejemplo: entrada 'avión1', salida '#v##n1' y la otra será una secuencia
+// numérica en la que se almacenarán las cantidades de vocales que se
+// encontraron en cada una de las palabras que cumplieron la condición. Por
+// final de proceso se deberá informar el promedio de palabras por oración.
+// --------------------------------------------------------------------------
+
+// Las oraciones terminan en "." pegado a la última palabra.
+Acción Ejercicio2_1_25 es
+Ambiente
+    Texto, SalPalabras: secuencia de caracteres
+    SalVocales: secuencia de enteros
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    cant_voc, palabras, oraciones: entero
+Proceso
+    ARR(Texto); AVZ(Texto, v)
+    CREAR(SalPalabras); CREAR(SalVocales)
+    palabras:= 0; oraciones:= 0
+    Mientras NFDS(Texto) hacer
+        Mientras NFDS(Texto) y (v = " ") hacer
+            AVZ(Texto, v)
+        FinMientras
+        Si NFDS(Texto) entonces
+            palabras:= palabras + 1
+            Si v en vocales entonces // la palabra cumple: reemplazo sus vocales
+                cant_voc:= 0
+                Mientras (v <> " ") y (v <> ".") hacer
+                    Si v en vocales entonces
+                        ESC(SalPalabras, "#")
+                        cant_voc:= cant_voc + 1
+                    Sino
+                        ESC(SalPalabras, v)
+                    FinSi
+                    AVZ(Texto, v)
+                FinMientras
+                ESC(SalPalabras, " ")
+                ESC(SalVocales, cant_voc)
+            Sino
+                Mientras (v <> " ") y (v <> ".") hacer
+                    AVZ(Texto, v)
+                FinMientras
+            FinSi
+            Si v = "." entonces
+                oraciones:= oraciones + 1
+                AVZ(Texto, v)
+            FinSi
+        FinSi
+    FinMientras
+    Si oraciones > 0 entonces
+        Escribir("Promedio de palabras por oración: ", palabras / oraciones)
+    FinSi
+    CERRAR(Texto); CERRAR(SalPalabras); CERRAR(SalVocales)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.26
+// Se posee 2 secuencias (S1 y S2) con las cuales se desea generar una nueva
+// secuencia (SAL) donde se intercalen las palabras de las secuencias de
+// entrada, de la siguiente manera: copiar de S1 aquellas palabras que
+// empiezan con una letra que ingresa el usuario y de S2 aquellas palabras
+// que estén en posición par.
+// --------------------------------------------------------------------------
+
+// Se intercala: una palabra que cumple de S1, una que cumple de S2, y así;
+// cuando una secuencia se agota se copian las que cumplen de la otra.
+Acción Ejercicio2_1_26 es
+Ambiente
+    S1, S2, SAL: secuencia de caracteres
+    v1, v2, letra: caracter
+    pos2: entero
+    copio: booleano
+
+    // Avanza en S1 hasta copiar una palabra que empieza con la letra (o hasta el fin)
+    Procedimiento ProximaDeS1 es
+        copio:= Falso
+        Mientras NFDS(S1) y No copio hacer
+            Mientras NFDS(S1) y (v1 = " ") hacer
+                AVZ(S1, v1)
+            FinMientras
+            Si NFDS(S1) entonces
+                copio:= (v1 = letra)
+                Mientras NFDS(S1) y (v1 <> " ") hacer
+                    Si copio entonces ESC(SAL, v1) FinSi
+                    AVZ(S1, v1)
+                FinMientras
+                Si copio entonces ESC(SAL, " ") FinSi
+            FinSi
+        FinMientras
+    FinProcedimiento
+
+    // Avanza en S2 hasta copiar una palabra en posición par (o hasta el fin)
+    Procedimiento ProximaDeS2 es
+        copio:= Falso
+        Mientras NFDS(S2) y No copio hacer
+            Mientras NFDS(S2) y (v2 = " ") hacer
+                AVZ(S2, v2)
+            FinMientras
+            Si NFDS(S2) entonces
+                pos2:= pos2 + 1
+                copio:= (pos2 mod 2 = 0)
+                Mientras NFDS(S2) y (v2 <> " ") hacer
+                    Si copio entonces ESC(SAL, v2) FinSi
+                    AVZ(S2, v2)
+                FinMientras
+                Si copio entonces ESC(SAL, " ") FinSi
+            FinSi
+        FinMientras
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese la letra")
+    Leer(letra)
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(SAL)
+    pos2:= 0
+    Mientras NFDS(S1) o NFDS(S2) hacer
+        ProximaDeS1
+        ProximaDeS2
+    FinMientras
+    CERRAR(S1); CERRAR(S2); CERRAR(SAL)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.27
+// Elaborar un procedimiento que dada una secuencia de caracteres como
+// entrada genere otra del mismo tipo como salida.
+// La secuencia de caracteres que se recibe incluye números de tarjetas de
+// crédito, donde cada número tiene 16 dígitos. Se desea obtener como
+// resultado una nueva secuencia de salida con los números de tarjetas
+// válidos.
+// El algoritmo para la validación de números de tarjetas de crédito es el
+// siguiente:
+// Para entender mejor el método usaremos un número correcto:
+// 4073-7001-0977-4812, al que nos referiremos en el texto. Nos centramos en
+// los caracteres que ocupan las posiciones 1 y 3.
+//
+// 4 0 7 3 7 0 0 1 0 9 7 7 4 8 1 2
+//
+// Por cada uno de ellos obtenemos el doble del valor que representan. Si el
+// número resultante es menor que 9, se deja tal cual; en caso contrario, se
+// le resta 9. En nuestro ejemplo: 4 * 2 = 8; 7 * 2 = 14, mayor que nueve, se
+// le resta 9. 14 - 9 = 5. Si el número resultante de la suma de las
+// multiplicaciones y de los dígitos en las posiciones 1 y 3, es múltiplo de
+// 2 y a la vez menor o igual a 15, es un número de tarjeta válido.
+//
+// Para nuestro ejemplo: 8 + 5 = 13; por lo tanto el número es válido.
+// --------------------------------------------------------------------------
+
+// Se asume que los números vienen como 16 dígitos seguidos (sin guiones) uno
+// después de otro. Como recién se sabe si es válido después de leer los 16,
+// se guardan en un arreglo de 16 caracteres antes de copiarlos.
+// Posiciones "1 y 3" del enunciado: las impares contando desde 1 (4, 7, 7, ...).
+Procedimiento TarjetasValidas (Var Entrada, Salida: secuencia de caracteres) es
+    Ambiente
+        v: caracter
+        num: arreglo de [1..16] de caracter
+        i, d, suma: entero
+
+        Función Valor (c: caracter): entero es
+            Según c hacer
+                "0": Valor:= 0  "1": Valor:= 1  "2": Valor:= 2  "3": Valor:= 3  "4": Valor:= 4
+                "5": Valor:= 5  "6": Valor:= 6  "7": Valor:= 7  "8": Valor:= 8  "9": Valor:= 9
+            FinSegún
+        FinFunción
+
+    Proceso
+        ARR(Entrada); AVZ(Entrada, v)
+        CREAR(Salida)
+        Mientras NFDS(Entrada) hacer
+            suma:= 0
+            Para i:= 1 hasta 16 hacer
+                num[i]:= v
+                Si i mod 2 = 1 entonces // posiciones que se duplican
+                    d:= Valor(v) * 2
+                    Si d > 9 entonces
+                        d:= d - 9
+                    FinSi
+                    suma:= suma + d
+                FinSi
+                AVZ(Entrada, v)
+            FinPara
+            Si (suma mod 2 = 0) y (suma <= 15) entonces
+                Para i:= 1 hasta 16 hacer
+                    ESC(Salida, num[i])
+                FinPara
+            FinSi
+        FinMientras
+        CERRAR(Entrada)
+        CERRAR(Salida)
+FinProcedimiento
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.28
+// La galería de pintura y arte nacional, PINTA DE ARGENTINA, almacena
+// información sobre los artistas y sus obras de arte en secuencias de
+// caracteres. Durante todo el año, las obras de arte son expuestas en
+// eventos de subasta y exposición, en los cuales se comercializan al público
+// en general.
+// A fin de año la Comisión Directiva de la Galería solicita que, a partir de
+// toda esa información, se generen algunos informes.
+// Se debe tener en cuenta lo siguiente:
+//
+// * En la secuencia ARTISTAS, se almacena el estilo de arte ('R' –
+// Renacentista, 'M' – Arte Moderno, 'B' – Barroco, 'S' – Surrealismo), el
+// nombre de cada artista, lugar de nacimiento, edad y cantidad de obras por
+// artista.
+// * Los datos de cada artista están separados entre sí por el símbolo '+' y
+// finalizan con el símbolo '?'.
+// * En la secuencia OBRAS, se almacena el nombre de la obra, el año en que
+// fue hecha, su precio, precedido siempre del signo '$' (solo 3 digitos) y
+// su estado ('V' – Vendido, 'R' – Reservado, 'U' – Obra Única).
+// * Todos los datos de las obras están separados por el símbolo ',' y
+// finalizan con el símbolo '/'.
+// * El creador de cada obra se determina de acuerdo al dato 'cantidad de
+// obras' de la secuencia ARTISTAS, por ej.: el autor RENE BARTOL tiene 2
+// obras, por lo cual las primeras 2 obras de la secuencia OBRAS le
+// pertenecen, las siguientes 6, pertenecen a JUAN B JUSTO, etc.
+//
+// A continuación un ejemplo de ambas secuencias:
+//
+// SECUENCIA ARTISTAS
+//
+// `M+RENE BARTOL+ROSARIO+34+2?R+JUAN B JUSTO+NEUQUEN+61+5?…………`
+//
+// SECUENCIAS OBRAS
+// `SOL Y PARANA,1997,913,V/GRITO DE
+// ESPERANZA,2003,235,R/PENAS,1997,$781,V/………`
+//
+// A partir de lo expuesto anteriormente, se pide:
+//
+// 1. Generar una secuencia de salida con información de los artistas
+// Renacentistas. La secuencia debe contener el nombre del artista seguido de
+// sus obras (nombre y año de creación). Los datos correspondientes al mismo
+// artista deben separarse entre sí con el signo '+' y finalizar con el signo
+// '?'.
+// 2. Al final del proceso informar:
+//    1. La mayor cantidad de obras vendidas por un artista.
+//    2. El porcentaje de obras de artistas "renacentistas" sobre el total de
+//    obras.
+// --------------------------------------------------------------------------
+
+// Formato (según el ejemplo): ARTISTAS = estilo+nombre+lugar+edad+cantidad?
+//                             OBRAS = nombre,año,$ppp,estado/
+// La cantidad de obras de cada artista dice cuántas obras de OBRAS son suyas.
+Acción Ejercicio2_1_28 es
+Ambiente
+    ARTISTAS, OBRAS, Salida: secuencia de caracteres
+    a, o: caracter
+    estilo: caracter
+    cant_obras, i, vendidas, max_vendidas: entero
+    obras_total, obras_renac: entero
+    es_renac: booleano
+
+    Función Valor (c: caracter): entero es
+        Según c hacer
+            "0": Valor:= 0  "1": Valor:= 1  "2": Valor:= 2  "3": Valor:= 3  "4": Valor:= 4
+            "5": Valor:= 5  "6": Valor:= 6  "7": Valor:= 7  "8": Valor:= 8  "9": Valor:= 9
+        FinSegún
+    FinFunción
+
+Proceso
+    ARR(ARTISTAS); AVZ(ARTISTAS, a)
+    ARR(OBRAS); AVZ(OBRAS, o)
+    CREAR(Salida)
+    max_vendidas:= 0; obras_total:= 0; obras_renac:= 0
+    Mientras NFDS(ARTISTAS) hacer
+        estilo:= a
+        es_renac:= (estilo = "R")
+        AVZ(ARTISTAS, a); AVZ(ARTISTAS, a) // salteo el estilo y el "+"
+        Mientras a <> "+" hacer // nombre
+            Si es_renac entonces ESC(Salida, a) FinSi
+            AVZ(ARTISTAS, a)
+        FinMientras
+        AVZ(ARTISTAS, a)
+        Mientras a <> "+" hacer // lugar de nacimiento (no se usa)
+            AVZ(ARTISTAS, a)
+        FinMientras
+        AVZ(ARTISTAS, a)
+        Mientras a <> "+" hacer // edad (no se usa)
+            AVZ(ARTISTAS, a)
+        FinMientras
+        AVZ(ARTISTAS, a)
+        cant_obras:= 0
+        Mientras a <> "?" hacer // cantidad de obras (puede tener varios dígitos)
+            cant_obras:= cant_obras * 10 + Valor(a)
+            AVZ(ARTISTAS, a)
+        FinMientras
+        AVZ(ARTISTAS, a) // próximo artista
+
+        vendidas:= 0
+        Para i:= 1 hasta cant_obras hacer // sus obras en OBRAS
+            Si es_renac entonces ESC(Salida, "+") FinSi
+            Mientras o <> "," hacer // nombre de la obra
+                Si es_renac entonces ESC(Salida, o) FinSi
+                AVZ(OBRAS, o)
+            FinMientras
+            AVZ(OBRAS, o)
+            Si es_renac entonces ESC(Salida, " ") FinSi
+            Mientras o <> "," hacer // año
+                Si es_renac entonces ESC(Salida, o) FinSi
+                AVZ(OBRAS, o)
+            FinMientras
+            AVZ(OBRAS, o)
+            Mientras o <> "," hacer // precio (no se usa)
+                AVZ(OBRAS, o)
+            FinMientras
+            AVZ(OBRAS, o) // estado
+            Si o = "V" entonces
+                vendidas:= vendidas + 1
+            FinSi
+            AVZ(OBRAS, o); AVZ(OBRAS, o) // salteo el estado y el "/"
+        FinPara
+        Si es_renac entonces ESC(Salida, "?") FinSi
+
+        obras_total:= obras_total + cant_obras
+        Si es_renac entonces
+            obras_renac:= obras_renac + cant_obras
+        FinSi
+        Si vendidas > max_vendidas entonces
+            max_vendidas:= vendidas
+        FinSi
+    FinMientras
+    Escribir("Mayor cantidad de obras vendidas por un artista: ", max_vendidas)
+    Si obras_total > 0 entonces
+        Escribir("Obras de artistas renacentistas: ", obras_renac * 100 / obras_total, "%")
+    FinSi
+    CERRAR(ARTISTAS); CERRAR(OBRAS); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.29
+// Dado el ejercicio anterior, pensar: cómo cambia el algoritmo solución en
+// caso de que el 'estilo de arte' se indique al principio de los datos de
+// cada artista en la secuencia de artistas. Por qué? Hacer el algoritmo.
+// --------------------------------------------------------------------------
+
+// Respuesta: cuando el estilo está al principio de los datos del artista
+// (como en el ejemplo y en la resolución del 2.1.28) se sabe desde el primer
+// caracter si el artista es renacentista, así que su nombre y sus obras se
+// pueden ir copiando a la salida mientras se leen.
+//
+// Si el estilo viniera al final (nombre+lugar+edad+cantidad+estilo?), cuando
+// se lee el estilo ya se pasó el nombre, y una secuencia no se puede
+// retroceder. Hay dos opciones:
+//   - guardar el nombre en una variable alfanumérica mientras se lee, y
+//     copiarlo después de conocer el estilo;
+//   - leer primero el estilo de cada artista recorriendo dos veces ARTISTAS.
+// Con la primera opción, el cambio en el 2.1.28 es:
+
+        nombre:= ""
+        Mientras a <> "+" hacer
+            nombre:= nombre + a // concatenación de alfanuméricos
+            AVZ(ARTISTAS, a)
+        FinMientras
+        // ... lugar, edad y cantidad igual que antes ...
+        AVZ(ARTISTAS, a)
+        estilo:= a // ahora el estilo se conoce recién acá
+        es_renac:= (estilo = "R")
+        AVZ(ARTISTAS, a); AVZ(ARTISTAS, a) // salteo el estilo y el "?"
+        Si es_renac entonces
+            Para i:= 1 hasta Long(nombre) hacer
+                ESC(Salida, nombre[i])
+            FinPara
+        FinSi
+        // ... las obras se procesan igual que en el 2.1.28 ...
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.30
+// El siguiente es un ejercicio del primer recuperatorio del primer parcial
+// del año 2017:
+//
+// La AFIP dispone de dos secuencias de caracteres:
+//
+// * PERSONAS
+//   Contiene los siguientes datos de personas físicas o Empresas: nombre
+//   completo y fecha (de nacimiento o de creación, respectivamente),
+//   agrupadas por provincias. No existe carácter separador entre personas,
+//   el fin de cada provincia se indica con el carácter &.
+//   Ejemplo: `María Góm-14021977Carlos Alberto Rodriguez-20061990....&Lionel
+//   Messi-24061987....&....{fin}`
+//   `nombre-ddmmaaaanombre-ddmmaa....&`
+// * CUIT: contiene la Clave Unica de Identificación Tributaria de las
+// personas de la secuencia PERSONAS (existiendo una correspondencia una a
+// una, es decir la primer persona con el primer cuit, la segunda con el
+// segundo y asi sucesivamente)
+//   Cada número de CUIT se almacena por medio de 11 caracteres: los 2
+//   primeros indican el tipo, los 6 siguientes el número de DNI (en caso de
+//   personas físicas) o de sociedad (en caso de Empresas) y el último es un
+//   digito verificador.
+//   Ejemplo: `201234567862313456782330712434445`
+//
+// Los tipos pueden ser:20, 23, 24 y 27 para Personas Físicas y 30, 33 y 34
+// para Empresas.
+//
+// Se solicita.
+//
+// 1. Generar una secuencia de salida que contenga DNI, y el nombre completo
+// de todas las personas físicas cuyo nombre comience con vocal.
+// 2. Para cada Provincia calcular el total de personas físicas y el
+// porcentaje sobre el total de la provincia.
+// --------------------------------------------------------------------------
+
+// Cada persona de PERSONAS es "nombre-ddmmaaaa"; las provincias terminan con
+// "&". A cada persona le corresponden 11 caracteres de CUIT.
+// Para escribir el DNI en la salida hay que leer el CUIT antes que el nombre,
+// así que el CUIT se guarda en un arreglo de 11 caracteres.
+Acción Ejercicio2_1_30 es
+Ambiente
+    PERSONAS, CUIT, Salida: secuencia de caracteres
+    p, c: caracter
+    cuit: arreglo de [1..11] de caracter
+    i, fisicas, total_prov: entero
+    es_fisica, copiar: booleano
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+Proceso
+    ARR(PERSONAS); AVZ(PERSONAS, p)
+    ARR(CUIT); AVZ(CUIT, c)
+    CREAR(Salida)
+    Mientras NFDS(PERSONAS) hacer // una provincia por vuelta
+        fisicas:= 0
+        total_prov:= 0
+        Mientras p <> "&" hacer // una persona por vuelta
+            total_prov:= total_prov + 1
+            Para i:= 1 hasta 11 hacer
+                cuit[i]:= c
+                AVZ(CUIT, c)
+            FinPara
+            // tipos 20, 23, 24 y 27 son personas físicas
+            es_fisica:= (cuit[1] = "2")
+            Si es_fisica entonces
+                fisicas:= fisicas + 1
+            FinSi
+            copiar:= es_fisica y (p en vocales)
+            Si copiar entonces // DNI = posiciones 3 a 8 del CUIT
+                Para i:= 3 hasta 8 hacer
+                    ESC(Salida, cuit[i])
+                FinPara
+                ESC(Salida, " ")
+            FinSi
+            Mientras p <> "-" hacer // nombre completo
+                Si copiar entonces ESC(Salida, p) FinSi
+                AVZ(PERSONAS, p)
+            FinMientras
+            Si copiar entonces ESC(Salida, "#") FinSi
+            Para i:= 1 hasta 9 hacer // "-" y la fecha ddmmaaaa
+                AVZ(PERSONAS, p)
+            FinPara
+        FinMientras
+        Si total_prov > 0 entonces
+            Escribir("Provincia: ", fisicas, " personas físicas (", fisicas * 100 / total_prov, "%)")
+        FinSi
+        AVZ(PERSONAS, p) // paso el "&"
+    FinMientras
+    CERRAR(PERSONAS); CERRAR(CUIT); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.31
+// El siguiente es un ejercicio del primer parcial del año 2017:
+// La empresa TICKET-TEC ha generado una secuencia de caracteres con
+// información de sus ventas para los eventos de los últimos 3 meses, cuya
+// estructura se describe a continuación.
+// Inicialmente existe el nombre del local de los eventos, cuya longitud se
+// desconoce, termina con un #; a continuación se tiene la información de
+// todos los tickets vendidos para ese local, separado cada ticket del
+// siguiente con el caracter !, y al final de todas las ventas para ese
+// local, el caracter &. Por último la marca de fin de secuencia. También en
+// el caso de butaca se desconoce la longitud del número, termina con un
+// guión.
+//
+// EJEMPLO
+// `Teatro
+// Opera#270520171A45-2030!270520173D120-2230!280520172C233-2030!&Galpon de
+// las
+// Luces#070720171C5-2030!301020172A233-2230!&{fin}`
+//
+// `local de eventos#Fecha del evento[ddmmaaaa] codigo del evento[1..3]
+// butaca [sector [A,C o D], número] - horario evento [hhmm]!`
+//
+// Solo hay dos horarios 20:30 y 22:30.
+//
+// La empresa solicita un algoritmo que cumpla con las siguientes consignas:
+//
+// 1. Generar una nueva secuencia de salida con el mismo formato, que
+// contenga los tickets correspondientes a un mes ingresado por el usuario.
+// 2. Informar total general de tickets vendidos, total de tickets por evento
+// y porcentaje de cada uno sobre el total general.
+// --------------------------------------------------------------------------
+
+// Ticket: ddmmaaaa + código (1..3) + sector + número - hhmm !
+// Como el mes del ticket se conoce antes que el resto, se puede decidir si se
+// copia apenas se leen los primeros 4 caracteres (se guardan en variables).
+Acción Ejercicio2_1_31 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v, d1, d2, m1, m2, cod: caracter
+    mes: AN(2)
+    copio_local: booleano
+    i, total, ev1, ev2, ev3: entero
+Proceso
+    Escribir("Ingrese el mes (2 dígitos, ej. 05)")
+    Leer(mes)
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0; ev1:= 0; ev2:= 0; ev3:= 0
+    Mientras NFDS(Sec) hacer
+        // Nombre del local: se escribe al encontrar el primer ticket del mes
+        // (para simplificar se escribe siempre, y el "&" final igual).
+        Mientras v <> "#" hacer
+            ESC(Salida, v)
+            AVZ(Sec, v)
+        FinMientras
+        ESC(Salida, "#")
+        AVZ(Sec, v)
+        Mientras v <> "&" hacer // un ticket por vuelta
+            d1:= v; AVZ(Sec, v)
+            d2:= v; AVZ(Sec, v)
+            m1:= v; AVZ(Sec, v)
+            m2:= v; AVZ(Sec, v)
+            copio_local:= (m1 = mes[1]) y (m2 = mes[2])
+            Si copio_local entonces
+                ESC(Salida, d1); ESC(Salida, d2); ESC(Salida, m1); ESC(Salida, m2)
+            FinSi
+            Para i:= 1 hasta 4 hacer // año
+                Si copio_local entonces ESC(Salida, v) FinSi
+                AVZ(Sec, v)
+            FinPara
+            cod:= v // código del evento
+            total:= total + 1
+            Según cod hacer
+                "1": ev1:= ev1 + 1
+                "2": ev2:= ev2 + 1
+                "3": ev3:= ev3 + 1
+            FinSegún
+            Mientras v <> "!" hacer // resto del ticket
+                Si copio_local entonces ESC(Salida, v) FinSi
+                AVZ(Sec, v)
+            FinMientras
+            Si copio_local entonces ESC(Salida, "!") FinSi
+            AVZ(Sec, v)
+        FinMientras
+        ESC(Salida, "&")
+        AVZ(Sec, v)
+    FinMientras
+    Escribir("Total general de tickets: ", total)
+    Si total > 0 entonces
+        Escribir("Evento 1: ", ev1, " (", ev1 * 100 / total, "%)")
+        Escribir("Evento 2: ", ev2, " (", ev2 * 100 / total, "%)")
+        Escribir("Evento 3: ", ev3, " (", ev3 * 100 / total, "%)")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.32
+// Se posee una secuencia con los mensajes internos enviados entre los
+// empleados de una empresa, la secuencia está formada de la siguiente
+// manera: 3 caracteres para el destino, 3 caracteres para el origen, 3
+// caracteres que indican la cantidad de caracteres que tiene el mensaje y el
+// mensaje. No existe ningún carácter que separe un mensaje de otro.
+// se pide:
+//
+// 1. Escribir una secuencia de salida con todos los mensajes (incluyendo
+// origen y destino) que van hacia el área de Mantenimiento (que destino
+// comience con 1).
+// 2. Contar la cantidad de mensajes que se dirigen hacia el área de sistemas
+// (que destino comience con 23).
+// --------------------------------------------------------------------------
+
+// Cada mensaje: destino (3) + origen (3) + largo (3 dígitos) + mensaje.
+// Sin separadores: el largo dice cuántos caracteres hay que leer.
+Acción Ejercicio2_1_32 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    dest, orig: arreglo de [1..3] de caracter
+    i, largo, a_sistemas: entero
+    a_mant: booleano
+
+    Función Valor (c: caracter): entero es
+        Según c hacer
+            "0": Valor:= 0  "1": Valor:= 1  "2": Valor:= 2  "3": Valor:= 3  "4": Valor:= 4
+            "5": Valor:= 5  "6": Valor:= 6  "7": Valor:= 7  "8": Valor:= 8  "9": Valor:= 9
+        FinSegún
+    FinFunción
+
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    a_sistemas:= 0
+    Mientras NFDS(Sec) hacer
+        Para i:= 1 hasta 3 hacer
+            dest[i]:= v; AVZ(Sec, v)
+        FinPara
+        Para i:= 1 hasta 3 hacer
+            orig[i]:= v; AVZ(Sec, v)
+        FinPara
+        largo:= 0
+        Para i:= 1 hasta 3 hacer
+            largo:= largo * 10 + Valor(v); AVZ(Sec, v)
+        FinPara
+        a_mant:= (dest[1] = "1")
+        Si (dest[1] = "2") y (dest[2] = "3") entonces
+            a_sistemas:= a_sistemas + 1
+        FinSi
+        Si a_mant entonces
+            Para i:= 1 hasta 3 hacer ESC(Salida, dest[i]) FinPara
+            Para i:= 1 hasta 3 hacer ESC(Salida, orig[i]) FinPara
+        FinSi
+        Para i:= 1 hasta largo hacer // el mensaje
+            Si a_mant entonces ESC(Salida, v) FinSi
+            AVZ(Sec, v)
+        FinPara
+    FinMientras
+    Escribir("Mensajes hacia el área de sistemas: ", a_sistemas)
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción

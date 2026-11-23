@@ -6,4 +6,4 @@
 | [`2do-parcial`](2do-parcial) | Mezcla, actualización secuencial e indexada, arreglos y estadísticos | Modelos resueltos (figuritas, Call Center, Pokémon GO, padrón electoral, facturas) y enunciados |
 | [`3er-parcial`](3er-parcial) | Listas simples, dobles y circulares, recursividad | Parciales 2022 y 2023 resueltos, modelos, esquemas de listas, práctica y enunciados |
 
-Cada carpeta tiene una subcarpeta `enunciados/` con las fotos y PDFs de las consignas. En las fotos se desenfocó la franja de arriba, donde va el nombre del alumno.
+Cada carpeta tiene una subcarpeta `enunciados/` con las fotos y PDFs de las consignas. En las fotos se difuminó solo el campo del nombre del alumno (y el DNI o legajo cuando estaban escritos).

@@ -74,4 +74,4 @@ Los laboratorios en C compilan con `gcc`. El de Pascal se compila con Free Pasca
 - Laboratorio de C — grupo **Los Chimichurris**: Gustavo Fernández Calvi, Braian Leonel Wolkowyski y Luciano García.
 - El material de [`material-de-catedra`](material-de-catedra) es de los docentes de la cátedra (Prof. Diego Bolatti y equipo) y se incluye solo como referencia de estudio. Los libros completos y los videos no se incluyen.
 - En [`extra`](extra) hay resoluciones de otros años que circulaban entre alumnos; las de 2022 están firmadas por su autor.
-- En las fotos de los enunciados se desenfocó la parte de arriba, donde están los nombres de los alumnos.
+- En las fotos de los enunciados se difuminó solo el campo del nombre (y el DNI o legajo cuando estaban escritos); el resto del enunciado se ve completo.

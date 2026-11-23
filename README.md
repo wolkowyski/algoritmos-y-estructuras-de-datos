@@ -8,7 +8,7 @@ Casi todo está escrito en el **pseudocódigo de la cátedra** (Acción / Ambien
 
 | Carpeta | Qué hay |
 |---|---|
-| [`01-guia-de-trabajos-practicos`](01-guia-de-trabajos-practicos) | La guía de TP resuelta, unidad por unidad: algoritmos, datos elementales, secuencias y archivos, arreglos, listas, recursividad y árboles |
+| [`01-guia-de-trabajos-practicos`](01-guia-de-trabajos-practicos) | La [guía de TP de la cátedra](https://aed-frre.github.io/) resuelta completa: los 209 ejercicios de práctica y los 66 complementarios, con la consigna de cada uno |
 | [`02-parciales`](02-parciales) | 1er, 2do y 3er parcial: resoluciones, modelos, práctica y las fotos de los enunciados |
 | [`03-finales`](03-finales) | Resoluciones de modelos de final, práctica, el compilado de estudio del final de febrero 2026 y los enunciados |
 | [`04-desafios-y-practica`](04-desafios-y-practica) | Desafíos de clase y del campus, versiones en PSeInt y la guía de listas resuelta en el Discord del curso |
@@ -64,7 +64,7 @@ Los archivos `.pseudo` se muestran con resaltado de **Pascal** (configurado en [
 
 ## Revisión
 
-Antes de subirlo revisé todo: corregí errores de lógica, completé ejercicios que habían quedado a medio hacer y agregué comentarios, sin cambiar la forma de escribir que usábamos en la cursada. Los que siguen incompletos lo dicen en su encabezado (*Estado: incompleto*).
+Antes de subirlo revisé todo: corregí errores de lógica, completé ejercicios que habían quedado a medio hacer y agregué comentarios, sin cambiar la forma de escribir que usábamos en la cursada. Después completé la guía contra la versión publicada de la cátedra, para que no quede ningún ejercicio sin resolver. Los que siguen incompletos lo dicen en su encabezado (*Estado: incompleto*).
 
 Los laboratorios en C compilan con `gcc`. El de Pascal se compila con Free Pascal (`fpc`).
 

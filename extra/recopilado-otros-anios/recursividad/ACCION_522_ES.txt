@@ -1,0 +1,6 @@
+Procedimiento palin(A: Arreglo de [1..n] de caracteres, i,n: entero)
+    Si (i<>n) entonces
+        palin(A, i+1)
+    FS
+    ESC(A[i])
+FP

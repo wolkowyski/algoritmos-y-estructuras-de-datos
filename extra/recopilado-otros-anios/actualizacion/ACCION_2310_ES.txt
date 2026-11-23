@@ -1,0 +1,110 @@
+//100$ -> 10pts ; 100pts -> -10$
+{+ Carga interactiva, ingresando un monto, actualizar la fecha de carga y cantidad de puntos
+Si no existe, se debe cargar sus datos+}
+{+Permitir aplicar descuento, solo se puede 100pts+}
+{+Cantidad de cargas de usuarios que no existan+}
+
+ACCION_2310_ES
+    AMBIENTE
+        regf = registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+        Fecha: regf
+
+        reg1 = Registro de
+            DNI: N(9)
+            Cant_puntos: N(4)
+            Ult_carga: regf
+        FR
+        Puntos: Archivo de reg1 indexado por DNI
+        P:reg1
+
+        reg2 = Registro de
+            DNI: N(9)
+            Ape_Nom: AN(50)
+            Edad: N(2)
+            Ciudad: AN(30)
+        FR
+        Cliente: Archivo de reg2 indexado por DNI
+        C: reg2
+
+        monto: Real
+        Cant_puntos, DNI: Entero
+        Cont_usunoex: Entero
+        Opcion, Opcion2: {"S", "N"}
+
+        Funcion Calculopts(x: real): Entero
+            Si (x > 100) entonces
+                Calculopts:= x DIV 10
+            Sino
+                Calculopts:= 0
+            FS
+        FF
+    PROCESO
+        ABRIR E/S (Cliente)
+        ABRIR E/S (Puntos)
+        Cont_usunoex:= 0
+        ESC("Ingrese la fecha del día de hoy -> DD / MM / AAAA")
+        Leer(Fecha.DD, Fecha.MM, Fecha.AA)
+        ESC("Desea realizar una carga de combustible? S/N"); Leer(Opcion)
+        Mientras (Opcion = "S") hacer  
+            ESC("Ingrese el DNI del cliente"); leer(DNI);
+            ESC("Ingrese monto a cobrar"); leer(monto);
+            C.DNI := DNI
+            Leer(Cliente, C)
+            Si EXISTE entonces 
+                P.DNI:= DNI
+                Leer(Puntos, P)
+                Si EXISTE entonces
+                    Cant_puntos:=Calculopts(monto) //Calculo de puntos en funcion del monto original, independiente de un descuento
+                    
+                    Si (P.Cant_puntos >= 100) entonces //Verificacion de descuento
+                        ESC("El Cliente puede canjear un descuento de 10$, lo desea aplicar? S/N"); leer(Opcion2);
+                        Si (Opcion2 = "S") entonces
+                            Monto:= monto - 10
+                            P.Cant_puntos:= P.Cant_puntos - 100
+                        FSi
+                    Sino
+                        ESC("El cliente no tiene suficientes puntos para canjear por un descuento")
+                    FS
+                    
+                    P.Cant_puntos:= P.Cant_puntos + Cant_puntos 
+                    P.Ult_carga:= Fecha
+                    REGRABAR(Puntos,P)
+                Sino
+                //Si el cliente existe, pero en el archivo de puntos no, es porque siempre cargo menos de los puntos necesarios para la carga de puntos
+                    ESC("No se han encontrado puntos para este cliente")
+                    Si (monto >= 100) entonces
+                        P.DNI:= DNI
+                        Cant_puntos:=Calculopts(monto)
+                        P.Cant_puntos:= P.Cant_puntos + Cant_puntos
+                        P.Ult_carga:= Fecha
+                        GRABAR(Puntos,P)
+                    Sino
+                        ESC("El monto no es suficiente para sumar puntos")
+                    FS
+                FS
+            Sino //Usuario no registrado con anterioridad
+                Cont_usunoex:= Cont_usunoex + 1
+                ESC("Ingrese el nombre y apellido del Cliente..."); leer(C.Ape_Nom);
+                ESC("Ingrese la edad del cliente..."); leer(C.Edad);
+                ESC("Ingrese la ciudad donde se realizó la carga..."); leer(C.Ciudad);
+                GRABAR(Cliente, C)
+                Si (monto >= 100) entonces
+                    P.DNI:= DNI
+                    Cant_puntos:=Calculopts(monto)
+                    P.Cant_puntos:= P.Cant_puntos + Cant_puntos
+                    P.Ult_carga:= Fecha
+                    GRABAR(Puntos,P)
+                Sino
+                    ESC("El monto no es suficiente para sumar puntos")
+                FS
+            FS
+            ESC("Desea realizar otra carga? S/N"); leer(Opcion);
+        FM
+        ESC("Cantidad de cargas realizadas por ususarios no registrados: ",Cont_usunoex)
+        Cerrar(Cliente)
+        Cerrar(Puntos)
+FA

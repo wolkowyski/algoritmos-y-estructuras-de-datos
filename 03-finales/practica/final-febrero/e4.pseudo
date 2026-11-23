@@ -1,0 +1,209 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e4
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+ACCION facturas
+Ambiente
+    sec: secuencia de caracteres
+    v: ventana
+    may: secuencia de caracteres
+    v1:ventana
+    min: secuencia de caracteres
+    v2: ventana
+
+    Procedimiento cargar() es
+        Nuevo(q)
+        q:= v
+        resg:= q
+        si prim = nil entonces
+            prim:= q
+            *q.prox:= nil
+        sino
+        p:= prim
+        mientras p <> nil hacer
+            p:= *.prox
+        finmientras
+        *q.prox:= nil
+        *p.prox:= q
+    finprocedimiento
+
+    Procedimiento clienteMin
+        p:=resg
+        mientras p <> nil hacer
+            escribir(min,*p.caracter)
+            p:= *p.prox
+        finmientras
+
+    nodo=registro
+        carac: AN(1)
+        prox: puntero a nodo
+    finregistro
+
+    k,p,prim,q: puntero a nodo
+
+    nombre_fecha!
+
+
+PROCESO
+    prim:= nil p:= nil
+    arr(sec) avz(sec, v) crear(may) crear(min)
+    Mientras no FDS(sec) hacer
+        Para i:= 1 a 12 hacer
+            avz(sec, v)
+        finpara
+        Mientras v <> '*' hacer
+            cargar()
+        finmientras
+        Avz(sec,v)
+        avz(sec,v)
+        num:= v
+        si v = '5'
+            clienteMin()
+            ctemin:= ctemin + 1
+            escribir(min, '')
+            avz(sec,v)
+            Para i:= 1 hasta 8 hacer
+                escribir(min, v)
+                avz(sec,v)
+            finpara
+            escribir(min, '!')
+        Sino
+            clienteMay()
+            ctemay:= ctemay+ 1
+            escribir(may, '')
+            avz(sec,v)
+            Para i:= 1 hasta 8 hacer
+                escribir(may, v)
+                avz(sec,v)
+            finpara
+            escribir(may, '!')
+        finsi
+        avz(sec,v)
+
+    finMientras
+
+    Escribir('la cantidad de clientes en la secuencia mayorista es:', ctemay)
+    Escribir('la cantidad de clientes en la secuencia minorista es:', ctemin)
+
+
+finaccion
+
+
+
+//EJERCICIO 2
+ACCION distribucion
+Ambiente
+    arch1=registro
+        nro-remito= registro
+            pto-origen:
+            pto-dest:
+            mes:
+            dia:
+            nro-corre:
+        finregistro
+        fecha
+        hora
+        cant-paq:
+        peso
+    finregistro
+
+    puestos= registro
+        clave= registro
+            codigo
+        finregistro
+        nombredist
+        direc
+        emp-trans
+    finregistro
+
+    tiempos=registro
+        pto-orig:
+        pto-dest:
+        dist-dias:
+    finregistros
+
+    arch-dist: archivo de arch1 indexado por nro-remito
+    dist: arch-dist
+
+    arch-puestos: archivo de arch2 indexado por clave
+    puest: puestos
+
+    arch-tiem: archivo de tiempos
+    tiem:tiempos
+
+    Procedimiento calcfecha:
+        si dia < 5
+
+    procedimiento cargarRemito es
+    dist.nro-remito.pto-ori:= pto-or
+    dist.nro-remito.pto-dest:=pto-dest
+    dist.nro-remito.mes:= mes
+    dis.nro-remito.diaa:= dia
+    dist.nro-remito.nro-corr:= nrocorr + 1
+    //calcular fecha y asignar pero como no te da parametros de dias no podes generar el algoritmo de la fecha de llegada
+    grabar(arch-dist, dist)
+    P[pto-or, pto-dest].rem= P[pto-or, pto-dest].rem + 1
+    P[pto-or, pto-dest].paq := P[pto-or, pto-dest].paq + cant
+    P[pto-or, pto-dest].peso := P[pto-or, pto-dest].peso + peso
+    finproc
+
+    PROCESO
+
+        Para i= 1 hasta 21 hacer
+            Para j= 1 hasta 21 hacer
+                P[i,j]:= 0
+            finp
+        finp
+
+        nrocorr:= 0
+        ABRIR E/S(arch-dist) ABRIR S/(arch-puestos) ARCH S/(arch-tiem)
+
+        opc:= 'S'
+        Mientras opc= 'S' hacer
+            escribir('ingresar punto de origen')
+            leer(pto-or)
+            escribir('ingresar punto destino')
+            leer(pto-dest)
+            escribir('ingresar cantidad de paquetes')
+            leer(cant)
+            escribir(peso)
+
+            Mientras pto-or <> atiemp.pto-orig y pto-dest <> -tiem.pto-dest hacer
+                Leer(arch-tiem, tiem)
+            finmientras
+
+            dist:= tiem.dist-dias
+
+            Si cant<20 y peso < 150  hacer
+               cargarRemito()
+            sino
+                Mientras cant <> 0 y peso > 150 hacer
+                    Escribir('cargar 20 o menos paquetes, hasta 150')
+                        leer(cant1)
+                        leer(peso)
+                        cant:= ant - cant1
+                        peso := peso - peso1
+                        cargarRemito()
+                  finmientras
+                finsi
+            escribir(desea continuar.... )
+        Finmientras
+
+        max.rem:= 0
+        max.peso:= 0
+        Para i= 1 hasta 21 hacer
+            Para j= 1 hasta 21 hacer
+                si P[i,j].rem > max.rem entonces
+                    max:= P[i,j].rem
+                finsi
+                si P[i,j].peso > max,peso entonces
+                    max:= P[i,j].peso
+                finsi
+            finp
+        finp
+
+        escribir('con mayor peso', max.peso)
+        escribir('con mayor remitos', max.rem)
+    FINACCION

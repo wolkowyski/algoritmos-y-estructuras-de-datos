@@ -1,0 +1,86 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  2do Parcial - Simulacro "Facturas" (proceso estadístico)
+//
+//  A partir del archivo de facturas pagadas, armar una matriz por mes de pago
+//  (filas 1..12, fila 13 = totales) con las facturas pagadas fuera de
+//  término (columna 1), en término (columna 2) y el total (columna 3).
+//  Informar el mes con más facturas pagadas fuera de término.
+//  (Enunciado reconstruido a partir de la resolución.)
+// ==========================================================================
+
+Accion Estadistico es
+	Ambiente
+
+		Fecha = Registro
+			aa: N(4)
+			mm: 1..12
+			dd: 1..31
+		FinRegistro
+
+		Factura = Registro
+			Nro_Cliente: N(6)
+			Nro_Factura: N(8)
+			FechaEmision: Fecha
+			FechaVto: Fecha
+			FechaPago: Fecha
+		FinRegistro
+
+		ArchFacturas: Archivo de Factura
+		Reg: Factura
+
+		A: arreglo [1..13, 1..3] de entero
+		i, j, mes, mayor, mes_mayor: entero
+		vto, pago: N(8)
+
+	Proceso
+		Para i:= 1 hasta 13, 1 hacer
+			Para j:= 1 hasta 3, 1 hacer
+				A[i,j]:= 0
+			FinPara
+		FinPara
+
+		Abrir E/(ArchFacturas)
+		Leer(ArchFacturas, Reg)
+
+		Mientras No FDA(ArchFacturas) hacer
+			// Las fechas se comparan pasadas a número aaaammdd
+			vto:= Reg.FechaVto.aa * 10000 + Reg.FechaVto.mm * 100 + Reg.FechaVto.dd
+			pago:= Reg.FechaPago.aa * 10000 + Reg.FechaPago.mm * 100 + Reg.FechaPago.dd
+			mes:= Reg.FechaPago.mm
+			Si vto < pago entonces
+				j:= 1 // fuera de término
+			SiNo
+				j:= 2 // en término
+			FinSi
+			A[mes, j]:= A[mes, j] + 1
+			A[mes, 3]:= A[mes, 3] + 1
+			A[13, j]:= A[13, j] + 1
+			A[13, 3]:= A[13, 3] + 1
+			Leer(ArchFacturas, Reg)
+		FinMientras
+		Cerrar(ArchFacturas)
+
+		// La consulta se hace después de cargar toda la matriz, no dentro del ciclo
+		mayor:= 0
+		mes_mayor:= 0
+		Para i:= 1 a 12 hacer
+			Si A[i,1] > mayor entonces
+				mayor:= A[i,1]
+				mes_mayor:= i
+			FinSi
+		FinPara
+
+		Escribir("Mes   Fuera de término   En término   Total")
+		Para i:= 1 a 13 hacer
+			Si i < 13 entonces
+				Escribir("Mes ", i)
+			SiNo
+				Escribir("Total")
+			FinSi
+			Para j:= 1 a 3 hacer
+				Escribir(A[i,j])
+			FinPara
+		FinPara
+		Escribir("El mes con más facturas pagadas fuera de término fue el ", mes_mayor, " (", mayor, " facturas)")
+FinAccion

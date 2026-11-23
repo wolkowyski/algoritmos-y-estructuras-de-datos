@@ -1,0 +1,135 @@
+Dada un secuencia de texto  que contiene informacion sobre personas, se desea generar un archivos PERSONAS, teniendo en cuenta lo siguiente:
+En el texto viene en orden los siguientes datos: apellido y nombre del usuario, encerrado entre asteriscos, inmediatamente a continuacion una palabra de tres letras q identifica el tipo de documento y separado por un blanco 8 posiciones numericas que corresponden al numero del documento seguidas por un simbolo numeral y a continuacion la direccion de la persona, finalizando con un signo de fin de interrogacion. El final del texto esta indicado por un signo "!" . Se desconoce la longitud de la direccion como del nombre de la persona. El formato del registro de salida es:
+PERSONA:
+TIPO DE DOCUMENTO N(1) NUMERO AN(8) APELLIDO Y NOMBRES AN (30) DIRECCION AN(40)
+Si es DNI, el tipo es 1,si dice LCE el tipo es 2,si dice  PAS es de tipo 3, cualquier otra cadena de letras es tipo 4.
+Al final del proceso indicar cuantos registros se grabaron en el archivo de salida.
+
+EJEMPLO DE SECUENCIA:
+*Trabalon Silvana*DNI 34794287#fraybeltran?!
+
+Ejercicio 5:
+Accion 5 es:
+
+AMBIENTE:
+
+ PERSONAS= Registro
+	tipo: N(1)
+	num: arreglo de [1..8] de AN
+	Nom: arreglo de [1..30] de AN
+	Dir: arreglo de [1..30] de AN
+ Fin Registro
+ 
+S: secuencia de caracter
+v: caracter
+
+arch: archivo de Personas
+reg: Personas
+
+i,j,cant: entero
+
+ALGORITMO:
+Abrir e/s (arch)
+ARR(s) AVZ(s,v)
+
+cant:=0
+j:=0
+
+	Mientras ( v <>'!') hacer
+		Cant:= cant +1;
+		i:=0;
+		avz(s,v);
+		Mientras (v <>'*') hacer
+			i:=i +1;
+			reg.nom[i]:= v
+			avz(s,v)
+				Si (i=30) entonces
+					Mientras (v<>'*') hacer
+						avz (s,v)
+					Fin Mientras
+				Fin Si
+		Fin Mientras
+		AVZ(s,v) {avanzar el '*'}
+		Si (v= 'D') entonces
+			AVZ(s,v)
+				Si (v= 'N') entonces
+					AVZ	(s,v)
+					Si (v= 'I') entonces
+					 reg.tipo:= 1
+						SINO
+							reg.tipo:=4
+							avz(s,v)
+					fin si
+					SINO
+						reg.tipo:=4
+				fin si
+			SINO
+				Si (v= 'L') entonces
+					AVZ(s,v)
+						Si (v= 'C') entonces
+							AVZ(s,v)
+							Si (v='E')entonces
+								reg.tipo:=2
+									SINO
+										reg.tipo:=4
+										avz(s,v)
+							fin si
+							SINO
+								reg.tipo:=4
+						fin si
+				SINO
+					Si (v='P') entonces
+						AVZ(s,v)
+						Si (v='A') entonces
+							AVZ(s,v)
+							Si (v='S')entonces
+								reg.tipo:=3
+									SINO
+										reg.tipo:=4
+										avz(s,v)
+										
+							fin si
+							SINO
+								reg.tipo:=4
+						fin si
+						SINO
+						reg.tipo:=4
+						AVZ(s,v) {avanza las dos letras que quedan}
+						AVZ(s,v)
+					Fin Si
+				Fin si
+			Fin si
+			AVZ(s,v) {avanzar blanco}
+		
+		Para j:= 1 a 8 hacer
+			reg.num[j]:=v;
+			AVZ(s,v)
+		Fin Para
+		AVZ(s,v){avanzar #}
+		i:=0;
+		Mientras (v <> '?') hacer
+			i:=i +1;
+			reg.dir[i]:= v;
+			AVZ(s,v)
+			Si (i = 30) entonces
+				Mientras (V <> '?') hacer {avanza lo que ya no entra en el arreglo}
+					AVZ(s,v)
+				fin mientras 
+			Fin si
+		Fin Mientras
+		AVZ(s,v) {avanza ? }		
+	    esc(arch,reg)
+	Fin Mientras
+	esc('la cantidad de registros que se grabaron en la salida son:',cant);
+	CERRAR(arch)
+	CERRAR(s)
+Fin accion
+
+
+
+
+
+
+
+
+

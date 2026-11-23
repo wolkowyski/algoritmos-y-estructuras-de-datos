@@ -1,0 +1,243 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 33
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 33 es
+
+ Ambiente
+
+  Fecha=Registro
+   AA:N(4);
+   MM:[1..12];
+   DD:[1..31];
+  finRegistro
+
+  Hora=Registro
+   HH:N(4);
+   MM:[1..59];
+   SS:[1..59];
+  finRegistro
+
+  Bicicletas=Registro
+   Clave1=Registro
+    nro:N(10);
+    modelo:N(10);
+   finRegistro
+   fechaa:Fecha;
+   fecham:Fecha;
+  finRegistro
+
+  Novedades=Registro
+   Clave2=Registro
+    nro:N(10);
+    modelo:N(10);
+   finRegistro
+   tipo:[1..4];
+   fechan:Fecha;
+   horai:Hora;
+   horaf:Hora;
+   circuito:[1..6];
+   id:N(10);
+  finRegistro
+
+  Archb:Archivo de Bicicletas ordenado por Clave1;
+  Archn: Archivo de Novedades ordenado por Clave2;
+  b: Bicicletas;
+  n: Novedades;
+
+  arr: arreglo de (1..6,1..2) entero;
+  cant,cont: entero;
+
+  cir:[1..6];
+
+  res:Clave2;
+
+
+  Procedimiento highvalue es
+   Si FDA(Arhcn) entonces
+    Clave2:=HV;
+   finSi
+   Si FDA(Archb) entonces
+    Clave1:=HV;
+   finSi
+  finProcedimiento
+
+
+ Algoritmo
+
+  Abrir E/S (Archb);
+  Abrir E/ (Archn);
+
+  Leer(Archb,b);
+  Leer(Archn,n);
+
+  Escribir("Ingrese el circuito sobre el que desea saber");
+  Leer(cir);
+
+  cant:=0;
+  cont:=0;
+
+  Mientras Clave1<>HV o Clave2<>HV hacer
+
+   res:=Clave2;
+
+   Si Clave1<Clave2 entonces
+    Leer(Archb,b);
+    highvalue;
+    Sino
+     Si Clave1=Clave2 entonces
+      Si n.tipo = 4 entonces
+       b.nro:=" ";
+       b.modelo:=" ";
+       b.fechaa:=" ";
+       b.fecham:=" ";
+       Reescribir(Archb,b);
+       Leer(Archn,n);
+       highvalue;
+       Mientras Clave2=res hacer
+        Leer(Archn,n);
+        Escribir("Error, esta bicicleta fue dada de baja");
+        highvalue;
+       finMientras
+       Leer(Archb,b);
+       highvalue;
+       Sino
+        Si n.tipo = 2 entonces
+         Si n.circuito=cir entonces
+          contcir:=contcir +1;
+          Si diff_horas(n.horai,n.horaf)>6 entonces
+           cui:=1;
+           to:=1500;
+           Sino
+            cui:=2;
+            to:=1000
+           finSino
+          finSi
+          cont:=cont+ arr(n.circuito,cui)+to;
+          cant:=cant+1;
+         finSi
+         Leer(Archn,n);
+         highvalue;
+         Sino
+          Si n.tipo = 3 entonces
+           b.fecham:=n.fechan;
+           Reescribir(Archb,b);
+           Leer(Archn,n);
+           highvalue;
+           Sino
+            Escribir("Error, no se puede dar de alta una unidad existente");
+            Leer(Archn,n);
+            highvalue;
+           finSino
+          finSi
+         finSino
+        finSi
+       finSino
+      finSi
+      Sino
+       Si Clave1>Clave2 entonces
+        Si n.tipo = 1 entonces
+         b.nro::=n.nro;
+         b.modelo:= n.modelo;
+         b.fechaa:=n.fechan;
+         b.fecham:=" ";
+         Escribir(Archb,b);
+         Sino
+          Escribir("Error, la bicicleta no fue dada de alta");
+         finSino
+        finSi
+        Leer(Archn,n);
+        highvalue;
+       finSi
+      finSino
+     finSi
+  finMientras
+
+  Escribir("La cantidad de prestamos realizados para el circuito ",cir, " es :", cant, ". Con ello se recaudaron ",cont, " pesos");
+
+  Cerrar(Archb);
+  Cerrar(Archn);
+
+finAccion
+
+Accion Ejercicio 33.arreglo es
+
+ Ambiente
+
+  Usuarios=Registro
+   id:N(10);
+   DNI:N(8);
+   sexo:{"M","F"};
+   ayn:AN(30);
+   domicilio:AN(20);
+   localidad:AN(20);
+   provincia:AN(20);
+   edad:N(2);
+  finRegistro
+
+  Archu: archivo de Usuarios indexado por id;
+  u:Usuarios;
+
+  arr: arreglo de (1..4,1..2) entero;
+  i,j,res,resi: entero;
+
+
+ Algoritmo
+
+  Abrir E/S(Archu);
+  Abrir E/(Archn);
+  Leer(Archu,u);
+  Leer(Archn,n);
+
+  Para i:=1 hasta 4 hacer
+   Para j:=1 hasta 2 hacer
+    arr(i,j):=0;
+   finPara
+  finPara
+
+  Mientras NFDA(Archn) hacer
+   u.id:=n.id;
+   Leer(Archu,u);
+   Si existe entonces
+    Si diff_horas(n.horai,n.horaf)>6 entonces
+     j:=2;
+     Sino
+      j:=1;
+     finSino
+    finSi
+    Segun u.edad hacer
+     <18: arr(1,j):=arr(1,j)+1;
+     <35: arr(2,j):=arr(2,j)+1;
+     <75: arr(3,j):=arr(3,j)+1;
+     otr: arr(4,j):=arr(4,j)+1;
+    finSegun
+   finSi
+   Leer(Archn,n);
+  finMientras
+
+  res:=0;
+
+  Para i:=1 hasta 4 hacer
+   Si arr(i,2)>res entonces
+    res:=arr(i,2);
+    resi:=i;
+   finSi
+  finPara
+
+  Para i:=1 hasta 4 hacer
+   Para j:=1 hasta 2 hacer
+    Escribir ("El total de prestamos realizados por el grupo etario ",i, " en el tipo de paseo ", j, "es :", arr(i,j));
+   finPara
+  finPara
+
+  Escribir("El rango etario que más paseos recreativos realizó es el número ",resi);
+
+  Escribir("Se realizaron ", arr(4,1), " prestamos del tipo intensivo a mayores de 75 años");
+
+
+  Cerrar(Archu);
+  Cerrar(Archn);
+
+finAccion

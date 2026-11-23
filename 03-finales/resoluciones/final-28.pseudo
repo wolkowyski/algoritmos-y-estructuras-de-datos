@@ -1,0 +1,122 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 28
+//  Enunciado: ../enunciados/final-28.jpg
+//  Estado: incompleto (solo está resuelta la consigna 2).
+// ==========================================================================
+
+//consigna 2
+
+Accion proyectos() es
+
+Ambiente
+
+	tickets=registro
+		clave=registro
+			site:AN(10)
+			area:AN(5)
+			version:"W","M"
+		fin registro
+		integrantes:3..6
+		tickets_res:N(3)
+		est_proy:"F","E"
+	fin registro
+
+	reg_t: tickets
+	arch_t: archivo de tickets ordenado por clave
+
+	//entiendo que el archivo de salida no tiene que cumplir todas las condiciones de la primera consigna
+
+	salida=registro
+		site:AN(10)
+		tot_tickets:N(5)
+	fin registro
+
+	reg_s: salida
+	arch_s: archivo de salida
+
+	resg_s, resg_a, resg_v: alfanumerico
+	tot_s, tot_a, tot_v, tot_gral, tick_s: entero
+
+	Procedimiento corte_version() es
+		Escribir("El total de tickets resueltos para proyectos no finalizados con más de 4 integrantes para la versión: ",resg_v," es de ",tot_v)
+		tot_a:=tot_a+tot_v
+		tot_v:=0
+		resg_v:=reg_t.clave.version
+	Fin Procedimiento
+
+	Procedimiento corte_area() es
+		corte_version()
+		Escribir("El total de tickets resueltos para proyectos no finalizados con mas de 4 integrantes para el area: ",resg_a," es de ",tot_a)
+		tot_s:=tot_s+tot_a
+		tot_a:=0
+		resg_a:=reg_t.clave.area
+	Fin Procedimiento
+
+	Procedimiento corte_site() es
+		corte_area()
+		Escribir("El total de tickets resueltos para proyectos no finalizados con mas de 4 integrantes para el site: ",resg_s," es de ",tot_s)
+		tot_gral:=tot_gral+tot_s
+		tot_s:=0
+
+		reg_s.site:=resg_s
+		reg_s.tot_tickets:=tick_s
+		GRABAR(arch_s, reg_s)
+
+		tick_s:=0
+
+		resg_s:=reg_t.clave.site
+
+	Fin Procedimiento
+
+Proceso
+
+	ABRIR E/ (arch_t)
+	ABRIR /S (arch_s)
+	LEER (arch_t, reg_t)
+
+	resg_s:=reg_t.clave.site
+	resg_a:=reg_a.clave.area
+	resg_v:=reg_a.clave.version
+
+	tot_s:=0
+	tot_a:=0
+	tot_v:=0
+	tot_gral:=0
+	tick_s:=0
+
+
+	Mientras NFDA (arch_t) hacer
+
+		Si (resg_s<>reg_t.clave.site) entonces
+			corte_site()
+		Sino
+			Si (resg_a<>reg_t.clave.area) entonces
+				corte_area()
+			Sino
+				Si (resg_v<>reg_t.clave.version) entonces
+					corte_version()
+				Fin Si
+			Fin Si
+		Fin Si
+
+		Si (reg_t.integrantes>4) entonces
+			Si (reg_t.est_proy="E") entonces
+				tot_v:=tot_v+reg_t.tickets_res
+			Fin Si
+		Fin Si
+
+		tick_s:=tick_s+reg_t.tickets_res
+
+		LEER(arch_t, reg_t)
+
+	Fin Mientras
+
+	corte_site()
+
+	Escribir("El total general de tickets resueltos para proyectos no finalizados con mas de 4 integrantes es de ",tot_gral)
+
+	CERRAR(arch_t)
+	CERRAR(arch_s)
+
+Fin Proceso

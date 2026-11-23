@@ -1,0 +1,63 @@
+ACCION_334_ES
+    AMBIENTE
+        Hora: Registro de
+            HH: N(2)
+            MM: N(2)
+        FR
+
+        reg = Registro de
+            Apynom: AN(50)
+            Nrodecaja: N(2)
+            Importe: N(6)
+            Horario:Hora
+            FR
+        FR
+        Cajas: Archivo de reg ordenado por Apynom
+        C: reg
+        Imp: Arreglo de [1..11, 1..6] de Reales
+        f, c, aux: Entero
+
+        Funcion Obthorario(x: Entero): Entero
+            Segun x hacer
+                <10: Obthorario:= 1
+                <12: Obthorario:= 2
+                <16: Obthorario:= 3
+                <18: Obthorario:= 4
+                <=20: Obthorario:= 5
+            FS
+        FF
+
+    PROCESO
+        ABRIR E/(Cajas)
+        Leer(Cajas, C)
+
+        Para f:= 1 hasta 11 hacer
+            Para c:= 1 hasta 6 hacer
+                Imp[f,c]:= 0
+            FP
+        FP
+
+        Mientras NFDA(Cajas) hacer
+            aux:= Obthorario(C.Horario.HH)
+            Imp[C.Nrodecaja, aux]:= Imp[C.Nrodecaja, aux] + C.Importe
+            Imp[11, aux]:= Imp[11, aux] + C.Importe
+            Imp[C.Nrodecaja, 6]:= Imp[C.Nrodecaja, 6] + C.Importe
+            Importe[11, 6]:= Importe[11, 6] + C.Importe
+
+            Leer(Cajas, C)
+        FM
+
+        ESC("CAJA | 8-10 | 10-12 | 12-16 | 16-18 | 18-20 | TOTAL POR CAJA ")
+
+        Para f:= 1 hasta 11 hacer
+            Si (f = 11) entonces
+                ESC("TOTAL por Hora")
+            Sino
+                ESC("Caja ",f)
+            FS
+            Para c:= 1 hasta 6 hacer
+                Imp[f,c]:= 0
+            FP
+        FP
+        Cerrar(Cajas)
+FA

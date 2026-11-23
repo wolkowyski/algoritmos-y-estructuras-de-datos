@@ -1,0 +1,169 @@
+ACCION_EJ1_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo = Registro de 
+            pais: AN(80)
+            grupo: AN(1)
+            edades: arreglo de [1..26] de enteros
+            puntos: N(2)  
+            tarj_am: N(2)
+            tarj_roj: N(2)
+            prom_edad: N(2)
+            dif_goles: N(2)
+            prox: puntero a nodo
+        FR
+        p,q: puntero a nodo
+
+        reg = Registro de
+            id_partido: N(8)
+            eq_loc: AN(80)
+            eq_vist: AN(80)
+        FR
+        partidos: Archivo de reg
+        pa: reg
+
+        reg2 = Registro de 
+            id_partido: N(8)
+            cant_goles_loc: N(2)
+            cant_goles_vist: N(2)
+            tarj_roj_vis: N(2)
+            tarj_am_vis: N(2)
+            tarj_am_loc: N(2)
+            tarj_roj_loc: N(2)
+        FR
+        resultado: Archivo de reg2 indexado por id_partido
+        res: reg2
+
+        nodosal = Registro de
+            pais: AN(80)
+            grupo: AN(1)
+            tarj_roj: N(2)
+            tarj_am: N(2)
+            edades: arreglo de [1..26] de enteros
+            prox, ant: puntero a nodosal
+        FR
+        primsal, ult, a, b: puntero a nodosal
+
+        may: entero
+        res_may: alfanumérico
+
+        procedimientos cargar() es 
+            Nuevo(b)
+            *b.prox:= NIL
+            *b.ant:= NIL
+            *b.pais:= *p.pais
+            *b.grupo:= *p.grupo
+            *b.tarj_am:= *p.tarj_am
+            *b.tarj_roj:= *p.tarj_roj
+            *b.edades:= *p.edades
+            Si (primsal = NIL) entonces
+                primsal:= b
+                ult:=b
+            Sino
+                a:=primsal
+                Mientras (a <> NIL) y (*a.puntos < *b.puntos) hacer
+                    a:=*a.prox
+                FM
+                Si (a = prim) entonces
+                    *b.prox:= prim
+                    *prim.ant:= b
+                    prim:=b
+                Sino
+                    Si (a = NIL) entonces
+                        *ult.prox:= b
+                        *b.ant:= ult
+                        ult:= b
+                    Sino
+                        *b.prox:= a
+                        *b.ant:= *a.ant
+                        *(*a.ant).prox:= b
+                        *a.ant:= b
+                    FS
+                FS
+            FS
+        FP
+    
+    PROCESO
+        ABRIR E/(partidos)
+        ABRIR E/(resultado)
+        leer(partidos, pa)
+        primsal:= NIL
+        ult:= NIL
+        Mientras NFDA(partidos) hacer
+            res.id_partido:= pa.id_partido
+            Leer(resultado, res)
+            Si NO EXISTE entonces
+                ESC("No se ha encontrado dicho partido")
+            Sino
+                p:=prim //Equipo Local
+                Mientras (p <> NIL) y (*p.pais <> pa.eq_loc) hacer
+                    p:=*p.prox
+                FM
+            
+                q:=prim //Equipo Visitante
+                Mientras (q <> NIL) y (*q.pais <> pa.eq_vist) hacer
+                    q:=*q.prox
+                FM
+
+                Si (p = NIL) entonces
+                    ESC("No se encontró el equipo local")
+                Sino
+                    Si (q = NIL) entonces
+                        ESC("No se encontró el equipo visitante")
+                    Sino
+                        Si (pa.cant_goles_loc) > (pa.cant_goles_vist) entonces
+                            *p.puntos:= *p.puntos + 3
+                        Sino
+                            Si (pa.cant_goles_loc) < (pa.cant_goles_vist) entonces
+                                *q.puntos:= *q.puntos + 3
+                            Sino
+                                *p.puntos:= *p.puntos + 1
+                                *q.puntos:= *q.puntos + 1
+                            FS
+                        FS
+                        *p.tarj_am:= *p.tarj_am + res.tarj_am_loc
+                        *q.tarj_am:= *q.tarj_am + res.tarj_am_vis
+                        *p.tarj_roj:= *p.tarj_roj + res.tarj_roj_loc
+                        *q.tarj_roj:= *q.tarj_roj + res.tarj_roj_vis
+                        *p.dif_goles:= res.cant_goles_loc - res.cant_goles_vist
+                        *q.dif_goles:= res.cant_goles_vist - res.cant_goles_loc
+                    FS
+                FS
+                Leer(partido, pa)
+        FM
+        cerrar(partido)
+        cerrar(resultado)
+
+        p:=prim
+        Mientras (p <> NIL) hacer
+            Si (*p.puntos > 4) entonces
+                cargar()
+            Sino
+                Si(*p.puntos = 4) y (*p.dif_goles >= 2) entonces
+                    cargar()
+                Sino
+                    Si (*p.puntos = 3) entonces
+                        q:=prim
+                        Mientras (q <> NIL) y (*q.puntos <> 9) hacer
+                            q:=*q.prox
+                        FM
+                        Si (*q.puntos = 9) entonces
+                            cargar()
+                        FS
+                    FS
+                FS
+            FS
+            p:=*p.prox
+        FM
+
+        p:=primsal
+        may:=LV
+        Mientras (p <> NIL) hacer
+            ESC("Equipo: ", *p.pais," Clasificado")
+            Si (*p.tarj_roj > may) entonces
+                res_may:= *p.pais
+                may:=*p.tarj_roj
+            FS
+            p:=*p.prox
+        FM
+        ESC("Equipo clasificado con mayor cantidad de tarjetas rojas: ",res_may)
+FA

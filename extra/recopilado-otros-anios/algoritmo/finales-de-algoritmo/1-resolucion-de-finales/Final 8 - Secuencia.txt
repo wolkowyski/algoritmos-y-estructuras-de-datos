@@ -1,0 +1,92 @@
+Dada una secuencia de texto que contiene informacion sobre mascotas, se desea generar un archivo MASCOTAS, teniendo en cuenta lo siguiente:
+En el texto vienen los siquientes datos:
+NOMBRE DE LA MASCOTA*una palabra de 3 letras que identifica el tipo de documento y separado por un blanco 8 posiciones numericas que corresponden al numero del documento del
+dueño#fecha de ultima visita?
+El final del texto esta indicado por un simbolo de admiracion (!)
+Se desconoce la longitud del nombre de la mascota. EL formato del registro de salida es:
+TIPODOC N(1) NUMERO AN(8) NOMBRE-MASCOTA AN(30) DIR AN(30)
+Si es DNI, el tipo es 0,si dice LCE el tipo es 1,  cualquier otra cadena de letras es tipo 2.
+Al final del proceso indicar cuantos registros se grabaron en el archivo de salida.
+
+
+3) ejercicio:
+
+accion ej_3 es
+AMBIENTE
+   mascotas = registro
+      tipo_doc: n(1);
+      nro: arreglo de [1..8] de an;
+	  nom_mascota: arrgelo de [1..30] de an;
+	  dir: arreglo de [1..30] de an;
+   fin registro
+																										
+   s: secuencia de caracteres;																			
+   v: caracter;
+   arch_mas: archivo de mascotas; reg_mas: mascotas;
+   i,j, cant: entero;
+ALGORITMO
+	cant:=0; j:=0
+   abrir e/s (arch_mas);
+   arr(s); avz(s,v);
+   mientras (v <> "!") hacer
+      cant:= cant + 1;i:= o; 
+      mientras (v <> "*") hacer
+	     i:= i + 1;			
+         reg_mas.mascota[i]:= v;
+         avz(s,v);			
+	     si (i = 30) entonces
+         mientras (v <> "*") hacer
+            avz(s,v);
+         fin mientras
+      fin si
+	  fin mientras
+	  
+      avz(s,v);
+      si (v = "d") entonces
+         avz(s,v);
+         si (v = "n") entonces
+            avz(s,v);
+            si (v = "i") entonces
+               reg_mas.tipo_doc:= 0;
+            fin si
+         fin si	
+      sino
+         si (v = "l") entonces
+		    avz(s,v);
+            si (v = "c") entonces
+               avz(s,v);
+               si (v = "e") entonces
+                  reg_mas.tipo_doc:= 1;
+               fin si
+            sino
+               reg_mas.tipo_doc:= 2;
+			   AVZ(s,v)
+			   AVS(s,v)
+            fin si
+         fin si
+      fin si
+      avz(s,v); {Avanzar blanco}
+	  
+      para j:= 1 hasta 8 hacer
+         reg_mas.nro[j]:= v;
+         avz(s,v);
+      fin para
+      avz(s,v);
+      i:= 0;
+      mientras (v <> "?") hacer
+         i:= i + 1;
+         reg_mas.dir[i]:= v;
+         avz(s,v);
+      si (i = 30) entonces
+         mientras (v <> "?") hacer
+            avz(s,v);
+         fin mientras
+      fin si
+	  fin mientras
+	  escrbir(arch_mas,reg_mas);
+      avz(s,v);
+   fin mientras
+   escribir("La cantidad de registros que se almacenaron fue: ", cant);
+   cerrar(arch_mas);
+   cerrar(s);
+fin accion.

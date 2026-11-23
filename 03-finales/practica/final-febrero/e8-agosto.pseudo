@@ -1,0 +1,225 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e8-agosto
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+ACCION
+Ambiente
+    sec: secuencia de enteros
+    v: ventana
+
+    nodo= registro
+        numI: N(6)
+        numHab:N(3)
+        tipoH:N(1)
+        dia:N(1)
+        costo:N(4)
+        prox:puntero a nodo
+    finreg
+
+    prim,q,p: puntero a nodo
+
+    procedimiento cargarReserva es
+        nuevo(q)
+        q.numI:= s-numI
+        q.numHab:= s.numHab
+        q.tipoH:= s-tipoH
+        q.costo:= s-costo
+        p:= prim
+        si prim= nil entonces
+            prim:= q
+            q.prox:= nil
+            q.ant:= nil
+            ult:= q
+        sino
+            Mientras p.numI < q.numI y p <> nil hacer
+                p:= *p.prox
+            finmientras
+            si p = nil entonces
+                *q.ant:= ult
+                *q.prox:= nil
+                ult:= q
+            sino
+                *q.ant:= *p.ant
+                (*p.ant).prox:= q
+                q.prox:= p
+                *p.ant:= q
+            finsi
+        finsi
+
+        procedimiento actualizar() es
+            desc:= p.costo
+            monto:= desc /0.05
+            desc:= desc - monto
+            p.costo:= desc
+        finprocedimiento
+
+        procedimiento tipoHab() es
+            segun s-tipoH hacer
+                1: h1:= h1 + 1
+                2: h2:= h2 + 1
+                3: h3:= h3 + 1
+            finsegun
+        finprocedimiento
+
+PROCESO
+    arr(sec) avz(sec,v)
+
+    Mientras no FDS(sec) hacer
+        s-numI:= v
+        avz(sec,v)
+        s-numHab:= v
+        avz(sec,v)
+        s-tipoH:= v
+        tipoHab()
+        avz(sec,v)
+        avz(sec,v)
+        s-costo:= v
+        cargarReserva()
+        avz(sec,v)
+    finmientras
+
+        Escribir('ingresar el num de reserva')
+        leer(numResev)
+
+        p:= prim
+        Mientras p.numI <> numResev y p <> nil hacer
+            p:= *p.prox
+        finmientras
+
+        si p = nil entonces
+            'no se encontró la reserva correspondiente'
+        sino
+            actualizar()
+        finsi
+
+        escribir('ingresar num de habitacion')
+        leer(numH)
+        escribir('ingresar dia de reserva')
+        leer(dia)
+
+        p:= prim
+        Mientras p.numH <> numH y p.dia <> dia hacer o p <> nil hacer
+            p:= *p.prox
+        finmientras
+
+      si p = nil entonces
+        escribir('la habitacion esta disponible')
+        sino
+        escribir('hbaitacion reservada, tipo de habitacion:' p.tipoH, 'costo': p.costo)
+    finsi
+
+finproceso
+
+EJERCICIO 2
+ACCION supermercados
+Ambiente
+    arch= registro
+        cod-suc: N(4)
+        marca: N(3)
+        mod: N(4)
+        cod-caj: N(5)
+        fecha: registro
+            dia
+            Mes
+            anio
+        finreg
+        costo: N(5.2)
+    finreg
+
+    a-mant: archivo de arch
+    mant: arch
+
+    procedimiento corteCaja es() entonces
+        Escribir('Codigo de caja registradora:' resg-cod-caj, 'total mantenimientos:' cantcaja, 'costo total:', costocaja)
+        costomod:= costomod + costocaja
+        cantmod:= cantmod + cantcaja
+        resg-cod-caj:= mant.cod-caj
+        escribir('mantenimientos durante este año:' mant-caja-anio, 'costo durante este año:' cost-caj-anio)
+        costocaja:= 0, cantcaja:= 0, cost-caja-anio:= 0, mant-caja-anio:= 0
+    finprocedimiento
+
+    procedimiento corteMod() es
+        cortecaja()
+        Escribir('del modelo', resg-mod, 'el total de costos fue:', costomod, 'el total de mantenimientos:', cantmod)
+        costomarca:= costomarca + costmod
+        mantmarca:= mantmarca + mantmod
+        si mantmod > cantmaxmod entonces
+            cantmaxmod:= cantmod
+            modmax:= resg-mod
+        finsi
+        resg-mod:= mant.mod
+        costmod:= 0, mantmod:= 0
+    finp
+
+    procedimiento corteMarca es
+        corteMod()
+        costosuc: costosuc + costomarca
+        mantsuc:= mantsuc + mantmarca
+        si mantmarca > cantmaxmarca entonces
+            cantmaxmarca:= mantmarca
+            marcamax:= resg-marca
+        finsi
+        resg-marca: mant.marca
+        costomarca:= 0
+        mantmarca:= 0
+    finprocedimiento
+
+    procedimiento corteSuc es
+        corteMarca()
+        escribir('total de la sucursal', resg-suc, 'en costos:', costosuc, 'en cantidad de mantenimientos', mantsuc)
+        escribir('la marca con mas mantenimientos ha sido', maxmarca, 'y el modelo', maxmod)
+        maxcantmarca:= 0, maxcantmod:= 0
+        maxmod:= '', maxmarca:= ''
+        resg-suc:= mant.suc
+        costosuc:= 0, mantsuc:= 0
+    finproce
+
+
+
+
+PROCESO
+    ABRIR E/(a-mant) LEER(a-mant, mant)
+    resg-suc:= mant.cod-suc
+    resg-marca:= mant.marca
+    resg-mod:= mant.mod
+    resg-cod-caj:= mant.cod-caj
+    escribir('ingresar año actual')
+    leer(anio)
+    maxmarca:= 0
+    maxmod:= 0
+
+    Mientras no FDA(arch-mant) hacer
+        si (mant.cod-suc <> resg-suc) entonces
+            corteSuc()
+            sino
+            Si mant.marca <> resg-marca entonces
+                corteMarca()
+            sino
+                si mant.mod <> resg-mod entonces
+                    corteMod()
+                sino
+                si mant.cod-caj <> res-cod-caj entonces
+                    corteCaja()
+                finsi
+            finsi
+        finsi
+        finsi
+
+        Si mant.fecha.anio = anio
+            totanio:= totanio + mant.costo
+            cost-caja-anio:=cost-caja-anio + mant.costo
+            mant-caja-anio := mant-caja-anio + 1
+            cantanio:=cantanio + 1
+        finsi
+
+        costocaja:= costocaja + mant.costo
+        cantcaja:= cantcaja + 1
+
+        leer(arch-mant, mant)
+        finmientras
+        corteCaja()
+        cerrar(arch)
+
+    FINACCION

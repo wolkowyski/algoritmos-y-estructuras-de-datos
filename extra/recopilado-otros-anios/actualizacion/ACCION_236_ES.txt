@@ -1,0 +1,93 @@
+ACCION_236_ES
+    AMBIENTE
+        reg1 = Registro de
+            Clave: Registro
+                Grupo: N(2)
+                Categoria: {1..50}
+                AnioFab: N(4)
+                Nro_Patente: N(8)
+            FRegistro
+            DNI: N(9)
+            ApyNom: AN(50)
+            Domicilio: AN(30)
+        FRegistro
+        Autos: Archivo de reg1 ordenado por Clave
+        A: reg1
+
+        reg2 = Registro de
+            Clave: Registro
+                Nro_Patente: N(8)
+                Aniodeuda:N(4)
+                Trimestre: N(1)
+            FRegistro
+            Importe: N(5,2)
+        FRegistro
+        Deudas: Archivo de reg2 indexado por Clave
+        D: reg2
+
+        reg3 = Registro de
+            Clave: Registro
+                Grupo: N(2)
+                Categoria: {1..50}
+                AnioFab: N(4)
+            FRegistro
+            Importe: (5,2)
+        FRegistro
+        Cuotas: Archivo de reg3 indexado por Clave
+        C: reg3
+
+        Importe, Importedeuda: Real
+        Anactual, cont1: Entero
+
+    PROCESO
+        ABRIR E/(Autos)
+        ABRIR E/(Deudas)
+        ABRIR E/(Cuotas)
+        Leer(Autos, A)
+        ESC("Ingrese el año actual"); leer(Anactual);
+        ESC("| Grupo | Categoria | Año de Fabr. | Nro de Patente | DNI | Apellido y Nombre | Domicilio | Deuda | Importe")
+        Mientras NFDA(Autos) Hacer
+            C.Clave.Grupo:= A.Clave.Grupo
+            C.Clave.Categoria:= A.Clave.Categoria
+            C.Clave.AnioFab:= A.Clave.AnioFab
+            Leer(Cuotas, C)
+            Si EXISTE entonces
+                Importe:= C.Importe
+            Sino
+                ESC("ERROR... Algun dato fue ingresado de manera incorrecta")
+            FSi
+
+            D.Clave.Nro_Patente:= A.Clave.Nro_Patente
+            Leer(Deudas, D)
+            Si NO EXISTE entonces
+                ESC(A.Clave.Grupo," | ",A.Clave.Categoria," | ",A.Clave.AnioFab," | ",A.Clave.Nro_Patente," | ",A.DNI," | ",A.ApyNom," | ",A.Domicilio," | ------ ", Importe)
+                ESC("Total Deuda: 00000,00$ | Importe Total: ",Importe)
+            Sino
+                Mientras (D.Clave.Aniodeuda <= Anactual) Hacer
+                    cont1:= 1
+                    Si EXISTE entonces
+                        Mientras(D.Clave.Trimestre <= 4) Hacer
+                            D.Clave.Trimestre:= cont1
+                            Leer(Deuda,D)
+                            Si EXISTE entonces
+                                ESC(A.Clave.Grupo," | ",A.Clave.Categoria," | ",A.Clave.AnioFab," | ",A.Clave.Nro_Patente," | ",A.DNI," | ",A.ApyNom," | ",A.Domicilio," | ", D.Importe)
+                                Importedeuda:= D.Importe
+                            Sino
+                                ESC(A.Clave.Grupo," | ",A.Clave.Categoria," | ",A.Clave.AnioFab," | ",A.Clave.Nro_Patente," | ",A.DNI," | ",A.ApyNom," | ",A.Domicilio," |   0")
+                            FSi
+                            cont1:= cont1 + 1
+                        FMientras
+                    Sino
+                        ESC("No se encontraron deudas en este año")
+                    FSi
+                    D.Clave.Aniodeuda:= D.Clave.Aniodeuda + 1
+                    leer(Deuda, D)
+                FMientras
+            FSi
+            Leer(Auto, A)
+        FMientras
+        Cerrar(Auto)
+        Cerrar(Cuotas)
+        Cerrar(Deuda)
+FACCION
+

@@ -1,0 +1,82 @@
+Accion 6 es  :
+Ambiente :
+
+Nodo = registro
+	Nom: AN (30)
+	Monto: real
+	Num_mesa: N(2)
+	fecha: N(8)
+	prox:puntero a nodo
+Fin reg
+Prim,p,q,ant: puntero a nodo
+Rta: ('s', 'n') 
+Nombre: AN (30)
+
+Algoritmo:
+esc( ' Desea añadir cliente ' )
+leer (rta)
+	Mientras rta = 's' hacer
+	
+		Nuevo (q)
+		esc ( ' ingrese nombre del cliente' )
+		leer ( *q.nom)
+		esc( ' ingrese monto total ' )
+		leer (*q.monto)
+		esc ( ' numero de mesa ')
+		leer (*q.num_mesa)
+		esc ( ' ingrese fecha ')
+		leer (*q.fecha)
+			p:=prim
+			Mientras (*p.nom <= *q.nom ) ^ ( P <> Nil) hacer
+					
+					p:= *p.prox
+			Fin mientras
+			
+			Si P = nil entonces
+				Prim:= q
+				*q.prox:= Nil
+				SINO
+				 	*q.prox := *p.prox
+					*p.prox := q
+			Fin si
+			
+	esc( ' Desea añadir cliente ' )
+	leer (rta)
+	Fin Mientras
+	
+	Repetir
+		esc ( ' Desea emitir ticket ' )
+		esc (' Ingrese nombre del cliente')
+		leer (Nombre)
+		
+		p:= prim
+		Mientras (*p.nom = Nombre ) ^ (p <> NIL) hacer 
+			ant := p
+			p:= *p.prox
+		Fin Mientras
+		
+		Si P= Nil entonces
+			esc(' error, no exite cliente ' )
+			SINO
+				esc (' Nombre del cliente ')
+				esc(*p.nom)
+				esc('fecha')
+				esc(*p.fecha)
+				esc('Numero de mesa')
+				esc(*p.num_mesa)
+				esc(' Total')
+				esc(*p.monto)
+				Si p = prim entonces
+					Prim := *p.prox
+					SINO
+						*ant.prox:= *p.prox
+				Fin si
+				DISPONER (p)
+		Fin si
+			
+	Hasta que (rta = 's')
+Fin accion
+			
+			
+			
+			

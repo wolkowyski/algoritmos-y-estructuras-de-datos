@@ -1,0 +1,11 @@
+Funcion Par(n: entero): booleano
+    Si ((n mod 10) mod 2 <> 0) entonces
+        Par:= Falso
+    Sino
+        Si (n>0) entonces
+            par:= par(n div 10)
+        Sino
+            par:= verdadero
+        FS
+    FS
+    

@@ -1,0 +1,52 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Se dispone de 2 secuencias de caracteres, una contiene caracteres, incluidos espacios y otra contiene caracteres “numéricos”. Se pide crear una nueva secuencia de salida de caracteres donde se copien los caracteres de ambas secuencias en forma alternada, o sea un carácter, un digito, un carácter, un digito, etc.
+
+Ejemplo:
+
+Sec1: Para habilitar la función de Salas para grupos pequeños para su uso*
+
+Sec2: 13481460918460846161334868461086*
+
+Salida: P1a3r4a8 1h4….
+
+· Analice y responda: ¿Qué pasaría en el caso de que una secuencia de entrada termine antes que la otra? se podría cumplir con la consigna?
+· ¿Cómo modificaría el algoritmo en el caso de que solicite contar la cantidad de caracteres de cada secuencia y mostrar por pantalla al final del proceso?
+
+
+________________________________________________________________________________
+
+ACCION alternSec ES
+
+	AMBIENTE
+
+		VARIABLES
+
+			secIn1, secIn2, secOut: Secuencia de caracter;
+			v1, v2: entero;
+	PROCESO
+
+		CREAR(secOut);
+		ARR(secIn1); AVZ(secIn1, v1);
+		ARR(secIn2); AVZ/(secIn2, v2);
+		cont := 2;
+
+		MIENTRAS NO FDS(secIn1) ^ NO FDS(secIn2) HACER
+			SI (cont MOD 2 = 0) ENTONCES
+				ESC(secOut, v1);
+				AVZ(secIn1, v1);
+			SINO
+				ESC(secOut, v2);
+				AVZ(secIn2, v2);
+			FIN SI;
+			cont := cont + 1;
+		FIN MIENTRAS;
+
+		CERRAR(secOut); CERRAR(secIn1); CERRAR(secIn2);
+
+FIN ACCION;
+
+· En caso de que una secuencia termine antes se podrá realizar el grabado alternado entre los elementos de la secuencia hasta que una de las dos llegue a su fin. Quedando luego por agregar a la secuencia de salida, los elementos restantes de la secuencia que no finalizo su recorrido.
+
+· Si se solicitara contar la cantidad de elementos de cada secuencia, utilizaría dos variables contador que según en que secuencia la almacene, la cuente. Por ejemplo: luego de escribir la ventana asociada a la secuencia 1, incrementaría un 'cont1' hasta el fin de secuencia y así mismo para la secuencia 2.

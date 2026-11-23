@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.5
+// ==========================================================================
+
+// Dada una lista simplemente encadenada que contiene datos de todas las
+// provincias de la República Argentina: nombre, capital, cantidad total de
+// habitantes y cantidad de analfabetos, y está ordenada en forma decreciente
+// por número de habitantes analfabetos, generar otras tres listas que
+// contengan el nombre, la capital y el porcentaje de analfabetos de las
+// provincias que respondan a las siguientes restricciones:
+//   L1: <= 10 % analfabetos
+//   L2: 16 a 25 % analfabetos
+//   L3: >= 26 % analfabetos
+// (Las provincias entre 10% y 16% no van a ninguna lista.)
+
+Accion Ejercicio4_5 (prim1: puntero a nodo) es
+    Ambiente
+        nodo = Registro
+            nombre: AN(40)
+            capital: AN(40)
+            total_habitantes: N(8)
+            analfabetos: N(8)
+            prox: puntero a nodo
+        finregistro
+
+        nodosalida = registro
+            nombre: AN(40)
+            capital: AN(40)
+            porcentaje_analfabetos: real
+            prox: puntero a nodosalida
+        finregistro
+
+        p1: puntero a nodo // lista de entrada
+        prim2, prim3, prim4, q: puntero a nodosalida // L1, L2 y L3
+        porcentaje: real
+
+        // Carga apilada en la lista que corresponda
+        Procedimiento Agregar (Var prim: puntero a nodosalida) es
+            Nuevo(q)
+            q^.nombre:= p1^.nombre
+            q^.capital:= p1^.capital
+            q^.porcentaje_analfabetos:= porcentaje
+            q^.prox:= prim
+            prim:= q
+        FinProcedimiento
+
+    Proceso
+        p1:= prim1
+        prim2:= nil; prim3:= nil; prim4:= nil
+
+        Mientras (p1 <> nil) hacer
+            porcentaje:= p1^.analfabetos * 100 / p1^.total_habitantes
+            Si porcentaje <= 10 entonces
+                Agregar(prim2)
+            SiNo
+                Si (porcentaje >= 16) y (porcentaje <= 25) entonces
+                    Agregar(prim3)
+                SiNo
+                    Si porcentaje >= 26 entonces
+                        Agregar(prim4)
+                    FinSi
+                FinSi
+            FinSi
+            p1:= p1^.prox
+        FinMientras
+FinAccion

@@ -1,0 +1,54 @@
+Accion Encriptar (Prim: puntero a Nodo) es:
+Ambiente:
+	NODO = Registro
+		mult: N (5) 
+		prox: puntero a Nodo
+	Fin reg
+	p:puntero a Nodo 
+	NODO2= Registro
+		valor: entero
+		prox: puntero a Nodo
+	Fin reg
+	Prim1,q,s:puntero a Nodo 
+	
+	A: arreglo de [1..255] de caracter
+	i : entero
+	Result,SUMA,y,x: entero
+	
+Algoritmo:
+CARGAR ARREGLO
+Prim1:= NIL
+P:= prim
+
+	Para i := 1 a N hacer
+	
+		result:= ASCII (A[i]) * (p^.mult)
+		p:= p^.prox
+			DESCOMPONER
+				NUEVO(q)
+				q^.valor:=SUMA
+				Si prim1 = nil entonces
+					Prim1:=q
+					SINO
+						s^.prox:= q
+				Fin si
+					q^.prox:= NIL
+					s:= q
+	Fin para
+
+	s:= Prim1
+		Mientras s <> NIL hacer
+			esc (s^.valor)
+		Fin Mientras
+Fin accion
+	
+	Subaccion DESCOMPONER es:
+		SUMA:= 0
+		Mientras (result DIV 10 > 10) hacer
+			x:= result DIV 10
+			y:= result MOD 10
+			SUMA:= SUMA + y
+			result:= x
+		Fin Mientras
+		SUMA := SUMA + Result
+	Fin sub

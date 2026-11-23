@@ -1,0 +1,131 @@
+Registros de Longitud Variable por Ocurrencia
+
+Se deberá desarrollar un algoritmo que emita un listado con:
+- el total de Sueldo Neto, discriminado por sector, que deberá abonar a sus empleados de planta una empresa.
+- el porcentaje que representa cada sector sobre el total general.
+
+Se cuenta para ello con los siguientes archivos:
+
+•	EMPLEADOS: indexado por n-legajo, con registros de longitud variable, en función de cant 
+(cantidad de conceptos de haberes que cada empleado posea). Si bien es indexado, se lo va a recorrer secuencialmente, ya que hay que procesarlo totalmente.
+
+N-legajo	Nomyap	Domicilio	Fecha-ini	Sector	Tipo	C-Cargo	Cant	Cod	....	Cod
+
+Se prevee hasta 30 conceptos por empleado.
+En el campo tipo se identifica con ‘p’ al personal de planta y con ‘c’  a los contratados.
+Los sectores de la empresa se codifican numéricamente de 1 a 15.
+
+•	CONCEPTOS: indexado por cod-concepto.
+
+Cod-concepto	Clase	Valor
+   
+En clase contiene una ‘p’ si se trata de un porcentaje sobre el básico y ‘f’ si se trata de una suma fija. Los conceptos menores o iguales que 40 son haberes y los mayores de 40 son descuentos.
+
+•	CARGOS: indexado por código de cargo, contiene los puntos asignados al cargo, dado que la empresa dispone de un esquema de puntaje dentro de su escalafón.
+ 
+Cod-cargo	Puntos
+
+En cada ejecución se ingresará por pantalla el valor del punto y el mes de cálculo.
+El básico de cada empleado resulta de multiplicar los puntos asignados al cargo por el valor de cada punto. 
+El sueldo neto es el resultado de sumar al básico los haberes y restarle los descuentos.
+
+ACCION SUELDOS ES
+
+Ambiente  
+
+Reg1: registro variable, definido por ocurrencia. 
+
+REG1 = registro
+N-legajo: entero
+Nomyap: cadena(30)
+Domicilio: cadena(30)
+Fe_ini:fecha
+Sector:entero
+Tipo: (c,p)
+C_cargo: entero
+Cant:entero
+Conceptos: registro ocurre según cant
+      Contenido: entero 
+Freg.
+Freg;
+	REG2 = registro
+Cod: entero
+Clase: (f,p)
+Valor: real
+Freg;
+
+
+REG3 = registro
+Cod: entero
+Puntos: real
+Freg;
+
+
+Empleados: fichero de reg1 indexado por N-legajo;  R_emp: reg1;
+Conceptos: fichero de reg2 indexado por cod;  R_conc: reg2;
+Cargos: fichero de reg3 indexado por cod;  R_cargo: reg3;
+Sueldo,Básico,Valor_punto: real;
+Hab_porc, Hab_fijo, Desc_porc, Desc_fijo : real;
+TOT_GRAL, Porc_desc, Porc_hab: real
+Tot_sueldos: arreglo [1...15] de real; 
+i: entero;
+
+Algoritmo
+
+Abrir I (Empleados) 
+Abrir I (Conceptos)
+Abrir I (Cargos)
+** Poner en cero totalizadores **
+Para i:= 1 hasta 15 hacer
+      Tot_sueldos(i) : = 0;     
+Fpara;
+Hab_porc : = 0; Hab_fijo : = 0; Desc_porc : = 0;Desc_fijo : = 0;  TOT_GRAL := 0   ;
+**
+Leer(Valor_punto)
+Leer(Empleados, R_emp)
+
+Mientras No FDA(Empleados) hacer
+	Si R_emp.tipo = ‘p’ entonces         ** planta **
+                 Para i:= 1 hasta  R_emp.cant hacer
+                         R_conc.cod : =  R_emp.concepto(i)      ** asigna valor clave **
+                         Leer(Conceptos, R_conc)                        **  lee fichero indexado **
+                         Si R_conc.cod >  40                             
+                             Entonces  ** descuentos **
+           			       Si  R_conc.clase = ‘p’         
+                                                 Entonces  **  porcentaje **
+                                                               Desc_porc : = Desc_porc + R_conc.valor  
+               			  Sino            **  suma fija ** 
+     					 Desc_fijo : = Desc_fijo + R_conc.valor
+                                            Fsi;
+                              Sino             ** haberes ** 
+                                            Si  R_conc.clase = ‘p’         
+                                                 Entonces  **  porcentaje **
+                                                               Hab_porc : = Hab_porc + R_conc.valor
+               			  Sino            **  suma fija ** 
+     					 Hab_fijo : = Hab_fijo + R_conc.valor
+                                            Fsi;
+
+                             Fsi;
+                  Fpara;
+                  R_ cargo.cod : =  R_emp.c_cargo;
+                  Leer (Cargos, R_cargo);
+                  Basico : =  R_cargo.puntos * Valor_punto;
+                  Porc_desc : = Basico * Desc_porc / 100 ;  ** porcent. sobre el básico - $$ **
+                  Porc_hab  : = Basico * Hab_porc / 100;
+                  Sueldo : = ( Basico + Porc_hab + Hab_fijo) – ( Porc_desc + Desc_fijo);
+                  ** acumula al sector que corresponde 
+                 Tot_sueldos (R_emp.sector) : = Tot_sueldos (R_emp.sector) + Sueldo;
+                 TOT_GRAL := TOT_GRAL +  Sueldo;
+	Fsi;
+	Leer(Empleados, R_emp)
+Fmientras;
+
+** Emitir porcentajes que representa cada sector **
+Escribir (‘TOTAL GENERAL DE SUELDOS:’, TOT_GRAL)
+Para i:= 1 hasta 15 hacer 
+      Escribir (‘ Sector :’, i , ‘total sueldos’, Tot_sueldos(i))
+      Escribir ( ‘Porcentaje sobre el total:’, Tot_sueldos(i)/TOT_GRAL +100);
+Fpara;
+Cerrar(Empleados); Cerrar(Cargos); Cerrar(Conceptos)
+
+FACCIÓN.

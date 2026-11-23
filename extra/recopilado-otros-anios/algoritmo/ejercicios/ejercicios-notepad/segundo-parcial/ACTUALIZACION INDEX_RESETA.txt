@@ -1,0 +1,40 @@
+ACTUALIZACION INDEXADA:
+{Abrir archivo e/s}
+band:= 'S'
+
+Mientras Band= 'S' hacer
+	Si No existe entonces
+		Si cod_mov = 'B' entonces
+			esc ('error,baja  no existe')
+			SINO
+				Si cod_mov = 'M' entonces
+					esc ('error,modificacion no existe')
+					SINO
+						Leer (reg_mae.campo)
+						.
+						.
+						Esc (Mae,reg_mae)
+				Fin si
+		Fin si
+			SINO	
+				Si cod_mov = 'A' entonces
+					esc('error,alta no es posible')
+						sino	
+						Si cod_mov = 'M' entonces
+							leer (reg_mae.campo)
+							.
+							.
+							RE-ESC (arch_mae,reg_mae)
+								sino
+									{baja logica}
+									RE-ESC(arch_mae,reg_mae) {marcar registro maestro}
+									
+									{baja fisica}
+									BORRAR (arch_mae,reg_mae)
+						Fin si
+				Fin si
+	Fin
+esc ('desea continuar')
+leer(band)
+Fin Mientras
+Cerrar (arch_mae)

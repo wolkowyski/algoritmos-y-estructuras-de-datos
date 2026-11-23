@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Corte de control (esquema de clase)
+//
+//  Archivo de ventas de entradas de cine ordenado por País, Día y Cine.
+//  Se emiten totales de tickets por día, por país y el total general.
+//  Esquema: lectura anticipada -> tratar corte -> tratar registro -> leer.
+// ==========================================================================
+
+Accion Desafio_Clase es
+Ambiente
+	Venta = Registro
+		CodPais: AN(10)
+		Dia: 1..7
+		Cine: AN(20)
+		Tickets: N(5)
+	FinRegistro
+
+	Arch: Archivo de Venta ordenado por CodPais, Dia, Cine
+	Reg: Registro de Venta
+
+
+TotDia, TotPais, Totgral: N(7)
+ResPais: AN(10), ResDia: 1..7
+
+SubAccion CorteDia es // Primera SubAccion, en este caso es el Corte de menor nivel
+	Escribir ("Total del día ", ResDia, ": ", TotDia) //Escribo el total, uso el Resguardo del Dia y el Totalizador
+	TotPais:= TotPais + TotDia //Acumulo totalizadores
+	TotDia:= 0 //Inicializo el totalizador
+	ResDia:= Reg.Dia //Nuevo Resguardo
+FinSubaccion
+
+Subaccion CortePais es // Segunda Subaccion, en este caso es el Corte de mayor nivel
+	CorteDia //Llamo al corte inmediatamente inferior
+	Escribir("Total del País:", ResPais, TotPais)
+	TotGral:= TotGral + TotPais
+	TotPais:= 0
+	ResPais:= Reg.CodPais
+FinSubaccion
+
+
+Proceso // Algoritmo
+	Abrir E/(Arch) //Abro el Archivo
+	Leer(Arch, Reg) // Leo o avanzo el Archivo
+	TotDia:= 0
+	TotPais:= 0 //Inicializo los totalizadores
+	TotGral:= 0
+
+	ResPais:= Reg.CodPais //Asigno el valor a los resguardos con el Registro correspondiente del archivo
+	ResDia:= Reg.Dia
+
+	Mientras No FDA(Arch) hacer // Estructura Pre-Test
+		Si Reg.CodPais <> ResPais entonces
+			CortePais
+		SiNo
+			Si Reg.Dia <> ResDia entonces // Tratar Corte
+				CorteDia
+			FinSi
+		FinSi
+
+		TotDia:= TotDia + Reg.Tickets // Tratar Registro
+
+		Leer(Arch, Reg) //Leer Registro
+	FinMientras
+
+	CortePais // Corte de mayor nivel o jerarquia
+	Escribir("Total general de tickets: ", TotGral) //Emito el total general, el totalizador maximo o general
+	Cerrar(Arch) // Cierro el archvio por costumbre y buena practica, por mas que no lo haya generado yo
+FinAccion // Finaliza el Proceso, es corto, lo que mas vale se encuentra en el ambiente, el procedimiento de cada uno de los cortes

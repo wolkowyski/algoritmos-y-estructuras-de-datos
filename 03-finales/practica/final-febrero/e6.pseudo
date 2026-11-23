@@ -1,0 +1,178 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e6
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+ACCION noticias
+Ambiente
+    nodo= registro
+        carac: N(1)
+        tipo: N(1)
+        prox: puntero a nodo
+    finregistro
+
+    p,q, prim, m, e, n, k: puntero a nodo
+
+    procedimiento inicializarnodo() es
+        nuevo(q)
+        q.carac:= ''
+        q. turno:= 'M'
+        q.tipo:= ''
+        prim:= q
+        m:= q
+        *m.prox:= nil
+        nuevo(q)
+        q.carac:= ''
+        q. turno:= 'E'
+        q.tipo:=''
+        *prim.prox:= q
+        e:= q
+        *e.prox:= nil
+        nuevo(q)
+        q.carac:= ''
+        q. turno:= 'N'
+        q.tipo:= ''
+        *n.prox:= nil
+        *e.prox:= n
+    finprocedimiento
+
+    procedimiento cargarNodo() es
+        q.carac:= v
+    finprocedimiento
+
+    procedimiento organizar() es
+        p:= prim
+        Mientras p.turno <> ult.turno y p.tipo < ult.tipo hacer
+            p:= *p.prox
+        finmientras
+        *ult.prox:= *p.prox
+        p.prox:= k
+    finproc
+
+
+    procedimiento inicializarA() es
+        para i= 1 hasta 4 hacer
+            para j:=1 hasta 9 hacer
+                A[i,j]:= 0
+            finpara
+        finpara
+    finproc
+
+
+
+
+Proceso
+    inicializarA()
+    inicializarnodo()
+    prim:= nil p:= nil
+    nuevo(q)
+    q.carac:= ''
+
+    ABRIR(sec) ARR(sec,v)
+    Mientras no FDS(sec)
+
+        Para i:= 1 a 2 hacer
+            p:= prim
+            Mientras p <> nil hacer
+                p:= *p.prox
+            finmientras
+            nuevo(q)
+            k:= q
+            Mientras v <> '@' hacer
+                cargarNodo()
+                nuevo(q)
+                avz(sec,v)
+            finmientras
+                avz(sec,v)
+                nuevo(q)
+                cargarNodo()
+            Finmientras
+        finpara
+        ult:= q
+        avz(sec, v)
+        tipo:=v
+        avz(sec,v)
+        turno:= v
+        avz(Sec,v)
+        repetir:= v
+
+        *ult.tipo:= tipo
+        *ult.turno:= turno
+
+        organizar()
+
+        si repetir = 'S' entonces
+            organizar()
+        finsi
+
+        A[turno,tipo]:= A[turno,tipo] + 1
+        A[turno,9]:= A[turno,9] + 1
+        A[4,tipo]:= A[4,tipo] + 1
+        avz(sec,v)
+    finmientras
+
+        p:= prim
+        Mientras *p.tipo <> 3 y *p.turno <> 'M' hacer
+            p:= *p.prox
+        finmientras
+
+        Escribir('titulo y resumen de las noticias del tipo politica, turno matinal:')
+        Mientras *p.tipo = 3 y *p.turno = 'M' hacer
+            Escribir(q.carac)
+        finmientras
+
+        Escribir('Total de eventos por tipo es:')
+        Para i= 1 hasta 9 hacer
+        Escribir('total eventos tipo', i, 'es' A[4,i])
+        finpara
+
+        Escribir('total por tipo y segmento:')
+        Para j=1 a 9
+            Para i= 1 a 3
+            Escribir('total del tipo', j, 'en el turno', i, A[i,j] )
+            finpara
+        finpara
+
+
+
+
+ACCION N2
+Ambiente
+    arch= registro
+        codigo
+        cod.tipo.cab
+        cod.tipo.ind
+        mtr.cab
+        rollos
+    finregistro
+
+    arch-fab: archivo de arch
+    fab: arch
+
+    A: arreglo de [1..9,1..6] de dato
+    dato= registro
+        mtros.cable
+        rollos
+    finregistro
+
+PROCESO
+    inicializarArr()
+    ABRIR S/(arch-fab) leer(arch-fab, fab)
+    mientras no FDA(arch-fab) hacer
+        cod-cab:= fab.cod.tipo.cab
+        cod-ind:= fab.cod.tipo.ind
+
+        A[cod-cab, cod-ind].mtros.cable:= A[cod-cab, cod-ind].mtros.cable + fab.mtr.cab
+        A[cod-cab, cod-ind].rollos:= A[cod-cab, cod-ind].rollos + fab.rollos
+        A[9, cod-ind].mtros.cable:= A[9, cod-ind].mtros.cable + fab.mtro.cab
+        A[9, cod-ind].rollos:= A[9, cod-ind].rollos + fab.rollos
+        A[cod-cab, 6].mtros.cable:= A[cod-cab, 6].mtros.cable + fab.mtr.cab
+        A[cod-cab, 6].rollos:= A[cod-cab, 6].rollos + fab.rollos
+
+        leer(arch-fab,fab)
+    finmientras
+
+    Para j:= 1 hasta 6 hacer
+
+        A[9,j]

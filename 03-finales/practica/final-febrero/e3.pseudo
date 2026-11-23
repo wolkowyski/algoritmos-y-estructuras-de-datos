@@ -1,0 +1,167 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e3
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+EJERCICIO 1
+ACCION
+ Ambiente
+  arch1: registro
+    legajo
+    mes
+    año
+    cod_nov
+    tipo: 'D', 'R'
+    monto
+finreg
+
+    arch-nov: archivo de arch1 //secuencial
+    nov: arch1
+
+    arch2: registro
+            legajo
+            nombre
+            cargo
+        basico
+    finreg
+
+    arch-emp: archivo de arch2 indexado por legajo
+    emple: arch2
+
+    arch3: registro
+        clave: reg
+            legajo
+            mes
+            año
+        finreg
+        cargo
+        neto
+    finreg
+
+    arch-sueldos: archivo de arch3 indexado por clave
+    sueldos: arch3
+
+    procedimiento desc es
+        sueldoes:= sueldoes - arch-nov.monto
+    finprocedimiento
+
+    procedimiento noremu es
+        sueldoes:= sueldoes + arch-nov.monto
+    finprocedimiento
+
+    PROCESO
+        Para i= 1 hasta 10 hacer
+            cargos[i]:= 0
+        finpara
+
+        abrir /S(arch-nov) abrir /S(arch-emp)
+        abrir E/(arch-sueldos)
+
+        Escribir('ingresar numero de fecha, primero mes y luego año')
+        Leer(mes)
+        Leer(anio)
+
+        Leer(arch-nov)
+        Mientras anio <> arch-nov.anio y mes <> arch-nov.mes hacer
+            Leer(arch-nov)
+        finMientras
+
+        leg:= nov.legajo
+
+        Leer(arch-emp, leg)
+
+        si EXISTE entonces
+            sueldoes:= arch-emp.basico //se asigna elbásico antes de hacer todos los descuentos
+            Mientras leg = arch-nov.leg hacer
+                Si arch-nov.tipo = 'D' entonces
+                    desc()
+                sino
+                    noRemu()
+                finMientras
+                Leer(arch-nov)
+            finMientras
+        sino
+            'empleados sin novedades'
+        finsi
+
+        arch-sueldo.legajo:= leg
+        arch-sueldo.anio:= anio
+        arch-sueldo.mes:= mes
+        arch-sueldo.cargo:= arch-emp.cargo
+        arch-sueldo.neto:= sueldoes
+
+        Escribir(arch-sueldo)
+        i:= arch-emp.cargo
+        cargos[i]:= cargos[i] + sueldo
+
+        Escribir('|nombre:|', arch-emp.cargo, 'legajo', leg, .. etc )
+        Leer(arch-nov)
+    finMientras
+
+EJERCICIO 2
+ACCION
+Ambiente
+ sec: secuencia de caracteres
+ v: ventana
+
+PROCESO
+    ARR(Sec) avz(sec, v)
+    Mientras no FDS(Sec) hacer
+        dia:= funcion(v)
+        dia:= dia*10
+        avz(sec,v)
+        dia:= dia + function(v)
+        Repetir hasta 4
+            avz(sec, v)
+        finrepetir
+        avz(sec,v)
+        cod:= v
+        avz(sec,v)
+        butaca:= v
+        avz(sec, v)
+        asiento:= funcion(v)
+        asiento:= asiento*10
+        avz(sec,v)
+        asiento:= asiento + funcion(v)
+        avz(sec,v) //guion
+        avz(sec,v) //primer 2
+        hr:= v
+        Mientras v <> '!'
+            avz(sec,v)
+        finmientras
+
+        si cod = 1 entonces
+            si dia = 17 entonces
+                escribir(salida,'17/12/2011')
+            sino
+             escribir(salida,'18/12/2011')
+            finsi
+            escribir(salida,'-1-')
+            escribir(salida, butaca) //guardado como caracter
+            escribir(salida, convcaracter(asiento))
+            escribir(salida, '-20:30/')
+        finsi
+
+        Segun cod hacer
+            '1': si hr = '2' entonces
+                e122:=e122 + 1
+                sino
+                e120:=e120+1
+            '2':si hr = '2' entonces
+                e222:=e222 + 1
+                sino
+                e220:=e220+1
+            '3': si hr = '2' entonces
+                e322:=e322 + 1
+                sino
+                e320:=3+1
+        finsegun
+         tot:= tot + 1
+    finmientras
+
+    e122:= e122/tot
+    e120:=e120/tot
+    . . .
+    Escribir('promedio de la funcion de codigo 1, a las 20 hs es' e120)
+    FINACCION

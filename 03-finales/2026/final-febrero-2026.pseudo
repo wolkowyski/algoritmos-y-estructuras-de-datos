@@ -1,0 +1,2261 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final febrero 2026 - Compilado de estudio
+//  Todos los ejercicios que resolví preparando el final de febrero 2026, en un
+//  solo archivo: actualización indexada, secuencias, listas, corte de control
+//  y estadísticos. Cada ejercicio empieza con su Acción/Algoritmo.
+// ==========================================================================
+
+Algoritmo Ejercicio1 es
+    Ambiente
+        // DEFINICION DE ARCHIVOS
+
+        // Archivo maestro mas importante
+        DPTOS: archivo de Reg_ta indexado por NDPTO // Clave Simple
+        Reg_ta = Registro // Registro de transacciones
+            NDPTO: N(6)
+            Descripcion: AN(200)
+            Estado: (D,A,R) // D: Disponible - A: Alquilado - R: Reservado
+            Nivel: (1..5) // Funciona como una calificacion numérica, de 1 a 5 estrellas
+        FinRegistro
+
+        // Archivo secundario, igualmente se lo toma como otro maestro ya que tmb se actualiza a la par de DPTOS
+        DUEÑO: archivo de Reg_due indexado por NDPTO y Dueño // Clave Compleja
+        Reg_due = Registro // Registro del dueño
+            NDPTO: N(6)
+            Dueño: N(8) // Tmb se lo solicita como dato al usuario para hacer la busqueda y actualizacion indexada
+            Nombre: AN(20)
+            Alquilado: N(4)
+            Reservas: N(4)
+            Cancelados: N(4)
+        FinRegistro
+
+
+        // VARIABLES DE MEMORIA (Lo que ingresa el usuario)
+        dpto_rta: Entero
+        dueño_rta: Entero
+        rta_alta: Caracter
+        rta_operacion: Caracter // Guardará 'A', 'R' o 'C'} ---> Basicamente son las 3 opciones que puede realizar el usuario
+        // A ---> Alquiler
+        // R ---> Reserva
+        // C ---> Cancelar
+        Total_Correctas: Entero
+        Cant_Pasaron_A_Alquilado: Entero
+
+
+        // VARIABLES PARA ESTADÍSTICOS
+        // 2 Arreglos, uno para cantidades correctas y el otro para cantidades incorrectas
+        // Cada uno tiene 5 espacios o indices, para los niveles o "estrellas" (1..5)
+        // Usamos el Reg_ta.Nivel para saber en cual indice guardar o mejor dicho sumar 1
+        Cant_Correctas: Arreglo [1..5] de Enteros
+        Cant_Incorrectas: Arreglo [1..5] de Enteros
+        // Si no quisieramos arreglos deberiamos usar 10 variables 5 * 2
+
+    Proceso
+        Abrir E/S (DUEÑO)
+        Abrir E/S (DPTOS) // ambos de entrada y salida pq los tenemos que actualizar y requerimos regrabarlos
+
+        // Poner contadores a cero
+        Total_Correctas  := 0 // solo me pide total global de correctas, no confundir con los 2 arreglos de cantidades
+        Cant_Pasaron_A_Alquilado  := 0 // otro total que me pide la consigna
+        Para i  := 1 hasta 5 Hacer // inicializamos ambos arreglos
+            Cant_Correctas[i]  := 0 // arreglo 1
+            Cant_Incorrectas[i]  := 0 // arreglo 2
+        FinPara
+
+        Escribir("Bienvendio, por favor ingrese número de departamento y seguido de ello el numero de dueño sobre el cual desea operar, presione 0 para salir")
+        Leer(dpto_rta)
+        Leer(dueño_rta)
+
+        Mientras(dpto_rta) o (dueño_rta) <> 0 hacer // si alguno de los 2 es 0 salimos del ciclo
+            // CLAVE SIMPLE
+            Reg_ta.ndto := (dpto_rta) // busqueda en el primer archivo indeaxado por NDPTO
+            Leer(DPTOS, Reg_ta)
+
+            // CLAVE COMPUESTA
+            Reg_due.ndto := (dtpo_rta) // busqueda en el segundo archivo indeaxado por NDPTO
+            Reg_due.dueño := (dueño_rta) // y... no nos olvidemos de la segunda clave, la del dueño, sino nos da error
+            Leer(DUEÑO, Reg_due)
+
+            Si Existe (Reg_ta) y (Reg_due) Entonces // Comprobamos que realmente exista
+                Escribir("Ingrese operación: A- Alquilar, R- Reservar, C- Cancelar") // Esto es lo que mas me costo entender y pensarlo, version 2.0
+                Leer(rta_operacion)
+
+                // PROCESAR SEGÚN LO QUE QUIERE EL USUARIO
+                Segun (rta_operacion) Hacer
+                    // CASO 1: ALQUILAR
+                    ='A':
+                        //Regla: Solo Si está D o R
+                        Si (Reg_ta.Estado = 'D') o (Reg_ta.Estado = 'R') Entonces
+                            // Actualizar Depto
+                            Reg_ta.Estado  := 'A'
+                            Grabar(DPTOS, Reg_ta)
+
+                            // Actualizar Dueño
+                            Reg_due.Alquilado  := Reg_due.Alquilado + 1
+                            Grabar(DUEÑO, Reg_due)
+
+                            // Estadísticos
+                            Cant_Correctas[Reg_ta.Nivel]  := Cant_Correctas[Reg_ta.Nivel] + 1 // ya que se pudo dar correctamente
+                            Total_Correctas  := Total_Correctas + 1 // total global
+                            Cant_Pasaron_A_Alquilado  := Cant_Pasaron_A_Alquilado + 1 // solamente los que pasaron de un Estado x a "alquilado" cuentan, es decir solo en el caso "A"
+
+                            Escribir("Alquiler Exitoso")
+                        SiNo
+                            Escribir("Error: El Estado no permite alquilar") // por que no cumple con las condiciones pactadas en la consigna asi que :,v t mamaste papu
+                            Cant_Incorrectas[Reg_ta.Nivel]  := Cant_Incorrectas[Reg_ta.Nivel] + 1 // no se pudo concretar el alquiler entonces contamos como incorrecto
+                        FinSi
+
+                    // CASO 2: RESERVAR
+                    ='R':
+                        // Regla: Solo Si está D y Nivel > 3
+                        Si (Reg_ta.Estado = 'D') y (Reg_ta.Nivel > 3) Entonces
+
+                            // Actualizo dptos
+                            Reg_ta.Estado  := 'R'
+                            Grabar(DPTOS, Reg_ta)
+
+                            // Actualizar Dueño
+                            Reg_due.Reservas  := Reg_due.Reservas + 1
+                            Grabar(DUEÑO, Reg_due)
+
+                            Cant_Correctas[Reg_ta.Nivel]  := Cant_Correctas[Reg_ta.Nivel] + 1 // Procedimiento correcto
+                            Total_Correctas  := Total_Correctas + 1 // Total global
+
+                            Escribir("Reserva Exitosa")
+                        SiNo
+                            Escribir("Error: Nivel insuficiente o no disponible") // no cumple con las condiciones para poder reservar, posiblemente bajo nivel o ya esta reservado
+                            Cant_Incorrectas[Reg_ta.Nivel]  := Cant_Incorrectas[Reg_ta.Nivel] + 1 // Procedimiento no completado
+                        FinSi
+
+                    // CASO 3: CANCELAR
+                    ='C':
+                        // Regla: Solo Si es R o A
+                        Si (Reg_ta.Estado = 'R') O (Reg_ta.Estado = 'A') Entonces
+                            Reg_ta.Estado  := 'D'
+
+                            // Sumamos la cancelación al dueño
+                            Reg_due.Cancelados  := Reg_due.Cancelados + 1
+
+                            // Regla especial: Si tiene más de 50 cancelaciones, bajar Nivel, es decir bajar de por ejemplo 5 estrellas a 3 por la cantidad de cancelaciones que tiene
+                            // (Nota: se verifica con el nuevo valor acumulado)
+                            Si Reg_due.Cancelados > 50 Entonces // Aplicamos la regla de si el cancelado es mayor a 50
+                                Reg_ta.Nivel  := Reg_ta.Nivel - 2 // entonces decrementamos dos (2)
+                                // Controlar que no baje de 1
+                                // No se pueden tener estrellas negativas asi que si tiene 1 estrella y tiene > 50 cancelaciones se tiene que quedar en 1 estrella lamentablemente (era re malo el lugar, Goya)
+                                Si Reg_ta.Nivel < 1 Entonces
+                                    Reg_ta.Nivel  := 1
+                                FinSi
+                            FinSi
+
+                            // Actualizo ambos archivos
+                            Grabar(DPTOS, Reg_ta)
+                            Grabar(DUEÑO, Reg_due)
+
+                            Cant_Correctas[Reg_ta.Nivel]  := Cant_Correctas[Reg_ta.Nivel] + 1
+                            Total_Correctas  := Total_Correctas + 1 // Total global
+
+                            Escribir("Cancelación Exitosa")
+                        SiNo
+                            Escribir("Error: No hay nada para cancelar")
+                            Cant_Incorrectas[Reg_ta.Nivel]  := Cant_Incorrectas[Reg_ta.Nivel] + 1 // Contamos como error igualmente
+                        FinSi
+                    Otro:
+                        Escribir("Operación no válida") // por si se equivoca de opción
+                        Leer(rta_operacion)
+                FinSegun
+
+            SiNo // en caso de que no existan los datos que ella proporcionó a la app
+                Escribir("Error: El Depto no existe o el Dueño no corresponde")
+                Escribir("Como desea continuar?  a- Reintentar      o      b- Dar de alta")
+                Leer(rta_alta)
+                Si (rta_alta) = 'b' Entonces
+                    // CARGAMOS EL REGISTRO DE DEPTO
+                    Reg_ta.NDPTO  := dpto_rta // Usamos el código que ya ingresó
+                    Escribir("Ingrese Descripción, Estado (D/A/R) y Nivel (1-5):")
+                    Leer(Reg_ta.Descripcion, Reg_ta.Estado, Reg_ta.Nivel)
+
+                    GRABAR(DPTOS, Reg_ta) // GRABAR (Write) crea uno nuevo
+
+                    // CARGAMOS EL REGISTRO DE DUEÑO
+                    Reg_due.NDPTO  := (dpto_rta)
+                    Reg_due.Dueño  := (dueño_rta)
+                    Escribir("Ingrese Nombre del Dueño:")
+                    Leer(Reg_due.Nombre)
+
+                    // Inicializamos los contadores en 0 para que empiece limpio, esto en el archivo del control del dueño
+                    Reg_due.Alquilado  := 0
+                    Reg_due.Reservas  := 0
+                    Reg_due.Cancelados  := 0
+
+                    GRABAR(DUEÑO, Reg_due) // grabams los nuevos datos dados de alta en ambos archivos
+
+                    Escribir("¡Alta realizada con éxito!")
+                FinSi
+            FinSi
+
+            // LEER DE NUEVO PARA CONTINUAR O SALIR, ya que usé un Mientras y no un Repetir
+            Escribir("Por favor ingrese número de departamento y seguido de ello el numero de dueño sobre el cual desea operar, presione 0 para salir")
+            Leer(dpto_rta)
+            Leer(dueño_rta)
+        FinMientras
+
+        // PARTE 3: INFORMES FINALES
+        Escribir("--- RESULTADOS ---")
+
+        // 1. Cantidad de transacciones por nivel
+        Para i  := 1 hasta 5 Hacer
+            Escribir("Nivel ", i, ": Correctas=", Cant_Correctas[i], " Incorrectas=", Cant_Incorrectas[i])
+        FinPara
+
+        // 2. Porcentaje solicitado
+        Si Total_Correctas > 0 Entonces
+            Escribir("Porcentaje de cambios a 'Alquilado': ", (Cant_Pasaron_A_Alquilado / Total_Correctas) * 100, "%")
+        SiNo
+            Escribir("No hubo transacciones correctas.")
+        FinSi
+
+        Cerrar (DUEÑO, Reg_due) // ya que ambos fueron actaulizados y abiertos como archivo de salida
+        Cerrar (DPTOS, Reg_ta)
+    FinProceso
+FinAccion
+
+
+
+
+
+
+
+
+// LISTAS
+0 <> de nil
+0 es un dato, por mas que sea 0, nil es la definicion de vacio por antonomasia como diria el profe de legislacion Bv
+Se clasifican en
+
+Particularizadas ---> Pila y Cola
+Generalizadas ---> Simple Doble y Circular Simple/Doble
+
+Todas son estructuras de datos dinamicas, quiere decir que su contenido puede crecer o decrecer y como se almacenan sus datos, solamente que las particularizadas se basan mas en el método de acceso de esos datos
+
+
+
+------------------------- PARTICULARIZADAS --------------------------
+SON TIPOS DE DATOS ABSTRACTOS (los llamados TDA)
+
+PILAS ---> LIFO
+El ultimo que entra es el primero en salir
+Tiene UN UNICO PUNTO LOGICO DE ACCESO y salida para sus elementos
+Es como un ctrl Z
+Se tiene el apilar (push) que coloca el objeto en la Pila, por ejemplo un cambio en un archivo word
+Y el retirar (pop) que saca el elemento, por ejemplo un ctrl z que hicimos sobre ese documento // Es la "Carga apilada"
+No hablamos de insersion o eliminacion ni simple o doble
+
+// CARGA APILADA
+ESCRIBIR("Introduzca el valor que desea cargar")
+LEER (valor)
+
+Prim := nil // inicializo
+MIENTRAS (valor <> '*') HACER // mientras no llegue al tope
+    NUEVO (q) // creo nuevo nodo
+    *q.Dato := valor // le asigno el valor del usuario al campo de dato
+    *q.Prox := Prim // le dice al nodo Nuevo: "Tu siguiente es el que antes era el primero"
+    Prim := q // mueve la etiqueta oficial de "Cima" (Prim) al nodo Nuevo
+    LEER(valor)
+FIN MIENTRAS
+
+PROCEDIMIENTOS
+1. Apilar
+2. Desapilar
+3. Ver tope
+
+ESTADOS
+1. Pila llena
+2. Pila vacia
+
+
+
+
+COLAS ---> FIFO
+El primero dato en entrar es tmb el primer dato en salir
+Tienen UN PUNTO DE INSERSION de elementos y otro para EXTRACCION
+Es como si entran de un extremo y salen por el otro extremo inmediatamente
+Es como enviar un par de documentos PDF a imprimir, el primer documento que se envia es el primero en salir impreso
+Se tiene el encolar (enqueue) y el desencolar (dequeue) // es la "Carga Encolada"
+No se permite el acceso aleatorio a ningun elemento, es como una cola del supermercado :3
+
+// CARGA ENCOLADA
+ESCRIBIR("Introduzca el valor que desea cargar")
+LEER (valor)
+
+Prim := nil // inicializo
+MIENTRAS (valor <> '*') HACER // mientras no llegue al tope
+    NUEVO (p) // creo nuevo nodo
+    *p.Dato := valor // le asigno el valor del usuario al campo de dato
+    *p.Prox := nil // será el último de la cola, así que no apunta a nadie (por ahora).
+
+    SI Prim = nil ENTONCES
+        Prim = p
+    SINO
+        *a.Prox := p // enlazo el nodo que ANTES era el último con el NUEVO
+    FIN SI
+    a :=p // "a" funciona como un puntero al Último (o Actual), es el truco para no tener que recorrer toda la lista cada vez que llega alguien nuevo.
+    LEER(valor)
+FIN MIENTRAS
+
+
+PROCEDIMIENTOS
+1. Encolar
+2. Desencolar
+3. Ver cabecera (ver el frente o primero)
+
+ESTADOS
+1. Cola llena
+2. Cola vacia
+
+
+
+
+
+
+
+Punteros ---> es una variable que referencia una region de memoria, su valor es una dirrecion de memoria
+DEFINICION
+
+P: puntero a nodo // la variable la usamos para ir recorriendo cada uno de los nodos, apuntando a ellos
+Nodo = Registro // cada nodo de la lista es un registro con los datos e info
+    (todos los datos o campos del registro como cualquier archivo común)
+    prox: puntero a nodo
+    // en las listas simples tenemos solo prox
+    // en las dobles tenemos ant tmb que son punteros auxiliares para el recorrido, insersion y eliminacion
+FinRegistro
+
+
+
+
+
+------------------------- LINEALES --------------------------
+La diferencia que se tiene con las particularizadas es que estas pueden acceder a una zona de memoria de forma ALEATORIA, no se tiene el LIFO o FIFO, ya que aca cada nodo tiene la info o enlace al siguiente elemento de la cadena (prox, y ant en caso de lista doble)
+Su clasificacion se basa en base a la cantidad e punteros externos como internos
+
+LISTAS SIMPLEMENETE ENLAZADAS
+Cada elemento contiene UN enlace con el siguiente elemento (el puntero *p.prox)
+Aca tenemos la "Carga ORDENADA" y se suman los procesos de busqueda insersion y eliminacion
+
+
+
+// ---------------------------------------------------------------------------------
+// INSERSION SIMPLE CORREGIDA ---> sacada de la guia de ejercicios de github
+// ---------------------------------------------------------------------------------
+Procedimiento InserciónSimple (VAR prim: puntero a Nodo_Entrada) es
+    a := nil
+    Leer(valor)
+    Nuevo(q)
+    *q.dato := valor
+    p := Prim
+
+    Mientras (p <> nil) y (*p.dato < valor) Hacer
+        a := p
+        p := *p.prox
+    FinMientras
+
+    Si (a = nil) Entonces // caso 1 y 2
+        *q.prox := Prim
+        Prim := q
+    SiNo
+        *q.prox := p // caso 2 y 3
+        *a.prox := q
+    FinSi
+FinProcedimiento
+
+
+
+//
+// INSERSION SIMPLE Circular
+//
+
+Procedimiento InsercionCircular (prim: puntero a nodo) es
+    a  := nil
+    p  := prim
+
+Repetir
+    a  := p
+    p  := *p.prox
+Hasta (p = prim) o (*p.dato >= valor)
+
+Si (p = prim) y (valor < *prim.dato) Entonces
+    // insertar al inicio
+    *q.prox  := prim
+    ult.prox  := q
+    prim  := q
+SiNo
+    *q.prox  := p
+    *a.prox  := q
+
+    Si (a = ult) Entonces
+        ult  := q
+    FinSi
+FinSi
+
+
+
+// ---------------------------------------------------------------------------------
+//INSERSION DOBLE
+// ---------------------------------------------------------------------------------
+Procedimiento InsercionDoble(prim, ult: puntero a Nodo_Entrada) es
+    Nuevo(q)
+    Si (prim = nil) entonces // lista vacia
+        prim := q
+        ult := q
+        *q.prox := nil
+        *q.ant := nil
+    SiNo
+        p := prim
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer // busqueda
+            p := *p.prox
+        FinMientras
+
+        Si (p = prim) entonces // primer elemento
+            prim := q
+            *p.ant := q
+            *q.prox := p
+            *q.ant := nil
+        SiNo
+            Si (p = nil) entonces // ultimo elemento
+                *q.prox  := nil
+                *q.ant  := ult
+                *ult.prox  := q
+                ult  := q
+            SiNo // elemento medio
+                *q.prox  := p
+                *q.ant  := *p.ant
+                *(*p.ant).prox  := q
+                *p.ant  := q
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+
+
+// ---------------------------------------------------------------------------------
+//ELIMINACION DOBLE ---> sacada de pdf de teoria tal y cual
+// ---------------------------------------------------------------------------------
+Procedimiento EliminacionDoble(prim, ult, p: puntero a Nodo_Entrada) es
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        p := prim
+        Mientras (p <> nil) y (*p.dato <> Valor_a_Eliminar) hacer
+            p := *p.prox
+        FinMientras
+
+        Si (prim = ult) entonces // elimina el unico nodo presente
+            prim := nil
+            ult := nil
+        SiNo
+            Si (p = prim) entonces // elima primer nodo
+                prim := *p.prox
+                *prim.ant := nil
+            SiNo
+                Si (p = ult) entonces // elimina ultimo nodo
+                    ult := *p.ant
+                    *ult.prox := nil
+                SiNo
+                    *(*p.ant).prox := *p.prox // elimina nodo del medio
+                    *(*p.prox).ant := *p.ant
+                FinSi
+            FinSi
+            Disponer(p) // muy importante
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+
+//
+// ELIMINACION DE LISTAS SIMPLES PERO CIRCULARES
+//
+    Procedimiento Borrar() ES
+        Mientras *q.prox <> prim y *q.dato <> valor Hacer
+            aux  := q
+            q  := *q.prox
+        Fin Mientras
+
+        Si *q.dato <> valor Entonces
+            // Si *q.dato <> valor, es porque ya llegué al último elemento
+            // de la lista, y este tampoco contiene la clave que busco.
+            ERROR(2)
+        Contrario
+            // En esta condición entro si *q.dato = valor.
+            Si q = *q.prox Entonces
+                // Acá contemplo el caso de tener solo un elemento, que
+                // justo es el que tengo que eliminar.
+                //
+                // Esto sucede porque el elemento enlaza a sí mismo, eso
+                // es lo que implica "q = *q.prox".
+                prim  := NIL
+            Contrario
+                Si q = prim Entonces
+                    // Acá contemplo el caso de estar eliminando el primer elemento
+                    // en una lista con varios elementos.
+                    //
+                    // Lo que hago entonces es buscar el último elemento de la
+                    // lista, con el fin de poder enlazarlo al segundo elemento, que
+                    // va a ser mi nuevo primer elemento, una vez que borre el antiguo.
+                    r  := prim
+
+                    Mientras *r.prox <> prim Hacer
+                        r  := *r.prox
+                    Fin Mientras
+
+                    *r.prox  := *q.prox
+                    prim  := *q.prox
+                Contrario
+                    // Acá contemplo el caso de estar eliminando un elemento intermedio
+                    // o el último elemento, en una lista con varios elementos.
+                    *aux.prox  := *p.prox
+                Fin Si
+            Fin Si
+            Disponer(q)
+        Fin Si
+    Fin Procedimiento
+
+
+
+
+
+
+
+
+
+
+
+
+Procedimiento InserciónCircular (prim: puntero a Nodo_Entrada) es
+    Nuevo(q)
+    *q.dato := valor
+
+    Si (prim = nil) entonces // lista vacia
+        prim := q
+        q^.prox := q
+    SiNo
+        a := nil
+        p := prim
+
+        Mientras (p^.prox <> prim) y (*p.dato < valor) Hacer // busqueda de posicion
+            a := p
+            p := *p.prox
+        FinMientras
+
+        Si (a = nil) entonces // primer elemento
+            prim := q
+            q^.prox := p
+            p^.prox := prim
+        SiNo
+            Si (p^.prox = prim) entonces // ultimo elemento
+                p^.prox := q
+                q^.prox := prim
+            SiNo // elmento intermedio
+                *q.prox := p
+                *a.prox := q
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+
+
+
+
+PROCEDIMIENTO insertar JULICIRCULAR() es
+		W("Ingrese el valor que etcetc")
+		nuevo(q); r(*q.dato)
+
+		SI prim= nil ENT.  //lista vacia
+			prim := q
+			*q.prox := q
+		SINO
+			p :=prim
+			MIENTRAS (*p.prox <> prim) y (*p.dato < *q.dato) HACER
+				ant := p
+				p := *p.prox
+			FM
+
+			SI p = prim ENT  			//primer elemento
+				k= prim
+				MIENTRAS *k.prox <> prim HACER
+					k :=*k.prox
+				FM
+				*k.prox :=q //nuevo primer elemento
+				*q.prox :=p //anterior primer elemento
+				prim :=q
+			SINO
+				SI *p.prox = prim ENTONVES  //ultimo elemento
+					*p.prox :=q
+					*q.prox :=prim
+				SINO
+					*ant.prox :=q       //Medio
+					*q.prox := p
+				FS
+			FS
+		FS
+		w("elemento agregado a la lista")
+
+
+
+Procedimiento InsercionCircular(prim: puntero a nodo) es
+    Nuevo(q)
+    q^.dato := valor
+
+    Si (prim = nil) entonces // lista vacia
+        prim := q
+        q^.prox := q
+    SiNo
+        a := nil
+        p := prim
+        Mientras (p^.prox <> nil) y (p´.)
+
+
+
+
+
+
+
+
+
+
+FINAL ALGORITMOS DE JUNIOR
+
+ACCION MODELO_FINAL ES
+Ambiente
+
+sec: secuencia de caracter
+v: caracter
+
+prim,p,q : puntero a nodo;
+
+nodo: registro
+    Cod_Pak : AN
+    cant_a : N;
+    cant_d : N;
+    cant_tot : N;
+    prox: puntero a nodo;
+Fin_registro;
+
+reg_aux : registro
+    TipoCliente: AN(1);
+    Edad:N(2);
+    CodPak: AN;
+    Preferencia: AN(1);
+fin_registro
+
+acum_nul , acum_edad_nul, acum_premiun, acum_tot: N
+edad: AN;
+aux_sec; caracter;
+Cod_Pak_aux : AN;
+
+
+
+FUNCION Concatenar(AN: AN,caracter : caracter) : AN ES
+
+    AN  := AN + caracter
+
+Fin_funcion
+
+PROCEDIMIENTO INICIAR ES
+acum_nul  := 0; acum_edad_nul  := 0; acum_premiun  := 0; acum_tot := 0; acum_premiun_pref
+ARR(sec); AVZ(sec,v);
+Prim := nil; p := nil;
+
+
+
+Fin_Procedimiento;
+
+
+
+Proceso
+
+INICIAR;
+
+Mientras NFDS(sec) hacer
+    reg_aux.TipoCliente  := v;
+    Si TipoCliente = P hacer;
+        acum_premiun  := acum_premiun + 1;
+    fin_si
+    para i  := 0 hasta 5 hacer
+        AVZ(sec,v);
+    fin_para
+    aux_sec  := v;
+    AVZ(sec,v);
+    edad  := AGE(aux,v);
+    AVZ(sec,v);
+    Cod_Pak_aux  := v;
+    Mientras v <> "-" hacer
+        Cod_Pak_aux  := Concatenar(Cod_Pak_aux,v);
+        AVZ(sec,v);
+    Fin_Mientras
+    reg_aux.Cod_Pak  := Cod_Pak_aux;
+    AVZ(sec,v);
+    reg_aux.Preferencia  := v;
+    Si reg_aux.preferecia <> "n" o " " entonces
+        Si TipoCliente = P hacer;
+            acum_premiun_pref  := acum_premiun_pref+ 1;
+    fin_si;
+    AVZ(sec,v);
+    Si prim = nil entonces
+        Nuevo(Q);
+        *Q.Cod_Pak  := reg_aux.Cod_Pak;
+        Si reg_aux.Preferencia = "a" entonces
+            *Q.cant_a  := 1; *Q.cant_tot  := 1;
+        sino
+            Si reg_aux.Preferencia = "d" entonces
+                *Q.cant_d  := 1; *Q.cant_tot  := 1;
+            sino
+                si reg_aux.Preferencia = "n" entonces
+                    *Q.cant_tot  := 1;
+                Fin_si
+            Fin_si
+        Fin_si
+        Q*.prox  := nil;
+        Prim  := Q
+    Sino
+        P  := prim;
+        Mientras (*P.prox <> nil) y (reg_aux.Cod_Pak <> *P.Cod_Pak) hacer
+            P  := *P.prox;
+        Fin_Mientras
+        Si *P.prox = nil entonces
+            NUEVO(Q);
+            *Q.Cod_Pak  := reg_aux.Cod_Pak;
+                Si reg_aux.Preferencia = "a" entonces
+                    *Q.cant_a  := 1; *Q.cant_tot  := 1;
+                sino
+                    Si reg_aux.Preferencia = "d" entonces
+                        *Q.cant_d  := 1; *Q.cant_tot  := 1;
+                    sino
+                        si reg_aux.Preferencia = "n" entonces
+                        *Q.cant_tot  := 1;
+                        acum_edad_nul  := acum_edad_nul + edad;
+                        acum_nul  := acum_nul + 1
+                    Fin_si
+                Fin_si
+            Q*.prox  := nil;
+            *P.prox  := Q;
+         sino
+            Si reg_aux.Preferencia = "a" entonces
+                *Q.cant_a  := 1; *Q.cant_tot  := 1;
+            sino
+                Si reg_aux.Preferencia = "d" entonces
+                    *Q.cant_d  := 1; *Q.cant_tot  := 1;
+                sino
+                    si reg_aux.Preferencia = "n" entonces
+                        *Q.cant_tot  := 1;
+                        acum_edad_nul  := acum_edad_nul + edad;
+                        acum_nul  := acum_nul + 1
+                Fin_si
+            Fin_si
+        Fin_Si
+    Fin_si
+Fin_Mientras
+
+P  := Prim;
+
+Mientras P <> nil hacer
+    ESC("El código de pak" *P.Cod_Pak "ha recibido" *P.cant_a "de viajes con preferencia alta");
+    ESC("El código de pak" *P.Cod_Pak "ha recibido" *P.cant_d "de viajes con preferencia deseable");
+    Si *P.cant_a > *.cant_d entonces
+        ESC("El CODIGO DE PAK:" *P.Cod_Pak "Ha recibido mayor cantidad de ventas en prioridad alta que deseable");
+    Fin_SI;
+    acum_tot  := *P.cant_tot + acum_tot;
+Fin_Mientras
+
+ESC("El promedio de edad qeu han indicado prioridad nula es" acum_edad_nul / acum_nul);
+ESC("El porcentaje de clientes premium que han registrado preferecia es" acum_premiun DIV acum_premiun_pref * 100);
+
+
+Meintras Prim <> nil hacer
+    P  := Prim;
+    Mientras *P.prox <> nil hacer
+        P  := *P.prox;
+        Disponer(P);
+    Fin_Mientras
+Fin_Mientras
+Disponer (P); DISPONER(Q);DISPONER(PRIM);
+CERRAR(sec);
+Fin_ACCION
+
+
+
+
+
+
+ARBOLES
+
+Ambiente
+    Nodo = Registro
+        dato: entero
+        izq, der: puntero a Nodo // en vez de prox
+    FinNodo
+
+
+Procedimiento InOrden(p: puntero a nodo) es // Procedimiento Recursivo
+    Si (p <> nil) entonces
+        InOrden(p^.izq)
+        // Tratar Raiz //
+        InOrden(p^.der)
+    FinSi
+FinProcedimiento
+
+Procedimiento PreOrden(p: puntero a nodo) es // Procedimiento Recursivo
+    Si (p <> nil) entonces
+        // Tratar Raiz //
+        PreOrden(p^.izq)
+        PreOrden(p^.der)
+    FinSi
+FinProcedimiento
+
+Procedimiento PostOrden(p: puntero a nodo) es // Procedimiento Recursivo
+    Si (p <> nil) entonces
+        PostOrden(p^.izq)
+        PostOrden(p^.der)
+        // Tratar Raiz //
+    FinSi
+FinProcedimiento
+
+
+
+
+
+
+
+
+
+Accion FinalAbril es
+    Ambiente
+        preferencia: secuencia de caracteres
+        c: caracter
+
+        Nodo = Registro // lista nueva que creo
+            codPack: AN(50)
+            prefA: N(3)
+            prefB: N(3)
+            prox: puntero a Nodo
+        FinRegistro
+
+        prim, p, q: puntero a Nodo
+
+        bandera: bool
+        cont_premium: entero
+        premium_y_preferencia: entero
+        resguardo_edad: entero
+        edad_nula: entero
+        cont_cliente_edad: entero
+        caracter1: caracter
+        caracter2: caracter
+        aux_codPack: alfanumerico
+
+    Proceso
+        cont_premium := 0
+        premium_y_preferencia := 0
+        resguardo_edad := 0
+        edad_nula := 0
+        cont_cliente_edad := 0
+        caracter1 := nil
+        caracter2 := nil
+        prim := nil
+
+        Arrancar(preferencia)
+
+        Mientras NFDS(preferencia) hacer
+            Mientras (v) <> "/" hacer
+                aux_codPack  := ""
+                Avanzar(preferencia, c)
+
+                Si (v) = "P" entonces // proceso si es Premium o Básico
+                    bandera := true
+                    cont_premium := cont_premium + 1
+                FinSi
+
+                Avanzar(preferencia, c) // avanzo al siguiente
+
+                Para i := 1 a 5 hacer // me salteo todo el nombre
+                    Avanzar(preferencia, c)
+                FinPara
+
+                Avanzar(preferencia, c) // avanzo al primer numero de la edad y lo guardo
+                caracter1 := v
+                Avanzar(preferencia, c) // lo mismo con el segundo
+                caracter2 := v
+                resgurado_edad := AGE(caracter1, caracter2) // hago un resguardo de la edad como entero convertido por la funcion age
+
+                Avanzar(preferencia, c) // avanzo al codpak, tengo que ir cargandolo en la lista
+                Mientras (v) <> "-" hacer
+                    aux_codPack := aux_codPack + (v) // voy cosechando el codigo caracter a caracter, hago una especie de concatenacion
+                    Avanzar(preferencia, c)
+                FinMientras
+
+                Avanzar(preferencia, c) // avanzo a la preferencia
+
+                p := prim // recorro y lo busco en la lista
+                Si (p <> nil) y (p^.codPack = aux_codPack) entonces
+                    Segun (v) hacer // si ya lo tengo simplemente actualizo los totalizadores
+                        ="A": p^.prefA := ^.prefA + 1
+                        ="D": p^.prefD := ^.prefD + 1
+                    FinSegun
+                SiNo
+                    Nuevo(q) // sino lo creo y añado a la lista
+                    q^.codPack := aux_codPack // ahi recien grabo el codigo entero ya como un string
+                    q^.prox := prim
+                    prim := q
+                    Segun (v) hacer // y actualizo el totalizador correspondiente
+                        ="A": p^.prefA := ^.prefA + 1
+                        ="D": p^.prefD := ^.prefD + 1
+                    FinSegun
+                FinSi
+
+                Si (bandera = true) y ((v) <> "N") entonces // premium y dejo preferencia
+                    premium_y_preferencia := premium_y_preferencia + 1
+                SiNo
+                    edad_nula := edad_nula + resguardo_edad // edad que no dejo preferencia
+                    cont_cliente_edad := cont_cliente_edad + 1
+                FinSi
+
+                Avanzar(preferencia, c)
+            FinMientras
+        FinMientras
+
+        // consigna 1
+        p := prim
+        Mientras (p <> nil) hacer
+            Escribir("--- INFORME ---")
+            Escribir("Codigo de pack: ", p^.codPack)
+            Escribir("Cantidad de preferencias registradas: ")
+            Escribir("ALTA: ", p^.prefA)
+            Escribir("DESEABLE: ", p^.prefB)
+            p := p^.prox
+        FinMientras
+
+        // consigna b
+        Escribir("--- PROMEDIO EDAD ---")
+        Escribir("El promedio de edad de los clientes que han indicado preferencias del tipo nula es de: ", (edad_nula / cont_cliente_edad), " años")
+
+        // consigna c
+        Escribir("--- INFORMACION ---")
+        p := prim
+        Mientras (p <> nil) y (p^.prefA > p^.prefB) hacer
+            Escribir("El pack: ", p^.codPack, "es de preferencia mas alta que deseable")
+            p := p^.prox
+        FinMientras
+
+        // cosigna d
+        Escribir("--- PORCENTAJE PREMIUM---")
+        Escribir("El porcentaje de clientes premium que han registrado preferencias es de: ", premium_y_preferencia/cont_premium * 100)
+
+    FinProceso
+
+FinAccion
+
+
+
+
+Accion Final2026 es
+    Ambiente
+
+        Secuencia: secuencia de caracter
+        c: caracter
+
+        Nodo = Registro // lista simple a crear
+                dato igual a registro
+                    ID: N(6)
+                    Firma: AF(7)
+                    riticidad: (1..9)
+                    Carga_Datos: AF(999)
+                fr
+            prox: puntero a Nodo
+        FinRegistro
+        prim, p, q, ant: puntero a Nodo
+
+        Funcion ACSII(c: caracter): alfanumerico // funcion pre-definida
+        ...
+        FinFuncion
+
+        Funcion Entero(c: caracter): entero // para operar
+            Segun (c) hacer
+                ="0": 0
+                ="1": 1
+                ="2": 2
+                ="3": 3
+                ="4": 4
+                ="5": 5
+                ="6": 6
+                ="7": 7
+                ="8": 8
+                ="9": 9
+            FinSegun
+        FinFuncion
+
+        vocales = {a, e, i, o, u}
+        consonante = {b, c, d, f, g, h, j, k, l, m, n, ñ, p, q, r, s, t, v, w, x, y, z}
+        numeros = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+    Proceso
+
+        contador_validos  := 0 // contadores de consigna b
+        contador_errores  := 0
+        prim := nil // inicializo lista
+
+        Arrancar(Secuencia)
+
+        Mientras NFDS(Secuencia) hacer // hasta q termine la secuencia
+
+            resguardo_identificador  := "" // limpio los resguardos
+            resguardo_firma := ""
+            resguardo_criticidad := ""
+            resguardo_menos  := ""
+            resguardo_mas  := ""
+
+            Avanzar(Secuencia, c)
+
+            Para i := 1 a 5 hacer // recorro y resguardo el ID
+                resguardo_identificador := resguardo_identificador ++ (c)
+                Avanzar(Secuencia, c)
+            FinPara
+            Avanzar(Secuencia, c)
+
+            Para i := 1 a 6 hacer // recorro y guardo la firma
+                resguardo_firma := resguardo_firma ++ (c)
+                Avanzar(Secuencia, c)
+            FinPara
+            Avanzar(Secuencia, c)
+
+            resguardo_criticidad := (c) // resguardo el nivel de criticidad
+            Avanzar(Secuencia, c)
+
+            Mientras (c) <> ("+") y (c) <> ("-") hacer // recorro, transformo y resguardo los datos textuales importantes
+
+                // ES VOCAL
+                Si (c) existe en (vocales) entonces
+
+                    resguardo_menos := resguardo_menos ++ (c) // si termina en "-" vocales se mantienen igual
+
+                    Segun (c) hacer // si termina en "+" vocales se cambian por la ubicada 2 posicion antes en el conjunto [a,e,i,o,u], se interpreta como circular
+                        =a: resguardo_mas := resguardo_mas ++ "o"
+                        =e: resguardo_mas := resguardo_mas ++ "u"
+                        =i: resguardo_mas := resguardo_mas ++ "a"
+                        =o: resguardo_mas := resguardo_mas ++ "e"
+                        =u: resguardo_mas := resguardo_mas ++ "i"
+                    FinSegun
+                    contador_validos  := contador_validos + 1
+
+                SiNo
+
+                    // ES CONSONANTE
+                    Si (c) existe(consonantes) entonces
+                        resguardo_menos := resguardo_menos ++ (c) // si termina en "-" consonantes se mantienen igual
+                        resguardo_mas := resguardo_mas ++ ASCII(c) // si termina en "+" la consonante se cambia por el valor que devuelve la funcion ASCII
+                        contador_validos  := contador_validos + 1
+                    SiNo
+
+                        // ES NUMERO
+                        Si ( Entero(c) ) existe en (numeros) entonces // ES NUMERICO
+                            resguardo_mas := resguardo_mas ++ (c) // caracteres numericos se mantienen igual
+
+                            Si ( Entero(c) ) mod 2 = 0 // es par, lo cambio su doble
+                                resguardo_menos := resguardo_menos ++ Caracter ( ( (Entero (c) ) * 2) )
+                            SiNo // es impar lo cambio por valor al cubo
+                                resguardo_menos := resguardo_menos ++ ( (Entero (c) ) ** 3)
+                            FinSi
+                            contador_validos  := contador_validos + 1
+
+                        SiNo
+
+                            // ES UN CARACTER ERROR
+                            resguardo_menos := resguardo_menos ++ ("!") // en ambos se registra como carracter de error que es el simbolo "!"
+                            resguardo_mas := resguardo_mas ++ ("!")
+                            contador_errores  := contador_errores + 1
+                        FinSi
+
+                    FinSi
+
+                FinSi
+
+                Avanzar(Secuencia, c)
+            FinMientras
+
+            Si (c) = "+" entonces // uso resguardo_mas
+                Nuevo(q)
+                q^.ID := resguardo_identificador
+                q^.Firma := resguardo_firma
+                q^.Criticidad := resguardo_criticidad
+                q^.Carga_Datos := resguardo_mas
+
+            SiNo // uso resguardo_menos
+
+                Nuevo(q)
+                q^.ID := resguardo_identificador
+                q^.Firma := resguardo_firma
+                q^.Criticidad := resguardo_criticidad
+                q^.Carga_Datos  := resguardo_menos
+            FinSi
+
+            // CARGA ORDENADA DE LA LISTA
+            ant := prim
+            p := prim
+
+            Mientras (p <> nil) y ((p^.Criticidad > resguardo_criticidad) o ((p^.Criticidad = resguardo_criticidad) y (p^.ID > resguardo_identificador))) hacer
+                ant  := p
+                p  := p^.prox
+            FinMientras
+
+            Si (a = nil) entonces
+                a.prox := prim
+                prim := q
+            SiNo
+                ant.prox := q
+                q.prox := p
+            FinSi
+
+            Avanzar(Secuencia, c)
+        FinMientras
+
+FinAccion
+
+
+
+
+
+
+
+// archivo secuencial
+
+Accion Ejercicio2 es
+    Ambiente
+        Reg = Registro
+            ID: N(6)
+            p_Acceso: (1..4)
+            Prioridad: (1..6)
+            Estado: ("EXITOSO", "FALLIDO")
+        FinRegistro
+
+        Arch: archivo de Reg secuencial
+
+        Estadistico: Arreglo [1..5, 1..7] de entero
+
+        menor: entero
+        mayor: entero
+
+    Proceso
+        Abrir E/(Arch)
+
+        cont_exitoso:= 0
+        cont_fallido:= 0
+
+        Para i:= 1 a 5 hacer
+            Para j:= 1 a 7 hacer
+                Estadistico[i,j]:= 0
+            FinPara
+        FinPara
+
+        Leer(Arch, Reg)
+        Mientras NFDA(Arch) hacer
+            cont_total := cont_total + 1
+
+            Si (Reg.Estado) = "EXITOSO" entonces // cont de exitosos para el punto E
+                cont_exitoso:= cont_exitoso + 1
+            FinSi
+
+            // Sumamos a la celda específica (Cruce de Punto de Acceso y Prioridad)
+            Estadistico[Reg.p_Acceso, Reg.Prioridad] := Estadistico[Reg.p_Acceso, Reg.Prioridad] + 1
+
+            // TOTAL DE FILA: Acumulamos en la columna 7 (Total por Punto de Acceso)
+            Estadistico[Reg.p_Acceso, 7] := Estadistico[Reg.p_Acceso, 7] + 1
+
+            // TOTAL DE COLUMNA: Acumulamos en la fila 5 (Total por Prioridad)
+            Estadistico[5, Reg.Prioridad] := Estadistico[5, Reg.Prioridad] + 1
+
+            // TOTAL GENERAL: Acumulamos en la esquina [5, 7]
+            Estadistico[5, 7] := Estadistico[5, 7] + 1
+
+            Leer(Arch, Reg)
+        FinMientras
+
+
+        // Consigna B
+        menor := Estadistico[1, 1]
+        punto_acc_min := 1
+        prioridad_min := 1
+
+        Para i := 1 hasta 4 hacer
+            Para j := 1 hasta 6 hacer
+                Si Estadistico[i, j] < menor entonces
+                    menor := Estadistico[i, j]
+                    punto_acc_min := i
+                    prioridad_min := j
+                FinSi
+            FinPara
+        FinPara
+
+        Escribir("Menor volumen: Punto ", punto_min, " y Prioridad ", prioridad_min)
+
+
+        // Consigna C
+        mayor_trafico := Estadistico[5, 1]
+        prioridad_max := 1
+
+        Para j := 2 hasta 6 hacer
+            Si Estadistico[5, j] > mayor_trafico entonces
+                mayor_trafico := Estadistico[5, j]
+                prioridad_max := j
+            FinSi
+        FinPara
+
+        Escribir("La prioridad con mayor demanda es la: ", prioridad_max)
+
+FinAccion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+// MAXIMO Y MINIM4567890'09i8fghyujikolfghj
+//
+
+		Para i:= 2 a 100, 1 hacer
+			Si num[i] > max entonces
+				max:= num[i]
+				posmax:= [i]
+			Sino
+				Si num[i] < min entonces
+					min:= num[i]
+					posmin:= [i]
+				FinSi
+			FinSi
+		FinPara
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Algoritmo Final ES
+Ambiente
+
+critcar: caracter;
+critdigito,critdigitt:N
+res_ID: N;
+res_firma: AN;
+datos_textuales_an: AN;
+res_num: N;
+res_dec,res_uni: N;
+
+
+aux: secuencia de caracter;
+aux_car: caracter;
+
+prim, P, Q : puntero a nodo;
+bandera : logico;
+
+nodo : registro
+    firma: AN (7);
+    ID: AN(7);
+    criticidad:(1);
+    datos_textuales:AN;
+    tot_car:N
+    cant_error:N;
+    prox: puntro a trata
+fin_registro
+
+
+procedimiento ListaVacia es
+    prim := Q;
+    *q.prox := nil;
+fin_procedimiento
+
+procedimiento UNSOLOELEMENTO es
+    *prim.prox := Q;
+    *Q.prox := nil;
+fin_procedimiento
+
+procedimiento INSERCIÓN_AL_FIAL es
+    *P.prox := Q;
+    *Q.prox := nil;
+
+procedimiento INSERCION_AL_MEDIO es
+    *Q.prox := *P.prox;
+    *P.prox := Q;
+fin_procedimiento
+
+sec: secuencia de caracter;
+v: caracter;
+
+
+función pasonum (caracter: caracter): numérico
+    segun caracter hacer
+        "0"  : pasonum := 0;
+        "1"  : pasonum := 1;
+        "2"  : pasonum := 2;
+        "3"  : pasonum := 3;
+        "4"  : pasonum := 4;
+        "5"  : pasonum := 5;
+        "6"  : pasonum := 6;
+        "7"  : pasonum := 7;
+        "8"  : pasonum := 8;
+        "9"  : pasonum := 9;
+    fin_segun
+fin_funcion
+
+funcion pascar (numero:numerico): caracter
+    segun numero hacer
+        0  : pasonum := "0";
+        1  : pasonum := "1";
+        2  : pasonum := "2";
+        3  : pasonum := "3";
+        4  : pasonum := "4";
+        5  : pasonum := "5";
+        6  : pasonum := "6";
+        7  : pasonum := "7";
+        8  : pasonum := "8";
+        9  : pasonum := "9";
+    fin_segun
+fin_funcion
+
+
+
+funcion concatenar(var:AN,caracter:caracter):AN;
+    AN := AN ++ caracter;
+fin_funcion
+
+procedimiento inciciar es
+ARR(sec);AVZ(sec,v);
+prim := nil; P := prim
+CREAR_SEC(aux);
+fin_procedimiento
+
+PROCESO
+    INICIAR;
+    Mientras NFDS sec hacer
+    NUEVO(Q);
+    res_ID := ""
+    para i := 6 hasta 1 hacer
+        res_ID := res_ID pasonum(v) * 10 ** i-1 ;
+        AVZ(sec,v);
+    fin_para
+    res_firma := "";
+    para i := 1 hasta 7 hacer
+        res_firma := concatenar(res_firma,v);
+        AVZ(sec,v)
+    fin_para
+    critcar := v;
+    critdigito := pasonum(v);
+    AVZ(sec,v);
+    datos_textuales := "";
+        AVZ(sec,v);
+    Mientras v <> "+" o "-" hacer
+        aux_car := v;
+        ESCRIBIR(aux,aux_car);
+        AVZ(sec,v);
+    fin_mientras
+    CERRAR(aux);
+    ARR(aux); AVZ(aux,aux_car);
+    *Q.tot_car := 0;
+    *Q.cant_error := 0;
+    Si v = "+" entonces
+        Mientras NFDS aux hacer
+            *Q.tot_car := tot_car + 1;
+            Si aux_car <> ["0".."9"] y aux_car = ["a".."z"] entonces
+                segun aux_car hacer
+                    "a" : aux_car := "o";datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                    "e" : aux_car := "u";datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                    "i" : aux_car := "a";datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                    "o" : aux_car := "e";datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                    "u" : aux_car := "i";datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                    otro caso
+                        aux_car := ASCII(aux_car);datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                fin_segun
+            sino
+                Si aux_car = ["0".."9"] entonces
+                    datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                sino
+                *Q.cant_error := *Q.cant_error + 1;
+            AVZ(sec,aux_car);
+        fin_mientras;
+        CERRAR(aux);
+        CREAR_SEC(aux);
+    sino
+        Mientras NFDS aux hacer
+            *Q.tot_car := tot_car + 1;
+            Si aux_car <> ["a".."z"] y aux_car = ["0".."0"] entonces
+                res_num := pasonum(aux_car);
+                Si res_num MOD 2 <> 0 entonces
+                    res_num := res_num ** 3;
+                sino
+                    res_num := res_num * 2;
+                fin_si
+                si res_num >= 10 entonces
+                    res_dec := res_num DIV 10;
+                    res_uni := res_num - res_dec
+                    res_dec := pascar(res_dec);
+                    res_uni := pascar(res_uni);
+                    datos_textuales_an := concatenar(datos_textuales_an,res_dec);
+                    datos_textuales_an := concatenar(datos_textuales_an,res_uni);
+                fin_si
+            sino
+                Si aux_car = ["a".."z"] entonces
+                    datos_textuales_an := concatenar(datos_textuales_an,aux_car);
+                sino
+                *Q.cant_error := *Q.cant_error + 1;
+            AVZ(sec,aux_car);
+        fin_mientras;
+        CERRAR(aux);
+        CREAR_SEC(aux);
+    fin_si
+    *Q.ID := res_ID;
+    *Q.critdigito := pasonum(critcar);
+    *Q.datos_textuales := datos_textuales_an;
+    P := prim;
+    Si prim = nil entonces
+    ListaVacia;
+    sino
+    Mientras (P.prox <> nil) y *Q.criticidad < *P.criticidad hacer
+        P := *P.prox;
+    fin_mientras
+    Mientras *Q.ID < *P.ID hacer
+        P := *P.prox;
+    fin_mientras
+    si p = prim entonces
+    UNSOLOELEMENTO;
+    sino
+    Si *P.prox = nil entonces
+    INSERCIÓN_AL_FIAL;
+    sino
+    INSERCION_AL_MEDIO;
+fin_mientras
+
+P := prim;
+Mientras P <> nil hacer
+    ESC("El elemento",*P.ID "con nivel de criticidad" *P.criticidad "contiene los datos textuales" *P.datos_textuales "Ha contado con un prcentaje de error del:" *P.cant_error // *P.tot_car ** 100 "%");
+fin_mientras
+
+fin_accion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ACCION FINAL PARTE 2 ES
+Ambiente
+
+resi,resj,res:N
+
+reg_arch = registro
+    ID_TERMINAL: N(6);
+    Punto_Acceso : N(1..4);
+    Prioridad : N(1..6);
+    Estado: ("EXITOSO", "FALLIDO");
+fin_registro
+
+arch_mae: archivo de reg_arch
+
+matriz: arreglo de [1..5,1..7] de entero;
+
+tot_fallado: N
+prcoeso
+
+ABRIR E/ (arch_mae);
+
+para i := 0 hasta 4 hacer
+    para j := 0 hasta 6 hacer
+        matriz[i,j] := 0;
+    fin_para;
+fin_para;
+
+tot_fallado := 0;
+
+LEER(arch_mae,reg_arch);
+
+Mientras NFDA arch_mae hacer
+    Si reg_arch.Estado = "FALLIDO" entonces
+        tot_fallado := := tot_fallado + 1
+    fin_si
+    A[reg_arch.Punto_Acceso, reg_arch.Prioridad] := A[reg_arch.Punto_Acceso,reg_arch.Prioridad] + 1;
+    // o sino asi :3 SI HAGO EL ARREGLO DE 1..5 y no 0..4
+    A[reg_arch.Punto_Acceso + 1, reg_arch.Prioridad + 1] := A[reg_arch.Punto_Acceso + 1,reg_arch.Prioridad + 1] + 1;
+    LEER(arch_mae,reg_arch);
+fin_mientras
+
+para j := 1 hasta 6 hacer // fila total extra
+    para i := 1 hasta 4 hacer
+        A[0,i] := A[j] + A[i,j];
+    fin_para
+fin_para
+
+para j := 1 hasta 4 hacer // columna total extra
+    para i := 1 hasta 6 hacer
+        A[i,0] := A[i] + A[i,j];
+    fin_para
+fin_para
+
+para i := 1 hasa 4 hacer // total general de la esquina
+    A[0,0] := A[0,0] + A[i,0]
+fin_para
+
+para j := 1 hasa 6 hacer
+    A[0,0] := A[0,0] + A[0,j]
+fin_para
+
+resi := 1;
+resj:= 1;
+res := A[1,1];
+
+// resguardo para el mayor por 2 criterios
+para i := 1 hasta 4 hacer
+    para j := 1 hasta 6 hacer
+    si res > A[i,j] entonces
+        res := A[i,j];
+        resi := i;
+        resj:= j;
+    fin_si
+    fin_para
+fin_para
+
+ESC("El menor fue la combiación Punto_Acceso:" resi "prioridad" resj "con u total de " res "solicitudes" );
+
+res := A[0,1];
+
+// resguardo para prioridad independiente del tipo
+para j := 1 hasta 6 hacer
+    si A[0,j] > res entonces // algoritmo de busqueda teorico de mayor o menor
+        res := A[0,j];
+        resj := j;
+    fin_si
+fin_para
+
+ESC("el nivel de prioridad que más trafico registró fue" resj "con un total de" res "consultas");
+
+ESC("El porcentaje de consultas exitosas fue de" A[0,0] DIV A[0,0]+tot_fallado * 100);
+Fin_accion
+
+
+
+
+
+
+
+
+
+
+
+Accion Final_Abril_Ejercio2 es // CONTROL DE SANIDAD - BROMATOLOGIA DE LA MUNINCIPALIDAD
+
+    Ambiente
+
+        Reg = Registro
+            Mes_de_Visita: N(2)
+            NroEmp: N(6)
+            RazSoc: AN(15)
+            Categoria: 1..3
+            Habilitado: ("SI", "NO")
+            Capacidad: N(3)
+        FinRegistro
+
+        Control: Archivo de Reg ordenado por Mes_de_Visita y NroEmp
+
+        Estadistico: Arreglo[1..13, 1..4] de entero
+
+    Proceso
+        Abrir E/(Control)
+
+        Para i:= 1 a 13, 1 hacer // incilaizo
+            Para j:= 1 a 4, 1 hacer
+                Estadistico[i,j]:= 0
+            FinPara
+        FinPara
+
+        Leer(Control, Reg)
+        Mientras NFDA(Control) hacer
+
+            SI (Reg.Habilitado) = "SI" entonces
+                Estadistico[Reg.Mes_de_Visita, Reg.Categoria]:= Estadistico[Reg.Mes_de_Visita, Reg.Categoria] + 1 // consigna a + estadistico
+
+                Estadistico[13, Reg.Categoria]:= Estadistico[13, Reg.Categoria] + 1 // totales por mes
+
+                Estadistico[Reg.Mes_de_Visita, 4]:= Estadistico[Reg.Mes_de_Visita, 4] + 1 // totales por categorias
+
+                Estadistico[13, 4]:= Estadistico[13, 4] + 1 // total general
+
+            SiNo // sino no esta habilitando
+
+                cont_no_habilitados:= cont_no_habilitados + 1 // cuento como no habilitados para la consinga d
+                Si (Reg.Capacidad) < 100 entonces // consigna b - si o si, da igual si esta habilitado o no, por eso va a parte como otro condicional
+                    cont_capacidad:= cont_capacidad + 1
+                FinSi
+            FinSi
+            total:= total + 1
+            Leer(Control, Reg)
+        FinMientras
+
+        menor_mes:= HV // high value
+        menor_categoria:= HV
+
+        posicion_menor_mes:= 0
+        posicion_menor_categoria:= 0
+
+        Para i:= 1 a 12, 1 hacer
+            Escribir("La cantidad de restaurantes habilitados para el mes numero: ", i, " es: ", Estadistico[i, 4]) // informo la primer parte de la consigna a
+            Si menor_mes > Estadistico[i, 4] entonces
+                menor_mes:= Estadistico[i, 4]
+                posicion_menor_mes:= i
+            FinSi
+        FinPara
+
+        Para j:= 1 a 3, 1 hacer
+            Escribir("La cantidad de restaurantes habilitados para la categoria: ", j, " es: ", Estadistico[13, j]) // informo la segunda parte de la consigna a
+            Si menor_categoria > Estadistico[13, j] entonces // busco el menor de las
+                menor_categoria:= Estadistico[13, j]
+            posicion_menor_categoria:= j
+            FinSi
+        FinPara
+
+        Escribir("Fin del listado")
+
+FinAccion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Una empresa de energía eléctrica registra las mediciones mensuales de consumo de sus clientes.
+Se dispone de un archivo secuencial ordenado por:
+Zona (1..5) , Número_Cliente (N(5))
+
+Cada registro contiene:
+Zona (1..5)
+Número_Cliente (N(5))
+Tipo_Cliente ("R" Residencial / "C" Comercial)
+Consumo_kwh (N(6))
+Pagó ("S" / "N")
+
+Se pide desarrollar un algoritmo que:
+Informe el consumo total por zona.
+Informe el consumo total por tipo de cliente (R / C).
+Determine qué zona tuvo mayor consumo total.
+Calcule el porcentaje de clientes que NO pagaron sobre el total de clientes.
+Informe el número de cliente con mayor consumo.
+
+⚠ Considerar corte de control por Zona.
+
+
+Accion CorteControl es
+    Ambiente
+        Sechep = Registro
+            Zona: (1..5)
+            Número_Cliente: N(5)
+            Tipo_Cliente: ("R", "C")
+            Consumo_kwh: N(6)
+            Pagó: ("S", "N")
+        FinRegistro
+
+        Sec: Archivo de Sechep secuencial ordenado por Zona y Numero_Cliente
+        Reg: Registro de Sechep
+
+        Procedimiento Corte_Zona es
+            Escribir("Para la Zona: ", Res_Zona " hay un total de: ", Tot_Zona)
+            // acumulo al totalizador pero como es un corte no hago nada
+            Tot_Zona:= 0 // inicializo totalizador
+            Res_Zona:= Reg.Zona // actualizo resguardo de la zona
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(Sec)
+        Leer(Sec, Reg)
+        Mientras NFDA(Sec) hacer
+            Si
+
+            Leer(Sec, Reg)
+        FinMientras
+FinAccion
+
+
+
+
+Funcion Escape(c: entero): entero es
+    c:= Random()
+
+    Si c = 3 entonces
+        Escape :=  7
+    SiNo
+        Si c = 1 entonces
+            Escape := 3 + Escape()
+        SiNo
+            Si c = 2 entonces
+                Escape := 5 + Escape()
+            FinSi
+        FinSi
+    FinSi
+FinFuncion
+
+
+Accion Ejercicio1 es
+    Ambiente
+        Cliente = Registro
+            Codigo: N(6)
+            Precio: N(8, 2)
+            Descripcion: AF(255)
+        FinRegistro
+
+        NodoCliente = Registro
+            N_Carrito: N(3)
+            Cant_Articulos: N(3)
+            F_Pago: ["E", "TD", "TC"]
+            prox: puntero a NodoCliente
+        FinRegistro
+        prim, p, ant, puntero a NodoCliente
+
+        Funcion ObtenerSIguienteArticulo(n: entero): entero es
+        FinFuncion
+
+        Procedimiento AtenderCliente es
+            Si prim = nil entonces
+                Escribir("Error, cola vacia :p")
+            SiNo
+                p:= prim
+                // proceso los datos
+
+                prim := prim^.prox
+
+                Si prim = nil entonces
+                    ant := nil // Si la cola quedó vacía, el puntero del final también va a nil
+                FinSi
+                Disponer(p)
+            FinSi
+        FinProcedimiento
+
+        Procedimiento AgregarCliente es
+            Nuevo(q) // carga encolada
+            Escribir("Ingrese Numero de Carrito")
+            Leer(q^.N_Carrito)
+            Escribir("Ingrese cantidad de articulos")
+            Leer(q^.Cant_Articulos)
+            Escribir("Ingrese Forma de Pago")
+            Leer(q^.F_Pago)
+
+            q^.prox:= nil
+
+            Si prim = nil entonces
+                prim := q
+            Sino
+                ant^.prox:= q
+            FinSi
+            ant:= q
+        FinProcedimiento
+
+    Proceso
+        tot_efectivo:= 0
+        tot_TD:= 0
+        tot_TC:= 0
+        Abrir E/ (Arch)
+        prim:= nil
+
+        Escribir("Ingrese la opcion a realizar")
+        Escribir("1- Agregar cliente a la cola    2- Atender cliente        3- Salir")
+        Leer(opcion)
+        Mientras (opcion) <> 0 hacer
+            Segun (opcion) hacer
+                = 1: AgregarCliente
+                = 2: AtenderCliente
+            FinSegun
+            Escribir("Ingrese la opcion a realizar")
+            Escribir("1- Agregar cliente a la cola    2- Atender cliente        3- Salir")
+            Leer(opcion)
+        FinMientras
+
+
+
+
+
+
+Accion Ejercicio1 es
+    Ambiente
+
+    Proceso
+        Arrancar(Sec)
+        Avanzar(Sec, c)
+
+        Mientras NFDS(Sec) hacer
+            cont_persona:= cont_persona + 1
+            Mientras (c) <> "$" hacer // cada $ simboliza una cuenta, o sea una persona
+                Mientras (c) <> "&" hacer // cada & simboliza un mensaje
+                    Si (c) = "<" entonces
+                        cont_mensaje_ilicito:= cont_mensaje_ilicito + 1
+                        Mientras (c) <> ">" hacer
+                            frase_ilicita:= frase_ilicita ++ (c)
+                            Avanzar(Sec, c)
+                        FinMientras
+                    FinSi
+                    Avanzar(Sec, c)
+                FinMientras
+                cont_mensaje:= cont_mensaje + 1
+            FinMientras
+        FinMientras
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Accion RepasoEstadistico es
+
+Arr1: Arreglo [1..12, 1..13, 1..5] de entero
+
+Para i:=
+
+
+
+
+
+// Datos de manera DESORDENADA en un ARCHIVO SECUENCIAL ---> proceso estadistico
+
+Accion Ejercicio2 es
+    Ambiente
+        Satelite = Registro
+            ID: N(6)
+            p_Acceso: [1,2,3,4]
+            Priori: (1..6)
+            Estado: ("Exitoso", "Fallido")
+        FinRegistro
+
+        ArchSatelite: Archivo de Satelite secuencial no-ordenado
+        Reg: Registro de Satelite
+
+        ArrSatelite: Arreglo de (1..7, 1..5) de entero
+
+    Proceso
+        Abrir E/ (ArchSatelite)
+        Leer(ArchSatelite, Reg)
+        Para i:= 1 a 5 hacer
+            Para j:= 1 a 7 hacer
+                ArrSatelite:= 0
+            FinPara
+        FinPara
+
+        Mientras NFDA(ArchSatelite) hacer
+            ArrSatelite[Reg.Priori, Reg.p_Acceso] := ArrSatelite[Reg.Priori, Reg.p_Acceso] + 1
+
+            ArrSatelite[Reg.Priori, 5] := ArrSatelite[Reg.Priori, 5] + 1 // Total de la FILA (Prioridad)
+            ArrSatelite[7, Reg.p_Acceso] := ArrSatelite[7, Reg.p_Acceso] + 1 // Total de la COLUMNA (Punto Acceso)
+            ArrSatelite[7, 5] := ArrSatelite[7, 5] + 1 // Gran Total
+
+            Si (Reg.Estado) = "Exitoso" entonces // consigna e
+                cont_exitosos:= cont_exitosos + 1
+            FinSi
+            Leer(ArchSatelite, Reg)
+        FinMientras
+
+
+        resguardo_menor:= HV
+        pos_menor:= (0,0)
+
+        Para i := 1 a 6 hacer        // Solo filas de datos
+            Para j := 1 a 4 hacer    // Solo columnas de datos
+                Si ArrSatelite[i, j] < resguardo_menor entonces
+                    resguardo_menor := ArrSatelite[i, j]
+                    pos_menor_priori := i
+                    pos_menor_punto := j
+                FinSi
+            FinPara
+        FinPara
+
+
+        resguardo_mayor:= 0
+        pos_mayor:= (0,0)
+
+        Para i := 1 a 6 hacer // Miramos las filas de prioridades
+            Si ArrSatelite[i, 5] > resguardo_mayor entonces
+                resguardo_mayor := ArrSatelite[i, 5]
+                prioridad_ganadora := i
+            FinSi
+        FinPara
+
+
+        // PUNTO D: Volumen por Punto de Acceso
+        Para j := 1 a 4 hacer
+            Escribir ("Punto de Acceso ", j, ": ", ArrSatelite[7, j])
+        FinPara
+
+
+        // PUNTO E: Porcentaje de Exitosos
+        // Usamos el Gran Total que ya tenemos en ArrSatelite[7, 5]
+        Si ArrSatelite[7, 5] > 0 entonces
+            Porcentaje := (cont_exitosos / ArrSatelite[7, 5]) * 100
+            Escribir ("El porcentaje de éxito es: ", Porcentaje, "%")
+        FinSi
+
+
+
+
+// LISTA NUMERO UNO ---> LISTA ANUAL SIN ORDEN
+p:= prim
+a:= nil
+
+// busco si el cliente existe ya como nodo para solamente actualizarlo o ver para crearlo como nuevo
+Mientras (p <> nil) y (p^.cliente <> Reg.Cliente) hacer
+    a:= p
+    p:= p^.prox
+FinMientras
+
+Si (p <> nil) entonces // el cliente existe, entonces lo actualizo
+    p^.total_operado:= p^.total_operado + convertir_a_peso(Reg.Importe, Reg.Moneda)
+    p^.cant_op:= p^.cant_op + 1
+SiNo
+    Nuevo(q) // el cliente no existe, inserto nuevo nodo sin necesidad de orden
+    q^.total_operado:= q^.total_operado + convertir_a_peso(Reg.Importe, Reg.Moneda)
+    q^.cant_op:= 1
+
+    q^.prox:= prim
+    prim:= q
+FinSi
+
+
+
+// RECORRO LA LISTA Y CALCULO AHORA LOS IAF
+p:= prim
+a:= nil
+Mientras (p <> nil) hacer
+    p^.IAF:= (p^.total_operado * p^.cant_op)
+    p:= p^.prox
+FinMientras
+
+
+
+// LISTA NUMERO DOS ---> LISTA ORDENADA TIPO RANKING
+prim2:= nil
+a2:= nil
+
+Nuevo(q2)
+q2^.total_operado:
+q2^.cant_operado
+q2^.
+q2^.
+Mientras (p2 <> nil) y ( (p2^.iaf > q2^.iaf) o ( (p2^.iaf = q2^.iaf) y (p2^.cant_op >= q2^.cant_op) ) ) hacer
+    a2 := p2
+    p2 := p2^.prox
+FinMientras
+
+Si (a2 = nil) entonces
+    q2^.prox:= prim2
+    prim2:= q2
+SiNo
+    a2^.prox:= q2
+    q2^.prox:= p2
+FinSi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+p := prim;
+a := nil;
+
+// Busco si el cliente ya existe
+Mientras (p <> nil) y (p^.cliente <> Reg.Cliente) hacer
+    a := p;
+    p := p^.prox;
+FinMientras;
+
+Si (p <> nil) entonces
+    // El cliente existe → actualizo
+    p^.total_operado := p^.total_operado + convertir_a_peso(Reg.Importe, Reg.Moneda);
+    p^.cant_op := p^.cant_op + 1;
+Sino
+    // Cliente nuevo → creo nodo
+    Nuevo(q);
+    q^.cliente := Reg.Cliente;
+    q^.total_operado := convertir_a_peso(Reg.Importe, Reg.Moneda);
+    q^.cant_op := 1;
+    q^.IAF := 0;   // todavía no calculado
+
+    q^.prox := prim;
+    prim := q;
+FinSi
+
+
+
+p := prim;
+
+Mientras (p <> nil) hacer
+    p^.IAF := p^.total_operado * p^.cant_op;
+    p := p^.prox;
+FinMientras
+
+
+
+prim2 := nil;
+p := prim; // p recorre la lista desordenada
+
+Mientras (p <> nil) hacer
+    // 1. Creamos el nodo copia
+    Nuevo(q2);
+    q2^.cliente := p^.cliente;
+    q2^.total_operado := p^.total_operado;
+    q2^.cant_op := p^.cant_op;
+    q2^.IAF := p^.IAF;
+
+    // 2. Buscamos posición en prim2
+    p2 := prim2;
+    a2 := nil;
+    Mientras (p2 <> nil) y ( (p2^.IAF > q2^.IAF) o ( (p2^.IAF = q2^.IAF) y (p2^.cant_op >= q2^.cant_op) ) ) hacer
+        a2 := p2;
+        p2 := p2^.prox;
+    FinMientras;
+
+    // 3. Insertamos el nodo q2
+    Si (a2 = nil) entonces
+        q2^.prox := prim2;
+        prim2 := q2;
+    Sino
+        a2^.prox := q2;
+        q2^.prox := p2;
+    FinSi;
+
+    p := p^.prox;
+FinMientras;
+
+// 4. Mostrar solo los 5 mejores
+Escribir("| POS | CLIENTE | IAF |");
+p2 := prim2;
+i := 1;
+Mientras (p2 <> nil) y (i <= 5) hacer
+    Escribir(i, p2^.cliente, p2^.IAF);
+    p2 := p2^.prox;
+    i := i + 1;
+FinMientras;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Accion Ejercicio2 es
+    Ambiente
+        Estudiante = Registro
+            facultad
+            carrera
+            legajoprom
+            aprobadas
+            desaprobadas
+            condicion
+        FinRegistro
+
+        archestudiantes: archivo de estudiante secuencial ordenado por facultad y carrera
+        reg: registro de estudiante
+
+		funcion riesgo_estudiantes(prom, apro, repro): booleano es
+			si (prom < 6) y  (repro > apro) entonces
+				riesgo_estudiantes:= verdadero
+			sino
+				riesgo_estudiantes:= falso
+			fin si
+		fin funcion
+
+        Procedimiento corte_carrera () es
+            rta1:= tot_estudiantes / tot_regular * 100%
+            escribir("para la carrera: ", resg_carrera " el porcentaje de estudiantes en condicion regular fue de: ", rta1)
+            escribir("el estudiante de mejor promedio fue: " resg_mejor_prom, " con un promedio de: ", resg_prom_max)
+            escribir("el estudiante de peor  promedio fue: " resg_peor_prom, " con un promedio de: ", resg_prom_min)
+
+
+        Procedimiento corte_facultad () es
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------
+Busqueda de elemento en lista + insercion ordenada FORMA UNO
+// ----------------------------------------------------------
+
+p:= prim
+a:= nil
+Mientras (p <> nil) y (p.nombre <> reg.nombre) hacer
+    a:= p
+    p:= p.prox
+FinMientras
+
+si (p <> nil) entonces
+    p.nombre:= reg.nombre
+    p.edad:= reg.edad
+    p.sueldo:= p.sueldo + reg.importe
+sino
+    nuevo(q)
+    q.nombre:= reg.nombre
+    q.edad:= reg.edad
+    q.sueldo:= reg.importe
+
+    p:= prim
+    a: nil
+    Mientras (p <> nil) y (p.nombre < q.nombre) hacer
+        a:= p
+        p:= p.prox
+    FinMientras
+
+    si (a = nil) entonces
+        q.prox:= prim
+        prim:= q
+    sino
+        a.prox:= q
+        q.prox:= p
+    finsi
+finsi
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------
+Busqueda de elemento en lista + insercion ordenada FORMA DOS
+// ----------------------------------------------------------
+
+p:= prim
+a:= nil
+Mientras (p <> nil) y (p.nombre < reg.nombre) hacer
+    a:= p
+    p:= p.prox
+FinMientras
+
+si (p <> nil) y (p.nombre = reg.nombre) entonces
+    p.nombre:= reg.nombre
+    p.edad:= reg.edad
+    p.sueldo:= p.sueldo + reg.importe
+sino
+    nuevo(q)
+    q.nombre:= reg.nombre
+    q.edad:= reg.edad
+    q.sueldo:= reg.importe
+
+    si (a = nil) entonces
+        q.prox:= prim
+        prim:= q
+    sino
+        a.prox:= q
+        q.prox:= p
+    finsi
+finsi

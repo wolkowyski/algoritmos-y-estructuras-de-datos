@@ -1,0 +1,117 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Ejercicio 2.2.12
+
+Dada una secuencia con información de población de un PAIS:
+
+POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+
+| Provincia | Departamento | Ciudad | Barrio | ID_Casa | Cantidad_Habitantes
+
+Generar una secuencia con información de los departamentos de esa provincia, cuyo registro tenga el siguiente formato:
+
+POBLACION_SALIDA
+
+| Provincia | Departamento | Cantidad_Habitantes
+
+____________________________________________________________________________________________________________
+
+ACCION pais ES
+
+	AMBIENTE
+
+		VARIABLES
+
+			Poblacion = REGISTRO
+				prov, dpto, ciud, barrio: AN(20);
+				id_casa: n(4);
+				n_hab: N(3);
+			FIN REGISTRO;
+
+			PoblacionResumen = REGISTRO
+				prov, dpto: AN(20);
+				n_hab: N(6);
+			FIN REGISTRO;
+
+			pais: Archivo de Poblacion ordenado por prov, dpto, ciud, barrio e id_casa; // Archivo de entrada
+			p: Poblacion;
+
+			paisResum: Archivo de PoblacionResumen; // Archivo de salida
+			pResum: PoblacionResumen;
+
+			resDpto, resCiud, resBarrio: AN(20); resCasa: N(4); // Resguardo de claves (corte por dpto, ciudad, barrio y casa)
+																// No hago por provincia porque no se requiere la cantidad total por provincia, sino por departamento
+
+			totCasa, totBarrio, totCiud, totDpto: entero; // Totalizadores
+
+			SUBACCION corteDpto ES
+				corteCiud;
+				pResum.prov := p.prov;
+				pResum.dpto := resDpto;
+				pResum.n_hab := totDpto;
+				ESC(paisResum, pResum); // Antes de cambiar de dpto graba el registro con su provincia asociada, nombre y cantidad de habitantes (según lo que contó por dpto)
+				totDpto := 0;
+				resDpto := p.dpto;
+			FIN SUBACCION;
+
+			SUBACCION corteCiud ES
+				corteBarrio;
+				totDpto := totDpto + totCiud;
+				totCiud := 0;
+				resCiud := p.ciud;
+			FIN SUBACCION;
+
+			SUBACCION corteBarrio ES
+				corteCasa;
+				totCiud := totCiud + totBarrio;
+				totBarrio := 0;
+				resBarrio := p.barrio;
+			FIN SUBACCION;
+
+			SUBACCION corteCasa ES
+				totBarrio := totBarrio + totCasa;
+				totCasa := 0;
+				resCasa := p.id_casa;
+			FIN SUBACCION;
+
+			SUBACCION tratarCorte ES
+				SI (p.dpto <> resDpto) ENTONCES
+					corteDpto;
+				SINO SI (p.ciud <> resCiud) ENTONCES
+						corteCiud;
+					SINO SI (p.barrio <> resBarrio) ENTONCES
+							corteBarrio;
+						SINO SI (p.id_casa <> resCasa) ENTONCES
+								corteCasa;
+							FIN SI;
+						FIN SI;
+					FIN SI;
+				FIN SI;
+			FIN SUBACCION;
+
+	PROCESO
+
+		totCasa := 0; totBarrio := 0; totCiud := 0; totDpto := 0; // Inicializamos los totalizadores
+
+		ABRIR E/(pais); // Apertura para lectura del archivo de entrada
+
+		ABRIR /S(paisResum); // Apertura para escritura para generar archivo de salida
+
+		LEER(pais, p); // Acceso al primer registro del archivo de entrada
+
+		resDpto := p.dpto; resCiud := p.ciud; resBarrio := p.barrio; resCasa := p.id_casa; // Resguardo de claves
+
+		MIENTRAS NO FDA(pais) HACER
+			tratarCorte;
+			totCasa := totCasa + 1; // Contamos una casa por cada registro de entrada
+			LEER(pais, p);
+		FIN MIENTRAS;
+
+		corteDpto;
+
+		CERRAR(paisResum); CERRAR(pais);
+
+FIN ACCION;
+
+//Petrovich, Julio E.

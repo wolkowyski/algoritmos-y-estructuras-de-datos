@@ -1,0 +1,47 @@
+ACCION_314_ES
+    AMBIENTE
+        Bandera: Booleano
+        i, cont: entero
+        Nombredis: Alfanumerico
+
+        reg = Registro de
+            Nmbr_diseniador: AN(50)
+            Nmbr_Modelo: AN(50)
+            Altura: N(1 , 2)
+        FR
+        Modelos: Arreglo de [1..n] de reg
+        res: reg
+
+    PROCESO
+        ESC("Ingrese el nombre del diseñador: ")
+        Leer(Nombredis)
+        ESC("Ingrese la cantidad de modelos a registrar...")
+        Leer(cont)
+        Bandera:= Falso
+        Para i:= 1 hasta cont hacer
+            Modelos[i].Nmbr_diseniador:= Nombredis
+            ESC("Ingrese el nombre del/la modelo -> "); Leer(Modelos[i].Nmbr_Modelo);
+            ESC("Ingrese la altura del/la modelo, en metros con el siguiente formato -> x,xx:  "); Leer(Modelos[i].Altura);
+        FP
+
+        Mientras no Bandera hacer
+            Bandera:= Verdadero
+            Para i:= 1 hasta (cont - 1) hacer
+                Si (Modelos[i] > Modelos[i + 1]) entonces
+                    res:= Modelos[i]
+                    Modelos[i]:= Modelos[i+1]
+                    Modelos[i+1]:= res
+                    Bandera:= Falso
+                FS
+            FP
+        FM
+
+        ESC("Diseñador: "Nombredis)
+        Para i:= 1 hasta cont hacer
+            ESC("--------------------------")
+            ESC("Modelo: ",Modelos[i].Nmbr_Modelo)
+            ESC("Altura: ",Modelos[i].Altura)
+            ESC("--------------------------")
+        FP
+FA
+            

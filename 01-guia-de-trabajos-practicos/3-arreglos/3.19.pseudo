@@ -1,0 +1,31 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.19
+// ==========================================================================
+
+// Dada una matriz A de m x n enteros (20 x 20), encontrar el mayor elemento e
+// informar su valor y en qué fila y columna se encuentra.
+// (Enunciado reconstruido a partir de la resolución empezada.)
+
+Acción Ejercicio3_19 es
+    Ambiente
+        m = 20
+        n = 20
+        A: Arreglo de [1..m, 1..n] de entero
+        i, j, Fila_Mayor, Columna_Mayor: 1..20
+        Maximo: entero
+    Proceso
+        Maximo:= A[1,1] // supongo que el mayor es el primer elemento de la matriz
+        Fila_Mayor:= 1
+        Columna_Mayor:= 1
+        Para i:= 1 a m hacer // recorrido natural: fila por fila
+            Para j:= 1 a n hacer
+                Si A[i,j] > Maximo entonces
+                    Maximo:= A[i,j]
+                    Fila_Mayor:= i
+                    Columna_Mayor:= j
+                FinSi
+            FinPara
+        FinPara
+        Escribir("El mayor es ", Maximo, " en la fila ", Fila_Mayor, " y columna ", Columna_Mayor)
+FinAcción

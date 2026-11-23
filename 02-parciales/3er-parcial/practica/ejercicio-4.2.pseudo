@@ -1,0 +1,83 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Práctica - Ejercicio 4.2 de la guía (dos alternativas)
+//  Alternativa 1: copia el nodo a la lista nueva y libera el original.
+//  Alternativa 2: mueve el mismo nodo de una lista a la otra (sin Nuevo ni Disponer).
+// ==========================================================================
+
+/*
+Se dispone de una lista simplemente encadenada de números enteros, diseñar un algoritmo que
+a partir de ella genere otra lista conteniendo los nodos cuyos datos terminan en cero; dichos
+elementos, deberán ser eliminados de la lista original. Se asume que la lista está cargada, y que
+el algoritmo recibe como parámetro de entrada la dirección del primer elemento.
+*/
+
+Accion 4.2 (Prim: Puntero a Nodo) ES
+
+Ambiente
+
+	Nodo=Registro
+		Dato: entero
+		Prox: Puntero a Nodo
+	Fin Registro
+
+	P,Prim_Sal,Q,A,Z: Puntero a Nodo
+
+// ------------ ALTERNATIVA 1 ----------------
+Proceso
+	Q:= Prim
+	Prim_Sal:= Nil
+
+	Mientras (Q <> Nil) hacer
+
+		Si ((*Q.dato mod 10) = 0) entonces
+
+			//Carga Apilada
+			Nuevo(P)
+			*P.dato:= *Q.Dato	//Obtiene el dato
+			*P.prox:= Prim_Sal 	//Apunta a Nil, o al nodo creado anteriormente
+			Prim_Sal:= P 		//Prim apunta al nuevo nodo
+
+			Si (Q = Prim) entonces	//Pregunto si es el primer elemtento
+				Prim:= *Q.prox 		//Prim apunta al proximo, volviendose el nuevo primer nodo
+			SiNo
+				*A.prox:= *Q.prox 	//el prox del nodo de A, ahora apunta al nodo siguiente a Q, salteandose a este
+			Fin Si
+
+			//Eliminacion
+			Z:= Q		//Utilizo Z como puntero auxiliar para eliminar el nodo sin perder el enlace
+			Q:= *Q.prox 	//Q apunta al siguiente, manteniendo el enlace
+			Disponer(Z)
+		SiNo
+			A:= Q
+			Q:= *Q.prox
+		Fin Si
+	Fin Mientras
+Fin Accion
+
+// ------------ ALTERNATIVA 2 ----------------
+Proceso
+	Q:= Prim
+	Prim_Sal:= Nil
+
+	Mientras (Q <> Nil) hacer
+		Si ((*Q.dato mod 10) = 0) entonces
+
+			Si (Q = Prim) entonces 	//Pregunto si es el primer nodo
+				Prim:= *Q.prox 		//Prim apunta al proximo, volviendose el nuevo primer nodo
+			SiNo
+				*A.prox:= *Q.prox 	//el prox del nodo de A, ahora apunta al nodo siguiente a Q, salteandose a este
+			Fin Si
+
+			//Carga Apilada, sin eliminacion (solo se saltea)
+			// Sin Nuevo(P): el nodo ya existe, solo cambio a qué lista pertenece
+			P:= Q 	//Obtiene todo el nodo
+			Q:= *Q.prox  	//Q apunta al siguiente, manteniendo el enlace de la lista orignal
+			*P.prox:= Prim_Sal 	//Apunta a Nil, o al nodo creado anteriormente
+			Prim_Sal:= P 			//Prim apunta al nuevo nodo
+		SiNo
+			A:= Q;
+			Q:= *Q.prox;
+		Fin Si
+	Fin Mientras
+Fin Accion

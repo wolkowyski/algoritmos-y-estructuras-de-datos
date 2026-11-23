@@ -1,0 +1,261 @@
+
+Archivo de registro
+----------------------------------------------------------------------------------------------
+accion 2.01 es
+ambiente
+	alumno: registro
+		nombApe:AN(30)
+		Nlegajo:N(5)
+		Fechaing: fecha
+		sexo:("m","f")
+		carrera:("isi","iq","iem")
+		fechnac:fecha
+		Dni:N(8)
+		fechault:fecha
+		nota:real
+	fin registro
+	fecha: registro
+		aa:n(4)
+		mm:(1..12)
+		dd:(1..31)
+	fin registro
+	V: alumno
+	archAlum: archivo de alumno
+Algoritmo
+	abrir e/(archAlum)
+	leer(archalum,V)
+	Escribir(Nro. Legajo, Apellido y Nombre, Documento, Carrera)
+	Mientras NOFDA (archAlum) hacer
+		escribir(V.nlegajo, V.nombApe, V.Dni, V.carrera)
+		leer(archAlum,V)
+	fin mientras
+	cerrar(archAlum)
+fin accion
+
+----------------------------------------------------------------------------------------------------------------
+accion 2.05 es
+ambiente
+	alumno: registro de
+		nombApe:AN(30)
+		Nlegajo:N(5)
+		Fechaing: fecha
+		sexo:("m","f")
+		carrera:("isi","iq","iem")
+		fechnac:fecha
+		Dni:N(8)
+		fechault:fecha
+		nota:real
+	fin registro de
+	fecha: registro
+		aa:n(4)
+		mm:(1..12)
+		dd:(1..31)
+	fin registro
+	V: alumno
+	archAlum: archivo de alumno
+	fechaActual:N(4)
+Algoritmo
+	abrir e/(archAlum)
+	leer(archalum,V)
+	fechaactual:=2012
+	Mientras NoFDA (archAlum) hacer
+		Si (v.nota>=7)^(v.fechaing.aa=(fechaactual-1)) entonces
+			escribir(V.nlegajo, V.nombApe, V.carrera)
+		fin si
+		leer(archAlum,V)
+	fin mientras
+fin accion
+
+----------------------------------------------------------------------------------------------------------------
+accion 2.06 es
+ambiente
+	Egresados: registro
+		nombApe:AN(30)
+		PromGral:real
+	fin registro
+	V: egresados
+	archAlum: archivo de egresados
+	recomendacion:An("SI","NO","F","MF")
+	contEgre, no, si, f, mf:entero
+Algoritmo
+	abrir e/(egresados)
+	leer(egresados,V)
+	contEgre, no, si, f, mf=0
+	escribir("Apellido y Nombre, Promedio, Recomendaci�n")
+	Mientras NoFDA (egresados) hacer
+		contEgre:=contEgre+1
+		Si V.PromGral<7 entonces
+			Recomendacion:="NO"
+			no:=no+1
+		contrario
+			Si V.PromGral<8 entonces
+				Recomendacion:="SI"
+				si:=si+1
+			contrario
+				Si V.PromGral<9 entonces
+					Recomendacion:="F"
+					f:=f+1
+				contrario
+					Recomendacion:="MF"
+					mf:=mf+1
+				fin si
+			fin si
+		fin si
+		escribir(V.nombApe, V.PromGral, Recomendacion)
+		leer(esgresados,V)
+	fin mientras
+	Escribir("el numero total de egresados es:", contEgre,)
+	escribir(no,"egresados tubieron recomendacion negativa")
+	escribir(si,"egresados tubieron recomendacion positiva")
+	escribir(f,"egresados tubieron recomendacion favorable")
+	escribir(mf,"egresados tubieron recomendacion muy favorable")
+fin accion
+
+-------------------------------------------------------------------------------------------------------
+accion 2.07 es
+	Ambiente
+		Padron: registro de
+			nombApe:AN(30)
+			DNI:N(8)
+			Mesa:N(4)
+			Circuito:N(3)
+			Clase:N(4)
+			Direccion:AN(20)
+			Observ:An(128)
+			Partido:(0..3)
+		fin registro
+		partido: registro de
+			nomApe:AN(30)
+			DNI:N(8)
+			Direccion:AN(20)
+		fin registro
+		Apadron: archivo de padron
+		V: padron
+		AC: archivo de partido
+		vc: partido
+		Aindep: archivo de partido
+		Vindep: partido
+	algoritmo
+		Abrir e/(Apadron)
+		leer(Apadron,v)
+		Abrir /s(AC)
+		Abrir /s(Aindep)
+		Mientras NoFDA (Apadron) hacer
+			Si V.clase=3 entonces
+				vc.nomApe:=v.nombApe
+				vc.DNI:=v.DNI
+				vc.direccion:=v.direccion
+				escribir(Ac,Vc)
+			contrario
+				Si (v.clase=0)^(v.clase>1940) entonces
+					vindep.nomApe:=v.nombApe
+					vindep.DNI:=v.DNI
+					vindep.direccion:=v.direccion
+					escribir(Ac,Vindep)
+			fin si
+			leer(Apadron,v)
+		fin mientras
+		cerrar(AC)
+		cerrar(Aindep)
+fin accion
+	
+-------------------------------------------------------------------------------------------------------
+accion 2.08 es
+	ambiente
+		Compras: registro de
+			Nro._cliente:E(4)
+			Fecha_ult_comp: fecha
+			Monto:real
+		fin registro
+		cliente: registro de
+			Nro_cliente:E(4)
+			nomb_y_ape:AN(30)
+			Domic:AN(20)
+			Tel:N(10)
+			DNI:N(8)
+		fin registro
+		fecha: registro de
+			aa:E(4)
+			mm:(1..12)
+			dd:(1..31)
+		fin registro
+		Acomp: archivo de compras ordenado por Nro_cliente
+		Aclien: archivo de cliente ordenado por Nro_cliente
+		vcomp:compras
+		vclien: cliente
+		feching: fecha
+		montodado: real
+	algoritmo
+		abrir e/(Acomp), leer(Acomp,vcomp)
+		abrir e/(Acliente), leer(Acliente,vclien)
+		escribir("ingrese la fecha actual en el formato aaddmm")
+		leer(feching)
+		escribir("ingrese un monto")
+		leer(montodado)
+		escribir("Nombre y apellido _ fecha ultima compra _ Monto de la compra")
+		Mientras NoFDA (Acomp) hacer
+			Si (feching<v.fecha_ult_comp)^(montodado<v.monto) entonces
+				Escribir(vclien.nom_y_ape, vcomp.Fecha_ult_comp, vcomp.monto)
+			fin si
+			leer(Acomp)
+			leer(Aclien)
+		fin mientraS
+FIN ACCION
+-------------------------------------------------------------------------------------------------------
+accion 2.09 es
+	ambiente
+		productos: registro de
+			codigo:N(5)
+			tipo:(1..3)
+			Marca:An(15)
+			Descripccion:AN(30)
+			Catidad:E(3)
+			Precio:real
+		fin registro
+		Aprod, AActualizado: archivo de producto ordenado por codico
+		V, Vact:producto
+
+	algoritmo
+		Abrir E/(Aprod)
+		Leer(Aprod,V)
+		Abrir /S(Aactualizado)
+		Mientras NoFDA (Aprod) hacer
+			Si v.tipo=1 entonces
+				Vact:=V
+				Vact.precio:=v.precio+(10*(v.precio/100))
+				escribir(Aactualizado,vact)
+				Cantida1:=Cantidad1+v.Cantidad
+			fin si
+			Si v.tipo=2 hacer
+				Vact:=V
+				Vact.precio:=v.precio+(25*(v.precio/100))
+				escribir(Aactualizado,vact)
+				Cantida2:=Cantidad2v.Cantidad
+			fin si
+			Si v.tipo=3 hacer
+				Vact:=V
+				Vact.precio:=v.precio+(50*(v.precio/100))
+				escribir(Aactualizado,vact)
+				Cantida2:=Cantidad2+v.Cantidad
+			fin si
+			leer(aprod,v)
+		fin mientras
+		Cantidadtotal:=cantidad1+cantidad2+cantidad3
+		escribir("La cantidad Calzados es:" cantidad1)
+		escribir("La cantidad Indumentaria es:" cantidad2)
+		escribir("La cantidad Accesorios es:" cantidad3)
+		escribir("La cantidad Total de articulos es:" cantidadtotal)
+fin accion
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+

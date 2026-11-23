@@ -1,0 +1,329 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 14
+//  Enunciado: ../enunciados/final-14.jpg
+//  Estado: incompleto (resolución sin terminar).
+// ==========================================================================
+
+//Consigna 1)
+// B) y C)b)c): los datos que el enunciado no da se le piden al usuario
+
+Accion centrodeportivo() es
+
+Ambiente
+
+	sec: secuencia de caracter de entrada
+	v: caracter
+
+	funcion car_a_ent(x:caracter):entero
+		Segun (x) hacer
+			="1": car_a_ent:=1
+			="2": car_a_ent:=2
+			="3": car_a_ent:=3
+			="4": car_a_ent:=4
+			="5": car_a_ent:=5
+		Fin Segun
+	Fin funcion
+
+	nodo2=registro
+		car:AN(1)
+		prox: puntero a nodo2
+	fin registro
+
+	prim2, p2, q2, a2: puntero a nodo2
+
+	nodo=registro
+		tipo_plan:N(1)
+		rango_edad:AN(1)
+		titulo: nodo2
+		popularidad:AN(1)
+		cupo_dis:N(2)
+		monto:N(6.2)
+		prox: puntero a nodo
+	fin registro
+
+	prim, q, p, a, mej_plan: puntero a nodo
+
+	tipo, cupo, tot_planes, porcentaje: entero
+	monto: real
+
+	A: Arreglo [1..5] de enteros
+
+Proceso
+
+	Para i:=1 a 5 hacer
+		A[i]:=0
+	Fin Para
+
+	tot_planes:=0
+	mayor:=0
+
+	ARR(sec)
+	AVZ(sec, v)
+
+	prim:=nil
+
+	Mientras (v<>"#") hacer
+
+		Mientras (v<>"$") hacer
+
+			nuevo(q)
+			tipo:=car_a_ent(v)
+			*q.tipo_plan:=tipo
+
+			AVZ(sec, v)
+			*q.rango_edad:=v
+
+			AVZ(sec, v)
+
+			Escribir("Plan: ")
+			Escribir(v)
+
+			prim2:=nil
+
+			nuevo(q2)
+			*q.titulo:=q2
+
+			*q2.car:=v
+			prim2:=q2
+			*q2.prox:=nil
+			p2:=q2
+			AVZ(sec, v)
+
+			Mientras (v<>"-") hacer
+				Escribir(v)
+				nuevo(q2)
+				*q2.car:=v
+				*p2.prox:=q2
+				*q2.prox:=nil
+				p2:=q2
+				AVZ(sec, v)
+			Fin Mientras
+
+			Escribir("Ingrese el cupo disponible")
+			Leer(cupo)
+
+			Escribir("Ingrese el monto")
+			Leer(monto)
+
+			*q.cupo_dis:=cupo
+			*q.monto:=monto
+
+			Si (cupo>0) entonces
+				A[tipo]:=A[tipo]+1
+				tot_planes:=tot_planes+1
+			Fin Si
+
+			Si (cupo>mayor) entonces
+				mayor:=cupo
+			Fin Si
+
+			AVZ(sec, v)
+
+			*q.popularidad:=v
+
+			AVZ(sec, v)
+
+			Si (prim=nil) entonces
+				prim:=q
+				*q.prox:=nil
+			Sino
+				p:=prim
+				Mientras (p<>nil) Y (*p.tipo_plan<tipo) hacer
+					a:=p
+					p:=*p.prox
+				Fin Mientras
+
+				*a.prox:=q
+				*q.prox:=p
+			Fin Si
+
+
+		Fin Mientras
+
+		AVZ(sec, v)
+
+	Fin Mientras
+
+	Para i:=1 a 5 hacer
+		porcentaje:=(A[i]*100)/tot_planes
+		Escribir("Los planes disponibles del tipo ",i," representan el ",porcentaje,"%")
+	Fin Para
+
+	p:=prim
+	menor:=HV
+
+	Mientras (p<>nil) hacer
+		Si (mayor=*p.cupo) entonces
+
+			Escribir("Plan con mayor disponibilidad es: ")
+
+			p2:=prim2
+			Mientras (p2<>nil) hacer
+				Escribir(*p.(*titulo.car))
+				p2:=*p2.prox
+			Fin Mientras
+
+		Fin Si
+		Si (*p.cupo>0) entonces
+			Si (*p.rango_edad="3") entonces
+				Si (*p.monto<menor) entonces
+					menor:=*p.monto
+					mej_plan:=p
+				Fin Si
+			Fin Si
+		Fin Si
+		p:=*p.prox
+	Fin Mientras
+
+	*mej_plan.(*titulo.car)
+
+	Mientras ()
+
+
+
+
+//Consigna 2
+
+//asumo la cantidad y que es de enteros
+Accion recursividad(numeros: Arreglo [1..50] de enteros) es
+
+Ambiente
+
+
+	funcion posicion(x:entero, A: Arreglo [1..50] de enteros, i:entero):entero es
+		Si (x=A[i]) entonces
+			posicion:=i
+		Sino
+			Si (i=50) entonces
+				posicion:=-1
+			Sino
+				posicion:=posicion(x,A,i+1)
+			Fin Si
+		Fin Si
+	Fin funcion
+
+	num, posicionok: entero
+
+Proceso
+
+	Escribir("Ingrese el numero que quiere buscar en el arreglo")
+	Leer(num)
+
+	posicionok:=posicion(num, numeros, 1)
+
+	Escribir("La posicion es ",posicionok)
+
+Fin Proceso
+
+
+//Consigna 3
+
+
+Accion peaje() es
+
+Ambiente
+
+	cobros=registro
+		clave_cobro:N(13)
+		cabina_peaje:"Chaco","Corrientes","Misiones","Entre Rios","Santa Fe","Neuquen","Ushuaia"
+		monto:N(6.2)
+		patente:AN(7)
+		hora_cobro:N(2)
+	fin registro
+
+	reg_c: cobros
+	arch_c: archivo de cobros
+
+	A: Arreglo [1..7, 1..25] de reales //24=0; 25 para la sumatoria
+
+	tot, prom, cab, mayor, may_cab, may_hor, cant_menor: entero
+
+Proceso
+
+	Para i:=1 a 7 hacer
+		Para j:=1 a 25 hacer
+			A[i,j]:=0
+		Fin Para
+	Fin Para
+
+	ABRIR E/ (arch_c)
+	LEER(arch_c, reg_c)
+
+	Mientras NFDA(arch_c) hacer
+
+		Segun (reg_c.cabina_peaje) hacer
+			="Chaco": cab:=1
+			="Corrientes": cab:=2
+			="Misiones": cab:=3
+			="Entre Rios": cab:=4
+			="Santa Fe": cab:=5
+			="Neuquen": cab:=6
+			="Ushuaia": cab:=7
+		Fin Segun
+
+		Si (reg_c.hora_cobro=0) entonces
+			A[cab,24]:=A[cab,24]+reg_c.monto
+		Sino
+			A[cab, reg_c.hora_cobro]:=A[cab, reg_c.hora_cobro]+reg_c.monto
+		Fin Si
+
+		A[cab, 25]:=A[cab,25]+reg_c.monto
+
+		LEER(arch_c, reg_c)
+
+	Fin Mientras
+
+	//consigna a
+
+	mayor:=0
+
+	Para i:=1 a 7 hacer
+		Para j:=1 a 24 hacer
+			Si (A[i,j]>mayor) entonces
+				mayor:=A[i,j]
+				may_cab:=i
+				may_hor:=j
+			Fin Si
+		Fin Para
+	Fin Para
+
+	Escribir("Se obtuvo la mayor recaudacion de $",mayor," a las ",may_hor," horas en la cabina de")
+
+	Segun (may_cab) hacer
+		=1: Escribir("Chaco")
+		=2: Escribir("Corrientes")
+		=3: Escribir("Misiones")
+		=4: Escribir("Entre Rios")
+		=5: Escribir("Santa Fe")
+		=6: Escribir("Neuquen")
+		=7: Escribir("Ushuaia")
+	Fin Segun
+
+	//consgina b
+
+	tot:=0
+
+	Para i:=1 a 7 hacer
+		tot:=tot+A[i,25]
+	Fin Para
+
+	prom:=tot/7
+
+	cant_menor:=0
+
+	Para i:=1 a 7 hacer
+		Si (A[i,25]<prom) entonces
+			cant_menor:=cant_menor+1
+		Fin Si
+	Fin Para
+
+	Escribir("La cantidad de cabinas que recaudaron menos que el promedio es de ",cant_menor)
+
+	//consigna c
+
+	Escribir("El total de reacaudacion fue de $",tot)
+
+	CERRAR(arch_c)
+
+Fin Proceso

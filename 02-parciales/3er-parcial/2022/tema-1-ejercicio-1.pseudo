@@ -1,0 +1,131 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2022 - Tema 1 - Ejercicio 1 (listas dobles + indexado)
+//
+//  Sorteo de un supermercado: por cada compra de un cliente adherido al
+//  programa de fidelización (indexado por DNI) se arma una lista doble
+//  ordenada por apellido y nombre con sus chances (5 al adherirse, +1 cada
+//  $100 de compra). Los clientes "Black" giran una ruleta (lista circular de
+//  chances extra) la cantidad de veces que devuelve Tirar().
+//  Enunciado: ../enunciados/2022-tema-1.jpg
+// ==========================================================================
+
+Accion Tema_1_Ejer_1_2022 (Prim_circ: puntero a Nodo_circ) ES
+
+Ambiente
+
+	Compras=Registro
+		Fecha_compra: N(8)
+		DNI: N(8)
+		Cant_artc: N(2)
+		Importe: N(6,2)
+	Fin Registro
+
+	Fidel=Registro
+		DNI: N(8)
+		AyN: AN(30)
+		Fecha_adhesion: N(8)
+		Categoria: AN(20)
+	Fin Registro
+
+	Nodo=Registro
+		AyN: AN(30)
+		Chances_total: N(4)
+		ant, prox: puntero a Nodo
+	Fin Registro
+
+	Nodo_circ=Registro
+		Chances_extra: N(2)
+		prox: puntero a Nodo_circ
+	Fin Registro
+
+	Arch_C: archivo secuencial de Compras ordenado por Fecha_compra
+	reg_C: Compras
+	Arch_F: archivo de Fidel indexado por DNI
+	reg_F: Fidel
+
+	Prim, Ult, P, Q: puntero a Nodo
+	C: puntero a Nodo_circ
+	vueltas, cont: entero
+	// Tirar(): función dada por el enunciado que devuelve las vueltas de la ruleta
+
+Proceso
+	Abrir E/(Arch_C)
+	Leer(Arch_C,reg_C)
+	Abrir E/(Arch_F)
+
+	Prim:= nil
+	Ult:= nil
+	C:= Prim_circ
+
+	Mientras NFDA(Arch_C) hacer
+
+		reg_F.DNI:= reg_C.DNI
+		Leer(Arch_F,reg_F)
+
+		Si (existe) entonces
+
+			Si (Prim = nil) entonces
+				Nuevo(P)
+				*P.AyN:= reg_F.AyN
+				*P.Chances_total:= 5
+
+				*P.ant:= nil
+				*P.prox:= nil
+				Prim:= P
+				Ult:= P
+			SiNo
+				Q:= Prim
+				Mientras (Q <> nil) y (*Q.AyN < reg_F.AyN) hacer
+					Q:= *Q.prox
+				Fin Mientras
+
+				Si (Q <> nil) y (*Q.AyN = reg_F.AyN) entonces // el cliente ya estaba en la lista
+
+					*Q.Chances_total:= *Q.Chances_total + (reg_C.Importe div 100)
+
+					Si (reg_F.Categoria = "Black") entonces
+
+						vueltas:= Tirar()
+						cont:= 0
+
+						Mientras (cont <> vueltas) hacer
+							C:= *C.prox
+							cont:= cont + 1
+						Fin Mientras
+
+						*Q.Chances_total:= *Q.Chances_total + *C.Chances_extra
+					Fin Si
+				SiNo
+					Nuevo(P)
+					*P.AyN:= reg_F.AyN
+					*P.Chances_total:= 5
+
+					Si (Q = Prim) entonces
+						*P.ant:= nil
+						*P.prox:= Prim
+						*Prim.ant:= P
+						Prim:= P
+					SiNo
+						Si (Q = nil) entonces
+							*P.prox:= nil
+							*P.ant:= Ult
+							*Ult.prox:= P
+							Ult:= P
+						SiNo
+							*P.prox:= Q
+							*P.ant:= *Q.ant
+							*(*Q.ant).prox:= P
+							*Q.ant:= P
+						Fin Si
+					Fin Si
+				Fin Si
+			Fin Si
+		Fin Si
+
+		Leer(Arch_C,reg_C)
+	Fin Mientras
+
+	Cerrar(Arch_C)
+	Cerrar(Arch_F)
+Fin Accion

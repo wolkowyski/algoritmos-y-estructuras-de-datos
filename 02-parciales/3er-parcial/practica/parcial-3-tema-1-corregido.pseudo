@@ -1,0 +1,186 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Tema 1 - Mi resolución corregida (sorteo de supermercado)
+//  Misma consigna que ../2022/tema-1-ejercicio-1.pseudo.
+// ==========================================================================
+
+Accion Parcial3 (prim: puntero a nodo, ult: puntero a nodo) Es
+ Ambiente
+  fecha = Registro
+   DD: 1..31
+   MM: 1..12
+   AA: N(4)
+  FR
+
+  Formato1 = Registro
+   fecha_compra: fecha
+   dni_cliente: N(8)
+   cantidad_articulos: N(3)
+   Importe_total: N(6)
+  FR
+
+  Formato2 = Registro
+   Dni: N(8)
+   ApyNom: N(20)
+   Fecha_adhesión: fecha
+   Categoría: N(10)
+  FR
+
+  Nodo1 = Registro
+   AyN: N(20)
+   chances: N(2)
+   ant: puntero a Nodo1
+   prox: puntero a Nodo1
+  FinReg
+
+  Nodo2 = Registro // lista cirucular
+   dato: N(2)
+   prox: puntero a nodo2
+  FinRegistro
+
+  reg1: Formato1
+  reg2: Formato2
+  Compras: Archivo de Formato1 ordenado por fecha_compra
+  Clientes: Archivo de Formato2 indexado por Dni
+
+  prim2, ult, p,q: puntero a nodo1 // tengo q decir si es a nodo 1 o nodo 2
+  r: puntero a nodo2
+  azar: N(2)
+  chances: N(2)
+
+
+  Procedimiento insertar() Es // conecta punteros con los nodos
+
+   si p= prim2 entonces			//primer elemento
+     *p.ant:= q
+     *q.ant:= nil
+     *q.prox:= p
+     prim2:= q
+   sino
+     si p= nil entonces			//ultimo elemento
+         *ult.prox:= q
+         *q.ant:= ult
+         *q.prox:= nil
+         ult:=q
+     sino
+         *q.prox:= p 			//medio
+         *q.ant:= *p.ant
+         *(*p.ant).prox:= q
+         *p.ant:= q
+     fs
+   fs
+  fs
+ FP
+
+
+  Proceso
+
+  Abrir E/(Compras), Abrir E/(Clientes)
+  Leer(Compras, reg1)
+  Leer(Clientes, reg2)
+  prim2:= nil // inicializo los punteros de la lista doble en nil
+  ult:= nil
+  r:= prim // el de la circular
+
+  Mientras NFDA(Compras) Hacer
+   reg2.dni:= reg1.dni_cliente // acceso directo/indexado
+   Leer(Clientes, Reg2)
+   Si Existe Entonces // hacemos una insercion de listas dobles
+    p:= prim2
+     Mientras (p <> nil) y (*p.AyN < reg2.ApyNom) Hacer
+      p:= *p.prox
+     FinMientras
+     Si *p.AyN = reg2.ApyNom Entonces
+      *p.chances:= *p.chances + reg1.Importe_total DIV 100
+     Sino
+      nuevo(q)
+      *q.AyN:= reg2.ApyNom
+      *q.chances:= 5
+      Si reg2.Categoria = "Black" Entonces // uso la circular
+
+       azar:= Tirar()
+       Para i:=1 a azar Hacer // recorro la cantidad de veces que me tiro la funcion tirar en la lista circular
+         r:= *r.prox
+       FinPara
+       *q.chances:= *q.chances + *r.dato
+      FinSi
+
+       Si reg2.Categoria = "Black" Entonces
+        r:= prim
+        azar:= Tirar()
+        Para i:=1 a azar Hacer
+         r:= *r.prox
+        FinPara
+       *q.chances:= *q.chances + *r.dato
+       FinSi
+       Insertar()
+     FS
+    Sino
+     Esc("Error: socio no adherido")
+    FS
+   Leer(reg1, Compras)
+  FinMientras
+
+ FinAccion
+
+
+
+
+
+
+Ejercicio 2
+
+
+Accion Ejer2 (prim:puntero a nodo) Es
+ Nodo = Registro
+  dato = registro
+   Dni: N(8)
+   NyA: AN(20)
+   nro_cama: N(4)
+   nro_habitación: N(2)
+   pa_sistolica: Arreglo de [1..4] de Entero
+   pa_diastolica: Arreglo de [1..4] de Entero
+  FR
+  prox: puntero a nodo
+ FR
+ p,q,a: puntero a nodo
+ i: Entero
+ bandera: booleano
+
+ Funcion Presion(pa_sistolica[i], pa_diastolica[i]):Booleano Es
+  Si i > 4 Entonces
+   Si (Prom_Sis/4) <= 120 y (Prom_dis) <= 80 Entonces
+    Presion := Verdadero
+    Sino
+     Presion:= Falso
+    Fs
+  Sino
+   Prom_dis:= prom_dis + pa_diastolica[i]
+   Prom_Sis:= Prom_Sis + pa_sistolica[i]
+   Presion:= Presion(pa_diastolica[i+1], pa_sistolica[i+1])
+  FS
+ Finfunciom
+
+ Proceso
+
+ p:= prim
+ bandera:= presion()
+ Mientras (p <> nil) y (bandera <> Verdadero)  Hacer
+  bandera:= presion()
+  a:= q
+  q:= *q.prox
+ FIN MIENTRAS
+
+SI (p = nil) ENTONCES
+ Escribir ('Error, el valor no existe')
+SINO
+  si p = prim entonces
+   prim:= *p.prox
+  sino
+  *a.prox:= *p.prox
+  fs
+ fs
+ Disponer(p)
+fs
+
+FinAccion

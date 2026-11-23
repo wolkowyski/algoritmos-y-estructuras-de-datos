@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Desafío de clase - Suma de números ingresados hasta un 0
+//  Opción 2: ciclo post-test (Repetir). El cuerpo se ejecuta al menos una vez,
+//  así que si el primer número ya es 0 se contaría igual: por eso se agrega un
+//  Si antes del Repetir.
+// ==========================================================================
+
+Acción Desafio_Penales //UTILIZANDO POST-TEST Y CONDICIONAL ALTERNATIVO
+Ambiente //Ambiente
+    Variables:
+        num, cont, sum: Entero
+	    op: Caracter
+Proceso //Proceso
+	Escribir("Bienvenido! Este programa registra los números ingresados y calcula la suma de todos ellos :)")
+	Escribir("¿Desea Continuar? - S/N")
+	Leer(op)
+
+	Si op = "S" Entonces
+		Escribir("Por favor, introduzca un número")
+		Leer(num)
+        cont:= 0 //contador inicializado
+	    sum:= 0 //contador inicializado
+		Si num <> 0 Entonces // el post-test no protege el primer valor
+			Repetir
+				Escribir("Ha introducido el número: ", num)
+				cont:= cont + 1 //acumulo cantidad de números
+				sum:= sum + num //acumulo el valor de los números y los sumo
+				Escribir("Ingrese un nuevo número")
+				Leer(num)
+			Hasta Que num = 0
+		FinSi
+
+		Escribir("Finalizado: se ha introducido el 0")
+		Escribir("La cantidad de números introducidos durante la ejecución del programa fue de: ", cont)
+		Escribir("La suma de todos ellos es de: ", sum)
+	SiNo
+		Escribir("Ok!, nos vemos en la próxima")
+	FinSi
+FinAcción

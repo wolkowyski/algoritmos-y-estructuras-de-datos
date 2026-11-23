@@ -1,0 +1,480 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Recuperatorio de febrero: práctica cronometrada
+//  Escritura repetida de los procedimientos de inserción y eliminación en
+//  listas simples y dobles, para memorizar los esquemas antes del examen.
+//  La versión corregida de cada esquema está en manejo-de-listas/esquemas-de-listas.pseudo
+// ==========================================================================
+
+Procedimiento Insercion es
+    Nuevo(q)
+    Si (prim = nil) entonces //lista vacia
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si ( p = prim) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *ant.prox:= q
+            *q.prox:= p
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento Eliminacion es
+    Mientras (p <> nil) y (*p.dato <> k) hacer
+        ant:= p
+        p:= *p.prox
+    FinMientras
+
+    Si (p = nil entonces)
+        Escribir("Error, lista vacia")
+    SiNo
+        Si ( p = prim ) entonces
+            prim:= *p.prox
+        SiNo
+            *ant.prox:= *p.prox
+        FinSi
+        Disponer(p)
+    FinSi
+FinProcedimiento
+
+Procedimiento Insercion es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *ant.prox:= q
+            *q.prox:= p
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento Eliminacion es
+    Mientras (p <> nil) y (*p.dato < k) hacer
+        ant:= p
+        p:= *p.prox
+    FinMientras
+
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        Si (p = prim) entonces
+            prim:= *p.prox
+        SiNo
+            *ant.prox:= *p.prox
+        FinSi
+        Disponer(p)
+    FinSi
+FinProcedimiento
+
+Procedimiento Insercion es
+    Nuevo(q) //creamos nuevo nodo a insertar
+    Si (prim = nil) entonces //lista vacia
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        ant:= nil
+        p:= *p.prox
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si (p == prim) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *ant.prox:= q
+            *q.prox:= p
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento Eliminacion es
+    Mientras (p <> nil) y (*p.dato < k) hacer
+        ant:= p
+        p:= *p.prox
+    FinMientras
+
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        Si (p = prim) entonces
+            prim:= *p.prox
+        SiNo
+            *ant.prox:= *p.prox
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+def InsercionDobles(prim, ult, p, q: puntero a nodo);
+    Nuevo(q)
+    if (prim = nil)
+        prim:= q
+        ult:= q
+        *q.prox:= nil
+        *q.ant:= nil
+    else
+        p:= prim
+        p:= ult
+        while (p <> nil) and (*p.dato < *q.dato) do
+            p:= *p.prox
+        end
+
+        Si (p = prim) entonces
+            prim:= q
+            *q.prox:= p
+            *q.ant:= nil
+            *p.ant:= q
+        SiNo
+            Si (p = nil) entonces
+                *q.prox:= nil
+                *q.ant:= ult
+                ult:= q
+                *ult.prox:= q
+            SiNo
+                *q.prox:= p
+                *q.ant:= *p.ant
+                *p.ant:= q
+                *(*p.ant).prox:= q
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento InsercionSimples (prim, p, q: puntero a nodo) es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prim
+        FinMientras
+
+        Si ( p = prim ) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *ant.prox:= q
+            *q.prox:= p
+        FinSi
+    FinSi
+
+
+Procedimiento InsercionSimples (prim, p, q, ant: puntero a nodo)es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si ( p = prim ) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *ant.prox:= q
+            *q.prox:= p
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento EliminacionSimples(prim, p, ant: puntero a nodo)es
+    ant:= nil
+    p:= prim
+    Leer(k)
+
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        Mientras (p <> nil) y (*p.datp <> k) hacer
+            ant:= nil
+            p:= *p.dato
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= *p.prox
+        SiNo
+            *ant.prox:= *p.prox
+        FinSi
+        Disponer(p)
+    FinSi
+FinProcedimiento
+
+
+
+Procedimiento InsercionDobles(prim, ult, p, q: puntero a nodo)es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        ult:= q
+        *q.prox:= nil
+        *q.ant:= nil
+    SiNo
+        p:= prim
+        p:= ult
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim)
+            prim:= q
+            *q.prox:= p
+            *q.ant:= nil
+            *p.ant:= q
+        SiNo
+            Si (p = nil)
+                *q.prox:= nil
+                *q.ant:= ult
+            SiNo
+
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+
+Procedimiento InsercionSimple (prim, p, q, ant: puntero a nodo) es
+    Nuevo(p)
+    Si (prim = nil) entonces
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.dato
+        FinMientras
+
+        Si (p = prim) entonces
+
+
+Procedimiento EliminacionDobles(prim, ult, p: puntero a nodo)es
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+    p:= prim
+    p:= ult
+    Mientras (p <> nil) y (*p.dato <> k) hacer
+        p:= *p.dato
+    FinMientras
+
+    Si (prim = ult) entonces
+        prim:= nil
+        ult:= nil
+    SiNo
+        Si (p = prim) entonces
+            prim:= *p.prox
+            *prim.ant:= nil
+        SiNo
+            Si (p = ult) entonces
+                ult:= *p.ant
+                *ult.prox:= nil
+            SiNo
+                *(*p.prox).ant:= *p.ant
+                *(*p.ant).prox:= *p.prox
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento InsercionSimple (prim, p, q, ant: puntero a nodo) es
+    Nuevo(q)
+    Si (prim = nil) //primer elemento
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *q.prox:= p
+            *ant.prox:= q
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+
+Procedimieto EliiminacionDobles (prim, ult, p: puntero a nodo) es
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        p:= prim
+        p:= ult
+        Mientras (p <> nil) y (*p.dato <> k) hacer
+            p:= *p.prox
+        FinMientras
+
+        Si (prim = ult) entonces
+            prim:= nil
+            ult:= nil
+        SiNo
+            Si (p = prim) entonces
+                prim:= *p.prox
+                *prim.ant:= nil
+            SiNo
+                Si (p = ult) entonces
+                    ult:= *p.ant
+                    *ult.prox:= nil
+                SiNo
+                    *(*p.ant).prox:= *p.prox
+                    *(*p.prox).ant:= *p.ant
+                FinSi
+            FinSi
+            Disponer(p)
+        FinSi
+    FinSi
+FinProcedimiento
+
+
+Procedimiento InsercionSimple(prim, p, q, ant: puntero a nodo): es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        *q.prox:= nil
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= q
+            *q.prox:= p
+        SiNo
+            *q.prox:= p
+            *ant.prox:= q
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento EliminacionSimples (prim, p, ant: puntero a nodo): es
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        p:= prim
+        ant:= nil
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            ant:= p
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= *p.prox
+        SiNo
+            *ant.prox:= *p.prox
+        FinSi
+        Disponer(p)
+    FinSi
+FinProcedimiento
+
+Procedimiento InsercioDoble(prim, ult, p, q: puntero a nodo): es
+    Nuevo(q)
+    Si (prim = nil) entonces
+        prim:= q
+        ult:= q
+        *q.prox:= nil
+        *q.ant:= nil
+    SiNo
+        p:= prim
+        p:= ult
+        Mientras (p <> nil) y (*p.dato < *q.dato) hacer
+            p:= *p.prox
+        FinMientras
+
+        Si (p = prim) entonces
+            prim:= q
+            *q.prox:= p
+            *q.ant:= nil
+            *p.ant:= q
+        SiNo
+            Si (p =  nil) entonces
+                *q.prox:= nil
+                *q.ant:= ult
+                ult:= q
+                *ult.ant:= q
+            SiNo
+                *q.prox:= p
+                *q.ant:= *p.ant
+                *p.ant:= q
+                *(*p.ant).prox:= q
+            FinSi
+        FinSi
+    FinSi
+FinProcedimiento
+
+Procedimiento EliminacionDoble (prim, ult, p: puntero a nodo): es
+    Si (prim = nil) entonces
+        Escribir("Error, lista vacia")
+    SiNo
+        p:= prim
+        p:= ult
+        Mientras (p <> nil) y (*p.dato <> k) hacer
+            p:= *p.prox
+        FinMientras
+
+        Si (prim = ult) entonces
+            prim:= nil
+            ult:= nil
+        SiNo
+            Si (p = prim) entonces
+                prim:= *p.prox
+                *prim.ant:= nil
+            SiNo
+                Si (p = ult) entonces
+                    ult:= *p.ant
+                    *ult.prox:= nil
+                SiNo
+                    *(*p.ant).prox:= *p.prox
+                    *(*p.prox).ant:= *p.ant
+                FinSi
+            FinSi
+            Disponer(p)
+        FinSi
+    FinSi
+FinProcedimiento

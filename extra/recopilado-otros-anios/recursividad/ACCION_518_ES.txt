@@ -1,0 +1,7 @@
+Funcion suma(A: Arreglo de [1..n] de enteros, i: entero): entero
+    Si (i = 1) entonces
+        Suma:= A[i]
+    Sino
+        Suma:= A[i] + Suma(A, i-1)
+    FS
+FF

@@ -1,0 +1,51 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.20
+//
+//  Dadas dos matrices A y B de 5 x 5, generar C con: ceros en la diagonal
+//  principal, los elementos de B debajo de la diagonal y los de A arriba.
+//  (Enunciado reconstruido a partir de la resolución.)
+// ==========================================================================
+
+Acción Ejercicio3_20 es
+
+Ambiente
+    A, B, C: Arreglo de [1..5, 1..5] de entero
+    i,j: 1..5
+    m=5
+    n=5
+Proceso
+    Para i:= 1 a m hacer
+        Para j:= 1 a n hacer
+            Escribir("Ingrese el numero de la posicion", i, j)
+            Leer(A[i,j])
+        FinPara
+    FinPara
+
+    Para i:= 1 a m hacer // B también hay que cargarla
+        Para j:= 1 a n hacer
+            Escribir("Ingrese el elemento de B en la posición", i, j)
+            Leer(B[i,j])
+        FinPara
+    FinPara
+
+    Para i:= 1 a m hacer
+        Para j:= 1 a n hacer
+            Si i=j entonces // diagonal principal
+                C[i,j]:= 0
+            Sino
+                Si i>j entonces // debajo de la diagonal
+                    C[i,j]:= B[i,j]
+                Sino
+                    C[i,j]:= A[i,j]
+                FinSi
+            FinSi
+        FinPara
+    FinPara
+
+    Para i:= 1 a m hacer
+        Para j:= 1 a n hacer
+            Escribir(C[i,j]) // escribo la matriz
+        FinPara
+    FinPara
+FinAcción

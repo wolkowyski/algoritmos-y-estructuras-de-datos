@@ -1,0 +1,49 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.13 - resolución compartida en Discord
+// ==========================================================================
+
+Dada una lista doblemente encadenada de enteros, ordenada en forma creciente, escriba un algoritmo que
+elimine las entradas repetidas. El algoritmo debe verificar al inicio que la lista que se pasa como
+argumento está ordenada; en caso afirmativo realizar la depuración y emitir un mensaje de 'ÉXITO'; en caso
+ contrario, emitir un mensaje de 'ERROR'.
+
+ACCION 4.13 ES(prim)
+AMBIENTE
+NODO = registro
+   dato:N(8)
+   prox:puntero a NODO
+   ant:puntero a NODO
+fin_registro
+a,p:puntero a NODO
+bandera:booleano
+
+ALGORITMO
+p:=*prim.prox
+a:=prim
+MIENTRAS p <> nil HACER
+    SI *a.dato > *p.dato ENTONCES
+        bandera:= verdadero
+    FIN_SI
+    a:=p
+    p:=*p.prox
+FIN_MIENTRAS
+SI bandera = verdadero ENTONCES
+    ESCRIBIR("ERROR")
+SINO
+    ESCRIBIR("EXITO")
+    a:=prim
+    p:=*prim.prox
+    MIENTRAS p <> nil HACER
+        SI *a.dato = *p.dato ENTONCES
+            *a.prox:= *p.prox
+            a:=*p.prox
+            *a.ant:= *p.ant
+            DISPONER(p)
+            p:=*a.prox
+        SINO
+            a:=p
+            p:=*p.prox
+        FIN_SI
+    FIN_MIENTRAS
+FIN_SI

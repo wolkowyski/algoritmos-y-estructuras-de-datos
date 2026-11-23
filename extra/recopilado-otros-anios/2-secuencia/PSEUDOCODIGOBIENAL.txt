@@ -1,0 +1,228 @@
+Accion__programbienal2020_es
+    Ambiente
+     var
+     Sec,Sal: Secuencia de caracter;
+           v: caracter;
+     errafrica,escramerica,escrafica,escriasia,escreuropa,totsec,i: entero;
+     opcion,op:caracter;
+     incerr: real;
+     const
+	conj= ['0', '1', '2'];
+	conjnoval= [' ', ','];
+    
+     Procedimiento Instrucciones ();
+        ambiente
+        Fichero1:archivo;
+        caracter: caracter;
+
+        Algoritmo
+        Mientras NFDA(Fichero1) hacer
+         Leer(Fichero1, caracter);
+         Escribir(caracter);
+        Fin
+        Cerrar(Fichero1);
+     Fin Procedimiento
+     Procedimiento Segun;
+        Algoritmo
+        Segun (v) hacer          //corregir el error y contabilizarlo
+           '0':Escribir(Sal,'o'); errafrica:= errafrica + 1;
+           '1':Escribir(Sal,'i'); errafrica:= errafrica + 1;
+           '3':Escribir(Sal,'e'); errafrica:= errafrica + 1;
+           '4':Escribir(Sal,'a'); errafrica:= errafrica + 1;
+           '8':Escribir(Sal,'u'); errafrica:= errafrica + 1;
+            otro: Escribir (Sal,v);
+        Fin Segun
+        Leer(Sec,v)
+     Fin Procedimiento
+     Procedimiento Programa; // Estructura principal del codigo
+     Arr(Sec);               // Arrancamos la Secuencia
+     Avz(Sec,v);
+     Crear(Sal);             // Creamos la Secuencia de Salida
+     // Inicializar Contadores
+     errafrica:=0;       // Contador de errores corregidos de escritores africanos
+     escramerica:=0;     // Contador de Escritores Americanos
+     escrafrica:=0;      // Contador de Escritores africanos
+     escreuropa:=0;      // Contador de Escritores europeo
+     Mientras NFDS(Sec) hacer;
+       Leer(Sec,v);
+         Si v ='F' entonces      //Analisis Africa
+           escrafrica:= escrafrica + 1;
+           Leer(Sec,v);
+            // Analizar Secuencia post 2000
+           Si v='2' entonces
+             Para i:= 1 hasta 4 hacer
+               Leer(Sec,v);
+             Fin Para
+             Repetir  //Analiza Nombre
+               Segun;
+             Hasta que v= ','
+             Para i:= 1 hasta 2 hacer
+               Escribir (Sal,v);
+               Si v no en conjnoval entonces
+                  totsec:=totsec +1;
+                  Leer(Sec,v);
+               Fin Si
+              Fin Para
+              Segun v hacer     // Corrigi el error y lo contabiliza
+                 '0': Escribir(sal,'O'); totsec:=totsec + 1; errafrica:= errafrica+1;	
+		 '1': Escribir(sal,'I'); totsec:=totsec + 1; errafrica:= errafrica+1;
+	         '3': Escribir(sal,'E'); totsec:=totsec + 1; errafrica:= errafrica+1;
+		 '4': Escribir(sal,'A'); totsec:=totsec + 1; errafrica:= errafrica+1;
+		 '8': Escribir(sal,'U'); totsec:=totsec + 1; errafrica:= errafrica+1;
+		contrario
+		  Escribir(Sal,v);	
+		  totsec:=totsec + 1;
+	       Fin Segun;
+               Repetir  //Analiza Nombre
+                  Segun;
+               Hasta que v='|';
+               Escribir (Sal, '/');
+          Fin Si
+         Contrario
+             Para i:=1 hasta 4 hacer
+                Leer(Sec,v);
+             Fin Para
+             Mientras v<>'|' hacer //Analiza Nombre
+               Segun v hacer       // Corregir el error y lo contabiliza
+                 '0': totsec:=totsec + 1; errafrica:= errafrica+1;	
+		 '1': totsec:=totsec + 1; errafrica:= errafrica+1;
+		 '3': totsec:=totsec + 1; errafrica:= errafrica+1;
+		 '4': totsec:=totsec + 1; errafrica:= errafrica+1;
+		 '8': totsec:=totsec + 1; errafrica:= errafrica+1;
+                 Contrario
+                   Si v no en conjnoval entonces
+                      totsec:= totsec + 1;
+                   Fin Si;
+                Fin Segun
+                Leer (Sec,v);
+              Fin Mientras
+         Fin Si  // Fin de Analisis de Africa
+         Si v='A' entonces //Analisis America
+            Escramerica:= escramerica + 1;
+            Leer(Sec,v);
+            Si v= '2' entonces //Analisis de secuencia post 2000
+               Para i:=1 hasta 4 hacer
+                 Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Escribir (Sal,v);
+                 Si v no en conjnoval entonces
+                    totsec:=totsec + 1;
+                 Fin Si
+                 Leer(Sec,v);
+               Fin Mientras
+               Escribir(Sal,'/');
+             Fin Si
+            Contrario
+               Para i:= 1 hasta 4 hacer
+                 Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Si v no en conjnoval entonces
+                    totsec:= totsec + 1;
+                    Leer(Sec,v);
+                 Fin Si
+          Fin Si // Fin de Analisis de America
+          Si v='E' entonces   // Analisis de Europa
+            escreuropa:= escreuropa + 1
+            Leer (Sec,v);
+            Si v = '2' entonces // Analisis de secuencia POST 2000
+               Para i:= 1 hasta 4 hacer
+                Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Escribir (Sal,v);
+                 Si v no en conjnoval entonces
+                    totsec:=totsec + 1;
+                 Fin Si
+                 Leer(Sec,v);
+               Fin Mientras
+               Escribir(Sal,'/');
+             Fin Si
+            Contrario
+               Para i:= 1 hasta 4 hacer
+                 Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Si v no en conjnoval entonces
+                    totsec:= totsec + 1;
+                    Leer(Sec,v);
+                 Fin Si
+          Fin Si  // Fin de Analisis de Europa
+           Si v='S' entonces //Analisis de Asia
+            escriasia:= escriasia + 1
+            Leer (Sec,v);
+            Si v = '2' entonces   // Analisis Secuencia Post 2000
+               Para i:= 1 hasta 4 hacer
+                Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Escribir (Sal,v);
+                 Si v no en conjnoval entonces
+                    totsec:=totsec + 1;
+                 Fin Si
+                 Leer(Sec,v);
+               Fin Mientras
+               Escribir(Sal,'/');
+             Fin Si
+            Contrario
+               Para i:= 1 hasta 4 hacer
+                 Leer(Sec,v);
+               Fin Para
+               Mientras v<>'|' hacer
+                 Si v no en conjnoval entonces
+                    totsec:= totsec + 1;
+                    Leer(Sec,v);
+                 Fin Si
+          Fin Si //Fin de Analisis de Asia
+     Fin Mientras
+     incerr:=(errafrica/totsec)*100;      // Porcentaje de los errores
+     Escribir('-----Correcion finalizada !-----');
+     //  Se Muestra por pantalla
+     Escribir('~La cantidad de escritores registrados por continentes es: ');
+     Escribir('Africa: ',escrafrica);
+     Escribir('America: ',escramerica);
+     Escribir('Asia: ',escriasia);
+     Escribir('Europa: ',escreuropa);
+     Escribir('~Se han encontrado ',errafrica,' errores en los nombres de participantes africanos.');
+     Escribir('~EL total de caracteres analizados es de ',totsec,', con una incidencia del ',incerr:2:2,'% de errores encontrados.');
+     Cerrar(Sec);         //Se cierra la Secuencia de Entrada
+     Cerrar(Sal);         //Se cierra la Secuencia de Salida
+     Fin Procedimiento;
+     
+     Procedimiento Menu;
+        Escribir('----------MENU PRINCIPAL----------'); 
+	Escribir('-------1- Ingresar al programa----'); 
+	Escribir('-------2-Instrucciones------------');
+	Escribir('-------0- Salir-------------------');
+	Escribir('*SELECCIONE UNA OPCION Y PRESIONE ENTER PARA CONTINUAR CON EL PROGRAMA*'); 
+	Leer(opcion);
+	Segun opcion hacer 
+		'1': programa;
+		'2': instrucciones;
+		'0': halt (0);
+	Fin Segun
+     Fin Procedimiento;
+     
+     Algoritmo
+       Menu;  //Llamamos al procedimiento Menu
+       Repetir
+                Escribir('-----------Desea seguir con el programa?-------------------');
+		Escribir('-----------Presione 1 para continuar-----------------------');
+		Escribir('-----------Presione 2 para reanudar al menu principal-------');
+		Escribir('-----------Escriba  0 para salir----------------------------');
+		Escribir('      SELECCIONE UNA OPCION Y PRESIONE ENTER PARA CONTINUAR');
+		Leer (opcion);
+		Segun opcion Hacer 
+			'1': Programa;  //Llamamos al procedimiento Prograa
+			'2': Menu;      //Llamamos al procedimiento Menu
+			'0':  writeln('Desea salir del programa? S/N'); Leer(op);
+                       Si (op='S') o (opcion = 'S') entonces
+                          Salir;
+		         Sino
+		           Escribir('Error opcion invalida');
+                       Fin Si
+	        Fin Segun;
+	Hasta que opcion='0';
+Fin Accion.   //Fin del programa
+     

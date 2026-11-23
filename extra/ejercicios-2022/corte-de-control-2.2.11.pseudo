@@ -1,0 +1,112 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+
+ALUMNOS Ordenado por Sexo, Carrera, Nro_Legajo
+
+Sexo | Carrera | Nro_Legajo | Fecha_Ingreso | Total_Materias_Aprobadas
+
+· Se desea un listado con el siguiente detalle por sexo, carrera y total general
+
+1. Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+
+2. Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas.
+
+______________________________________________________________________________________________________________
+
+ACCION materiasAprobadas ES
+	AMBIENTE
+		TIPOS
+			Fecha = REGISTRO
+				aa: 2000..2022;
+				mm: 1..12;
+				dd: 1..31;
+			FIN REGISTRO;
+
+			Alumno = REGISTRO
+				sex: AN(1);
+				carr: AN(20);
+				n_leg: N(5);
+				fecha_ing = Fecha;
+				tot_matAprob: N(2);
+			FIN REGISTRO;
+
+		VARIABLES
+			alumnos: Archivo de Alumno ordenado por sex, carr y n_leg;
+			a: Alumno;
+			alSexMas, alSexMen alCarrMas, alCarrMen, alTotMas, alTotMen: entero;
+			resSex: AN(1); resCarr: AN(20);
+
+			PROCEDIMIENTO printAls(alMas: entero; alMen: entero)
+				ESC('Total de alumnos con más de 20 materias aprobadas: ', alMas);
+				ESC('Total de alumnos con menos de 20 materias aprobadas: ', alMen);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteCarr()
+				ESC('Alumnos de sexo: ', resSex, ' | Anio de ingreso: 2009 | Total en carrera: ', resCarr);
+				printAls(alCarrMas, alCarrMen);
+				alSexMas := alSexMas + alCarrMas;
+				alSexMen := alSexMen + alCarrMen;
+				alCarrMas := 0; alCarrMen := 0;
+				resCarr := a.carr;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteSex()
+				corteCarr();
+				ESC('Total de alumnos del sexo: ', resSex, ' | Anio de ingreso: 2009 | Carrera: ', resCarr);
+				printAls(alSexMas, alSexMen);
+				alTotMas := alTotMas + alSexMas;
+				alTotMen := alTotMen + alSexMen;
+				alSexMas := 0; alSexMen := 0;
+				resSex := a.sex;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (a.sex <> resSex) ENTONCES
+					corteSex();
+				SINO SI (a.carr <> resCarr) ENTONCES
+						corteCarr();
+					FIN SI;
+				FIN SI;
+				tratarRegistro();
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				SI (a.fecha_ing.aa = 2009 ^ a.tot_matAprob > 20) ENTONCES
+					alCarrMas := alCarrMas + 1;
+				SINO SI (a.fecha_ing.aa = 2009 ^ a.tot_matAprob < 20) ENTONCES
+						alCarrMen := alCarrMen + 1;
+					FIN SI;
+				FIN SI;
+				LEER(alumnos, a);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotalFinal()
+				corteSex();
+				ESC('Total de alumnos UTN frRe: ');
+				printAls(alTotMas, alTotMen);
+				CERRAR(alumnos);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				alSexMas := 0; alSexMen := 0;
+				alCarrMas := 0; alCarrMen := 0;
+				alTotMas := 0; alTotMen := 0;
+				ABRIR E/(alumnos);
+				LEER(alumnos, a);
+				resCarr := a.carr;
+				resSex := a.sex;
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+		inicializarDatos();
+
+		MIENTRAS NO FDA(alumnos) HACER
+			tratarCorte();
+		FIN MIENTRAS;
+
+		emitirTotalFinal();
+FIN ACCION;
+
+//Petrovich, Julio E.

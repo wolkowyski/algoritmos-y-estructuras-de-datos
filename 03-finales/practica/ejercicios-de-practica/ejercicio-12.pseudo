@@ -1,0 +1,235 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 12
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 12 es
+
+ Ambiente
+
+  sec1: secuencia de caracter;
+  a:caracter;
+
+  sec2: secuencia de caracter;
+  b:caracter;
+
+  sec3:secuencia de caracter;
+  c:caracter;
+
+  cont1:entero;
+  cont2:entero;
+  cont3:entero;
+  cont_gral:entero;
+  contc:entero;
+  av:booleano;
+
+  Funcion convertir(a:caracter):entero
+   Segun a hacer
+    "0": convertir:=0;
+    "1": convertir:=1;
+    "2": convertir:=2;
+    "3": convertir:=3;
+    "4": convertir:=4;
+    "5": convertir:=5;
+    "6": convertir:=6;
+    "7": convertir:=7;
+    "8": convertir:=8;
+    "9": convertir:=9;
+   finSegun
+  finFuncion
+
+
+
+ Algoritmo
+
+  ARR(sec1);
+  ARR(sec2);
+  AVZ(sec1,a);
+  AVZ(sec2,b);
+  Crear(sec3);
+
+  cont1:=0;
+  cont2:=0;
+  cont3:=0;
+  cont_gral:=0;
+
+
+
+  Mientras NFDS(sec1) hacer
+
+   Mientras a <> "@" hacer
+    av:=True;
+    contc:=0;
+    cont_gral:=cont_gral+1;
+
+    Si a = "1" entonces
+     cont1:=cont1+1;
+     AVZ(sec1,a);
+     Sino
+      AVZ(sec1,a);
+      Si convertir(a) > 7 entonces
+       cont1:=cont1+1;
+       Sino
+        Si convertir(a) > 4 entonces
+         cont2:=cont2+1;
+         Sino
+          cont3:=cont3+1;
+          av:=False;
+          Mientras b <> "," hacer
+           Escribir(sec3,b);
+           AVZ(sec2,b);
+          finMientras
+          Escribir(sec3,":");
+          Escribir(sec3,"0");
+          Escribir(sec3,a);
+          Para i:=1 hasta 8 hacer
+           AVZ(sec1,a);
+           Escribir(sec3,a);
+          finPara
+          AVZ(sec1,a);
+          AVZ(sec1,a);
+          Mientras a <> "#" hacer
+           Escribir(sec3,a);
+           AVZ(sec1,a);
+           contc:=contc+1;
+          finMientras
+          Escribir(sec3,"#");
+          Escribir(sec3,contc);
+          Escribir(sec3,",");
+         finSino
+        finSi
+       finSino
+      finSi
+     finSino
+    finSi
+    Si av entonces
+     Mientras a <> "#" hacer
+      AVZ(sec1,a);
+     finMientras
+    finSi
+    AVZ(sec1,a);
+   finMientras
+   Si b = "," entonces
+    Mientras b <> "." hacer
+     AVZ(sec2,b);
+    finMientras
+    AVZ(sec2,b);
+   finSi
+  finMientras
+
+  Escribir("La cantidad de comentarios con puntuación perfecta es", cont1);
+  Escribir("La cantidad de comentarios con puntuación buena es", cont2);
+  Escribir("La cantidad de comentarios con puntuación mala es", cont3);
+  Escribir("La cantidad promedio de comentarios positivos es", (cont1+cont2)/cont_gral);
+
+ finAccion
+
+
+
+Accion Ejercicio 12.corte es
+
+ Ambiente
+
+  Entrada = Registro
+   tipo: [1..10];
+   calidad: [1..5];
+   cod:N(20);
+   nombre:AN(150);
+   precio:N(4,2);
+   stock:N(4);
+  finRegistro
+
+  Arche: archivo de entrada ordenado por tipo, calidad;
+  e: entrada;
+
+  Salida = Registro
+   cod:N(20);
+   nombre:AN(150);
+   precio_v:N(4,2);
+   precio_n:N(4,2);
+   porcentaje:N(2);
+  finRegistro
+
+  Archs: archivo de salida ordenado por cod;
+  s:salida;
+
+  res_calidad:=[1..5];
+  res_tipo:=[1..10];
+
+  cant_calidad:entero;
+  cant_tipo:=entero;
+  cant_gral:=entero;
+
+  Procedimiento corte_calidad es
+   Escribir("La cantidad de productos existentes de tipo ", res_tipo, " y calidad ", rers_calidad, " es:", cant_calidad);
+   cant_tipo:=cant_tipo+cant_calidad;
+   cant_calidad:=0;
+   res_calidad:=e.calidad;
+  finProcedimiento
+
+  Procedimiento corte_tipo es
+   corte_calidad;
+   Escribir("La cantidad de productos existentes de tipo ", res_tipo, " es:", cant_tipo);
+   cant_gral:=cant_gral+cant_tipo;
+   cant_tipo:=0;
+   res_tipo:=e-tipo;
+  finProcedimiento
+
+ Algoritmo
+
+  Abrir E/(Arche);
+  Abrir /S(Archs);
+  Leer (Arche,e);
+
+  res_calidad:=e.calidad;
+  res_tipo:=e.tipo;
+
+  cant_calidad:=0;
+  cant_tipo:=0;
+  cant_gral:=0;
+
+
+  Mientras NFDA(Arche) hacer
+
+   Si res_tipo <> e.tipo entonces
+    corte_tipo;
+    Sino
+     Si res_calidad <> e.calidad entonces
+      corte_calidad;
+     finSi
+    finSino
+   finSi
+
+   Si e.stock <> 0 entonces
+    cant_calidad:=cant_calidad+1;
+    s.cod:=e.cod;
+    s.nombre:=e.nombre;
+    s.precio_v:=e.precio;
+    Si e.tipo < 6 entonces
+     s.precio_n:=e.precio + e.precio/2;
+     s.porcentaje:=50;
+     Sino
+      Si e.calidad < 3 entonces
+       s.precio_n:=e.precio + (e.precio*30/100);
+       s.porcentaje:=30;
+       Sino
+        s.precio:= e.precio + (e.precio*40/100);
+        s.porcentaje:=40;
+       finSino
+      finSi
+     finSino
+    finSi
+    Escribir(Archs,s);
+   finSi
+
+  finMientras
+
+  corte_tipo;
+
+  Escribir("La cantidad total de productos es: ", cant_gral);
+
+  Cerrar(Arche);
+  Cerrar(Archs);
+
+ finAccion

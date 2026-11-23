@@ -1,0 +1,41 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Nro_lib: N(6)
+        Titulo: AN(50)
+        Autor: AN(50)
+        cant_hojas: N(3)
+    FR
+
+    L: Arreglo de [1..200] de reg
+ACCION_39_ES
+    AMBIENTE
+        Autor = "Niklaus Wirth"
+        Titulo = "Algoritmos + Estructura de Datos = Programa"
+        res_pos, i, j: Entero
+        Max_vol: Entero
+        res_titulo: Alfanumerico
+    PROCESO
+        res_titulo:= L[1].Titulo
+        Max_vol:= L[1].cant_hojas
+        ESC("Libros del ",Autor,")
+        Para i:= 1 hasta 200 hacer
+            Si (Autor = L[i].Autor) entonces
+                ESC("Libro: "L[i].Titulo)
+                Si (Max_vol < L[i].cant_hojas) entonces
+                    Max_vol:= L[i].cant_hojas
+                    res_titulo:=L[i].Titulo
+                FS
+            FS
+        FP
+        ESC("El libro con mayor volumen es: ", res_titulo, "con un total de hojas de: ",Max_vol)
+
+        j:= 1
+        Mientras (j < 200) y (l[J].Titulo <> Titulo)
+            j:= j + 1
+        FM
+        Si (L[j].Titulo = Titulo) entonces
+            ESC("Libro: ", Titulo," encontrado en la posicion: ", j)
+        Sino
+            ESC("Libro no encontrado")
+        FS
+FA

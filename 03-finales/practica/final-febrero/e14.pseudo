@@ -1,0 +1,93 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e14
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+EJER 1
+ACCION rendim depor
+    Ambiente
+     sec: secuencia de caracter
+     v: ventana
+
+     nodo= registro
+        caracter:
+        tipo:
+        edad:
+        cupo:
+        prox: puntero a nodo
+    finregistro
+
+    p, q, prim, prim2, k: puntero a nodo
+
+    procedimiento crearNodo es
+        k=prim1
+        nuevo(q)
+        q.caracter:=v
+        si prim1 = nil entonces
+            prim1:= q
+            q.prox:= nil
+        finsi
+        sino
+            mientras k <> nil hacer
+                ult:= k
+                k:= *k.prox
+            finmientras
+            q.prox:= nil
+            *ult.prox:= q
+        finsi
+    finproce
+
+    procedimiento crearLista es
+        p= prim2
+        mientras ult.tipo <> p.tipo y ult.rango <> p.rango  hacer
+            p:= *p.prox
+        finmientras
+
+
+
+
+    procedimiento inicializarNodos() es
+        nuevo(q)
+        prim1:= q, *q.prox:nil
+        p:= prim1
+        para i= 1 hasta 5 hacer
+            para j= 1 hasta 3 hacer
+                q.caracter:= ''
+                q.tipo:= i
+                q.rango:= j
+                nuevo(q)
+                *p.prox:= q
+                q.prox:= nil
+            finpara
+        finpara
+    finprocedimiento
+
+
+
+
+
+
+
+
+
+    PROCESO
+        inicializarNodos()
+        ARR(sec) AVZ(sec,v)
+        Mientras no FDS(sec) hacer
+            tipo:=v
+            avz(sec,v)
+            rango:= v
+            avz(sec,v)
+            Mientras v <> '-'
+                crearNodo()
+                avz(sec,v)
+            finmientras
+            crearNodo()
+            ult.tipo:= tipo
+            ult.rango:= rango
+            avz(Sec,v)
+            avz(sec,v)
+            crearLista()
+            totplan:= totplan + 1
+        finmientras

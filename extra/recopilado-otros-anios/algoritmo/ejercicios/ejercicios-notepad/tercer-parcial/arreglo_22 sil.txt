@@ -1,0 +1,81 @@
+Accion arreglo 22 es:
+Ambiente:
+	Compras = registro
+		nro_fact: N(4)
+		Proveedor: { 'A' 'B' 'C'}
+		Fecha: FECHA
+		Nro_plata : 1..4
+		importe: real
+	Fin reg
+	Arch: archivo de compras
+	Reg: compras
+	
+	A: arreglo de [A..D,1..13,1..5] de real
+	i: A..D
+	j: 1..13
+	k: 1..5
+	
+	Algoritmo:
+		
+		Para i:= A hasta D hacer
+			Para j:= 1 hasta 13 hacer
+				Para k:= 1 hasta 5 hacer
+					A[i,j,k] := 0
+				Fin para
+			Fin para
+		Fin para
+		
+		ABRIR (arch) 
+		LEER (arch,reg)
+			
+			Mientras NFDA (Arch) hacer
+				
+				i:= reg.proveedor 
+				j:= reg.fecha.mes
+				k:= nro_planta
+				
+				A[i,j,k]:= A [i,j,k] + reg.imp 
+				A[D,j,k]:= A [D,j,k] + reg.imp 
+				A[i,13,k]:= A [i,13,k] + reg.imp 
+				A[i,j,5]:= A [i,j,5] + reg.imp 
+				A[D,13,5]:= A [D,13,5] + reg.imp
+		
+				Leer (arch,reg)
+			Fin mientras
+		
+		
+		Para k:= 1 hasta 5 hacer
+				esc(' Planta',k)
+		
+				esc ( 'Proveedor            fecha               total proveedor ')
+				esc (             ' 1  2 3 4 5 6 7 8 9 10 11 12 ' )
+		
+				Para i := A hasta D hacer
+					Si i = D entonces
+						esc( 'total por proveedor')
+					sino
+						ESC(i)
+					Fin si
+				
+						Para j:= 1 hasta 13 hacer
+							esc (A[i,j,k])
+						Fin para
+				Fin para
+		Fin para
+	Cerrar (arch)
+	Fin accion
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	

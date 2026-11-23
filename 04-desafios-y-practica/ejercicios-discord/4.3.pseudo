@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.3 - resolución compartida en Discord
+// ==========================================================================
+
+Dada una lista simplemente encadenada de números diseñar un algoritmo que calcule en forma independiente:
+La suma de los números impares, y la suma de los números pares.
+
+
+ACCION 4.3 ES(prim:puntero a NODO)
+AMBIENTE
+NODO = registro
+    dato:entero
+    prox:puntero a nodo
+fin_registro
+p:puntero a nodo
+impares, pares:entero
+
+ACCION
+impares:=0
+pares:=0
+p:=prim
+MIENTRAS p <> nil HACER
+    SI *p.dato MOD 2 = 0 ENTONCES
+        pares:= pares + *p.dato
+    SINO
+        impares:= impares + *p.dato
+    FIN_SI
+    p:= *p.prox
+FIN_MIENTRAS
+ESCRIBIR("SUMA de PARES: ",pares, " IMPARES: ",impares)
+FIN_ACCION

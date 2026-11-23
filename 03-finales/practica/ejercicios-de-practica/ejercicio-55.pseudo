@@ -1,0 +1,162 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 55
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 55 es
+ Ambiente
+
+  Fecha=Registro
+   AA:N(4);
+   MM:[1..12];
+   DD:[1..31];
+  finRegistro
+
+  Compras=Registro
+   Fechac: Fecha;
+   DNI:N(8);
+   cant:N(5);
+   importe:N(10);
+  finRegistro
+
+  Fidelizacion=Registro
+   DNI:N(8);
+   ayn:AN(50);
+   Fechaa: Fecha;
+   categoria: AN(10);
+  finRegistro
+
+  Archc: Archivo de Compras ordenado por Fechac;
+  c: Compras;
+  Archf: Archivo de Fidelizacion indexado por DNI;
+  f:Fidelizacion;
+
+  Nodo=Registro
+   ayn:AN(50);
+   chances:N(10);
+   ant,prox: puntero a nodo;
+  finRegistro
+
+  Prim, Ult, p,q:puntero a nodo;
+
+
+ Algoritmo
+
+  Abrir E/(Archc); Leer(Arch,c);
+  Abrir E/(Archf); Leer(ARchf,f);
+
+  Prim:=nil;
+  Ult:=nil;
+
+
+  Mientras NFDA(Archc) hacer
+   f.DNI:=c.DNI;
+   Leer(Archf,f);
+   Si existe entonces
+
+    Si Prim = nil entonces
+     Nuevo(q);
+     *q.ayn:=f.ayn;
+     *q.chances:=5 + c.importe mod 100;
+     Escribir(q);
+
+     Prim:=q;
+     *q.prox:=nil;
+     Sino
+      p:=Prim;
+
+      Mientras p <> nil y f.ayn <> *p.ayn hacer
+       p:=*p.prox;
+      finMientras
+
+      Si p=nil entonces
+       Nuevo(q);
+       *q.ayn:=f.ayn;
+       *q.chances:=5 + c.importe mod 100;
+
+       Escribir(q);
+
+       p:=*p.ant;
+
+       Mientras f.ayn < *p.ayn hacer
+        p:=*p.ant;
+       finMientras
+       *q.prox:=*p.prox;
+       *(*p.prox).ant:= q;
+       *q.ant:=p;
+       *p.prox:=q;
+       Sino
+        *p.chances:=*p.chances+ c.importe mod 100;
+        Reescribir(p);
+       finSino
+      finSi
+     finSino
+    finSi
+   finSi
+   Leer(Archc,c);
+  finMientras
+
+
+  Cerrar(Archf);
+  Cerrar(Archc);
+
+finAccion
+
+
+Accion Ejercicio 55.recursividad(Prim:puntero a nodo) es
+
+ Ambiente
+
+  Nodo=Registro
+   DNI:N(8);
+   nya:AN(50);
+   edad:N(3);
+   nroc:N(3);
+   nroh:N(2);
+   temperaturas: arreglo de (1..4) real;
+   prox:puntero a nodo;
+  finRegistro
+
+  Prim, p, ant: puntero a nodo;
+  i: entero;
+
+  Funcion tem(*p.temperaturas: arreglo de(1..4) real,i=4):booleano
+   Si i=0 entonces
+    tem:=True;
+    Sino
+     Si temperaturas(i) <36,5 entonces
+      tem(i-1);
+      Sino
+       tem:=False;
+      finSino
+     finSi
+    finSino
+   finSi
+  finFuncion
+
+ Algoritmo
+
+  p:=Prim;
+  ant:=nil;
+
+  Mientras p <> nil hacer
+
+   Si tem entonces
+    Escribir (*p.nya);
+    Si P=Prim entonces
+     Prim:= *p.prox;
+
+     p:=Prim;
+     Sino
+      *ant.prox:=*p.prox;
+     finSino
+    finSi
+    Disponer(p);
+   finSi
+
+   ant:=p;
+   p:=*p.prox;
+  finMientras
+
+finAccion

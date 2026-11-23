@@ -1,0 +1,7 @@
+Funcion Fact(n:entero):entero
+    Si (n <= 1) entonces
+        fact:= 1
+    Sino
+        fact:= n*fact(n-1)
+    FS
+FF

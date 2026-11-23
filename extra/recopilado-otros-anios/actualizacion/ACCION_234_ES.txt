@@ -1,0 +1,91 @@
+ACCION_234_ES
+    AMBIENTE
+        Fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+
+        Productos = Registro de
+            Cod_Prod: N(9)
+            Nombre: AN(50)
+            Stock: N(4)
+            Precio: N(4)
+        FRegistro
+        Prod: Archivo de Productos indexado por Cod_Prod
+        P: Productos
+
+        Ticket = Registro de
+            Nro_Ticket: N(9)
+            Fecha: Fecha
+            Cliente: AN(50)
+        FRegistro
+        Tick: Archivo de Ticket indexado por Nro_Ticket
+        T: Ticket
+
+        Detalle = Registro de
+            Nro_Ticket: N(9)
+            Nro_Linea: N(9)
+            Cod_Prod: N(9)
+            Cantidad: N(4)
+        FRegistro
+        Det: Archivo de Detalle indexado por Nro_Ticket
+        D: Detalle
+
+        cont: Entero
+        Opcion, Opcionprod: Alfanumerico
+        CUIT: Entero
+        Empresa: Alfanumerico
+        Fec: Fecha
+        CP,CantPr: Entero
+
+    PROCESO
+        Abrir /S (Tick)
+        Abrir /S (Det)
+        Abrir E/S (Prod)
+        cont:= 1
+        ESC("Ingrese CUIT de la empresa"); Leer (CUIT);
+        ESC("Ingrese el nombre de la empresa"); Leer (Empresa);
+        ESC("Desea realizar un ticket? S/N"); Leer (Opcion);
+        Fec:= FECHA()
+        Mientras (Opcion = S) Hacer
+            T.Nro_Ticket:= OBTENER_TICKET()
+            T.Fecha:= FECHA()
+            T.Cliente:= "Consumidor Final"
+            Grabar(Tick, T)
+            //Registro de los datos principales del ticket
+            ESC("Empresa:",Empresa,"      CUIT:",CUIT,"      Fecha:", Fec)
+            ESC("Cliente: Consumidor Final")
+            //Encabezado
+            Opcionprod:= "S"
+            D.Nro_Ticket:= OBTENER_TICKET()
+            Mientras (Opcionprod = "S") Hacer
+                D.Nro_Linea:= cont
+                cont:= cont + 1
+                ESC("Ingrese el codigo del producto"); Leer(CP);
+                P.Cod_Prod:= CP
+                Leer(Prod, P)
+                Si No EXISTE Entonces
+                    ESC("Producto no encontrado")
+                Sino
+                    ESC("Ingrese la cantidad a comprar: "); Leer(D.Cantidad)
+                    P.Stock:= P.Stock - D.Cantidad
+                    Regrabar(Prod, P)
+                    D.Cod_Prod:= CP
+                    Grabar(Det, D)
+                    //Registro del producto en el archivo de detalle
+                    ESC("   Producto | Cantidad | Subtotal")
+                    ESC_DETALLES_PROD()
+                FSi
+                ESC("Desea ingresar otro producto? S/N"); Leer(Opcionprod)
+            FMientras
+            IMPRIMIR()
+            ESC("Desea realizar un ticket? S/N"); Leer (Opcion);
+        FMientras
+        Cerrar(Prod)
+        Cerrar(Det)
+        Cerrar(Tick)
+FACCION 
+
+
+

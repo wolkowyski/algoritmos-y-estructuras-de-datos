@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Desafío de campus (17 al 23 de abril) - Funciones y procedimientos
+// ==========================================================================
+
+// Problema: Twitter ha detectado muchos accesos no autorizados a cuentas de
+// más de 1 millón de followers. Dada una cuenta y los accesos no autorizados
+// detectados en marzo de 2023, determinar su nivel de criticidad:
+//   - Más de 100 accesos no autorizados en el mes: GRAVE
+//   - Más de 35 accesos no autorizados en el mes: OBSERVABLE
+//   - 35 o menos accesos no autorizados en el mes: LEVE
+
+// a) ¿Función o procedimiento?
+//    Una función.
+//
+// b) Justificación
+//    Se espera obtener un único resultado (el nivel de criticidad) a partir de
+//    un dato de entrada (la cantidad de accesos). Una función recibe valores y
+//    devuelve un resultado, que es justo lo que pide el problema.
+//
+// c) Subalgoritmo
+//    El orden de las condiciones importa: se pregunta primero por GRAVE,
+//    porque más de 100 también es más de 35. Según no sirve para rangos que
+//    se superponen, así que se usan Si anidados.
+
+Función nivel_criticidad (accesos_no_autorizados: entero): alfanumérico es
+	Si accesos_no_autorizados > 100 entonces
+		nivel_criticidad:= "GRAVE"
+	Sino
+		Si accesos_no_autorizados > 35 entonces
+			nivel_criticidad:= "OBSERVABLE"
+		Sino
+			nivel_criticidad:= "LEVE"
+		FinSi
+	FinSi
+FinFunción

@@ -1,0 +1,108 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Escribir un algoritmo que permita desglosar una secuencia de enteros que contiene monotonías crecientes (series de elementos consecutivos ordenados crecientemente; cada serie está constituida por un elemento como mínimo), en dos secuencias de salida, de tal modo que tales monotonías sean copiadas alternativamente en una de las secuencias resultado o en otra.
+
+Ejemplo secuencia de entrada.
+
+2, 5, 8, 11, 14, 17,15, 10,11,20, 44,12,14,16….
+
+Secuencia de salida 1
+
+2,5,8, 11, 14, 17, 10,11,20, 44…
+
+Secuencia de salida 2
+
+15, 12,14,16
+
+y si te animas...: además de lo solicitado anteriormente, se pide: obtener la suma de los valores de cada secuencia y al final informar el mayor valor (de esas sumas).
+________________________________________________________________________
+
+ACCION secElem ES
+
+	AMBIENTE
+
+		VARIABLES
+
+			secIn, secOut1, secOut2: Secuencia de enteros;
+			v1, v2: entero;
+			acum1, acum2: entero;
+			rotar: logico;
+
+	PROCESO
+
+		acum1 := 0; acum2 := 0; // Acumula los valores de cada secuencia
+		CREAR(secOut1); // Almacenará la primer monotonía de números
+		CREAR(secOut2); // Almacenará la segunda monotonía de números
+		ARR(secIn);
+		AVZ(secIn, v1); AVZ(secIn, v2);
+		ESC(secOut1, v1); acum1 := acum1 + v1;
+		rotar := F;
+
+		MIENTRAS NO FDS(secIn) HACER
+
+			SI (v1 < v2) ENTONCES
+
+				SI (rotar) ENTONCES
+					ESC(secOut1, v1);
+					acum1 := acum1 + v1;
+					AVZ(secIn, v2);
+					rotar := F;
+				SINO
+					ESC(secOut1, v2);
+					acum1 := acum1 + v2;
+					v1 := v2;
+					AVZ(secIn, v2);
+				FIN SI;
+			SINO
+				SI (rotar) ENTONCES
+					ESC(secOut2, v1);
+					acum2 := acum2 + v1;
+					v2 := v1;
+				SINO
+					ESC(secOut2, v2);
+					acum2 := acum2 + v2;
+				FIN SI;
+				AVZ(secIn, v1);
+				rotar := V;
+			FIN SI;
+
+
+		FIN MIENTRAS;
+
+		ESC('Sumatoria de números de la primer secuencia: ', acum1);
+		ESC('Sumatoria de números de la segunda secuencia: ', acum2);
+		SI (acum1 > acum2) ENTONCES
+			ESC('La sumatoria de números de la primer secuencia es mayor a la sumatoria de la segunda.');
+		SINO SI (acum2 > acum1) ENTONCES
+				ESC('La sumatoria de números de la segunda secuencia es mayor a la sumatoria de la primera.');
+			SINO
+				ESC('La sumatoria de números de la primer secuencia y de la segunda son iguales.');
+			FIN SI;
+		FIN SI;
+		CERRAR(secOut1); CERRAR(secOut2); CERRAR(secIn);
+
+FIN ACCION;
+
+________________________________________________________________________
+
+
+Explicación del funcionamiento del grabado alternado entre secuencias según monotonía:
+
+Vamos a suponer que la monotonía inicialmente es creciente (graba en secOut1) y que luego cambia la monotonía (graba en secOut2). Por último vamos a hacer de cuenta que cambia su monotonía nuevamente volviendo a la normalidad (monotonía inicial, grabado en secOut1).
+
+· primer caso se cumple que v1 < v2 y v1 → v2 [v2 por delante de v1]:
+
+En este punto la ventana 2 se encuentra por delante de la ventana 1, siendo sus valores siempre mayores a medida que va avanzando.
+
+· segundo caso  no se cumple que v1 < v2 pero si v1 → v2 [v2 por delante de v1]:
+
+La ventana que se encuentra por delante es menor a la ventana de resguardo (cambio de monotonía dado por la ventana que avanza), entonces se guarda en la secuencia 2 la ventana que se encontraba por delante (v2) y se avanza la ventana de resguardo (v1) 'rotando' las ventanas, activando así mismo el 'interruptor' rotarVentanas.
+
+· Tercer caso ahora no se cumple que v1 < v2 pero si v2 → v1 [v1 por delante de v2]:
+
+La ventana 1 es mayor a la ventana 2, pero en este caso la ventana 2 es la de resguardo y la ventana 1 la que avanza, así que verifica que rotarVentanas esté 'encendido' y escribe la ventana 1 en la secuencia 2 y resguarda su valor en ventana 2. Luego avanza ventana 1 y así sucesivamente hasta que vuelva a cambiar la monotonía.
+
+· Cuarto caso ahora se cumple que v1 < v2 y sigue v2 → v1 [v1 por delante de v2]:
+
+La ventana que avanza (v1) es menor a la ventana de resguardo 2 (v2), es decir que cambió su monotonía, entonces entra en la condición con rotarVentanas 'encendido'. Escribe en la secuencia 1 el valor de la ventana que cambió la monotonía (v1) y adelanta la ventana 2 sobre la 1, quedando [v1 → v2], y por último 'apaga' rotarVentanas, retomando el grabado de monotonía inicial en la secuencia 1.

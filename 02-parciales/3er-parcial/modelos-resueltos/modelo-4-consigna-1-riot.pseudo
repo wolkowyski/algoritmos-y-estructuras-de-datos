@@ -1,0 +1,145 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Modelo 4 - Ejercicio 1 "RIOT" (listas circulares y dobles)
+//
+//  La empresa RIOT asigna sus clientes (archivo sin orden) a los servidores
+//  de una lista circular simplemente encadenada.
+//  1. Cada cliente se asigna a un servidor que no esté en mantenimiento y no
+//     supere los 10 usuarios; se actualiza la cantidad de usuarios. La
+//     asignación se guarda en una lista (Nombre, Servidor, Localización,
+//     Nivel) que debe poder mostrarse empezando por el último asignado:
+//     por eso se usa carga apilada.
+//  2. Con los servidores libres que quedan con menos de 10 usuarios, generar
+//     una lista doble ordenada en forma creciente por latencia.
+//  Enunciado: ../enunciados/modelo-tercer-parcial-riot.md
+// ==========================================================================
+
+Accion Parcial4_Ejercicio1 (prim1: puntero a servidores) es
+
+Ambiente
+
+	clientes = registro
+		nombre_cliente: AN(45)
+		localizacion: ("LAN", "EUW", "LAS")
+		nivel: 1...500
+	FinRegistro
+	arch: archivo de clientes
+	reg: clientes
+
+	servidores = registro // lista circular de entrada
+		servidor: N(10)
+		localizacion: ("LAN", "EUW", "LAS")
+		estado: ("Libre", "En mantenimiento")
+		cant_usuario: 0...10
+		latencia: 1...1500
+		prox: puntero a servidores
+	FinRegistro
+
+	q1, inicio: puntero a servidores
+
+	nodo3 = registro // asignaciones (lista simple apilada)
+		nombre_cliente: AN(45)
+		servidor: N(10)
+		localizacion: ("LAN", "EUW", "LAS")
+		nivel: 1...500
+		prox: puntero a nodo3
+	FinRegistro
+
+	p3, prim3: puntero a nodo3
+
+	nodo2 = registro // servidores libres (lista doble por latencia)
+		servidor: N(10)
+		localizacion: ("LAN", "EUW", "LAS")
+		cant_usuario: 0...10
+		latencia: 1...1500
+		ant, prox: puntero a nodo2
+	FinRegistro
+
+	p2, q2, prim2, ult2: puntero a nodo2
+	asignado: booleano
+
+	Funcion Disponible (s: puntero a servidores): booleano es
+		Disponible:= (*s.estado = "Libre") y (*s.cant_usuario < 10)
+	FinFuncion
+
+Proceso
+
+	prim2:= nil; ult2:= nil
+	prim3:= nil
+	q1:= prim1
+
+	// Consigna 1: por cada cliente busco, dando como mucho una vuelta, un servidor disponible
+	Abrir E/(arch)
+	Leer(arch, reg)
+	Mientras NFDA(arch) hacer
+		inicio:= q1
+		asignado:= Falso
+		Repetir
+			Si Disponible(q1) entonces
+				asignado:= Verdadero
+			Sino
+				q1:= *q1.prox
+			FinSi
+		Hasta que asignado o (q1 = inicio)
+
+		Si asignado entonces
+			*q1.cant_usuario:= *q1.cant_usuario + 1
+			Nuevo(p3)
+			*p3.nombre_cliente:= reg.nombre_cliente
+			*p3.servidor:= *q1.servidor
+			*p3.localizacion:= reg.localizacion
+			*p3.nivel:= reg.nivel
+			*p3.prox:= prim3 // carga apilada: el último asignado queda primero
+			prim3:= p3
+		Sino
+			Escribir("No hay servidores disponibles para ", reg.nombre_cliente)
+		FinSi
+		Leer(arch, reg)
+	FinMientras
+	Cerrar(arch)
+
+	// Consigna 2: recorro la lista circular una vez completa
+	q1:= prim1
+	Repetir
+		Si Disponible(q1) entonces
+			Nuevo(p2)
+			*p2.servidor:= *q1.servidor
+			*p2.localizacion:= *q1.localizacion
+			*p2.cant_usuario:= *q1.cant_usuario
+			*p2.latencia:= *q1.latencia
+
+			// Busco el lugar en la lista doble (el primero con mayor latencia)
+			q2:= prim2
+			Mientras (q2 <> nil) y (*q2.latencia < *p2.latencia) hacer
+				q2:= *q2.prox
+			FinMientras
+
+			Si (prim2 = nil) entonces // lista vacía
+				prim2:= p2
+				ult2:= p2
+				*p2.prox:= nil
+				*p2.ant:= nil
+			Sino
+				Si (q2 = prim2) entonces // primer elemento
+					*p2.prox:= q2
+					*p2.ant:= nil
+					*q2.ant:= p2
+					prim2:= p2
+				Sino
+					Si (q2 = nil) entonces // último elemento
+						*ult2.prox:= p2
+						*p2.ant:= ult2
+						*p2.prox:= nil
+						ult2:= p2
+					Sino // caso intermedio
+						*p2.prox:= q2
+						*p2.ant:= *q2.ant
+						*(*q2.ant).prox:= p2
+						*q2.ant:= p2
+					FinSi
+				FinSi
+			FinSi
+		FinSi
+		q1:= *q1.prox
+	Hasta que q1 = prim1 // di la vuelta completa
+FinAccion

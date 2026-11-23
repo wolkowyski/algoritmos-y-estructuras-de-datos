@@ -1,0 +1,89 @@
+ACCION_411_ES
+    AMBIENTE
+        reg = Registro de
+            Nro_personal: N(5)
+            Nombre: AN(50)
+            Asign: N(5)
+            Antig: N(2)
+        FR
+        Personal: Archivo de reg
+        P: reg
+
+        Nodo = Registro de
+            Nro_personal: N(5)
+            Nombre: AN(50)
+            Asign: N(5)
+            Antig: N(2)
+            prox, ant: puntero a nodo
+        FR
+        prim, ult, p, q: puntero a nodo
+        opcion: alfanumerico
+    PROCESO
+        ABRIR E/(Personal)
+        Leer(Personal, P) 
+        prim:= NIL
+        ult:= NIL
+        nuevo (q)
+        *q.Nro_personal:= P.Nro_personal
+        *q.Nombre:= P.Nombre
+        *q.Asign:= P.Asign
+        *q.Antig:= P.Antig
+        *q.prox:= NIL
+        *q.ant:= NIL
+        prim:= q
+        ult:= q
+        Leer(Personal, P)
+        Mientras NFDA(Personal) hacer
+            p:= prim
+            nuevo (q)
+            *q.Nro_personal:= P.Nro_personal
+            *q.Nombre:= P.Nombre
+            *q.Asign:= P.Asign
+            *q.Antig:= P.Antig
+            *q.prox:= NIL
+            *q.ant:= NIL
+            Mientras (p <> NIL) y (*p.Antig < *q.Antig) hacer
+                p:= *p.prox
+            FM
+            Si (p = prim) entonces
+                *q.prox:= prim
+                *p.ant:= q
+                prim:= q
+            Sino
+                Si (p = NIL) entonces
+                    *ult.prox:= q
+                    *q.ant:= ult
+                    ult:= q
+                Sino
+                    *q.ant:= *p.ant
+                    *(*p.ant).prox:= q
+                    *q.prox:= p
+                FS
+            FS
+            Leer(Personal, P)
+        FM
+        Cerrar(Personal)
+        ESC("Desea asignar servicios? S/N")
+        Leer(opcion)
+        Mientras (opcion = S) hacer
+            p:= prim
+            *p.asig:= *p.Asign + 1
+            prim:= *p.prox
+            *p.prox:= NIL
+            *prim.ant:= NIL
+            *Ult.prox:= p
+            *p.ant:= Ult
+            Ult:= p
+            ESC("Servicio asignado a: ",*p.Nombre)
+            ESC("Desea continuar asignando? S/N")
+            Leer(opcion)
+        FM
+
+        p:= prim
+        Mientras (p <> NIL) hacer
+            ESC("Nombre: ",*p.Nombre)
+            ESC("Nro de personal: "*p.Nro_personal)
+            ESC("Asignaciones: "p.asig)
+            p:= *p.prox
+        FM
+FA

@@ -1,0 +1,30 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.4
+// ==========================================================================
+
+Se dispone de una lista simplemente encadenada cuyos registros están ordenados en forma ascendente por una clave de tipo entero; diseñar un algoritmo que invierta el orden de la lista.
+
+Accion Ejercicio4_4(prim: puntero a nodo) es
+    Ambiente
+        nodo = Registro
+            num: entero
+            prox: puntero a nodo
+        finregistro
+
+        prim, p, aux, ant: puntero a nodo
+
+    Proceso
+        ant:= nil // al inicio el anterior esta vacio
+        p:= prim // inicio la lista, prim apunta al primer elemento de la lista p
+
+        Mientras (p <> nil) hacer
+            aux:= p^.prox // guardo la siguiente posicion del nodo actual para invertirlo
+            p^.prox:= ant // asigno que el siguiente sea el anterior
+            ant:= p // ahora el p de hoy que era el primero pasa a ser el anterior
+            p:= aux // aux es p.prox
+        FinMientras
+
+        prim := ant // ahora la lista empieza por el que era el último
+
+FinAccion

@@ -1,0 +1,186 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2022 - Recuperatorio - Ejercicio 2 (Mundial: listas + indexado)
+//
+//  Con los partidos (secuencial) y sus resultados (indexado por ID) se
+//  actualizan puntos, goles y tarjetas de cada país en la lista. Pasan a la
+//  siguiente fase (lista doble ordenada por puntos) los que tienen más de 4
+//  puntos, o 4 puntos y diferencia de gol mayor a 2. Informar el equipo con
+//  más tarjetas rojas.
+//  Enunciado: ../enunciados/2022-recuperatorio.jpg
+// ==========================================================================
+
+Accion Recuperatorio_2022_Ejer2 (Prim: puntero a Nodo) ES
+
+Ambiente
+
+	Partidos=Registro
+		ID_partido: AN(5)
+		Equip_loc: AN(20)
+		Equip_vis: AN(20)
+	Fin Registro
+
+	Resultado=Registro
+		ID_partido: AN(5)
+		goles_local: N(2)
+		goles_visit: N(2)
+		T_amarillas: N(2)
+		T_rojas: N(2)
+	Fin Registro
+
+	Nodo=Registro
+		dato=Registro
+			pais: AN(20)
+			grupo: caracter
+			puntos: N(2)
+			goles_a_favor: N(2)
+			goles_en_contra: N(2)
+			T_amarillas: N(2)
+			T_rojas: N(2)
+		Fin Registro
+		prox: puntero a Nodo
+	Fin Registro
+
+	Nodo_D=Registro
+		dato=Registro
+			pais: AN(20)
+			grupo: caracter
+			puntos: N(2)
+			goles_a_favor: N(2)
+			goles_en_contra: N(2)
+			T_amarillas: N(2)
+			T_rojas: N(2)
+		Fin Registro
+		ant,prox: puntero a Nodo_D
+	Fin Registro
+
+	Arch_Part: archivo secuencial de Partidos
+	reg_part: Partidos
+	Arch_Res: archivo de Resultado indexado por ID_partido
+	reg_res: Resultado
+
+	P, V: puntero a Nodo
+	New_Prim, Ult, Q, R: puntero a Nodo_D
+
+	mas_T_rojas: entero
+	equip_T_rojas: alfanumerico
+	copiar_a_Lista_Dbl: booleano
+
+Proceso
+	Abrir E/(Arch_Part)
+	Leer(Arch_Part,reg_part)
+	Abrir E/(Arch_Res)
+
+	Mientras NFDA(Arch_Part) hacer
+
+		reg_res.ID_partido:= reg_part.ID_partido
+		Leer(Arch_Res,reg_res)
+
+		Si (existe) entonces
+
+			P:= Prim // busco al local
+			Mientras (P <> nil) y (*P.dato.pais <> reg_part.Equip_loc) hacer
+				P:= *P.prox
+			Fin Mientras
+			V:= Prim // y al visitante: el partido también le suma a él
+			Mientras (V <> nil) y (*V.dato.pais <> reg_part.Equip_vis) hacer
+				V:= *V.prox
+			Fin Mientras
+
+			Si (P <> nil) y (V <> nil) entonces
+				*P.dato.goles_a_favor:= *P.dato.goles_a_favor + reg_res.goles_local
+				*P.dato.goles_en_contra:= *P.dato.goles_en_contra + reg_res.goles_visit
+				*V.dato.goles_a_favor:= *V.dato.goles_a_favor + reg_res.goles_visit
+				*V.dato.goles_en_contra:= *V.dato.goles_en_contra + reg_res.goles_local
+				// Las tarjetas del resultado son del partido: se cargan a los dos equipos
+				*P.dato.T_amarillas:= *P.dato.T_amarillas + reg_res.T_amarillas
+				*P.dato.T_rojas:= *P.dato.T_rojas + reg_res.T_rojas
+				*V.dato.T_amarillas:= *V.dato.T_amarillas + reg_res.T_amarillas
+				*V.dato.T_rojas:= *V.dato.T_rojas + reg_res.T_rojas
+
+				Si (reg_res.goles_local > reg_res.goles_visit) entonces
+					*P.dato.puntos:= *P.dato.puntos + 3
+				SiNo
+					Si (reg_res.goles_local = reg_res.goles_visit) entonces
+						*P.dato.puntos:= *P.dato.puntos + 1
+						*V.dato.puntos:= *V.dato.puntos + 1
+					SiNo
+						*V.dato.puntos:= *V.dato.puntos + 3
+					Fin Si
+				Fin Si
+			SiNo
+				Esc("Error: un equipo del partido ", reg_part.ID_partido, " no está en la lista")
+			Fin Si
+		Fin Si
+
+		Leer(Arch_Part,reg_part)
+	Fin Mientras
+
+	New_Prim:= nil
+	Ult:= nil
+	P:= Prim
+	mas_T_rojas:= -1
+
+	Mientras (P <> nil) hacer
+
+		copiar_a_Lista_Dbl:= Falso
+
+		Si (*P.dato.puntos > 4) entonces
+			copiar_a_Lista_Dbl:= Verdadero
+		SiNo
+			Si (*P.dato.puntos = 4) y ((*P.dato.goles_a_favor - *P.dato.goles_en_contra) > 2) entonces
+				copiar_a_Lista_Dbl:= Verdadero
+			Fin Si
+		Fin Si
+
+		Si (copiar_a_Lista_Dbl) entonces
+			Nuevo(Q)
+			*Q.dato:= *P.dato
+
+			Esc(*P.dato.pais," paso a la siquiente fase del mundial")
+
+			Si (New_Prim = nil) entonces
+				*Q.prox:= nil
+				*Q.ant:= nil
+				New_Prim:= Q
+				Ult:= Q
+			SiNo
+				R:= New_Prim
+				Mientras (R <> nil) y (*R.dato.puntos < *Q.dato.puntos) hacer
+					R:= *R.prox
+				Fin Mientras
+
+				Si (R = New_Prim) entonces
+					*Q.prox:= New_Prim
+					*Q.ant:= nil
+					*R.ant:= Q
+					New_Prim:= Q
+				SiNo
+					Si (R = nil) entonces // va al final
+						*Q.prox:= nil
+						*Q.ant:= Ult
+						*Ult.prox:= Q
+						Ult:= Q
+					SiNo
+						*Q.prox:= R
+						*Q.ant:= *R.ant
+						*(*R.ant).prox:= Q
+						*R.ant:= Q
+					Fin Si
+				Fin Si
+			Fin Si
+		Fin Si
+
+		Si (*P.dato.T_rojas > mas_T_rojas) entonces
+			mas_T_rojas:= *P.dato.T_rojas
+			equip_T_rojas:= *P.dato.pais
+		Fin Si
+
+		P:= *P.prox
+	Fin Mientras
+
+	Esc("El equipo con mas tarjetas rojas es: ",equip_T_rojas)
+
+	Cerrar(Arch_Part)
+	Cerrar(Arch_Res)
+Fin Accion

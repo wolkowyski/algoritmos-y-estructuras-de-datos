@@ -1,0 +1,33 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2023 - Recuperatorio - Ejercicio de recursividad
+//
+//  Función recursiva que recorre un número de a dos dígitos (de derecha a
+//  izquierda, con num div 100) y verifica que el par "10" aparezca la
+//  cantidad de veces indicada. n = cantidad de pares que quedan por revisar,
+//  x = cantidad de "10" que todavía faltan encontrar.
+//  Enunciado: ../enunciados/
+// ==========================================================================
+
+Funcion Cumple(num, n, x: entero): booleano ES
+
+	Si (n = 1) entonces // caso base: último par de dígitos
+		Si (num = 10) entonces
+			Si (x = 1) entonces
+
+				Cumple:= Verdadero
+			SiNo
+				Cumple:= Falso
+			Fin Si
+		SiNo
+			Cumple:= Falso
+		Fin Si
+	SiNo // caso recursivo: miro el par de la derecha y sigo con el resto
+		Si ((num mod 100) = 10) entonces
+
+			Cumple:= Cumple(num div 100, n-1, x-1)
+		SiNo
+			Cumple:= Cumple(num div 100, n-1, x)
+		Fin Si
+	Fin Si
+Fin Funcion

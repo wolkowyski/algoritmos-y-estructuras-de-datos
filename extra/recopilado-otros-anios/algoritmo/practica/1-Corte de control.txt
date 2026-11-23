@@ -1,0 +1,107 @@
+
+Corte de control
+----------------------------------------------------------------------------------------------
+Accion 2.10 es
+	Ambiente
+		alumno: registro
+			Carrera:("ISI","IQ","IEM")
+			(resto del registro)
+		fin registro
+		V: alumno
+		archAlum: archivo de alumno ordenado por carrera
+		con, cont:Entero
+		carr:AN
+		subaccion Corte_Carrera es
+			escribir("En la carrera", carr, "existen:", con, "alumnos")
+			cont:=cont+con
+			con:=0
+			carr:=v.carrera
+		fin subaccion
+	Algoritmo
+		con:=0
+		cont:=0
+		Abrir E/(archalum)
+		Leer(archAlum,v)
+		carr:=v.carrera
+		Mientras NoFDA (archAlum) hacer
+			Si Carr<>v.carrera entonces
+				Corte_Carrera
+			fin si
+			con:=con+1
+			leer(archalum,V)
+		fin mientras
+		corte_Carrera
+		Escribir("El total general de alumnos es de:", cont)
+fin accion
+			
+----------------------------------------------------------------------------------------------
+Accion 2.11 es
+	ambiente
+		alumno: registro de
+			sexo:("m","f")
+			carrera:AN(4)
+			Nro_leg:N(4)
+			Fing:N(4)
+			MatAprob:N(2)
+		fin registro
+		arch: archivo de alumno ordenado por sexo, carrera, nro_leg
+		v:registro
+		subaccion corte_carrera es
+			escribir(Los alumnos de", carrera," con mas de 20 materias aprobadas que ingresaron el 2006 son:" contcar+)
+			escribir(Los alumnos de", carrera," con menos de 20 materias aprobadas que ingresaron el 2006 son:" contcar-)
+			contsex+:=contsex++contcar+
+			contsex-:=contsex-+contcar-
+			contcar+:=0
+			contcar-:=0
+			carrera:=v.carrera
+		fin subaccion
+		subaccion corte_sexo es
+			corte_carrera
+			escribir(Los alumnos de sexo ", sexo," con mas de 20 materias aprobadas que ingresaron el 2006 son:" contsex+)
+			escribir(Los alumnos de sexo ", sexo," con menos de 20 materias aprobadas que ingresaron el 2006 son:" contsex-)
+			contotal+:=contotal++contcar+
+			contotal-:=contotal-+contcar-
+			contsex+:=0
+			contsex-:=0
+			sexo:=v.sexo
+		fin subaccion
+	algoritmo
+		Abrir S/(arch)
+		Leer(arch.v)
+		sexo:=V.sexo
+		carrera:=v.carrera
+		contcar+:=0
+		contsex+:=0
+		contcar-:=0
+		contsex-:=0
+		Mientras NoFDA (arch) hacer
+			si sexo<>V.sexo entonces
+				corte_sexo
+			contrario
+				si carrera<>v.carrera entonces
+					corte_carrera
+				fin si
+			fin si
+			si (fing=2006) entonces
+				Si (v.mataprob>20) entonces
+					contcar+:=contcar++1
+				contrario
+					contcar-:=contcar-+1
+				fin si
+			fin si
+		fin mientras
+		corte_sexo
+		Escribir( contotal+,"alumnos ingresados el 2006 tienen mas de 20 materias aprobadas")
+		Escribir( contotal-,"alumnos ingresados el 2006 tienen menos de 20 materias aprobadas")
+fin accion
+
+----------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------

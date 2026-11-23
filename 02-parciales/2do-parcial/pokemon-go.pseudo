@@ -1,0 +1,146 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  2do Parcial - Modelo "Pokémon GO" (actualización secuencial + arreglo)
+//
+//  Maestro de usuarios (ordenado por región y usuario) y capturas del mes
+//  (mismo orden). Estado del usuario: A = activo, S = suspendido, B = baja.
+//  Estado del Pokémon: E = entrenando (doble de experiencia), I = inactivo,
+//  D = descansando.
+//    1. Sumar la experiencia de cada captura al usuario (doble si entrena).
+//    2. Usuarios nuevos (activos) se dan de alta con correo vacío.
+//    3. Los usuarios suspendidos no pasan al maestro nuevo.
+//    4. Informar el Pokémon que más usuarios tienen descansando (nombre desde
+//       el arreglo PokeDex).
+//  Enunciado: enunciados/pokemon-go.jpg
+// ==========================================================================
+
+Accion Pokemon_Go (PokeDex: arreglo [1...151] de alfanumerico) ES
+
+Ambiente
+
+	Usuario=Registro
+		Clave=Registro
+			Cod_Region: N(4)
+			Cod_Usuario: N(10)
+		Fin Registro
+		Correo: AN(50)
+		Experiencia: N(7)
+	Fin Registro
+
+	Arch_Usuario,Nuevo_Maestro: Archivo secuencial de Usuario ordenado por Clave
+	reg_user,reg_sal,aux: Usuario
+
+	Capturas=Registro
+		Clave=Registro
+			Cod_Region: N(4)
+			Cod_Usuario: N(10)
+		Fin Registro
+		Cod_Pokemon: (1...151)
+		Puntos_de_Experiencia: N(5)
+		Fecha_de_Captura: N(8)
+		Estado_Pokemon: ("E","I","D")
+		Estado_Usuario: ("A","S","B")
+	Fin Registro
+
+	Arch_Capturas: Archivo secuencial de Capturas ordenado por Clave
+	reg_cap: Capturas
+
+	HV = 9999999999
+	// El archivo NO está ordenado por Pokémon, así que no sirve un corte de
+	// control: cuento los descansos en un arreglo indexado por Cod_Pokemon
+	Descansos: arreglo [1...151] de entero
+	i, mayor_desc: entero
+	Poke_Descanso: alfanumerico
+	Bandera: booleano // falso si el usuario quedó suspendido
+
+	Procedimiento Leer_Usuario() ES
+		Leer(Arch_Usuario,reg_user)
+		Si FDA(Arch_Usuario) entonces
+			reg_user.Clave.Cod_Region:= HV
+			reg_user.Clave.Cod_Usuario:= HV
+		Fin Si
+	Fin Procedimiento
+
+	Procedimiento Leer_Capturas() ES
+		Leer(Arch_Capturas,reg_cap)
+		Si FDA(Arch_Capturas) entonces
+			reg_cap.Clave.Cod_Region:= HV
+			reg_cap.Clave.Cod_Usuario:= HV
+		Fin Si
+	Fin Procedimiento
+
+	// Aplica una captura sobre aux (el usuario que se está armando)
+	Procedimiento Movimientos() ES
+		Si (reg_cap.Estado_Usuario = "S") entonces
+			Bandera:= Falso
+		SiNo
+			Si (reg_cap.Estado_Pokemon = "E") entonces
+				aux.Experiencia:= aux.Experiencia + (reg_cap.Puntos_de_Experiencia * 2)
+			SiNo
+				aux.Experiencia:= aux.Experiencia + reg_cap.Puntos_de_Experiencia
+			Fin Si
+		Fin Si
+		Si (reg_cap.Estado_Pokemon = "D") entonces
+			Descansos[reg_cap.Cod_Pokemon]:= Descansos[reg_cap.Cod_Pokemon] + 1
+		Fin Si
+	Fin Procedimiento
+
+Proceso
+	Para i:= 1 hasta 151 hacer
+		Descansos[i]:= 0
+	Fin Para
+
+	Abrir E/(Arch_Usuario)
+	Leer_Usuario()
+	Abrir E/(Arch_Capturas)
+	Leer_Capturas()
+	Abrir /S(Nuevo_Maestro)
+
+	Mientras (reg_user.Clave.Cod_Region <> HV) o (reg_cap.Clave.Cod_Region <> HV) hacer
+
+		Si (reg_user.Clave < reg_cap.Clave) entonces // usuario sin capturas: se copia
+			reg_sal:= reg_user
+			Grabar(Nuevo_Maestro,reg_sal)
+			Leer_Usuario() // se avanza en el maestro, que es el que se grabó
+		SiNo
+			Bandera:= Verdadero
+			Si (reg_user.Clave = reg_cap.Clave) entonces // usuario existente con capturas
+				aux:= reg_user
+				Mientras (aux.Clave = reg_cap.Clave) hacer
+					Movimientos()
+					Leer_Capturas()
+				Fin Mientras
+				Leer_Usuario()
+			SiNo // capturas de un usuario que no está en el maestro: alta
+				aux.Clave:= reg_cap.Clave
+				aux.Correo:= ""
+				aux.Experiencia:= 0
+				Bandera:= (reg_cap.Estado_Usuario = "A") // solo se dan de alta los activos
+				Mientras (aux.Clave = reg_cap.Clave) hacer
+					Movimientos()
+					Leer_Capturas()
+				Fin Mientras
+			Fin Si
+
+			Si (Bandera) entonces
+				reg_sal:= aux
+				Grabar(Nuevo_Maestro,reg_sal)
+			Fin Si
+		Fin Si
+	Fin Mientras
+
+	Cerrar(Arch_Usuario)
+	Cerrar(Arch_Capturas)
+	Cerrar(Nuevo_Maestro)
+
+	// Punto 4: máximo del arreglo de descansos
+	mayor_desc:= 0
+	Para i:= 1 hasta 151 hacer
+		Si Descansos[i] > mayor_desc entonces
+			mayor_desc:= Descansos[i]
+			Poke_Descanso:= PokeDex[i]
+		Fin Si
+	Fin Para
+
+	Esc("El Pokémon en descanso que pertenece a más usuarios es: ",Poke_Descanso," con una cantidad de: ",mayor_desc)
+Fin Accion

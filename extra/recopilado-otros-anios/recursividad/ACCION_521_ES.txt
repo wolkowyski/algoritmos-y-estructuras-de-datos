@@ -1,0 +1,6 @@
+Procedimiento inv(n: entero) es
+    Si (n > 0) entonces
+        ESC(n MOD 10)
+        inv(n DIV 10)
+    FS
+FF

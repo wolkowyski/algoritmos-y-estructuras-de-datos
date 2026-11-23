@@ -1,0 +1,22 @@
+accion ej 4 arreglo es:
+ambiente:
+a,b:arreglo de [1..50] de enteros
+i,j: entero
+cont:entero
+
+Algoritmo:
+	cont:=0
+	j:=1
+	Para i:= 1 hasta 50 hacer
+		Si (A[i] MOD 3 = 0) entonces
+			cont:= cont +1
+			SINO
+				B[j] := A[i]
+				A[i] := A [i] * 3
+				j:= j +1
+		Fin Si
+		
+	Fin para
+	
+	esc ('la cantidad de numeros que cumplieron la condicion son',cont)
+Fin accion

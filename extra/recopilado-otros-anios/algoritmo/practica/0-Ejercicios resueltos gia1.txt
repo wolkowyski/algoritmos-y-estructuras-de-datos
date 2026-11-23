@@ -1,0 +1,265 @@
+Ejercicios Complementarios
+
+20)
+accion dinero es
+	ambiente
+		impuesto, importe: real
+		cuotas: entero
+	algoritmo
+		escribir("Inserte el importe del dinero")
+		leer(importe)
+		Mientras importe<>9999 hacer
+			impuesto:= importe * 0.1
+			Segun importe hacer
+				0.500: cuotas:=1
+				501.1000: cuotas:=2
+				1001.9999: cuotas:=3
+			fin segun
+		fin mientras
+		Escribir("La devolusion del importe debera realizarce en" cuotas,"cuota/s, con un impuesto de ", impuesto)
+fin accion
+--------------------------------------------------------------------------------------------------------------------------
+21) accion fibonacci es
+	ambiente
+		n, nn, nnn: entero
+	algoritmo
+		n:=1
+		nn:=1
+		escribir("1")
+		escribir("1")
+		Para c:0, +1 , 50 hacer
+			nnn:=n+nn
+			n:=nn
+			nn;=nnn
+			escribir(nnn)
+		fin para
+Fin accion
+--------------------------------------------------------------------------------------------------------------------------
+22) accion funcion es
+	ambiente
+		x, y: real
+	algoritmo
+		x:=20
+		Para c:0, +1, 40 hacer
+			Y:=2x**2+x+3
+			escribir(x, y)
+			x:=x-2
+		fin para
+fin accion
+--------------------------------------------------------------------------------------------------------------------------
+23) accion funciones es
+	ambiente
+		x, y: real
+	algoritmo
+		Escribir("ingrese el valor de la variable x")
+		Leer(x)
+		Mientras x<>9999 hacer
+			Y:=2x**2+x+3
+			escribir(x, y)
+			escribir("ingrese otro valor para la variable x")
+			leer(x)
+		fin para
+fin accion
+--------------------------------------------------------------------------------------------------------------------------
+24) accion cifras es
+	ambiente
+		num, cif1, cif2, cif3, cub2, cub2, cub3, sumcub: enteros
+	algoritmo
+		num:=99
+		cif1:=0
+		cif2:=0
+		cif3:=1
+		repetir
+			num:=num+1
+			si cif2<10 entonces
+				si cif<10 entonces
+					cif1:=cif1+1
+				contrario
+					cif2:=cif2+1
+					cif1:=cif1-10
+			contrario
+				cif3:=cif3+1
+				cif2:=cif2-10
+			cub1:=cif1**3
+			cub2:=cif2**3
+			cub3:=cif3**3
+		sumcub:=cub1+cub2+cub3
+		Si sumcub=num entonces
+			escribir(num)
+		hasta que cif3=10
+		fin si
+fin accion
+--------------------------------------------------------------------------------------------------------------------------
+25) accion primos es
+	ambiente
+		
+	algoritmo
+		n:=0
+		escribir("Ingrese un numero positivo")
+		leer(num)
+		mientras n<num hacer
+			n:n+1
+			n0:=n Mod 2
+			n1:=n mod 3
+			n2:=n mod 5
+			n3:=n mod 7
+			si n0<>0^n1<>0^n2<>0^n3<>0 entonces
+				escribir(n)
+			fin si
+		fin mientras
+fin accion
+--------------------------------------------------------------------------------------------------------------------------
+27) accion textil es
+	ambiente
+		tela, calidad, fin: alfanumerico
+		piezas, peso, pneto: entero
+	algoritmo
+	    escribir(¿desea finalizar?)
+	    leer(fin)
+	    mientras fin=no
+		escribir("Ingrese el tipo de tela, la calidad, cantidad de piezas(m2)")
+		leer(tela, calidad, piezas)
+		si tela=algodon entonces
+			peso:=pneto+(pneto*0.02)
+		contrario
+			peso:=pneto+(pneto*0.07)
+		peso:=peso*pezas
+		si calidad=primero
+			peso:=peso+400
+		contrario
+			peso:=peso+300
+		fin si
+		escribir("¿desea finalifar?")
+		leer(fin)
+	   fin mientras
+fin accion
+----------------------------------------------------------------------------------------------------------------------------
+1)
+----------------------------------------------------------------------------------------------------------------------------
+2)
+accion xy es
+	ambiente
+	algoritmo
+		escribir("Ingrese dos numeros")
+		leer(num1, num2)
+		marit:=(num1+num2)/2
+		mgeo:=(num1*num2)**(1/2)
+		escribir(marit, mgeo)
+fin accion
+----------------------------------------------------------------------------------------------------------------------------
+3)
+aciion creciente es
+	ambiente
+	algoritmo
+		Escribir("Ingrese tres numeros")
+		leer(num1, num2, num3)
+		si num1<num2 entonces
+			si num1<num3 entonces
+				si num2<num3 entonces
+					Escribir(num1, num2, num3)
+				contrario
+					Escribir(num1, num3, num2)
+				fin si
+			contrario
+				Escribir(num3, nom1, num2)
+			fin si
+		contrario
+			si num2<num3 entonces
+				si num3<num1 entonces
+					Escribir(num2, num3, num1)
+				contrario
+					Escribir(num2, num1, num3)
+				fin si
+			contrario
+				Escribir(num3, num2, num1)
+			fin si
+		fin si
+fin accion
+----------------------------------------------------------------------------------------------------------------------------
+4)
+accion par es
+	ambiente
+	algoritmo
+		Escribir("ingrese un numero")
+		Leer(num)
+		resto:=num MOD 2
+		Si resto=0
+			Escribir("el numero es par")
+		contrario
+			Escribir("el numero es impar")
+		FIN SI
+FIN ACCION
+----------------------------------------------------------------------------------------------------------------------------
+6)
+ACCION APROBAR ES
+	Ambiente
+		n1, n2, n3, n4, n5, sum: real
+	Algoritmo
+		n1:=0
+		n2:=0
+		n3:=0
+		n4:=0
+		n5:=0
+		Escribir("ingrese la notas de los examenes")
+		Leer(n1, n2, n3, n4, n5)
+		Si n1>=6 entonces
+			n1:=1
+		fin si
+		Si n2>=6 entonces
+			n1:=1
+		fin si
+		Si n3>=6 entonces
+			n1:=1
+		fin si
+		Si n4>=6 entonces
+			n1:=1
+		fin si
+		Si n5>=6 entonces
+			n1:=1
+		fin si
+		Sum:=n1+n2+n3+n4+n5
+		Si sum=5 entonces
+			Escribir("El alumno aprobo la materia")
+		contrario
+			si n5=1^sum>=3 entonces
+				Escribir("El alumno debe ahcer un examen complementario")
+			contrario
+				si n4=1^n3=1 entonces
+					Escribir("El alumno puede volver a rendir el 5to examen")
+				fin si
+			fin si
+		fin si
+fin accion
+---------------------------------------------------------------------------------------------------------------
+10) accion billetes es
+	ambiente
+		cien cincuenta, veinte, diez, 
+	algoritmo
+		Escribir("Ingrese la suma de dinero")
+		Leer(monto)
+		cien:=(monto/100)trunc
+		monto:=monto-(cien*100)
+		cincuenta:=(monto/50)trunc
+		monto:=monto-(cincuenta*50)
+		veinte:=(monto-20)trunc
+		monto:=monto-(veinte*20)
+		diez:=(monto-10)trunc
+		monto:=monto-(diez*10)
+		cinco:=(monto/5)trunc
+		monto:=monto-(cinco*5)
+		dos:=(monto/2)trunc
+		Escribir("su cambio sera de ", cien, "billetes de 100, ", cincuenta, "billetes de 50, " veinte, "billetes de 20, " diez, "billetes de 10, ", cinco," billetes de 5", dos, "billetes de 2 y 1 peso")
+  fin accion
+----------------------------------------------------------------------------------------------------------------
+11) Accion es
+
+
+
+
+
+
+
+
+
+
+		

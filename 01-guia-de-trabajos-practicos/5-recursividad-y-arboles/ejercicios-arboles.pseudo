@@ -1,0 +1,142 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5 - Recursividad y árboles
+// ==========================================================================
+
+// Nodo de árbol binario usado en todos los ejercicios
+//   T = Registro
+//       dato: Caracter
+//       izq, der: puntero a T
+//   FinRegistro
+
+
+// --------------------------------------------------------------------------
+// 1) Supongamos que tenemos una función Valor tal que dado un valor de tipo
+// char (una letra del alfabeto) devuelve un valor entero asociado a dicho
+// identificador. Supongamos también la existencia de un árbol de expresión T
+// cuyos nodos hoja son letras del alfabeto y cuyos nodos interiores son los
+// caracteres *, +, -, /. Diseñar una función que tome como parámetro un nodo
+// del árbol binario y devuelva el resultado entero de la evaluación de la
+// expresión representada.
+// --------------------------------------------------------------------------
+
+Funcion Valor (p: puntero a T): Entero Es
+   Segun *p.dato hacer // valores de ejemplo para cada identificador
+      = "a": Valor:= 1
+      = "b": Valor:= 2
+      = "c": Valor:= 3
+      = "d": Valor:= 4
+   FinSegun
+FinFuncion
+
+
+Funcion Evaluar (p: puntero a T): Entero Es
+   Ambiente
+      izquierda, derecha: Entero
+   Proceso
+      // La recursión reemplaza al ciclo: cada llamada resuelve un subárbol.
+      // Con un Mientras p <> nil el ciclo no termina nunca, porque p no cambia.
+      Si (*p.izq = nil) y (*p.der = nil) Entonces // caso base: hoja (una letra)
+         Evaluar:= Valor(p)
+      Sino // caso recursivo: operador con dos subárboles
+         izquierda:= Evaluar(*p.izq)
+         derecha:= Evaluar(*p.der)
+         Segun *p.dato hacer
+            "+": Evaluar:= izquierda + derecha
+            "-": Evaluar:= izquierda - derecha
+            "*": Evaluar:= izquierda * derecha
+            "/": Evaluar:= izquierda div derecha // resultado entero
+         FinSegun
+      FinSi
+FinFuncion
+
+
+
+// --------------------------------------------------------------------------
+// 2) Recorridos de un árbol binario: preorden, inorden y postorden.
+//    Solo cambia el momento en que se procesa (escribe) la raíz.
+// --------------------------------------------------------------------------
+
+Procedimiento Preorden (p: puntero a T) Es // raíz - izquierdo - derecho
+   Si p <> nil Entonces
+      Escribir(*p.dato)
+      Preorden(*p.izq)
+      Preorden(*p.der)
+   FinSi
+FinProcedimiento
+
+Procedimiento Inorden (p: puntero a T) Es // izquierdo - raíz - derecho
+   Si p <> nil Entonces                  // en un ABB lista los datos ordenados
+      Inorden(*p.izq)
+      Escribir(*p.dato)
+      Inorden(*p.der)
+   FinSi
+FinProcedimiento
+
+Procedimiento Postorden (p: puntero a T) Es // izquierdo - derecho - raíz
+   Si p <> nil Entonces
+      Postorden(*p.izq)
+      Postorden(*p.der)
+      Escribir(*p.dato)
+   FinSi
+FinProcedimiento
+
+
+
+// --------------------------------------------------------------------------
+// 3) Funciones recursivas sobre árboles: cantidad de nodos, cantidad de
+//    hojas y altura (profundidad).
+// --------------------------------------------------------------------------
+
+Funcion CantNodos (p: puntero a T): Entero Es
+   Si p = nil Entonces
+      CantNodos:= 0
+   Sino
+      CantNodos:= 1 + CantNodos(*p.izq) + CantNodos(*p.der)
+   FinSi
+FinFuncion
+
+Funcion CantHojas (p: puntero a T): Entero Es
+   Si p = nil Entonces
+      CantHojas:= 0
+   Sino
+      Si (*p.izq = nil) y (*p.der = nil) Entonces
+         CantHojas:= 1
+      Sino
+         CantHojas:= CantHojas(*p.izq) + CantHojas(*p.der)
+      FinSi
+   FinSi
+FinFuncion
+
+Funcion Altura (p: puntero a T): Entero Es
+   Ambiente
+      alt_izq, alt_der: Entero
+   Proceso
+      Si p = nil Entonces
+         Altura:= 0
+      Sino
+         alt_izq:= Altura(*p.izq)
+         alt_der:= Altura(*p.der)
+         Si alt_izq > alt_der Entonces
+            Altura:= 1 + alt_izq
+         Sino
+            Altura:= 1 + alt_der
+         FinSi
+      FinSi
+FinFuncion
+
+
+
+// --------------------------------------------------------------------------
+// 4) Recursividad sobre arreglos: suma de los elementos de un vector de 100
+//    enteros (pregunta típica de final, en pseudocódigo).
+// --------------------------------------------------------------------------
+
+Funcion SumaVector (V: arreglo [1..100] de Entero, i: Entero): Entero Es
+   Si i = 100 Entonces // caso base: último elemento
+      SumaVector:= V[i]
+   Sino
+      SumaVector:= V[i] + SumaVector(V, i + 1) // caso recursivo
+   FinSi
+FinFuncion
+// Llamada inicial: total:= SumaVector(V, 1)

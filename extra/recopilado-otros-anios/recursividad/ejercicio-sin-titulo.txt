@@ -1,0 +1,21 @@
+Funcion contdigitos(n: entero): entero
+    Si n=0 entonces
+        contdigitos:= 0
+    Sino
+        contdigitos:= contdigitos(n div 10) + 1
+    FS
+FF
+
+
+Funcion promedio(n: entero):entero
+    PROCESO
+        Si (n = 0) entonces
+            promedio:= 0
+        Sino
+            Si ((n div 10) mod 2 = 0) entonces
+                promedio:= promedio(n div 10) - n mod 10
+            Sino
+                promedio:= promedio(n div 10) + n mod 10
+            FS
+        FS
+FF

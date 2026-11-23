@@ -1,0 +1,112 @@
+Accion Ip es
+Ambiente
+ p,q,k,ant,ant2,prim,prim2: puntero a nodo;
+ nodo=registro
+  Cod-P: (0..63);
+  Paquetes: entero,
+  prox:puntero a nodo;
+ Fin Registro
+ A:Arreglo [0..64,1..4] de entero;
+ i,j; entero;
+ Net=registro
+  Id: N(5);
+  Cod-P: (0..63);
+  Prot-T: (1..2);
+  Puerto-O: (1024..65535);
+  Puerto-D: (1..1023);
+  Horario: (hh:mm:ss);
+  Dia: (dd/mm/aaaa);
+  IpO: Alfanumerico (14);
+  IpD: Alfanumerico (14);
+ Fin Registro
+ Proc=registro
+  Cod-P: (0.63);
+  Descrip: AN (50);
+  Error: (0..1);
+ Fin Registro
+ ArchNet: Archivo de Net;
+ ArchProc: Archivo de Proc indexado por Cod-P;
+ x:(1..1023);
+ z: entero;
+ SubAccion Estadistico (i,j) es
+           A[i,j]:=A[i,j] + 1;
+           A[64,j]:=A[64,j] + 1;
+           A[i,4]:=A[i,4] + 1;
+ FinSubaccion
+
+Proceso
+
+ Abrir E/(ArchNet); Abrir E/(ArchProc); Leer (ArchNet,Net);
+ Para i: 0 a 64 hacer
+      Para j: 1 a 4 hacer
+           A[i,j]:= 0;
+      Fin para
+ Fin Para
+ Mientras NoFDA (ArchNet) hacer
+          Si (ArchNet.IpO = ArchNet.IpD) entonces
+             ArchProc.Cod-P:= ArchNet.Cod-P;
+             Leer (ArchProc, Proc);
+             Si EXISTE entonces
+                Si (ArchProc.Error=1) entonces
+                   i:= ArchNet.Cod-P;
+                   x:= ArchNet.Puerto-D;
+                   Segun x hacer
+                         = 60 : Estadistico (i,1);
+                         = 21 : Estadistico (i,2);
+                         = 25 : Estadistico (i,3);
+                   Fin Segun
+                   q:=prim;
+                   Mientras (q*.prox <> nil) or (q*.Cod-P <> ArchNet.Cod-P) hacer
+                            ant:=q;
+                            q:=q*.prox;
+                   Fin Mientras
+                   Si (q*.Cod-P = ArchNet.Cod-P) entonces
+                      q*.Paquetes:= q*.Paquetes + 1;
+                   Sino
+                       Nuevo (p);
+                       p*.dato:= ArchNet.Cod-P;
+                       p*.Paquetes:=1;
+                       Si (Prim=nil) entonces
+                          Prim:=p;
+                       Sino
+                           ant*.prox:=p;
+                       FinSi
+                       p*.prox:=q;
+                   FinSi
+                 FinSi
+             FinSi
+          FinSi
+          Leer (ArchNet,Net)
+ FinMientras
+ Escribir (Cuadro estadistico de totales de paquetes enviados a los protocolos 60,21,25 y totales generales);
+ Para i:=0 a 64 hacer
+      Para j:= 1 a 4 hacer
+           Escribir (A[i,j]);
+      FinPara
+ FinPara
+ p:=prim;
+ Mientras (p*.prox <> nil) hacer   **CREO UNA NUEVA LISTA Y LA ORDENO DE MAYOR A MENOR LA LISTA PARA EL RANKING**
+          Nuevo(k);
+          k*.Cod-P:=p*.Cod-P;
+          k*.Paquetes:=p*.Paquetes
+          q:=prim2;
+          Mientras (q*.prox <> nil) or (k*.Paquetes < q*.Paquetes)
+                   ant2:=q;
+                   q:=q*.prox
+          FinMientras
+          Si (prim2=nil) entonces
+             k*.prox:=prim2;
+             prim2:=k;
+          Sino
+             k*prox:=q;
+             ant2*.prox:=k;
+          FinSi
+          p:=p*.prox;
+ FinMientras
+ Escribir (TopTen de Codigos de error mas comunes para intento de ataque y total paquetes);
+ q:=prim2;
+ Para z:=1 a 10 hacer
+      Escribir ("En la posicion", z, "el codigo", q*.Cod-P, "con un total de", q*.Paquetes, "paquetes");
+      p:=p*.prox;
+ FinPara
+Fin Acción

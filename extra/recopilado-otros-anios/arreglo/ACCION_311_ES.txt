@@ -1,0 +1,27 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Titpel: AN(50)
+        Nomb_del_director: AN(50)
+        Cat_Peli: AN(50)
+        Views: N(5)
+        Alquilado: {"SI", "NO"}
+    FR
+    P: Arreglo de [1..100] de reg
+
+ACCION_311_ES
+    AMBIENTE
+        Categoria: Alfanumérico
+        i: Entero
+    PROCESO
+        ESC("Ingrese una categoria a buscar...")
+        Leer(Categoria)
+        ESC("Categoria: ",Categoria)
+        ESC("Nombre de la película: ")
+        Para i:= 1 hasta 100 hacer
+            Si (P[i].Cat_Peli = Categoria) entonces
+                ESC(P[i].Nomb_del_director)
+                ESC("---------------------")
+            FS
+        FP
+FA
+

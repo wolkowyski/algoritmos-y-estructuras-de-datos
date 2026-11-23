@@ -1,0 +1,208 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 38
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 38 es
+
+ Ambiente
+
+  Capturas=Registro
+   Clave1=Registro
+    codr:N(4);
+    codu:N(10);
+   finRegistro
+   codp:[1..151];
+   puntos:N(5);
+   Fecha=Registro
+    AA:N(4);
+    MM:[1..12];
+    DD:[1..31];
+   finRegistro
+   estadop:{"E","I","D"};
+   estadou:{"A","S","B"};
+  finRegistro
+
+  Usuarios=Registro
+   Clave2=Registro
+    codr:N(4);
+    codu:N(10);
+   finRegistro
+   correo:AN(50);
+   experiencia:N(7);
+  finRegistro
+
+  pok: arreglo de (1..151) alfanumerico;
+
+  pokc: arreglo de (1..151) entero;
+
+  resi:entero;
+  i:entero;
+  res:entero;
+
+  Archc: archivo de Capturas orenado por codr, codu, codp;
+  c:Capturas;
+
+  Archu: archivo de Usuarios ordenado por codr, codu;
+  u:Usuarios;
+
+  Procedimiento highvalue es
+   Si FDA(Archc) entonces
+    Clave1:=HV;
+   finSi
+   Si FDA(Archu) entonces
+    Clave2 := HV;
+   finSi
+  finProcedimiento
+
+  Procedimiento entre es
+   Si c.estadop = "E" entonces
+    u.experiencia:=u.experiencia+c.puntos;
+   finSi
+  finProcedimiento
+
+
+ Algoritmo
+
+  Abrir E/(Archc);
+  Abrir E/S(Archu);
+
+  Leer(Archc,c);
+  Leer(Archu,u);
+
+  res:=0;
+
+  Para i:=1 hasta 151 hacer
+   pokc(i):=0;
+  finPara
+
+  Mientras Clave1 <> HV o Clave2 <> HV hacer
+
+  Si c.estadop = "D" entonces
+   pokc(c.codp):= pokc(c.codp)+1;
+  finSi
+
+   Si Clave1<Clave2 entonces
+    Si c.estadou = "A" entonces
+    u.codr:=c.codr;
+    u.codu:=c.codu;
+    u.correo:=" ";
+    u.experiencia:=c.puntos;
+    entre;
+    Escribir(Archu,u);
+    finSi
+
+    Leer(Archc,c);
+    highvalue;
+
+    Sino
+     Si Clave1=Clave2 entonces
+      Si c.estadou = "S" entonces
+       Eliminar(Archu,u);
+       Sino
+        u.experiencia:= u.experiencia+c.puntos;
+        entre;
+        Reescribir(Archu,u);
+       finSino
+      finSi
+      Leer(Archc,c);
+      Leer(Archu,u);
+      highvalue;
+
+      Sino
+       Si Clave1>Clave2 entonces
+        Leer(Archu,u);
+        highvalue;
+       finSi
+      finSino
+     finSi
+    finSino
+   finSi
+
+  finMientras
+
+  Para i:=1 hasta 151 hacer
+   Si pokc(i)>res entonces
+    resi:=i;
+    res:=pokc(i);
+   finSi
+  finPara
+
+  Escribir("El nombre del pokemon en estado "Descansando" que lo tienen más usuarios es: ", pok(resi));
+
+ Cerrar(Archu);
+ Cerrar(Archc);
+
+ finAccion
+
+
+
+Accion Ejercicio 38.arreglo es
+
+ Ambiente
+
+  Entrada=Registro
+   DNI:N(8);
+   ayn:AN(50);
+   email:AN(30);
+   regional:[1..31];
+   categoria:[1..16];
+   titulo:AN(50);
+  finRegistro
+
+  Arche: archivo de Entrada ordenado por DNI;
+  e:Entrada;
+
+  reg: arreglo de(1..31) alfanumerico;
+  cat: arreglo de (1..16 ) alfanumerico;
+
+
+  arr: arreglo de (1..32,1..17) entero;
+  i,j,res: entero;
+
+
+ Algoritmo
+
+  Abrir E/(Arche);
+  Leer(Arche,e);
+
+  res:=0;
+
+  Para i:=1 hasta 32 hacer
+   Para j:=1 hasta 17 hacer
+    arr(i,j):=0;
+   finPara
+  finPara
+
+  Mientras NFDA(Arche) hacer
+  arr(e.regional,e.categoria):= arr(e.regional,e.categoria)+1;
+  arr(e.regional,17):= arr(e.regional,17)+1;
+  arr(32,e.categoria):= arr(32,e.categoria)+1;
+
+  Leer(Arche,e);
+ finMientras
+
+ Para i:=1 hasta 31 hacer
+  Para j:=1 hasta 16 hacer
+   Escribir("El total de papers enviado en la regional ", reg(i), " de la categoria ", cat(j), " es: ", arr(i,j));
+  finPara
+ finPara
+
+ Para i:=1 hasta 31 hacer
+  Si arr(i,17)>res entonces
+   res:=arr(i,17);
+  finSi
+ finPara
+
+ Escribir("Las regionales con más papers enviados son :");
+ Para i:=1 hasta 31 hacer
+  Si arr(i,17)=res entonces
+   Escribir( reg(i));
+  finSi
+ finPara
+
+
+Cerrar(Arche);
+
+finAccion

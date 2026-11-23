@@ -1,0 +1,60 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.8 - resolución compartida en Discord
+// ==========================================================================
+
+Escribir un algoritmo que permita buscar, insertar o borrar un elemento identificado con una clave
+determinada en una lista circular simplemente encadenada.
+
+
+ACCION 4.8 ES(prim: puntero a NODO)
+AMBIENTE
+NODO = registro
+    clave:entero
+    prox:puntero a NODO
+fin_registro
+p,a,q :puntero a NODO
+res_b,res_a: entero
+
+ALGORITMO
+ESCRIBIR("Que desea hacer?, 1:BUSCAR, 2:INSERTAR, 3:BORRAR")
+LEER(res_a)
+ESCRIBIR("INGRESE UN CLAVE")
+LEER(res_b)
+p:=prim
+a:=p
+p:=*p.prox
+SI res_a = 1 ENTONCES
+    MIENTRAS p <> prim y *p.clave <> res_b hacer
+        a:= p
+        p:= *p.prox
+    FIN_MIENTRAS
+    SI *p.clave = res_b ENTONCES
+        ESCRIBIR("SE ECONTRO LA CLAVE INGRESADA");
+    SINO
+        ESCRIBIR("NO SE ECONTRO LA CLAVE INGRESADA")
+    FIN_SI
+SINO
+    SI res_a = 2 ENTONCES
+        MIENTRAS p <> prim y res_b > *p.clave HACER
+            a:=p
+            p:= *p.prox
+        FIN_MIENTRAS
+        NUEVO(q)
+        *a.prox := q
+        *q.prox := p
+        *q.clave := res_b
+    SINO
+        MIENTRAS p <> prim y res_b <> *.clave
+            a:= p
+            p:= *p.prox
+        FIN_MIENTRAS
+        SI p = prim ENTONCES
+            ESCRIBIR("Error no se puede eliminar porque no se econtro el elemento")
+        SINO
+            a:= *p.prox
+            DISPONER(p)
+        FIN_SI
+    FIN_SI
+FIN_SI
+FIN_ACCION.

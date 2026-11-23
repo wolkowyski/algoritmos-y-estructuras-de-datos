@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Enunciado completo del modelo "Sorteo de supermercado"
+//  La resolución corregida está en ../2022/tema-1-ejercicio-1.pseudo
+// ==========================================================================
+
+Ejercicio modelo 3er parcial -Ejercicio 1:
+Una importante cadena de supermercados está realizando un sorteo por su aniversario, repartiendo importantes premios y descuentos a sus clientes,
+ de acuerdo a las compras realizadas, cuantas más compras realizan, más chances suma.
+La información de las compras se encuentra en un archivo secuencial, ordenado por fecha_compra:
+fecha_compra | dni_cliente | cantidad_articulos | Importe_total
+Además, cuenta con una programa de fidelización de clientes. La información de los socios adheridos al programa, se encuentra dentro de un archivo
+ indexado por dni del cliente:
+Dni del cliente | Apellido y Nombre | Fecha adhesión | Categoría
+a) Se solicita crear una lista doblemente enlazada (ordenada por ApellidoyNombre), con la información sólo de las personas que forman parte del
+ programa de socios. Los datos a almacenar son los siguientes: ApellidoyNombre, chances_total
+Teniendo en cuenta lo siguiente:
+Por única vez cuando se lo agrega: 5 chances.
+Opcional: Los clientes con más de 10 años de adhesión sumarán 10 chances, los clientes que tengan entre 3 y 10, sumarán 5 chances, los clientes
+con menos años, sumarán 2 chances. (Nota: para calcular solo se toma en cuenta la diferencia de años).
+Por cada compra: Se sumará 1 punto extra por cada $100.
+
+Cantidad aleatoria de chances extra en caso de que la categoría del usuario sea Black.
+
+Este valor se genera mediante el giro de ruleta la cual se simulará con la información almacenada en una lista simple circular de la siguiente
+ manera: Se genera un valor aleatorio con la función Tirar(), la cual retorna un número entre 1 y 55. Para obtener el número de chances extras,
+tendrá que realizar tantos saltos sobre la ruleta como valor indique la función Tirar(). Los siguientes valores para los siguientes clientes se
+ obtendrán a partir de la última posición que haya quedado.

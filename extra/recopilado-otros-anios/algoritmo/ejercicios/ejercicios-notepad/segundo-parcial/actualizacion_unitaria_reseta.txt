@@ -1,0 +1,62 @@
+ACTUALIZACION UNITARIA
+{Abrir archivos}
+{Leer_Maestro}
+{Leer_Moviemientos}
+	Mientras (clave_mae <> HV) o (Clave_mov <> HV) hacer 
+		Si ( clave_mae = clave_mov) entonces
+			PROCESOS IGUALES
+				SINO
+					Si (clave_mae< clave_mov) entonces
+						reg_sal:=reg_mae
+						esc (arch_sal, reg_sal)
+							sino
+								PRECESOS DISTINTOS
+					Fin si
+		Fin si
+	Fin Mientras
+{Cerrar archivos}
+
+Subaccion Procesos Iguales es:
+	Si ( cod.mov= 'A') entonces
+		esc (`error,ya existe')
+			sino
+				Si (cod.mov='B') entonces
+					reg_sal:=reg_mae
+					reg_sal.marca:= '*'
+					esc (arch_sal,reg_sal)
+						sino
+							reg_sal.campo1:= reg_mov.compo1
+							.
+							.
+							.
+							esc(arch_sal,reg_sal)
+				Fin si
+	Fin si
+	Leer_mae
+	Leer_mov
+Fin sub.
+
+Subaccion Procesos Distintos es:
+	Si ( cod.mov= 'B') entonces
+		esc('error, no existe')
+		SINO
+			Si (cod.mov= 'M' ) entonces	
+				esc ('error,no existe')
+					sino
+						reg_sal.campo1:=reg_mov.campo1
+						.
+						.
+						.
+						esc(arch_sal,reg_sal)
+			Fin si
+	Fin si
+	Leer_mov
+Fin sub.
+
+Subaccion leer_mov es
+
+Leer (arch_mov,reg_mov)
+	Si FDA (arch_mov) entonces
+		reg_mov.clave_mov := HV
+	Fin si
+Fin sub

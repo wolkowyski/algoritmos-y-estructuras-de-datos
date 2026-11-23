@@ -1,0 +1,69 @@
+ACCION_233_ES
+    AMBIENTE
+        Fecha = Registro de 
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+
+        Peaje = Registro de
+            Clave: Registro
+                Patente: N(6)
+                Fecha: Fecha
+            FRegistro
+            Ult_Hora: N(4)
+            Costo: AN(5)
+        FRegistro
+        Peajes: Archivo de Peaje indexado por Clave
+        Comp: Peaje
+
+        Opcion, Opcion2: Alfanumérico
+        Pat: Entero
+        Cat: Entero
+
+    PROCESO
+        Abrir E/S (Peajes)
+        Opcion:= "S"
+       
+        ESC ("Ingrese la fecha del día de hoy, en el formato año, mes y dia")
+        Leer(Comp.Clave.Fecha)
+        Mientras (Opcion = "S") Hacer
+            ESC ("Ingrese Patente del vehículo")
+            Leer(Pat)
+            Comp.Clave.Patente:= Pat
+            Leer(Peajes, Comp)
+            Si EXISTE Entonces
+                ESC ("El vehículo ya ha pasado en el día de hoy: Pase Libre")
+            SINO
+                ESC ("El vehículo no a pasado en el día de hoy... por favor ingrese los datos solicitados")
+                Opcion2:= "N"
+                Mientras (Opcion2 = "N") Hacer
+                    ESC ("Patente: "); Leer(Comp.Clave.Patente)
+                    ESC ("Hora: "); Leer(Comp.Ult_Hora)
+                    ESC ("Ingrese la categoría del vehículo -> 1/2/3/4 : "); Leer(Car)
+                    Segun Cat Hacer
+                        1: Comp.Costo:= "1,20"
+                        2: Comp.Costo:= "2,50"
+                        3: Comp.Costo:= "4,00"
+                        4: Comp.Costo:= "5,00"                    
+                    FSegun
+                    ESC ("Patente: ",Comp.Clave.Patente)
+                    ESC ("Fecha: ",Comp.Clave.Fecha)
+                    ESC ("Hora: ",Comp.Ult_Hora)
+                    ESC ("Categoría: ",Car)
+                    ESC ("Costo:",Comp.Costo)
+                    ESC ("Los datos son correctos? S/N"); Leer(Opcion2);
+                    Si (Opcion2 = "S") Entonces
+                        Grabar(Peajes, Comp)
+                    Sino
+                        ESC("Vuelva a ingresar los datos...")
+                    FSI
+                FMientras
+            FSI
+            ESC ("Desea seguir ejecutando el programa? S/N");Leer(Opcion);
+        FMientras
+        ESC ("Adios ;)...")
+        Cerrar(Peajes)
+FACCION
+
+                

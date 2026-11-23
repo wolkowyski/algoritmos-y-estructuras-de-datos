@@ -1,0 +1,23 @@
+* text=auto eol=lf
+
+# El pseudocódigo de la cátedra está basado en Pascal: se muestra con ese resaltado
+*.pseudo linguist-language=Pascal linguist-detectable
+*.psc linguist-language=Pascal linguist-detectable
+
+# Material de terceros: no cuenta para las estadísticas de lenguajes del repo
+material-de-catedra/** linguist-vendored
+extra/** linguist-vendored
+
+*.pdf binary
+*.jpg binary
+*.png binary
+*.gif binary
+*.doc binary
+*.docx binary
+*.ppt binary
+*.pptx binary
+*.pps binary
+*.ppsx binary
+*.pptm binary
+*.xlsx binary
+*.rtf binary

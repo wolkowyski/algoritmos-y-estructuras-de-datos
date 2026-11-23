@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.9
+//
+//  Dado un arreglo de 200 libros (Nro, Título, Autor, Cantidad de hojas),
+//  listar los títulos de los libros de un autor (en el ejemplo, N. Wirth).
+//  Como un autor puede tener varios libros se usa búsqueda lineal pura.
+// ==========================================================================
+
+Acción Ejercicio3_9 es
+    Ambiente
+        N = 200
+        LibroReg = Registro
+            Nro_Libro: N(5)
+            Titulo: AN(50)
+            Autor: AN(30)
+            Cant_Hojas: N(4)
+        FinRegistro
+
+        Libros: arreglo de [1..N] de LibroReg
+        i: 1..N
+        AutorBuscado = "Niklaus Wirth"
+        encontrados: entero
+
+    Proceso
+        encontrados:= 0
+        Para i:= 1 a N hacer
+            Si Libros[i].Autor = AutorBuscado entonces
+                Escribir("Uno de los libros de ", AutorBuscado, " es: ", Libros[i].Titulo)
+                encontrados:= encontrados + 1
+            FinSi
+        FinPara
+        Si encontrados = 0 entonces
+            Escribir("No hay libros de ", AutorBuscado)
+        FinSi
+FinAcción

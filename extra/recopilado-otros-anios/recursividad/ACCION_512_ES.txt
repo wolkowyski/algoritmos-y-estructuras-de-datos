@@ -1,0 +1,7 @@
+Funcion Fib(n: entero):entero
+    Si (n <= 2) entonces
+        fib:= 1
+    Sino
+        fib:= fib(n-1) + fib(n-2)
+    fs
+FF

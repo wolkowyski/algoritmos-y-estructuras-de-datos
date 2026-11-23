@@ -1,0 +1,27 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos: procesos estadísticos (apunte)
+// ==========================================================================
+
+// ¿Corte de control o estadístico?
+//   Si el archivo está ordenado por el criterio pedido ---> Corte de control
+//   Si el archivo no está ordenado                      ---> Estadístico
+//
+// En el estadístico los totales se acumulan en una matriz: a la matriz se le
+// agrega una fila y una columna extra donde van las sumatorias de los totales.
+//
+// 1. Primero se hace un barrido entero de la matriz colocando todas las celdas en 0.
+// 2. Se recorre el archivo y cada registro se suma en su celda, en el total de
+//    su fila, en el total de su columna y en el total general.
+// 3. Al final se emite la matriz con sus títulos.
+
+// Ejemplo de emisión: 4 plantas (filas) x proveedores A..D + columna E de totales
+Escribir("Totales")
+Escribir("Plantas    A    B    C    D    Totales")
+
+Para i:= 1 a 4 hacer
+    Escribir("Planta ", i)
+    Para j:= "A" a "E" hacer
+        Escribir(Tot[i,j])
+    FinPara
+FinPara

@@ -1,0 +1,54 @@
+ACCION_49_ES(prim: puntero a nodo)
+    //Nodo = Registro de
+        Mult: N(5)
+        prox: puntero a nodo
+      FR
+    AMBIENTE
+        texto: Arreglo de [1..255] de caracteres
+        contchar, resultado, i, j: Entero
+        Sal = Registro de
+            dig: Entero
+            prox: puntero a Sal
+        FR
+        primsal, ant, q: puntero a Sal
+        p: puntero a nodo
+
+        Funcion Suma(r: Entero):Entero
+            Si r > 0 entonces
+                Suma:= (r mod 10) + Suma(r DIV 10)
+            Sino
+                Suma:= 0
+            FS
+        FF
+
+    PROCESO
+        ESC("A continuanción ingrese el texto a encripatar")
+        Leer(texto[]) //Supongo un funcionamiento como en C
+        contchar:= Longitud(texto[])
+        primsal:= nil
+        ant:= nil
+        Para i:= 1 hasta contchar hacer
+            p:=prim
+            Para j:= 1 hasta i hacer
+                p:= *p.prox
+            FP
+            resultado:= ASCII(texto[i]) * *p.Mult
+
+            Nuevo(q)
+            *q.dig:= Suma(resultado)
+            *q.prox:= nil
+            Si (primsal = nil) entonces
+                prim:= q
+            Sino
+                *ant.prox:= q
+            FS
+            ant:= q
+        FP
+
+        p:=primsal
+        Mientras (p <> nil) hacer
+            ESC(*p.dig)
+            p:=*p.prox
+        FM
+FA
+

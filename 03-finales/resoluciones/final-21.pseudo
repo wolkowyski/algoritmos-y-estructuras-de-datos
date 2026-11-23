@@ -1,0 +1,211 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 21
+//  Enunciado: ../enunciados/final-21.jpg
+// ==========================================================================
+
+//consigna 1
+
+Accion liquidación() es
+
+Ambiente
+
+	novedades=registro
+		clave=registro
+			legajo:N(8)
+			mes:1..12
+			año:N(4)
+			cod_nov:N(5)
+		fin registro
+		tipo_nov:"D","R"
+		monto:N(8.2)
+	fin registro
+
+	reg_n: novedades
+	arch_n: archivo de novedades ordenado por clave
+
+	empleados=registro
+		clave=registro
+			legajo:N(8)
+		fin registro
+		nombre:AN(15)
+		cargo:1..10
+		basico:N(8.2)
+	fin registro
+
+	reg_e: empleados
+	arch_e: archivo de empleados indexado por clave
+
+	sueldos=registro
+		clave=registro
+			legajo:N(8)
+			mes:1..12
+			año:N(4)
+		fin registro
+		cargo:1..10
+		neto_a_cob:N(15.2)
+	fin registro
+
+	reg_s: sueldos
+	arch_s: archivo de sueldos indexado por clave
+
+	A: Arreglo [1..10] de real
+
+	monto_t: real
+
+	Procedimiento proceso() es
+		Si (reg_n.tipo_nov="D") entonces
+			monto_t:=monto_t-reg_n.monto
+		Sino
+			monto_t:=monto_t+reg_n.monto
+		Fin Si
+	Fin Procedimiento
+
+	aux, mes, año: entero
+Proceso
+
+	Para i:=1 a 10 hacer
+		A[i]:=0
+	Fin Para
+
+	ABRIR E/ (arch_n)
+	ABRIR E/ (arch_e)
+	ABRIR /S (arch_s)
+
+	LEER(arch_n, reg_n)
+
+	Mientras NFDA (arch_n) hacer
+
+		reg_e.clave.legajo:=reg_n.clave.legajo
+		LEER(arch_e, reg_e)
+
+		Si (existe) entonces
+
+			monto_t:=reg_e.basico
+			proceso()
+
+			aux:=reg_n.clave.legajo
+			mes:=reg_n.clave.mes
+			año:=reg_n.clave.año
+			LEER (arch_n, reg_n)
+
+			Mientras (aux=reg_n.clave.legajo) hacer
+				proceso()
+				LEER(arch_n, reg_n)
+			Fin Mientras
+
+			reg_s.clave.legajo:=reg_e.clave.legajo
+			reg_s.clave.mes:=mes
+			reg_s.clave.año:=año
+			reg_s.cargo:=reg_e.cargo
+			reg_s.neto_a_cob:=monto_t
+			GRABAR(arch_s, reg_s)
+
+			A[reg_e.cargo]:=A[reg_e.cargo]+monto_t
+
+			Escribir("Legajo: ",reg_e.clave.legajo)
+			Escribir("Mes: ",mes)
+			Escribir("Año: ",año)
+			Escribir("Neto a cobrar: ",monto_t)
+
+		Sino
+
+			Escribir("No se encontró el legajo en el archivo empleados")
+
+			aux:=reg_n.clave.legajo
+
+			Mientras (aux=reg_n.clave.legajo) hacer
+				LEER(arch_n, reg_n)
+			Fin Mientras
+
+		Fin Si
+
+	Fin Mientras
+
+
+	Para i:=1 a 10 hacer
+		Escribir("Cargo: ",i)
+		Escribir("Monto total: ",A[i])
+	Fin Para
+
+
+	CERRAR(arch_n)
+	CERRAR(arch_e)
+	CERRAR(arch_s)
+
+Fin Proceso
+
+
+//consigna 2
+
+
+Accion binario(A: Arreglo [1..48] de entero) es
+
+Ambiente
+
+	num, cont, x: entero
+
+	sec: secuencia de caracter de salida
+
+	Funcion convertir(x:entero):caracter es
+		Segun (x) hacer
+			=0: convertir:="0"
+			=1: convertir:="1"
+			=10: convertir:="2"
+			=11: convertir:="3"
+			=100: convertir:="4"
+			=101: convertir:="5"
+			=110: convertir:="6"
+			=111: convertir:="7"
+			=1000: convertir:="8"
+			=1001: convertir:="9"
+			=1010: convertir:="A"
+			=1011: convertir:="B"
+			=1100: convertir:="C"
+			=1101: convertir:="D"
+			=1110: convertir:="E"
+			=1111: convertir:="F"
+		Fin Segun
+	Fin Funcion
+
+	car: caracter
+
+Proceso
+
+	CREAR(sec)
+
+	cont:=1
+	x:=0
+
+	Para i:=1 a 12 hacer
+
+		Para j:=1 a 4 hacer
+
+			Segun (j) hacer
+				=1: num:=A[cont]*1000
+				=2: num:=num+A[cont]*100
+				=3: num:=num+A[cont]*10
+				=4: num:=num+A[cont]
+			Fin Segun
+
+			cont:=cont+1
+
+		Fin Para
+
+		x:=x+1
+
+		car:=convertir(num)
+
+		Escribir(car)
+		ESC(car, sec)
+
+		Si (x=2) entonces
+			Escribir("-")
+			ESC("-", sec)
+			x:=0
+		Fin Si
+
+	Fin Para
+
+
+Fin Proceso

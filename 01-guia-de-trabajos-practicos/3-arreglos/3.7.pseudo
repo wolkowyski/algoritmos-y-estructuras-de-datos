@@ -1,0 +1,83 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.7
+//  Los tres métodos de búsqueda sobre el arreglo de nombres del 3.6
+// ==========================================================================
+
+
+// 1. Búsqueda lineal pura: recorre todo el arreglo, encuentra los repetidos
+Acción Ejercicio3_7_Lineal es
+    Ambiente
+        N = 100
+        Nombres: arreglo de [1..N] de AN(10)
+        i: 1..N
+        Nombre_Buscado: AN(10)
+
+    Proceso
+        Escribir("Por favor ingrese el nombre buscado")
+        Leer(Nombre_Buscado)
+        Para i:= 1 a N hacer
+            Si Nombres[i] = Nombre_Buscado entonces
+                Escribir("El nombre: ", Nombre_Buscado, " fue hallado en la posición: ", i)
+            FinSi
+        FinPara
+FinAcción
+
+
+// 2. Búsqueda lineal con centinela: corta cuando lo encuentra.
+//    No necesita que el arreglo esté ordenado (si lo está, se puede cortar
+//    también al pasar el primer elemento mayor al buscado).
+Acción Ejercicio3_7_Centinela es
+    Ambiente
+        N = 100
+        Nombres: arreglo de [1..N] de AN(10)
+        i: 1..N
+        Nombre_Buscado: AN(10)
+
+    Proceso
+        Escribir("Por favor ingrese el nombre buscado")
+        Leer(Nombre_Buscado)
+        i:= 1
+        Mientras (i < N) ^ (Nombres[i] <> Nombre_Buscado) hacer
+            i:= i + 1
+        FinMientras
+
+        // Éxito y fracaso afuera del ciclo
+        Si Nombres[i] = Nombre_Buscado entonces
+            Escribir("El nombre: ", Nombre_Buscado, " está en la posición: ", i)
+        SiNo
+            Escribir("El nombre no fue encontrado")
+        FinSi
+FinAcción
+
+
+// 3. Búsqueda binaria (dicotómica): el arreglo DEBE estar ordenado
+Acción Ejercicio3_7_Binaria es
+    Ambiente
+        N = 100
+        Nombres: arreglo de [1..N] de AN(10)
+        Nombre_Buscado: AN(10)
+        iz, de, centro: entero
+
+    Proceso
+        Escribir("Por favor ingrese el nombre buscado")
+        Leer(Nombre_Buscado)
+        iz:= 1 // uso 2 variables para los límites e ir partiendo el arreglo a la mitad
+        de:= N
+        centro:= (iz + de) div 2
+
+        Mientras (iz <= de) y (Nombres[centro] <> Nombre_Buscado) hacer
+            Si Nombres[centro] > Nombre_Buscado entonces
+                de:= centro - 1 // me quedo con la mitad izquierda
+            SiNo
+                iz:= centro + 1 // me quedo con la mitad derecha (arreglo de menor a mayor)
+            FinSi
+            centro:= (iz + de) div 2 // antes de cerrar el mientras
+        FinMientras
+
+        Si iz <= de entonces
+            Escribir("El nombre: ", Nombre_Buscado, " fue encontrado en la posición: ", centro)
+        SiNo
+            Escribir("El nombre: ", Nombre_Buscado, " no fue encontrado")
+        FinSi
+FinAcción

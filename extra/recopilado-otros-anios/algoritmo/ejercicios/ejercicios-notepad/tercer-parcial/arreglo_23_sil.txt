@@ -1,0 +1,62 @@
+PROCESO ESTADISTICO:
+Accion 23 es:
+
+Cajeros = Registro
+	AyN: AN(30)	
+	Num_caja: 1..10
+	Imp: real
+	Hora: N(2)
+Fin reg
+
+Arch: archivo de cajeros (ord x AyN)
+Reg: cajeros
+
+A: arreglo de (1..11,1..6) de real
+i: 1..11
+j:1..6
+
+Algoritmo:
+
+Parai:= 1 a 11 hacer
+	Para j:= 1 a 6 hacer
+		A[i,j]:= 0
+	Fin para
+Fin para
+
+ABRIR (arch)
+LEER(arch,reg)
+
+Mientras NFA (arch) hacer
+	i:= reg.num_caja
+	
+		Segun reg.hora hacer
+			(>8^<10) : j:= 1
+			(>=10 ^ < 12): j:= 2
+			(>=12 ^ < 16): j:= 3
+			(>=16 ^ < 18): j:= 4
+			(>=18 ^ <= 20): j:= 5
+		Fin segun
+		
+		A[i,j]:= A [i,j] + reg.imp 
+		A[11,j]:= A [11,j] + reg.imp 
+		A[i,6]:= A [i,6] + reg.imp 
+		A[11,6]:= A [11,6] + reg.imp
+			LEER(Arch,reg)
+Fin mientras
+	
+	Esc ( ' Cajas        Franjas de horas             Total x Cajas ')
+	esc ( '        8-10 10-12 12-16 16-18 18-20 ')
+	
+	Para i:= 1 hasta 11 hacer
+		Si i = 11 entonces
+			esc('total por horas')
+			SINO
+			  esc(i)
+		Fin si
+		
+				Para j := 1 hasta 6 hacer
+						esc( A [i,j] )
+				Fin para
+	Fin para
+	
+Fin de accion

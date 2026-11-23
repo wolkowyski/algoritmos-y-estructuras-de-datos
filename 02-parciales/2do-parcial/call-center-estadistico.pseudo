@@ -1,0 +1,91 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  2do Parcial - Modelo "Call Center" - Ejercicio 2 (proceso estadístico)
+//
+//  Matriz de reclamos por mes (filas 1..12, fila 13 = totales) y urgencia
+//  (Alta, Media, Baja, columna 4 = totales). Informar los reclamos de
+//  urgencia alta de enero y cuántos meses tuvieron menos de 10 urgencias
+//  medias.
+//  Enunciado: enunciados/call-center.pdf
+// ==========================================================================
+
+Accion CallCenter_Arreglo ES
+
+Ambiente
+
+	Fecha=Registro
+		AA: 1900...2100
+		MM: 1...12
+		DD: 1...31
+	Fin Registro
+
+	Reclamos=Registro
+		Region: N(2)
+		CodRecl: N(10)
+		FecRecl: Fecha
+		MailCliente: AN(20)
+		Urgencia: AN(1)
+		Detalle: AN(100)
+	Fin Registro
+
+	Arch: Archivo secuencial de Reclamos ordenado por Region
+	reg: Reclamos
+
+	Matriz: arreglo [1...13,1...4] de entero
+
+	i,j,Enero_Alt,Urg_men10_Mes: entero
+
+Proceso
+	Abrir E/(Arch)
+	Leer(Arch,reg)
+
+	Para i:=1 hasta 13 hacer
+		Para j:=1 hasta 4 hacer
+			Matriz[i,j]:= 0
+		Fin Para
+	Fin Para
+
+	// El archivo está ordenado por región, no por mes: por eso es estadístico
+	Mientras NFDA(Arch) hacer
+		i:= reg.FecRecl.MM
+
+		Segun (reg.Urgencia) hacer
+			"A": j:= 1
+			"M": j:= 2
+			"B": j:= 3
+		Fin Segun
+
+		Matriz[i,j]:= Matriz[i,j] + 1
+		Matriz[i,4]:= Matriz[i,4] + 1
+		Matriz[13,j]:= Matriz[13,j] + 1
+		Matriz[13,4]:= Matriz[13,4] + 1
+
+		Leer(Arch,reg)
+	Fin Mientras
+
+	Cerrar(Arch)
+
+	Esc("Meses		Urgencia Alta 	Urgencia Media 	Urgencia Baja	Total por mes")
+	Para i:=1 hasta 13 hacer
+		Si (i < 13) entonces
+			Esc("Mes ",i)
+		SiNo
+			Esc("Total por Urgencia")
+		Fin Si
+		Para j:=1 hasta 4 hacer
+			Esc(Matriz[i,j])
+		Fin Para
+	Fin Para
+
+	// Las consultas se responden directo desde la matriz, fuera de la emisión
+	Enero_Alt:= Matriz[1,1]
+	Urg_men10_Mes:= 0
+	Para i:=1 hasta 12 hacer // solo meses (sin la fila de totales)
+		Si Matriz[i,2] < 10 entonces
+			Urg_men10_Mes:= Urg_men10_Mes + 1
+		Fin Si
+	Fin Para
+
+	Esc("En enero se registraron ",Enero_Alt," urgencias altas")
+	Esc("La cantidad de meses que registraron menos de 10 urgencias medias fue: ",Urg_men10_Mes)
+Fin Accion

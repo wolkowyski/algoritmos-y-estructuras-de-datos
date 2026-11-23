@@ -1,0 +1,52 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que produzca 2 secuencias de salida, una con los caracteres "numéricos" y otra con los que no lo son.
+
+Informar al final, cantidad de caracteres de cada secuencia de salida
+
+Ejemplo: Si en la secuencia de entrada viniera A125EB% en la salida debería ir
+
+salida1 --> 125
+
+salida2 --> AEB%
+
+________________________________________________________________________
+
+ACCION secElem ES
+	AMBIENTE
+		VARIABLES
+			secIn, secOut1, secOut2: Secuencia de caracter;
+			v: caracter;
+
+			nums, noNums: entero;
+
+			FUNCION esNum(v: caracter): logico
+				AMBIENTE
+					VARIABLES
+						nums = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+				PROCESO
+					esNum := v EN(nums);
+			FIN FUNCION;
+
+	PROCESO
+
+		nums := 0; noNums := 0;
+		CREAR(secOut1); // Almacenará los caracteres numéricos
+		CREAR(secOut2); // Almacenará los caracteres no numéricos
+		ARR(secIn); AVZ(secIn, v);
+		MIENTRAS NO FDS(secIn) HACER
+			SI (esNum(v)) ENTONCES
+				nums := nums + 1;
+				ESC(secOut1, v);
+			SINO
+				noNums := noNums + 1;
+				ESC(secOut2, v);
+			FIN SI;
+			AVZ(secIn, v);
+		FIN MIENTRAS;
+		ESC('Total de caracteres numéricos: ', nums);
+		ESC('Total de caracteres no numéricos: ', noNums);
+		CERRAR(secOut1); CERRAR(secOut2); CERRAR(secIn);
+
+FIN ACCION;

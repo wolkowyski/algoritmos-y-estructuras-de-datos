@@ -1,0 +1,16 @@
+ACCION_34_ES (A: Arreglo de [1..50] de Enteros)
+    AMBIENTE
+        B: Arreglo de [1..50] de Enteros
+        cont_cond, i: Entero
+    PROCESO
+        cont_cond:= 0
+        Para i:= 1 hasta 50 hacer
+            Si (A[i] MOD 3 = 0) entonces
+                cont_cond:= cont_cond + 1
+            Sino
+                B[i]:= A[i]
+                A[i]:= A[i] * 3
+            FS
+        FP
+        ESC("Cantidad de numeros que cumplen con ser multiplo de 3: ",cont_cond)
+FA

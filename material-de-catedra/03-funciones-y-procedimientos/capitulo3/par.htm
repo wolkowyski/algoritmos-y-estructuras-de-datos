@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Parametros Valor y Parametros Variable</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+      <h4>Parametros Valor y Parametros Variable</h4>
+      <p class="entrada">Existen dos tipos de parametros, como se indico anteriormente, que nos ayudan a transferir/recibir informaci&oacute;n de otros subprogramas, o del programa principal,
+         a saber: <em>parametros de entrada (por valor) y parametros de salida o de entrada/salida (variable).</em>
+      <h6>Parametros Valor</h6>
+      <p>Son parametros unidireccionales que se utilizan para proporcionar informaci&oacute;n a un subprograma, pero no pueden devolver valores, al programa llamador.
+      <p>Se les llama parametros de entrada, ya que en la llamada al subprograma el valor del par&aacute;metro actual se pasa a la variable que representa a la variable actual. Este valor puede
+         ser modificado dentro del subprograma pero el valor modificado no es devuelto al programa o subprograma llamador.
+      <h6>Parametros Variable</h6>
+      <p>Se utilizan tanto para recibir como para transmitir valores entre el subprograma y el programa llamador. Este puede actuar como par&aacute;metro de salida o de entrada/salida.
+      <p class="td"><strong>Nota:</strong><br>En la notaci&oacute;n de pseudoc&oacute;digo representar&eacute; a estos parametros anteponiendo la palabra <em>var</em> antes del <a href="identificador.htm" class="cambio" title="identificadores">identificador</a>
+         ; ).
+      <div class="codigo">
+        <p class="entrada">Este algoritmo ilustra la diferencia entre parametros valor y parametros variable, y la correspondencia entre ellos.
+        <p>Algoritmo Ejemplo_Parametros<br>
+           &nbsp;&nbsp;Variables<br>
+            &nbsp;&nbsp;&nbsp;A, B, C: enteros<br>
+
+            &nbsp;<strong>procedimiento</strong> imprimir (D,E,F: enteros)<br>
+            &nbsp;&nbsp;inicio<br>
+             &nbsp;&nbsp;&nbsp;escribir ("A =", D, "B =", E, "C =", F)<br>
+            &nbsp;fin_imprimir<br>
+
+            &nbsp;<strong>procedimiento</strong> pasar (D,E: entero; var F: entero)<br>
+            &nbsp;&nbsp;inicio<br>
+            &nbsp;&nbsp;&nbsp;escribir ("Entrada al procedimiento pasar:")<br>
+            &nbsp;&nbsp;&nbsp;imprimir (D,E,F)<br>
+            &nbsp;&nbsp;&nbsp;F <- D * F<br>
+            &nbsp;&nbsp;&nbsp;escribir ("Salida del procedimiento pasar:")<br>
+            &nbsp;&nbsp;&nbsp;imprimir (D,E,F)<br>
+            &nbsp;fin_pasar<br>
+            &nbsp;<strong>inicio</strong><br>
+            &nbsp;&nbsp;A <- 2<br>
+            &nbsp;&nbsp;B <- 3<br>
+            &nbsp;&nbsp;C <- 4<br>
+            &nbsp;&nbsp;escribir ("Antes de llamar al procedimiento pasar")<br>
+            &nbsp;&nbsp;imprimir (A,B,C)<br>
+            &nbsp;&nbsp;pasar (A,B,C)<br>
+            &nbsp;&nbsp;escribir ("Despues del retorno del procedimiento pasar")<br>
+            &nbsp;&nbsp;imprimir (A,B,C)<br>
+            &nbsp;<strong>fin</strong>
+      </div>
+      <p>La salida del programa en pantalla ser&iacute;a la siguiente:
+      <div class="td">
+        Antes de llamar al procedimiento pasar<br>
+        A = 2, B = 3, C = 4<br>
+        Entrada al procedimiento pasar<br>
+        A = 2, B = 3, C = 4<br>
+        Salida del procedimiento pasar<br>
+        A = 2, B = 3, C = 6<br>
+        Despues del retorno del procedimiento pasar<br>
+        A = 2, B = 3, C = 6
+      </div>
+       <P STYLE="text-align:right;"><A HREF="trans.htm" CLASS="cambio" title="transferencia de informacion">Transferencia de Informaci&oacute;n</A> &nbsp;<a href="tutor.htm" class="cambio" title="indice del tutor">Indice</a> &nbsp;
+        <a href="varg.htm" class="cambio" title="Variables globales y locales">Variables Globales y Locales</a></P>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+
+    </body>
+  </html>

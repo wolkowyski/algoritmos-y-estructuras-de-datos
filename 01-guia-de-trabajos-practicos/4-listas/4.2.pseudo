@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.2
+//
+//  Dada una lista de enteros, pasar a una lista nueva los múltiplos de 10,
+//  eliminándolos de la lista original.
+// ==========================================================================
+
+Accion Ejercicio4_2 (prim1: puntero a Nodo) es
+    Ambiente
+        Nodo = Registro // las dos listas tienen el mismo formato, así que alcanza con un solo tipo de nodo
+            num: entero
+            prox: puntero a Nodo
+        FinRegistro
+
+        p1, a1, aux: puntero a Nodo // prim1 viene como parámetro
+        prim2, q: puntero a Nodo
+
+    Proceso
+        a1:= nil
+        p1:= prim1
+        prim2:= nil // lista nueva, necesito inicializar primero si o si
+
+        Mientras (p1 <> nil) hacer
+            Si (p1^.num mod 10) = 0 entonces
+                // Carga apilada en lista nueva, no insercion ordenada (aun)
+                Nuevo(q)
+                q^.num:= p1^.num
+                q^.prox:= prim2
+                prim2:= q
+
+                // Eliminacion de la lista original, que LUEGO TENGO Q VOLVER A RECORRER Y BORRAR MAS
+                Si (a1 = nil) entonces
+                    prim1:= p1^.prox
+                SiNo
+                    a1^.prox:= p1^.prox
+                FinSi
+
+                aux:= p1^.prox // guardo el siguiente antes de liberar el nodo
+                Disponer(p1)
+                p1:= aux
+            SiNo
+                a1:= p1
+                p1:= p1^.prox // avanzo guardando el anterior
+            FinSi
+        FinMientras
+        // El anterior (a1) no se mueve cuando se elimina: sigue siendo el mismo nodo
+FinAccion

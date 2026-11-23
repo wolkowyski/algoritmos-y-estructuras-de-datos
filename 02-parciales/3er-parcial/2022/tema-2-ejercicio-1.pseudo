@@ -1,0 +1,130 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2022 - Tema 2 - Ejercicio 1 (listas + indexado)
+//
+//  Por cada compra: si el cliente no es socio (no está en el indexado) se
+//  acumula en una lista simple ordenada por DNI (cantidad e importe total);
+//  además se busca en la lista doble de rangos de descuento el que
+//  corresponde al importe y, si hay cupo, se informa el descuento.
+//  Enunciado: ../enunciados/2022-tema-2.jpg
+// ==========================================================================
+
+Accion Tema2_Ejer1_2022 (Prim,Ult: puntero a Nodo) ES
+
+Ambiente
+
+	Compras=Registro
+		Fecha_comp: N(8)
+		DNI: N(8)
+		cant_articulos: N(3)
+		Importe: N(6,2)
+	Fin Registro
+
+	Socios=Registro
+		DNI: N(8)
+		AyN: AN(30)
+		Fecha_adhesion: N(8)
+		Categoria: AN(10)
+	Fin Registro
+
+	Nodo=Registro
+		min: N(6,2)
+		max: N(6,2)
+		descuento: (0,01...0,99)
+		cupos_disp: entero
+		rubro_desc: (1...9)
+		ant,prox: puntero a Nodo
+	Fin Registro
+
+	New_Nodo=Registro
+		DNI: N(8)
+		cant_compr: N(3)
+		imp_total: N(6,2)
+		prox: puntero a New_Nodo
+	Fin Registro
+
+	Arch_Comp: archivo secuencial de compras ordenado por Fecha_comp
+	reg_comp: Compras
+	Arch_Soc: archivo de Socios indexado por DNI
+	reg_soc: Socios
+
+	P: puntero a Nodo
+	New_Prim, Q, R, A: puntero a New_Nodo
+
+Proceso
+	Abrir E/(Arch_Comp)
+	Leer(Arch_Comp,reg_comp)
+	Abrir E/(Arch_Soc)
+
+	New_Prim:= nil
+
+	Mientras NFDA(Arch_Comp) hacer
+		reg_soc.DNI:= reg_comp.DNI
+		Leer(Arch_Soc,reg_soc)
+
+		Si no(existe) entonces
+			Si (New_Prim = nil) entonces	//Lista vacia
+				Nuevo(Q)
+				*Q.DNI:= reg_comp.DNI
+				*Q.cant_compr:= reg_comp.cant_articulos
+				*Q.imp_total:= reg_comp.Importe
+				*Q.prox:= New_Prim
+				New_Prim:= Q
+			SiNo
+				R:= New_Prim
+				Mientras (R <> nil) y (*R.DNI < reg_comp.DNI) hacer
+					A:= R
+					R:= *R.prox
+				Fin Mientras
+
+				Si (R <> nil) y (*R.DNI = reg_comp.DNI) entonces		//Actualizo (R puede ser nil si va al final)
+					*R.cant_compr:= *R.cant_compr + reg_comp.cant_articulos
+					*R.imp_total:= *R.imp_total + reg_comp.Importe
+				SiNo
+					Nuevo(Q)
+					*Q.DNI:= reg_comp.DNI
+					*Q.cant_compr:= reg_comp.cant_articulos
+					*Q.imp_total:= reg_comp.Importe
+
+					//Carga Ordenada
+					Si (R = New_Prim) entonces
+						*Q.prox:= R
+						New_Prim:= Q
+					SiNo
+						Si (R = nil) entonces
+							*Q.prox:= nil
+							*A.prox:= Q
+						SiNo
+							*Q.prox:= R
+							*A.prox:= Q
+						Fin Si
+					Fin Si
+				Fin Si
+			Fin Si
+		Fin Si
+
+		P:= Prim
+
+		Mientras (P <> nil) y ((*P.min > reg_comp.Importe) o (*P.max < reg_comp.Importe)) hacer
+			P:= *P.prox
+		Fin Mientras
+
+		Si (P = nil) entonces
+			Esc("La compra no tiene descuentos. No se encuentra en rangos de descuentos")
+		SiNo
+			Si (*P.cupos_disp = 0) entonces
+				Esc("No hay cupos de descuentos disponibles ")
+			SiNo
+				Esc("El porcentaje de descuento es: ",*P.descuento * 100,"%")
+				Esc("Correspondiente al rubro: ",*P.rubro_desc)
+
+				*P.cupos_disp:= *P.cupos_disp - 1
+			Fin Si
+		Fin Si
+
+		Leer(Arch_Comp,reg_comp)
+	Fin Mientras
+
+	Cerrar(Arch_Comp)
+	Cerrar(Arch_Soc)
+Fin Accion

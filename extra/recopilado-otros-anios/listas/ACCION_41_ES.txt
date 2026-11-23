@@ -1,0 +1,81 @@
+ACCION_41_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo = registro de
+            indice: entero
+            elemento: [Dato]
+            prox: puntero a nodo
+        FR
+        ant, q, p: puntero a nodo
+        i, n, op: entero
+
+        Procedimiento borrar() es 
+            Si (ant = NIL) entonces //prim -> 1er elemento y/o único elemento |ant| -> p
+                prim:= *p.prox
+            Sino
+                *ant.prox:= *p.prox //Cualquier elemento, medio o último    
+            FS
+            Disponer(p)
+        FP
+
+        Procedimiento agregar() es
+            AMBIENTE
+                valor: [Dato]
+            PROCESO
+                ESC("Ingrese el valor a insertar...")
+                Leer(valor)
+                Nuevo(q)
+                *q.elemento:= valor
+                    Si(valor < *p.elemento) entonces
+                        Si (p = prim) entonces //Antes del 1er elemento
+                            prim:= q
+                            *q.prox:= p
+                        Sino
+                            Si (p = NIL) entonces //Ultimo elemento
+                                *ant.prox := q    
+                                *q.prox:= nil
+                            Sino
+                                *ant.prox:= q //Elemento del medio
+                                *q.prox:= p
+                            FS
+                        FS
+                    Sino
+                        Si (valor > *p.elemento) entonces
+                            *q.prox:= *ant.prox
+                            *ant.prox:= q
+                        Sino
+                            *q.prox:= *p.prox
+                            *p.prox:= q
+                        FS
+                    FS
+                FS
+        FP
+
+    PROCESO
+        ESC("Ingrese el índice de elemento a buscar ->")
+        leer(n)
+        ant:= nil
+        p:= prim
+        Mientras (p <> NIL) y (*p.indice < n) hacer //Busqueda
+            ant:= p
+            p:= *p.prox
+        FM
+        Si (p = NIL) v (*p.indice > n) entonces
+            ERROR()
+        Sino
+            Mientras (op <> 4) hacer
+                ESC("Desea ver el elemento -> 1")
+                ESC("Desea borrar el elemento -> 2")
+                ESC("Desea agregar el elemento -> 3")
+                ESC("Desea cerrar el programa -> 4")
+                Leer(op)
+                Segun op hacer  
+                    1: ESC(*p.elemento)
+                    2: borrar()
+                        ESC("Hecho")
+                    3: agregar()
+                        ESC("Hecho")
+                    4: ESC("Adios...")
+                FS
+            FM
+        FS
+FA

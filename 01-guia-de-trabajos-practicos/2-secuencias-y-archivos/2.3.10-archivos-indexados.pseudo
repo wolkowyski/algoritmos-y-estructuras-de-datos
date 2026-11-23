@@ -1,0 +1,114 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.3 - Ejercicio 2.3.10 (archivos indexados)
+//
+//  Programa de puntos de una estación de servicio: por cada $100 de carga el
+//  cliente suma 10 puntos; con 100 puntos puede pedir un descuento de $100.
+//  Si el DNI no existe, se da de alta el cliente. Al final se informa cuántos
+//  clientes nuevos hubo en el día.
+//  (Enunciado reconstruido a partir de la resolución.)
+//
+//  Con archivos indexados se accede directo por clave: se carga la clave en
+//  el registro y se hace Leer; la variable EXISTE indica si se encontró.
+// ==========================================================================
+
+Acción 2.3.10 es
+    Ambiente
+        Fecha = Registro
+            aa: N(4)
+            mm: 1..12
+            dd: 1..31
+        FinRegistro
+
+        Punto = Registro
+            DNI: N(8)
+            Cant_Puntos: N(4)
+            Ult_Carga: Fecha
+        FinRegistro
+
+        Cliente = Registro
+            DNI: N(8)
+            Ape_Nom: AN(30)
+            Edad: N(2)
+            Ciudad: AN(30)
+        FinRegistro
+
+        Puntos: Archivo de Punto indexado por DNI
+        Reg_Puntos: Punto
+        Clientes: Archivo de Cliente indexado por DNI
+        Reg_Clientes: Cliente
+
+        Respuesta, RespuestaDescuento: ("S", "N")
+        Monto, PuntosNuevos, PrecioDescuento: real
+        Cliente_Nuevo: entero
+        FechaActual: Fecha
+
+    Proceso
+        Abrir E/S(Puntos) // todavía no lo leo
+        Abrir E/S(Clientes)
+        Escribir("Ingrese la fecha de hoy (aa, mm, dd)")
+        Leer(FechaActual.aa, FechaActual.mm, FechaActual.dd)
+        Escribir("¿Desea comenzar con el proceso? S/N")
+        Leer(Respuesta)
+
+        Cliente_Nuevo:= 0 // Inicializo fuera del mientras
+        Mientras Respuesta = "S" hacer
+            Escribir("Por favor, ingresar DNI del cliente")
+            Leer(Reg_Puntos.DNI) //leo ya directamente en el archivo
+
+            Escribir("Por favor, ingrese el monto de la carga")
+            Leer(Monto)
+
+            Leer(Puntos, Reg_Puntos) // lectura directa por la clave cargada
+            Si EXISTE entonces
+                PuntosNuevos:= TRUNC(Monto / 100) * 10 // 10 puntos por cada $100 completos
+                Reg_Puntos.Cant_Puntos:= Reg_Puntos.Cant_Puntos + PuntosNuevos
+                Reg_Puntos.Ult_Carga:= FechaActual
+                Re-Escribir(Puntos, Reg_Puntos)
+
+            Sino
+
+                Cliente_Nuevo:= Cliente_Nuevo + 1
+                Escribir("El cliente no existe, debe dar de alta") // se da de alta, es decir se cargan los datos del usuario en el archivo clientes
+                Reg_Clientes.DNI:= Reg_Puntos.DNI
+                Escribir("Ingrese su Apellido y Nombre")
+                Leer(Reg_Clientes.Ape_Nom)
+                Escribir("Ingese su edad")
+                Leer(Reg_Clientes.Edad)
+                Escribir("Ingrese su ciudad")
+                Leer(Reg_Clientes.Ciudad)
+                Escribir(Clientes, Reg_Clientes) // una vez cargados los campos, escribo en el archivo
+
+                Reg_Puntos.Cant_Puntos:= TRUNC(Monto / 100) * 10
+                Reg_Puntos.Ult_Carga:= FechaActual
+                Escribir(Puntos, Reg_Puntos)
+            FinSi
+
+            Escribir("¿Desea un descuento? S/N")
+            Leer(RespuestaDescuento)
+            Si (RespuestaDescuento) = "S" entonces
+                Si Reg_Puntos.Cant_Puntos >= 100 entonces
+                    PrecioDescuento:= Monto - 100
+                    Escribir("El nuevo importe con descuento es: ", PrecioDescuento)
+                    Reg_Puntos.Cant_Puntos:= Reg_Puntos.Cant_Puntos - 100 // le resto los 100 puntos
+                    Re-Escribir(Puntos, Reg_Puntos)
+                SiNo
+                    Escribir("Lo siento, no tienes suficientes puntos")
+                FinSi
+            FinSi
+
+            Escribir("¿Desea continuar con la carga? S/N")
+            Leer(Respuesta) //vuelvo a preguntar si desea continuar
+        FinMientras
+
+        Escribir("Se dieron de alta un total de: ", Cliente_Nuevo, " clientes en este día") //emito el total de usuarios nuevos
+        Cerrar(Puntos)
+        Cerrar(Clientes)
+FinAcción
+
+
+
+// Otra manera de cargar la clave antes de la lectura directa:
+//   Leer(DNI_usuario)
+//   Reg_Puntos.DNI:= DNI_usuario
+//   Leer(Puntos, Reg_Puntos)

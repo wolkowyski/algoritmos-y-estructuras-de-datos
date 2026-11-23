@@ -1,0 +1,126 @@
+ACCION_237_ES
+    AMBIENTE
+        reg1 = Registro de
+            Clave : Registro
+                OS: N(6)
+                Clinica: N(8)
+            FRegistro
+            Nroleg: N(8)
+            Mes: 1..12
+            Anio: N(4)
+            Bruto: N(5)
+            Desc_AFIP: N(8)
+            Desc_DGR: N(8)
+        FRegistro
+        Liquidaciones: Archivo de reg1 ordenado por Clave
+        L: reg1
+
+        reg2 = Registro de
+            OS: N(6)
+            Nombre: AN(50)
+        FRegistro
+        Obrasoc: Archivo de reg2 indexado por OS
+        O: reg2
+
+        reg3 = Registro de
+            Clinica: N(8)
+            Nombre: AN(50)
+        FRegistro
+        Clinicas: Archivo de reg3 indexado por Clinica
+        C: reg3
+
+        reg4 = registro de
+            Nroleg: N(8)
+            Apynom: AN(60)
+            Esp: AN(50)
+            DNI: N(9)
+        FRegistro
+        Medicos: Archivo de reg4 indexado por Nroleg
+        M: reg4
+
+        Neto:Real
+        resOS, resClinica: Entero
+        totclinica, totOS: Reales
+
+        Procedimiento Corteclin() es
+            ESC("Total Clínica:          ",totclinica)
+            totOS:= totOS + totclinica
+            totclinica:= 0
+            resClinica:= L.Clave.Clinica
+        FP
+
+        Procedimiento CorteOS() es
+            Corteclin()
+            ESC("Total Obrasoc:         ",totOS)
+            totOS:= 0
+            resOS:= L.Clave.OS
+        FP
+
+    PROCESO
+        Abrir E/(Liquidaciones); Leer(Liquidaciones, L);
+        Abrir E/(Obrasoc)
+        Abrir E/(Clinicas)
+        Abrir E/(Medicos)
+        totclinica:= 0; totOS:= 0;
+        resOS:= L.Clave.OS
+        resClinica:= L.Clave.Clinica
+
+        O.OS:= L.Clave.OS
+        Leer(Obrasoc, O)
+        Si EXISTE entonces
+            ESC("Obra social: ", O.Nombre)
+        Sino
+            ESC("Obra social: No se ha encontrado obra social")
+        FS
+
+        C.Clinica:= L.Clave.Clinica
+        Leer(Clinica, C)
+        Si EXISTE entonces
+            ESC("Clinica: ",C.Nombre)
+        Sino
+            ESC("Clinica: No se ha encontrado UNA clínica")
+        FS
+
+        ESC("-----------Médicos-----------")
+        ESC("Nro de legajo | Nombre | Neto")
+
+        Mientras NFDA(Liquidaciones) hacer
+            Si (L.Clave.OS <> resOS) entonces
+                CorteOS()
+                O.OS:= L.Clave.OS
+                Leer(Obrasoc, O)
+                Si EXISTE entonces
+                    ESC("Obra social: ", O.Nombre)
+                Sino
+                    ESC("Obra social: No se ha encontrado obra social")
+                FS
+            Sino
+                Si (L.Clave.Clinica <> resClinica) entonces
+                    Corteclin()
+                    C.Clinica:= L.Clave.Clinica
+                    Leer(Clinica, C)
+                    Si EXISTE entonces
+                        ESC("Clinica: ",C.Nombre)
+                    Sino
+                        ESC("Clinica: No se ha encontrado UNA clínica")
+                    FS
+                FS
+            FS
+
+            M.Nroleg:= L.Nroleg
+            Leer(Medicos, M)
+            Si  no EXISTE entonces
+                ESC("No se ha encontrado un resultado...")
+            Sino
+                Neto:= L.Bruto - (L.Desc_AFIP + L.Desc_DGR)
+                totclinica:= totclinica + Neto
+                ESC(L.Nroleg," | ", M.Apynom," | ", Neto)
+            FS
+            Leer(Liquidaciones, L)
+        FM
+        CorteOS()
+        Cerrar(Liquidaciones)
+        Cerrar(Obrasoc)
+        Cerrar(Clinica)
+        Cerrar(Medicos)
+FA

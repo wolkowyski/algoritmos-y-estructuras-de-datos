@@ -1,0 +1,31 @@
+ACCION_413_ES(prim,ult: puntero a nodo)
+    AMBIENTE
+        nodo = Registro de
+            num: entero
+            prox, ant: puntero a nodo
+        FR
+        p,q: puntero a nodo
+    PROCESO
+        p:=*prim.prox
+        Mientras (p <> Nil) y (*(*p.ant).num <= *p.num) hacer
+            p:=*p.prox
+        FM
+        Si (P<>Nil) entonces
+            ESC("ERROR...Lista de entrada no ordenada")
+        Sino
+            p:=*p.prox
+            Mientras (p <> Nil) entonces
+                Si (*(*p.ant).num = *p.num) entonces
+                    *(*p.ant).prox:= *p.prox
+                    q:= *p.prox
+                    *(*p.prox).ant:= *p.ant
+                    *p.prox:=Nil
+                    *P.ant:=Nil
+                    Disponer (p)
+                FSI
+                p:= q
+            FM
+            ESC("EXITO... Lista depurada con éxito")
+        FSI
+FA
+                    

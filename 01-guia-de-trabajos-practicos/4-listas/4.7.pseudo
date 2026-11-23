@@ -1,0 +1,76 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.7
+//
+//  A partir de una secuencia de caracteres, armar una lista ordenada por letra
+//  con la frecuencia de aparición de cada una. Al final, listar las
+//  frecuencias e informar la letra más y la menos frecuente.
+//  (Enunciado reconstruido a partir de la resolución.)
+// ==========================================================================
+
+Accion Ejercicio4_7 es
+ Ambiente
+  nodo = registro
+   letra: caracter
+   frecuencia: entero
+   prox: puntero a nodo
+  finregistro
+
+  sec: secuencia de caracteres
+  v: caracter
+
+  prim, p, q, ant: puntero a nodo
+  frec_mayor, frec_menor: entero
+  letra_mayor, letra_menor: caracter
+
+ Algoritmo
+  Arrancar(sec); Avanzar(sec, v)
+  prim:= nil
+
+  Mientras NFDS(sec) Hacer
+   // Busco la letra en la lista (ordenada): me detengo en la primera >= v
+   ant:= nil
+   q:= prim
+   Mientras (q <> nil) y (q^.letra < v) Hacer
+    ant:= q
+    q:= q^.prox
+   FinMientras
+
+   Si (q <> nil) y (q^.letra = v) Entonces // ya estaba: sumo una aparición
+    q^.frecuencia:= q^.frecuencia + 1
+   Sino // es nueva: la inserto en orden
+    Nuevo(p)
+    p^.letra:= v
+    p^.frecuencia:= 1
+    Si ant = nil Entonces
+     p^.prox:= prim
+     prim:= p
+    Sino
+     p^.prox:= q
+     ant^.prox:= p
+    FinSi
+   FinSi
+   Avanzar(sec, v)
+  FinMientras
+
+  Si prim <> nil Entonces
+   frec_mayor:= prim^.frecuencia; letra_mayor:= prim^.letra
+   frec_menor:= prim^.frecuencia; letra_menor:= prim^.letra
+   p:= prim
+   Mientras p <> nil Hacer
+    Escribir("La frecuencia de la letra ", p^.letra, " fue de ", p^.frecuencia)
+    Si p^.frecuencia > frec_mayor Entonces
+     frec_mayor:= p^.frecuencia
+     letra_mayor:= p^.letra
+    FinSi
+    Si p^.frecuencia < frec_menor Entonces
+     frec_menor:= p^.frecuencia
+     letra_menor:= p^.letra
+    FinSi
+    p:= p^.prox
+   FinMientras
+   Escribir("La letra con mayor frecuencia fue ", letra_mayor, " con ", frec_mayor)
+   Escribir("La letra con menor frecuencia fue ", letra_menor, " con ", frec_menor)
+  FinSi
+  Cerrar(sec)
+FinAccion

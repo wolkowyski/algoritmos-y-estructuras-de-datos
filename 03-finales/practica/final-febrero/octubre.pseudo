@@ -1,0 +1,140 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - octubre
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+//  Estado: incompleto (quedó para rehacer).
+// ==========================================================================
+
+ACCION
+Ambiente
+    nodo= registro
+        caracter
+        prox: puntero a nodo
+    finregistro
+
+    salida: secuencia de caracteres
+    v: ventana
+
+    funcion convertir(x) es
+        '0': return(0)
+        '1': return(1)
+    finfuncion
+
+    procedimiento obtenervalor es
+        según dig hacer
+            10: dig:= 'A'
+            11: dig:= 'B'
+            13: dig:= 'C'
+            14: dig:= 'D'
+            15: dig:= 'E'
+            16: dig:= 'F'
+        finsegun
+    fp
+
+PROCESO
+    ABRIR(salida,v)
+    p:= prim
+    Mientras p <> nil hacer
+        Para i= 1 a 2 hacer
+            dig:= dig + (8* convertir(p.caracter))
+            p:= *p.prox
+            dig:= dig + (4* convertir(p.caracter))
+            p:= *p.prox
+            dig:= dig + (2* convertir(p.caracter))
+            p:= *p.prox
+            dig:= dig + (1* convertir(p.caracter))
+
+            si dig < 10 entonces
+                convertircaracter(dig)
+            sino
+                obtenervalor()
+            finsi
+
+            Escribir(sal, dig)
+            dig:= 0
+        finpara
+        escribir(sal, '-')
+    finmientras
+
+    cerrar(sec)
+finproceso
+
+
+
+
+
+ACCION
+Ambiente
+    arch-vehi= reg //ordenado por cod-vehi, cod-ru
+       clave= registro
+        cod-veh:
+        cod-rut:
+    finreg
+        km-tot:
+        estado:
+        fuera-ss:
+    finregistro
+
+    arch-act= regist
+        clave=registro
+            cod-veh:
+            cod-rut:
+        finreg
+        estado:
+        km-uso:
+    finregistro
+
+    vehiculo: archivo de arch-vehi
+    v: arch-vehi
+
+    actualizacion: archivo de arch-act
+    a: arch-act
+
+    arch-nue= registro
+        clave= registro
+            cod-veh
+            cod-rut:
+        finreg
+        km-uso
+        estado: nuevo
+    finreg
+
+    nuevo: archivo de arch-nue
+    n: nuevo
+
+    procedimiento procesoIgual es
+        si a.estado > 1 y a.estado < 5 entonces
+            n.km-tot:= v.km-tot
+            n.km-tot:= n.km-tot + a.km-uso
+            escribir(nuevo, n)
+            leer(vehiculo, v)
+        sino
+            si a.estado = 5 entonces
+
+
+
+
+
+
+
+
+si a.estado = 1 entonces
+                n.cod-veh:= a.cod-veh
+                n.cod-rut:= a.cod-rut
+                n.km-uso:= 0
+                estado:= 'nuevo'
+            sino si a.estado = 5  entonces
+PROCESO
+    ABRIR S/E(vehiculo) ABRIR S(actualizacion) ABRIR E(arch-vehi-nue)
+        leer(vehiculo,v) leer(actualizacion, a)
+        Mientras(vehiculo.clave <> HV) o (actualizacion.clave <> HV) hacer
+            si vehiculo.clave = actualizacion.clave entonces
+                procesoIgual()
+                sino
+                    si vehiculo.clave < actualizacion.clave entonces //no movimientos
+                        tratosinMovimiento()
+                    sino
+                        procesosDistintos()
+                    finsi
+            finsi
+        finmientras

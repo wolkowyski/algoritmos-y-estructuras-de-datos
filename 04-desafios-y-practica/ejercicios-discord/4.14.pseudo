@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.14 - resolución compartida en Discord
+// ==========================================================================
+
+Se desea ingresar una serie de números, e imprimirlos en el orden contrario al de ingreso. Diseñar un
+algoritmo que satisfaga tal requerimiento, utilizando la estructura de datos más apropiada.
+
+ACCION 4.14 ES
+AMBIENTE
+NODO = registro
+    dato:N(8)
+    prox:puntero a NODO
+fin_registro
+prim,q:puntero a NODO
+respuesta:N(1)
+
+ALGORITMO
+prim:=nil
+respuesta:= 1
+MIENTRAS respuesta <> 2 HACER
+    ESCRIBIR("Desea agregar un numero? 1:SI, cualquier otro numero: NO")
+    LEER(respuesta)
+    SI respuesta = 1 ENTONCES
+        NUEVO(q)
+        ESCRIBIR("INGRESE UN NUMERO")
+        LEER(*q.dato)
+        SI prim = nil ENTONCES
+            prim:= q
+        SINO
+            *q.prox:= prim
+            prim:=q
+        FIN_SI
+    SINO
+        MIENTRAS q <> nil HACER
+            ESCRIBIR(*q.dato)
+            q:=*q.prox
+        FIN_MIENTRAS
+    FIN_SI
+FIN_MIENTRAS
+FIN_ACCION.

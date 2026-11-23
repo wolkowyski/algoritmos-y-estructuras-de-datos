@@ -1,0 +1,31 @@
+ACCION_42_ES(prim: puntero a nodo1)
+    AMBIENTE
+        nodo1 = registro de
+            num: entero
+            prox: puntero a nodo1
+        FR
+        p: puntero a nodo1
+        nodo2: nodo1
+        prim2, q, prox2, ant2: puntero a nodo2
+
+    PROCESO
+        p:= prim
+        prim2:= NIL //Lista vacía
+        ant2:= NIL
+        Mientras (p <> NIL) hacer
+            Si(*p.num div 10 = 0) entonces
+                nuevo(q)
+                ant2:= q
+                *q.num:= *p.num
+                Si (prim2 = NIL) entonces
+                    prim2:= q
+                    *q.prox2:= NIL
+                Sino
+                    *ant.prox2:= q
+                    *q.prox2:= NIL
+                FS
+            FS
+            *p.prox := p
+        FM
+FA  
+                

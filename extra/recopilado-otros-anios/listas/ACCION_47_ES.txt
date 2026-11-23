@@ -1,0 +1,64 @@
+ACCION_47_ES (sec: secuencia de caracteres)
+    AMBIENTE
+        v: caracter
+        nodo = Registro de
+            letra: AN(1)
+            frec: N(3)
+            prox: puntero a nodo
+        FR 
+        prim, p, ant, q: puntero a nodo
+        max,min: entero
+        letramax, letramin: caracter
+    PROCESO
+        ARR(sec)
+        AVZ(sec, v)
+        prim:= NIL 
+        Mientras NFDS(sec) hacer
+            
+            Mientras (v = " ") hacer
+                AVZ(sec, v)
+            FM
+
+            ant:= NIL
+            p:= prim
+            Mientras (p <> NIL) y (*p.letra < v) hacer
+                ant:= p
+                p:= *p.prox
+            FM
+            Si (*p.letra = v) entonces
+                *p.frec:= *p.frec + 1
+            Sino
+                Nuevo (q)
+                *q.letra:= v
+                *q.frec:= *q.frec + 1
+                Si (ant = NIL) entonces
+                    *q.prox:= prim
+                    prim:= q
+                Sino
+                    *ant.prox:= q
+                    *q.prox:= p
+                FS
+            FS
+            AVZ(sec,v)
+        FM
+        cerrar(sec)
+        p:=prim
+        max:= 0
+        min:= 0
+        Mientras (p <> NIL) hacer
+            ESC("Letra: ",*p.letra,"con frecuencia de: ",*p.frec)
+            Si (*p.frec > max) entonces
+                max:= *p.frec
+                letramax:= *p.letra
+            Sino
+                Si (*p.frec < min) entonces
+                    min:= *p.frec
+                    letramin:=*p.letra
+                FS
+            FS
+            p:= *p.prox
+        FM
+        ESC("Letra con mayor frecuencia: ", letramax," frecuencia: ",max)
+        ESC("Letra con menor frecuencia: ", letramin," frecuencia: ",min)
+FA        
+

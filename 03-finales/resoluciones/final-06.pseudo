@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 6
+//  Enunciado: ../enunciados/final-06.jpg
+//  Estado: incompleto (resolución sin terminar).
+// ==========================================================================
+
+//consigna 1
+
+Accion noticias() es
+
+Ambiente
+
+	sec: secuencia de caracter de entrada
+	v: caracter
+
+	texto=registro
+		car:AN(1)
+		prox: puntero a texto
+	fin registro
+
+	nodo=registro
+		titulo: texto
+		desc: texto
+		tipo: 1..8
+		segmento:"M","E","N"
+		prox: puntero a nodo
+	fin registro
+
+	p,q,prim,a,noc,med,mat: puntero a nodo
+
+	prim2,q2,a2,p2: puntero a texto
+
+	A: Arreglo [1..8,1..4] de entero
+
+Proceso
+
+	prim:=nil
+	prim2:=nil
+
+	ARR(sec)
+	AVZ(sec, v)
+
+	Para i:=1 a 8 hacer
+		Para j:=1 a 4 hacer
+			A[i,j]:=0
+		Fin Para
+	Fin Para
+
+	Mientras NFDS (sec) hacer
+
+		nuevo(q)
+		nuevo(q2)
+
+		(*q.titulo)*q2.car:=v
+		prim2:=q2
+		*q2.prox:=nil
+		p2:=q2
+		AVZ(sec, v)
+
+		Mientras (v<>"@") hacer
+			nuevo(q2)
+			*q2.car:=v
+			*p2.prox:=q2
+			*q2.prox:=nil
+			AVZ(sec, v)
+		Fin Mientras
+
+		AVZ(sec, v)

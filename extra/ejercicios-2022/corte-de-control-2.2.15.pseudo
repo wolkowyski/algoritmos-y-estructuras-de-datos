@@ -1,0 +1,133 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+El organismo del cual dependen las escuelas de un distrito lleva un archivo con los registros para todos los alumnos de nivel secundario de ese distrito:
+
+ALUMNOS Ordenado por Escuela, Año y División
+
+Escuela | Año | División | Nombre | Cant_Inasistencias
+
+Se introduce como dato el número de distrito y la cantidad de días de clase dictados en el año. El archivo está ordenado por número de escuela, año y división. Los alumnos que superan el 20% de las inasistencias están en situación de LIBRES, de lo contrario son REGULARES.
+
+Se desea conocer:
+
+Para cada división:
+- Cantidad de alumnos
+
+Para cada año:
+- Cantidad total de alumnos libres
+- Cantidad de alumnos regulares
+- Cantidad total de alumnos
+
+Todas las escuelas:
+- Cantidad total de alumnos
+- Porcentaje de alumnos libres.
+- Promedio de inasistencias por alumnos.
+
+
+______________________________________________________________________________________________________________
+
+ACCION alumnosSecundario ES
+
+	AMBIENTE
+
+		TIPOS
+
+			Alumno = REGISTRO;
+				n_esc: N(4);
+				anio: N(1);
+				divis: AN(1);
+				name: AN(35);
+				n_inas: N(2);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			alumnos: Archivo de Alumno ordenado por n_esc, anio y divis;
+			a: Alumno;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (a.n_esc <> resEsc) ENTONCES
+					corteEscuela();
+				SINO SI (a.anio <> resAnio) ENTONCES
+						corteAnio();
+					SINO SI (a.divis <> resDivis) ENTONCES
+							corteDivis();
+						FIN SI;
+					FIN SI;
+				FIN SI;
+				tratarRegistro();
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteEscuela()
+				corteAnio();
+				ESC('Distrito: ', distr,' | Totales de la escuela: ', resEsc);
+				ESC('Total de alumnos: ', (al_reg_tot + al_lib_tot));
+				ESC('Porcentaje de alumnos libres: ', ((al_lib_tot * 100) DIV (al_reg_tot + al_lib_tot)), '%');
+				ESC('Promedio de inasistencias por alumno: ', (inasis_tot DIV (al_reg_tot + al_lib_tot)));
+				al_reg_tot := 0; al_lib_tot := 0; inasis_tot := 0;
+				resEsc := a.n_esc;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteAnio()
+				corteDivis();
+				ESC('Distrito: ', distr,' | Escuela: ', resEsc, ' | Total del anio: ', resAnio);
+				ESC('Total de alumnos libres: ', al_lib_anio);
+				ESC('Total de alumnos regulares: ', al_reg_anio);
+				ESC('Total de alumnos: ', (al_reg_anio + al_lib_anio));
+				al_reg_tot := al_reg_tot + al_reg_anio;
+				al_lib_tot := al_lib_tot + al_lib_anio;
+				inasis_esc := inasis_esc + inasis_anio;
+				al_lib_anio := 0; al_reg_anio := 0; inasis_anio := 0;
+				resAnio := a.anio;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteDivis()
+				ESC('Distrito: ', distr,' | Escuela: ', resEsc, ' | Anio: ', resAnio, ' | Total en division: ', resDivis);
+				ESC('Total de alumnos: ', (al_reg_div + al_lib_div));
+				al_reg_anio := al_reg_anio + al_reg_div;
+				al_lib_anio := al_lib_anio + al_lib_div;
+				inasis_anio := inasis_anio + inasis_div;
+				al_reg_div := 0; al_lib_div := 0; inasis_div := 0;
+				resDivis := a.divis;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				SI (a.n_inas <= lim_inas) ENTONCES
+					al_reg_div := al_reg_div + 1;
+				SINO
+					al_lib_div := al_lib_div + 1;
+				FIN SI;
+				inasis_div := inasis_div + a.n_inas;
+				LEER(alumnos, a);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotal()
+				corteEscuela();
+				CERRAR(alumnos);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				al_reg_div := 0; al_reg_anio := 0; al_reg_tot := 0;
+				al_lib_div := 0; al_lib_anio := 0; al_lib_tot := 0;
+				ABRIR E/(alumnos);
+				LEER(alumnos, a);
+				resEsc := a.n_esc; resAnio := a.anio; resDivis := a.divis;
+				ESC('Ingrese número de distrito de las escuelas: '); LEER(distr);
+				ESC('Ingrese cantidad de clases dictadas en el anio: '); LEER(n_clas);
+				lim_inas := (n_clas * 2) DIV 10;
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+
+		inicializarDatos();
+
+		MIENTRAS NO FDA(alumnos) HACER
+			tratarCorte();
+		FIN MIENTRAS;
+
+		emitirTotal();
+
+FIN ACCION;
+
+//Petrovich, Julio E.

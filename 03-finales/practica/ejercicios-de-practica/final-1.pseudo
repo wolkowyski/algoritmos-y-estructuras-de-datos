@@ -1,0 +1,329 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Final 1
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Final(v: arreglo de(1..10) alfanumerico) es
+
+ Ambiente
+  Evento=Registro
+   codigo:AN(5);
+   titulo:AN(50);
+   costo:N(4,2);
+   codc:[1..10];
+   segmento:{0,1,2};
+  finRegistro
+
+  Arche: Archivo de Evento ordenado por codigo;
+  e: Evento;
+
+  Nodo=Registro
+   costo:N(4,2);
+   categoria:AN(20);
+   segmento:AN(10);
+   prox:puntero a Nodo;
+  finRegistro
+
+  Prim, p, q, ant: puntero a Nodo;
+
+  Ev=Registro
+   cant:N(5);
+   invertido:N(10);
+  finRegistro
+
+  arr: arreglo de (1..11,1..4) Ev
+  i,j,valor,resmenor, resmayor,resme,resma: entero;
+
+  Funcion seg (e.segmento): alfanumerico
+   Segun e.segmento hacer
+    0: seg:= "matinal";
+    1: seg:= "tarde";
+    2: seg:= "noche";
+   finSegun
+  finFuncion
+
+
+
+
+ Algoritmo
+
+
+  Abrir E/(Arche); Leer(Arche,e);
+
+  resmenor:=0;
+  resmayor:=0;
+
+  Para i:=1 hasta 11 hacer
+   Para j:=1 hasta 4 hacer
+    arr(i,j).cant:=0;
+    arr(i,j).invertido:=0;
+   finPara
+  finPara
+
+  Escribir("Ingrese un valor");
+  Leer(valor);
+
+  Prim:=nil;
+
+
+  Mientras NFDA(Arche) hacer
+
+   Si e.costo > valor entonces
+    Nuevo(q);
+    *q.costo:=e.costo;
+    *q.categoria:=v(e.codc);
+    *q.segmento:= seg(e.segmento);
+    Escribir(q);
+    Si Prim=nil entonces
+     Prim:=q;
+     *q.prox:=nil;
+     Sino
+      p:=Prim;
+      ant:=nil;
+      Mientras p<> nil y *p.costo>e.costo hacer
+       ant:=p;
+       p:=*p.prox;
+      finMientras
+      Si p=Prim entonces
+       Prim:=q;
+       *q.prox:=p;
+       Sino
+        *ant.prox:=q;
+        *q.prox:=p;
+       finSino
+      finSi
+     finSino
+    finSi
+   finSi
+
+   arr(e.codc,e.segmento+1).cant:= arr(e.codc,e.segmento+1).cant+1;
+   arr(e.codc,4).cant:= arr(e.codc,4).cant+1;
+   arr(11,e.segmento+1).cant:= arr(11,e.segmento+1).cant+1;
+   arr(11,4).cant:= arr(11,4).cant+1;
+
+
+   arr(e.codc,e.segmento+1).invertido:= arr(e.codc,e.segmento+1).invertido+e.costo;
+   arr(e.codc,4).invertido:= arr(e.codc,4).invertido+e.costo;
+   arr(11,e.segmento+1).invertido:= arr(11,e.segmento+1).invertido+e.costo;
+
+   Leer(Arche,e);
+
+  finMientras
+
+  i:=1;
+
+  Mientras v(i)<> "Deportivo" hacer
+   i:=i+1;
+  finMientras
+
+  Escribir("La cantidad de eventos que se han emitido en el segmento matinal en la categoria deportivo es: ", arr(i,1).cant);
+
+  Para i:=1 hasta 10 hacer
+   Si resmenor>arr(i,4).cant hacer
+    resmenor:=arr(i,4).cant;
+    resme:=i;
+   finSi
+   Si resmayor<arr(i,3).cant hacer
+    resmayor:=arr(i,3).cant;
+    resma:=i;
+   finSi
+  finPara
+  Escribir("El total invertido en la categoria con menor cantidad de eventos publicados es: ", arr(resme,4).invertido);
+  Escribir("El porcentaje que representa la categoria con mayor cantidad de eventos publicados en el segmento noche es :", arr(resma,3).cant*100/arr(11,4).cant);
+
+ Cerrar(Arche);
+finAccion
+
+
+Accion Final2(sec:secuencia de caracter) es
+
+ Ambiente
+
+  sec:secuencia de caracter;
+  s:caracter;
+
+  vocales: {"A","E","I","O","U"};
+  consonantes: {"B","C","D","F","G","H","J","K","L","M"."N","P","Q","R","S","T","V","W","X","Y","z"};
+  numeros: {"1","2","3","4","5","6","7","8","9","0"};
+  simbolos: {"/","#","$","@"};
+
+
+  L1=Registro
+   caracter:AN(1);
+   prox:puntero a L1;
+  finRegistro
+
+  Prim1,p,q: puntero a nodo;
+
+  L2=Registro
+   contraseña:L1;
+   nivel:[1..4];
+   prox:puntero a L2;
+  finRegistro
+
+  Prim2,r,s,ant:puntero a L2;
+
+
+  vec: arreglo de(1..4)entero;
+  v,contc,contvocales,contconsonantes,contnumeros,contsimbolos,cantcontraseñas,cantrep,res,resv:entero;
+  rep:booleano;
+
+
+
+ Algoritmo
+
+  ARR(sec);
+  AVZ(sec,s);
+  cantcontraseñas:=0;
+  cantrep:=0;
+  res:=0;
+
+  Prim1:=nil;
+  Prim2:=nil;
+  p:=Prim1;
+
+  Para v:=1 hasta 4 hacer
+   vec(v):=0;
+  finPara
+
+
+  Mientras NFDS(sec) hacer
+   contvocales:=0;
+   contconsonantes:=0;
+   contnumeros:=0;
+   contsimbolos:=0;
+   contc:=0;
+   rep:=False;
+   Nuevo(r);
+   Mientras s <> "+" hacer
+    contc:=contc+1;
+    Nuevo(q);
+    *(*r.q).caracter:=s;
+    Prim1:=q;
+    *q.prox:=p;
+    p:=q;
+    AVZ(sec,s);
+   finMientras
+   Si *Prim1.caracter=*p.caracter entonces
+    cantcontraseñas:=cantcontraseñas+1;
+    p:=Prim1;
+    Mientras p<>nil hacer
+     Si *(*r.q).caracter en vocales entonces
+      contvocales:=contvocales+1;
+      Sino
+       Si *(*r.q).caracter en consonantes entonces
+        contconsonantes:=contconsonantes+1;
+        Sino
+         Si *(*r.q).caracter en numeros entonces
+          contnumeros:=contnumeros+1;
+          Sino
+           Si *(*r.q).caracter en simbolos entonces
+            contsimbolos:=contsimbolos+1;
+           finSi
+          finSino
+         finSi
+        finSino
+       finSi
+      finSino
+     finSi
+     p:=*p.prox;
+    finMientras
+    Segun contc hacer
+     <6: *r.nivel:=1;
+         vec(1):=vec(1)+1;
+     <8: Si contvocales+contconsonantes>contnumeros y contnumeros<>0 entonces
+      *r.nivel:=2;
+      vec(2):=vec(2)+1;
+          Sino
+           *r.nivel:=1;
+           vec(1):=vec(1)+1;
+          finSino
+         finSi
+     <10: Si contvocales <>0 y contconsonantes<>0 y contnumeros<>0 y contvocales>contconsonantes entonces
+           *r.nivel:=3;
+           vec(3):=vec(3)+1;
+           Sino
+            Si contvocales+contconsonantes>contnumeros entonces
+             *r.nivel:=2;
+             vec(2):=vec(2)+1;
+             Sino
+              *r.nivel:=1;
+              vec(1):=vec(1)+1;
+             finSino
+            finSi
+           finSino
+          finSi
+     otro: Si contvocales<>0 y contconsonantes<>0 y contnumeros<>0 y contsimbolos<>0 entonces
+            *r.nivel:=4;
+            vec(4):=vec(4)+1;
+            Sino
+             Si contvocales<>0 y contconsonantes<>0 y contnumeros<>0 y contvocales>contconsonantes entonces
+              *r.nivel:=3;
+              vec(3):=vec(3)+1;
+              Sino
+               Si contconsonantes+contvocales>contnumeros entonces
+                *r.nivel:=2;
+                vec(2):=vec(2)+1;
+                Sino
+                 *r.nivel:=1;
+                 vec(1):=vec(1)+1;
+                finSino
+               finSi
+              finSino
+             finSi
+            finSino
+           finSi
+    finSegun
+    p:=Prim1;
+    Mientras p <> nil hacer
+     Si *p.caracter=*(p.prox).caracter entonces
+      p:=*p.prox;
+      Si *p.caracter=*(p.prox).caracter entonces
+       rep:=True;
+      finSi
+     finSi
+     p:=*p.prox;
+    finMientras
+    Si rep entonces
+     cantrep:=cantrep+1;
+    finSi
+    Si Prim2=nil entonces
+     Prim2:=r;
+     *r.prox:=nil;
+     Sino
+      s:=Prim2;
+      ant:=nil;
+
+      Mientras *r.contraseña<*s.contraseña y s<>nil hacer
+       ant:=s;
+       s:=*s.prox;
+      finMientras
+      Si s=Prim2 entonces
+       Prim:=r;
+       *r.prox:=s;
+       Sino
+        *ant.prox:=r;
+        *r.prox:=*s.prox;
+       finSino
+      finSi
+     finSino
+    finSi
+    Sino
+     Disponer(r);
+    finSino
+   finSi
+   AVZ(sec,s);
+  finMientras
+
+  Para v:=1 hasta 4 hacer
+   Si vec(v)<res entonces
+    res:=vec(v);
+    resv:=v;
+   finSi
+  finPara
+
+  Escribir("El nivel con menor cantidad de contraseñas es: Nivel ",resv );
+  Escribir("El porcentaje de contraseñas que tienen una repeticion de mas de tres veces el mismo caracter es :",cantrep*100/cantcontraseñas ,"%");
+
+finAccion

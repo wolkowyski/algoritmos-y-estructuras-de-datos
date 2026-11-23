@@ -1,0 +1,105 @@
+Acción Colchones es
+Ambiente
+	arc=registro
+		ID: n(8);
+		tipo: n(8);
+		ganancia: real(18,2);
+		dimensión x: n(3);
+		dimensión y: n(3);
+	fin registro
+	Prim,m: puntero a nodo,
+	nodo: registro
+		tipo: n(8);
+		Fabricante: an(40);
+		Modelo: an(40);
+		comisión:n(2);
+		prox: puntero a nodo;
+	fin registro	
+	Prim2,Prim3,p,x: puntero a nodo2;
+	nodo2:registro
+		tipo: n(8);
+		Fabricante: an(40);
+		Modelo: an(40);
+		cantidad: n(3);
+		prox:puntero a nodo2;
+	fin registro
+	Ventas: archivo de arc;
+	vent: arc;
+	Acum: real (18,2);
+	i: entero;
+	Acción Cargarlista1 es
+		x:=prim2;
+		mienrtas x <> nil o *x.tipo <> *m.tipo hacer              // busca si ya existe en la lista de salida
+			x:=*x.prox;
+		fin mientras
+		Si x = nil entonces
+			nuevo (p);
+			*p.tipo: *m.tipo;
+			*p.fabricante: *m.fabricante;
+			*p.modelo: *m.modelo;
+			*p.cantidad:= 1;
+			*p.prox:=prim2;
+			prim2:=p;
+		sino
+			*x.cantidad:=*m.cantidad+1;
+		fin si
+	fin acción
+	Acción tratar es
+		m:=prim;
+		Mientras m<> nil o *m.tipo <> vent.tipo hacer       // busca en la lista de entrada
+			m:=*m.prox;
+		fin mientras
+		Acum:=acum +(vent.ganancia * (100 - *m.comisión)/100));
+		CargarLista1;
+	fin acción
+	Acción MostratTOP5 es
+		x:=prim3;
+		i:=1;
+		Mientras i < 6 hacer
+			esc ('Fabricante',i,' es', *x.fabricante);
+			Fabricante:=*x.fabricante;
+			x:=*x.prox;
+			Mientras *x.fabricante = Fabricante hacer       // Busca al siguiente fabricante
+				x:=*x.prox;
+			fin mientras
+			i:=i+1;
+		fin mientras
+	fin acción
+	Acción TOP5 es
+		Prim3:=nil;
+		X:=prim2;
+		Mientras x <> nil hacer
+			Nuevo (p);
+			*p.tipo:=*x.tipo;
+			*p.fabricante:=*x.fabricante;
+			*p.modelo:=*x.modelo;
+			*p.cantidad:=*x.cantidad
+			z:=prim3;
+			a:=nil;
+			mientras z<> nil o *p.cantidad < *z.cantidad hacer	 //Carga ordenada en la lista auxiliar
+				a:=z;
+				z:=*z.prox;
+			fin mientras
+			*p.prox:=z;
+			Si a = nil entonces
+				prim3:=p;
+			sino 
+				*a.prox:=p;
+			fin si
+			x:=*x.prox;    // avanzo en la lista de salida
+		fin mientras
+		MostrarTOP5;
+	fin acción
+Algoritmo
+	Abrir e/ (Venta);	
+	leer (Venta,vent);
+	Prim2:=nil;
+	acum:=0;
+	Mientras nfda (ventas) hacer
+		Tratar;
+		leer (ventas,vent);
+	fin mientras
+	Cerrar (ventas);
+	TOP5;
+	Esc ('La ganancia de la empresa fue de $ ', acum);
+fin acción.

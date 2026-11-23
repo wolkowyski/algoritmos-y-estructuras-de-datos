@@ -1,0 +1,53 @@
+
+    mientras NFDA (cheques) hacer
+       REG_CTA.COD:=REG_CHQ.COD
+	   LEER (CUENTA,REG_CTA)
+	   RESCODMOV:=REG_CHQ.COD
+	   REG_DIA:=REG_CHQ.DIA
+	   TOT:= REG_CTA.SALDO
+	   
+		Si existe       
+	           CORTE
+			   INFORME
+			   reg_CTA.saldo:= tot;  {ACA ACTUALICE}
+			   
+			sino
+			   reg_cta.cod:=reg_chq.cod
+			   esc('ingrese razon social')
+			   leer(reg_cta.razon)
+			   reg_cta.saldo:=reg_chq.mov
+			   CORTE 
+			   INFORME
+		Fin si
+      		 
+			 
+			 
+        SUBACCION CORTE ES:
+               escribir("Razon social: ", reg_cta.rzon_soc     , "Codigo: ", reg_cta.cod);
+               escribir("Dia                Movimiento      Importe");
+               escribir("                   Saldo inicial   ", reg_cta.saldo);	   
+			
+			   mientras ((reg_chq.cod_mov = res_cod_MOV) ^ (nfda(arch_chq)) hacer
+			      si (res_dia <> reg_chq.dia) entonces
+				      res_dia:= reg_chq.dia; {CORTE}
+			      fin si
+				  escribir(reg_chq.dia); 
+				  
+				  si (reg_chq.imp_mov < 0) entonces
+				     escribir("   Extraccion    ", reg_chq.imp_mov);
+                  sino
+                     escribir("   Deposito      ", reg_chq.imp_mov);
+				  fin si
+                  tot:= tot + reg_chq.imp_mov;				  
+                  leer_chq;
+               fin mientras
+                res_dia:= reg_chq.dia;  {CORTE}
+			   regrabar(arch_CTA,reg_CTA);
+               escribir("         Saldo final   ". reg_CTA.saldo);
+		FIN SUB
+
+        SUBACCION INFORME ES:
+		si (reg_cte.saldo = tot) entonces
+			      escribir("El codigo : ", res_cod, "se realizaron moviementos sin embargo se mantuvo su saldo inicial: ", tot);
+	    fin si
+        FIN SUB		

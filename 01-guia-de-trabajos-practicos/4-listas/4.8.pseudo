@@ -1,0 +1,152 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.8 (lista circular)
+// ==========================================================================
+
+// Escribir un algoritmo que permita buscar, insertar o borrar un elemento
+// identificado con una clave determinada en una lista circular simplemente
+// encadenada.
+//
+// En una lista circular el último nodo apunta al primero (no hay nil al
+// final), así que los recorridos cortan cuando *p.prox = prim. La lista se
+// mantiene ordenada por dato.
+
+Acción Ejercicio4_8 (prim: puntero a Nodo) ES
+
+Ambiente
+
+    Nodo = Registro
+        dato: N(5)
+        prox: puntero a Nodo
+    Fin Registro
+
+    p, q, ant, ult: puntero a Nodo
+    operación, valor: entero
+    elección: ("S", "N")
+
+    Procedimiento MenúOpciones() ES
+        Escribir("Operaciones disponibles")
+        Escribir("-----------------------")
+        Escribir("1. Buscar un elemento con una clave determinada.")
+        Escribir("2. Eliminar un elemento con una clave determinada.")
+        Escribir("3. Insertar un elemento con una clave determinada.")
+        Escribir("Introduzca la operación que desea realizar: ")
+        Leer(operación)
+        Escribir("Ingrese un valor: ")
+        Leer(valor)
+    Fin Procedimiento
+
+    // Busca el último nodo (el que apunta a prim); hace falta para
+    // insertar o borrar al principio, porque hay que reenganchar el círculo.
+    Procedimiento BuscarUltimo() ES
+        ult := prim
+        Mientras *ult.prox <> prim Hacer
+            ult := *ult.prox
+        Fin Mientras
+    Fin Procedimiento
+
+    Procedimiento Buscar() ES
+        Si prim = NIL Entonces
+            Escribir("ERROR. La lista está vacía.")
+        Contrario
+            q := prim
+            Mientras (*q.prox <> prim) y (*q.dato <> valor) Hacer
+                q := *q.prox
+            Fin Mientras
+
+            // Si *q.dato <> valor es porque ya llegué al último elemento
+            // y este tampoco contiene la clave que busco.
+            Si *q.dato = valor Entonces
+                Escribir("La lista contiene un elemento con la clave introducida.")
+            Contrario
+                Escribir("ERROR. La lista NO contiene un elemento con la clave introducida.")
+            Fin Si
+        Fin Si
+    Fin Procedimiento
+
+    Procedimiento Insertar() ES
+        Nuevo(q)
+        *q.dato := valor
+
+        Si prim = NIL Entonces // 1. Lista vacía: el nodo se apunta a sí mismo
+            prim := q
+            *q.prox := q
+        Contrario
+            p := prim
+            ant := NIL
+            // Recorremos mientras no demos la vuelta y el dato sea menor
+            Mientras (*p.prox <> prim) y (*p.dato < valor) Hacer
+                ant := p
+                p := *p.prox
+            Fin Mientras
+
+            // Si el valor es el más grande de todos, me paro después del último
+            Si *p.dato < valor Entonces
+                ant := p
+                p := *p.prox // p vuelve a ser prim
+            Fin Si
+
+            Si ant = NIL Entonces // 2. Insertar al principio (nueva cabeza)
+                BuscarUltimo()
+                *q.prox := prim
+                *ult.prox := q
+                prim := q
+            Contrario // 3. Insertar al medio o al final (es la misma lógica)
+                *ant.prox := q
+                *q.prox := p
+            Fin Si
+        Fin Si
+        Escribir("Elemento agregado")
+    Fin Procedimiento
+
+    Procedimiento Borrar() ES
+        Si prim = NIL Entonces
+            Escribir("ERROR. La lista está vacía.")
+        Contrario
+            q := prim
+            ant := NIL
+            Mientras (*q.prox <> prim) y (*q.dato <> valor) Hacer
+                ant := q
+                q := *q.prox
+            Fin Mientras
+
+            Si *q.dato <> valor Entonces
+                Escribir("ERROR. La lista NO contiene un elemento con la clave introducida.")
+            Contrario
+                Si q = *q.prox Entonces
+                    // Un solo elemento, que justo es el que hay que eliminar
+                    // (el nodo se enlaza a sí mismo): la lista queda vacía.
+                    prim := NIL
+                Contrario
+                    Si q = prim Entonces
+                        // Primer elemento de una lista con varios: busco el
+                        // último para enlazarlo al segundo, que pasa a ser el primero.
+                        BuscarUltimo()
+                        *ult.prox := *q.prox
+                        prim := *q.prox
+                    Contrario
+                        // Elemento intermedio o último
+                        *ant.prox := *q.prox
+                    Fin Si
+                Fin Si
+                Disponer(q)
+                Escribir("Elemento eliminado")
+            Fin Si
+        Fin Si
+    Fin Procedimiento
+
+Proceso
+    Escribir("¿Desea realizar una operación? [S/N]: ")
+    Leer(elección)
+    Mientras elección = "S" Hacer
+        MenúOpciones()
+        Según operación Hacer
+            1: Buscar()
+            2: Borrar()
+            3: Insertar()
+            Otro: Escribir("Operación inválida")
+        Fin Según
+        Escribir("¿Desea realizar otra operación? [S/N]: ")
+        Leer(elección)
+    Fin Mientras
+Fin Acción

@@ -1,0 +1,113 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Modelo 4 - Ejercicio 2 "Regalos" (listas simples y dobles)
+//
+//  Se reparte un regalo a cada cliente del archivo de celulares, tomando de
+//  la lista de regalos disponibles (identificador y cantidad).
+//  - Cada asignación (DNI, regalo) va a una lista simple.
+//  - Si se terminan los regalos, los clientes que sobran van a una lista doble.
+//  - Si se terminan los clientes, los regalos que sobran (con su cantidad)
+//    van a otra lista doble.
+//  (Enunciado reconstruido a partir de la resolución.)
+// ==========================================================================
+
+Accion Parcial4_Ejercicio2 (prim1: puntero a nodo1) es
+
+Ambiente
+
+	celulares = registro
+		numero_cel: N(10)
+		DNI_cliente: N(8)
+	FinRegistro
+
+	arch: archivo de celulares
+	reg: celulares
+
+	nodo1 = registro // lista de entrada: regalos disponibles
+		iden_regalo: N(5)
+		cant_disp: N(3)
+		prox: puntero a nodo1
+	FinRegistro
+
+	q1: puntero a nodo1
+
+	nodo2 = registro // asignaciones
+		DNI_cliente: N(8)
+		iden_regalo: N(5)
+		prox: puntero a nodo2
+	FinRegistro
+
+	p2, prim2: puntero a nodo2
+
+	nodo3 = registro // sobran regalos
+		iden_regalo: N(5)
+		cant_disp: N(3)
+		ant, prox: puntero a nodo3
+	FinRegistro
+
+	p3, prim3, ult3: puntero a nodo3
+
+	nodo4 = registro // sobran clientes
+		DNI_cliente: N(8)
+		ant, prox: puntero a nodo4
+	FinRegistro
+
+	p4, prim4, ult4: puntero a nodo4
+
+Proceso
+
+	prim2:= nil
+	prim3:= nil; ult3:= nil
+	prim4:= nil; ult4:= nil
+	q1:= prim1
+
+	Abrir E/(arch)
+	Leer(arch, reg)
+	Mientras NFDA(arch) hacer
+		// salteo los regalos agotados (preguntando antes si q1 es nil)
+		Mientras (q1 <> nil) y (*q1.cant_disp = 0) hacer
+			q1:= *q1.prox
+		FinMientras
+
+		Si (q1 <> nil) entonces // hay regalo para este cliente
+			*q1.cant_disp:= *q1.cant_disp - 1
+			Nuevo(p2)
+			*p2.DNI_cliente:= reg.DNI_cliente
+			*p2.iden_regalo:= *q1.iden_regalo
+			*p2.prox:= prim2 // carga apilada lista simple
+			prim2:= p2
+		Sino // no hay más regalos: sobra el cliente (carga encolada lista doble)
+			Nuevo(p4)
+			*p4.DNI_cliente:= reg.DNI_cliente
+			*p4.prox:= nil
+			*p4.ant:= ult4
+			Si prim4 = nil entonces
+				prim4:= p4
+			Sino
+				*ult4.prox:= p4
+			FinSi
+			ult4:= p4
+		FinSi
+
+		Leer(arch, reg)
+	FinMientras
+	Cerrar(arch)
+
+	// No hay más clientes: los regalos que quedan van a la lista doble
+	Mientras (q1 <> nil) hacer
+		Si (*q1.cant_disp > 0) entonces
+			Nuevo(p3)
+			*p3.iden_regalo:= *q1.iden_regalo
+			*p3.cant_disp:= *q1.cant_disp
+			*p3.prox:= nil
+			*p3.ant:= ult3
+			Si prim3 = nil entonces
+				prim3:= p3
+			Sino
+				*ult3.prox:= p3
+			FinSi
+			ult3:= p3
+		FinSi
+		q1:= *q1.prox
+	FinMientras
+FinAccion

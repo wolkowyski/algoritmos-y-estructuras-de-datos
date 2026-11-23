@@ -1,0 +1,104 @@
+ACCION 231a ES
+    AMBIENTE
+        Fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+
+        Facturas = Registro de
+            Clave: registro
+                Nro_Cliente: N(8)
+                Nro_Factura: N(8)
+            FRegistro
+            Fecha: Fecha
+            Importe: N(6)
+        FRegistro
+
+        Clientes = Registro de
+            Nro_Cliente: N(8)
+            Nombre: AN(50)
+            DNI: N(9)
+            CUIT: N(15)
+        FRegistro
+
+        Factura: Archivo de Facturas
+        Fact: Facturas
+        Cliente: Archivo de Clientes indexado por Nro_Cliente
+        Client: Clientes
+    
+    PROCESO
+        Abrir E/(Factura)
+        Abrir E/(Cliente)
+        Leer(Factura, Fact)
+        ESC(" Nro. de cliente | Nombre | Nro. de Factura ")
+        Mientras NFDA(Cliente) hacer
+            Client.Nro_Cliente:= Fact.Clave.Nro_Cliente
+            leer(Cliente, Client)
+            Si EXISTE entonces
+                ESC (Fact.Clave.Nro_Cliente ," | ", Client.Nombre, " | ", Fact.Clave.Nro_Factura)
+                ESC("--------------------------------------------------------------------------")
+            Sino
+                ESC("Error... Nro de Cliente no encontrado")
+            FSi
+            leer(Factura, Fact)
+        FMientras
+        Cerrar(Factura)
+        Cerrar(Cliente)
+FACCION
+
+
+ACCION 231b ES
+    AMBIENTE
+    
+        Facturas = Registro de
+            Clave: registro
+                Nro_Cliente: N(8)
+                Nro_Factura: N(8)
+            FRegistro
+            Fecha: Fecha
+            Importe: N(6)
+        FRegistro
+
+        Clientes = Registro de
+            Nro_Cliente: N(8)
+            Nombre: AN(50)
+            DNI: N(9)
+            CUIT: N(15)
+        FRegistro
+
+        Factura: Archivo de Facturas
+        Fact: Facturas
+        Cliente: Archivo de Clientes indexado por Nro_Cliente
+        Client: Clientes
+        Auxcliente: N(8)
+        Total: Real
+        Totalfact: Entero
+    
+    PROCESO
+        Abrir E/(Factura)
+        Abrir E/(Cliente)
+        Leer(Factura, Fact)
+        ESC(" Nro. de cliente | Nombre | Total facturado | Cantidad de facturas ")
+        Mientras NFDA(Cliente) hacer
+            Client.Nro_Cliente:= Fact.Clave.Nro_Cliente
+            leer(Cliente, Client)
+            Auxcliente:= Fact.Clave.Nro_Cliente
+            Si EXISTE entonces
+                Total:= 0
+                Totalfact:= 0
+                Mientras (Fact.Clave.Nro_Cliente = Auxcliente) Entonces    
+                    Total:= Fact.Importe
+                    Totalfact:= Totalfact + 1
+                    leer(Factura, Fact)
+                FMientras
+                ESC (Fact.Clave.Nro_Cliente ," | ", Client.Nombre, " | ", Total, " | ",Totalfact)        
+            Sino
+                ESC("Error... Nro de Cliente no encontrado")
+                leer(Factura, Fact)
+            FSi
+            ESC("--------------------------------------------------------------------------")
+        FMientras
+        Cerrar(Factura)
+        Cerrar(Cliente)
+FACCION

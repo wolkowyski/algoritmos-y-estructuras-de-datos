@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.6
+// ==========================================================================
+
+// Escribir un algoritmo que permita cargar un arreglo de N nombres,
+// considerando que cada nombre debe tener entre 1 y 10 caracteres.
+
+Acción Ejercicio3_6 es
+	Ambiente
+		N = 100
+		nombre: arreglo de [1..N] de AN(10)
+		aux: AN(255)
+		i: 1..N
+
+	Proceso
+		Para i:= 1 hasta N hacer
+			Repetir // valido el largo antes de guardarlo
+				Escribir("Por favor, ingrese un nombre de entre 1 y 10 caracteres :)")
+				Leer(aux)
+			Hasta que (Long(aux) >= 1) y (Long(aux) <= 10)
+			nombre[i]:= aux
+		FinPara
+FinAcción
+
+
+// Otro algoritmo: búsqueda lineal pura sobre el arreglo cargado.
+// Permite encontrar los nombres repetidos (el éxito se trata dentro del ciclo).
+
+Acción Busqueda es
+	Ambiente
+		N = 100
+		nombre: arreglo de [1..N] de AN(10)
+		Nombre_buscar: AN(10)
+		i: 1..N
+		cont: entero
+	Proceso
+		Escribir("Ingrese un nombre a buscar")
+		Leer(Nombre_buscar)
+		cont:= 0
+		Para i:= 1 hasta N hacer
+			Si nombre[i] = Nombre_buscar entonces
+				cont:= cont + 1
+				Escribir("Existe el nombre: ", Nombre_buscar, " en la posición ", i)
+			FinSi
+		FinPara
+		Escribir("La cantidad de nombres que coinciden con lo solicitado es: ", cont)
+FinAcción

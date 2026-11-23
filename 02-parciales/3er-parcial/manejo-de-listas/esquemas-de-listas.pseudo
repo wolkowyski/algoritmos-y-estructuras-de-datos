@@ -1,0 +1,182 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Esquemas de manejo de listas (resumen para el parcial)
+//
+//  Listas simples: carga apilada, encolada y ordenada, acceso (búsqueda),
+//  inserción ordenada y eliminación. Listas dobles: inserción y eliminación.
+//  Notación: *p.dato = "campo dato del nodo apuntado por p" (igual a p^.dato)
+// ==========================================================================
+
+// Nodo de lista simple             // Nodo de lista doble
+//   Nodo = Registro                //   Nodo = Registro
+//       dato: entero               //       dato: entero
+//       prox: puntero a Nodo       //       prox: puntero a Nodo
+//   FinRegistro                    //       ant: puntero a Nodo  (diferencia con la simple)
+//                                  //   FinRegistro
+
+
+// ----------------------------- LISTAS SIMPLES -----------------------------
+
+// CARGA APILADA: cada nodo nuevo queda primero (la lista sale invertida)
+Prim:= nil
+Leer(valor)
+Mientras (valor <> '*') hacer
+    Nuevo(p)
+    *p.dato:= valor
+    *p.prox:= Prim
+    Prim:= p
+    Leer(valor)
+FinMientras
+
+
+// CARGA ENCOLADA: cada nodo nuevo va al final (se mantiene el orden de llegada)
+Prim:= nil
+Leer(valor)
+Mientras (valor <> '*') hacer
+    Nuevo(p)
+    *p.dato:= valor
+    *p.prox:= nil
+    Si Prim = nil entonces
+        Prim:= p
+    Sino
+        *a.prox:= p // a es el último nodo cargado
+    FinSi
+    a:= p
+    Leer(valor)
+FinMientras
+
+
+// ACCESO: búsqueda y muestra del nodo con clave k
+p:= Prim
+Mientras (p <> nil) y (*p.dato <> k) hacer
+    p:= *p.prox
+FinMientras
+Si (p <> nil) entonces
+    Escribir("El elemento fue encontrado: ", *p.dato)
+Sino
+    Escribir("ERROR: no existe")
+FinSi
+
+
+// INSERCIÓN ORDENADA (sirve también para la carga ordenada, dentro de un ciclo)
+Nuevo(q)
+*q.dato:= valor
+Si (Prim = nil) entonces // lista vacía
+    Prim:= q
+    *q.prox:= nil
+Sino
+    p:= Prim
+    ant:= nil
+    Mientras (p <> nil) y (*p.dato < *q.dato) hacer // busco el primer mayor
+        ant:= p
+        p:= *p.prox
+    FinMientras
+    Si (ant = nil) entonces // va primero
+        *q.prox:= Prim
+        Prim:= q
+    Sino // va en el medio o al final (p = nil)
+        *ant.prox:= q
+        *q.prox:= p
+    FinSi
+FinSi
+
+
+// ELIMINACIÓN del nodo con clave k
+Leer(k)
+p:= Prim // la búsqueda arranca desde el principio (no se pone Prim en nil)
+ant:= nil
+Mientras (p <> nil) y (*p.dato <> k) hacer
+    ant:= p
+    p:= *p.prox
+FinMientras
+Si (p = nil) entonces // no se encontró (o la lista estaba vacía)
+    Escribir("Error: el elemento no existe")
+Sino
+    Si (p = Prim) entonces // es el primero
+        Prim:= *p.prox
+    Sino // está en el medio o al final
+        *ant.prox:= *p.prox
+    FinSi
+    Disponer(p) // muy importante: liberar la memoria
+FinSi
+
+
+// ------------------------------ LISTAS DOBLES -----------------------------
+
+// INSERCIÓN ORDENADA (se mantienen Prim y Ult)
+Nuevo(q)
+*q.dato:= valor
+Si (Prim = nil) entonces // lista vacía
+    Prim:= q
+    Ult:= q
+    *q.prox:= nil
+    *q.ant:= nil
+Sino
+    p:= Prim
+    Mientras (p <> nil) y (*p.dato < *q.dato) hacer // no hace falta guardar el anterior: está en *p.ant
+        p:= *p.prox
+    FinMientras
+    Si (p = Prim) entonces // primer elemento
+        *q.prox:= p
+        *q.ant:= nil
+        *p.ant:= q
+        Prim:= q
+    Sino
+        Si (p = nil) entonces // último elemento
+            *q.prox:= nil
+            *q.ant:= Ult
+            *Ult.prox:= q
+            Ult:= q
+        Sino // elemento del medio
+            *q.prox:= p
+            *q.ant:= *p.ant
+            *(*p.ant).prox:= q // primero enlazo el anterior...
+            *p.ant:= q         // ...y recién después piso *p.ant
+        FinSi
+    FinSi
+FinSi
+
+
+// ELIMINACIÓN del nodo con clave k
+Si (Prim = nil) entonces
+    Escribir("Error, lista vacía")
+Sino
+    p:= Prim
+    Mientras (p <> nil) y (*p.dato <> k) hacer
+        p:= *p.prox
+    FinMientras
+    Si (p = nil) entonces
+        Escribir("Error, el elemento no existe")
+    Sino
+        Si (Prim = Ult) entonces // elimina el único nodo presente
+            Prim:= nil
+            Ult:= nil
+        SiNo
+            Si (p = Prim) entonces // elimina el primer nodo
+                Prim:= *p.prox
+                *Prim.ant:= nil
+            SiNo
+                Si (p = Ult) entonces // elimina el último nodo
+                    Ult:= *p.ant
+                    *Ult.prox:= nil
+                SiNo // elimina un nodo del medio
+                    *(*p.prox).ant:= *p.ant
+                    *(*p.ant).prox:= *p.prox
+                FinSi
+            FinSi
+        FinSi
+        Disponer(p) // muy importante
+    FinSi
+FinSi
+
+
+// ------------------------- EJERCICIOS PARA PRACTICAR -----------------------
+// 1. Dada una lista simplemente encadenada de números enteros, generar otra
+//    lista con los nodos cuyos datos sean múltiplos de 3, eliminándolos de la
+//    lista original (inserción y eliminación). Ver ../../01-guia-de-trabajos-practicos/4-listas/4.2.pseudo
+// 2. Dada una lista doble con las provincias (nombre, capital, habitantes y
+//    analfabetos) ordenada por nombre, generar una lista simple ordenada en
+//    forma decreciente por analfabetos.
+// 3. Dada una lista circular de socios (número, nombre, condición A/B), crear
+//    una lista simple con los socios múltiplos de 100 que no estén de baja y
+//    eliminar de la original los dados de baja.

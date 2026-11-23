@@ -1,0 +1,59 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.2 - resolución compartida en Discord
+// ==========================================================================
+
+Se dispone de una lista simplemente encadenada de números enteros, diseñar un algoritmo que a partir de ella genere otra lista conteniendo los nodos cuyos datos terminan en cero;
+dichos elementos, deberán ser eliminados de la lista original. Se asume que la lista está cargada, y que el algoritmo recibe como parámetro de entrada la dirección del primer elemento.
+
+ACCION 4.2 ES(prim:puntero a NODO)
+AMBIENTE
+NODO = registro
+    dato:enteros
+    prox: puntero a nodo
+fin_registro
+prim2,p,q,a1,a2:puntero a nodo
+
+PROCEDIMIENTO Tratar_prim()
+    NUEVO(q)
+    q:= prim
+    p:=*p.prox
+    DISPONER(prim)
+    prim:=p
+    prim2:= q
+    a2:=q
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO Tratar()
+    NUEVO(q)
+    q:=p
+    SI prim2 = nil ENTONCES
+        prim2:=p
+        a2:=p
+        p:=*p.prox
+        DISPONER(prim)
+        prim:= p
+    SINO
+        *a2.prox := q
+        a2:= q
+        *a1.prox := *p.prox
+        DISPONER(p)
+        p:=a1
+    FIN_SI
+
+FIN_PROCEDIMIENTO
+
+ALGORITMO
+p:=prim
+prim2:=nil
+MIENTRAS p <> nil HACER
+    SI (*p.dato = 0) o (*p.dato MOD 10 = 0)ENTONCES
+        SI p = prim ENTONCES
+            Tratar_prim()
+        SINO
+            Tratar()
+        FIN_SI
+    FIN_SI
+    a1:=p
+    p:=*p.prox
+FIN_MIENTRAS

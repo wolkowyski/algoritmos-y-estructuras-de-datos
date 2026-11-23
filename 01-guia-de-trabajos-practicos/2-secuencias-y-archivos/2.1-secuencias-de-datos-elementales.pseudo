@@ -1,0 +1,469 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//
+//  Primitivas de secuencias usadas en la cátedra:
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.1
+// Dada una secuencia de letras del alfabeto que finaliza con una marca '*',
+// contar cuántas letras "A" hay en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_1 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    letras: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    letras:= 0
+    Mientras v <> "*" hacer // la marca de fin es el caracter "*"
+        Si v = "A" entonces
+            letras:= letras + 1
+        FinSi
+        AVZ(Sec, v) // sin avanzar el ciclo nunca termina
+    FinMientras
+    Escribir ("Cantidad de letras A: ", letras)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.2
+// Dada una secuencia de letras del alfabeto que finaliza con la letra "Z",
+// contar cuántas consonantes hay en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_2 es
+Ambiente
+    vocales = {"A", "E", "I", "O", "U"}
+    Sec: secuencia de caracteres
+    v: caracter
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras v <> "Z" hacer // la Z es la marca de fin, no se cuenta
+        Si No (v en vocales) entonces // se cuentan las que NO son vocales
+            cont:= cont + 1
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Escribir ("Cantidad de consonantes: ", cont)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.3
+// Se dispone de una secuencia de caracteres y se desea obtener una secuencia de
+// salida que resulte de copiar la secuencia de entrada, descartando el "$".
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_3 es
+Ambiente
+    Sec, Sec1: secuencia de caracteres
+    v: caracter
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    CREAR(Sec1)
+    Mientras NFDS(Sec) hacer
+        Si v <> "$" entonces
+            ESC(Sec1, v) // se copia el caracter leído (v)
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Sec1)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.4
+// Se dispone de una secuencia de números de socios, y se desea saber la
+// cantidad de socios que están registrados.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_4 es
+Ambiente
+    Sec: secuencia de enteros
+    v: entero
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        cont:= cont + 1
+        AVZ(Sec, v)
+    FinMientras
+    Escribir ("La cantidad de socios que están registrados es de: ", cont)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.5
+// La secuencia de socios del problema anterior tiene el inconveniente de que
+// los números están ordenados pero no son correlativos. Se desea generar una
+// secuencia que contenga los números de socios que no figuran en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_5 es
+Ambiente
+    Sec, Faltantes: secuencia de enteros
+    v, anterior, i: entero
+Proceso
+    ARR(Sec)
+    CREAR(Faltantes)
+    AVZ(Sec, v)
+    anterior:= v
+    AVZ(Sec, v)
+    Mientras NFDS(Sec) hacer
+        // Todo lo que hay entre el socio anterior y el actual no está registrado
+        Para i:= anterior + 1 hasta v - 1 hacer
+            ESC(Faltantes, i)
+        FinPara
+        anterior:= v
+        AVZ(Sec, v)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Faltantes)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.6
+// Dada una secuencia de enteros que almacena la cantidad de habitantes de las
+// ciudades capitales de las 23 provincias, discriminados en 4 categorías
+// (en este orden: menores varones, menores mujeres, mayores varones, mayores
+// mujeres), determinar la población total y los porcentajes de masculinos,
+// femeninos, mayores de 18 y menores de 18.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_6 es
+Ambiente
+    Sec: secuencia de enteros
+    v, i: entero
+    poblacion_total, poblacion_hombres, poblacion_mujeres: entero
+    poblacion_mayores, poblacion_menores: entero
+Proceso
+    ARR(Sec)
+    poblacion_hombres:= 0
+    poblacion_mujeres:= 0
+    poblacion_mayores:= 0
+    poblacion_menores:= 0
+    Para i:= 1 hasta 23 hacer // una vuelta por provincia, 4 valores cada una
+        AVZ(Sec, v) // menores varones
+        poblacion_menores:= poblacion_menores + v
+        poblacion_hombres:= poblacion_hombres + v
+        AVZ(Sec, v) // menores mujeres
+        poblacion_menores:= poblacion_menores + v
+        poblacion_mujeres:= poblacion_mujeres + v
+        AVZ(Sec, v) // mayores varones
+        poblacion_mayores:= poblacion_mayores + v
+        poblacion_hombres:= poblacion_hombres + v
+        AVZ(Sec, v) // mayores mujeres
+        poblacion_mayores:= poblacion_mayores + v
+        poblacion_mujeres:= poblacion_mujeres + v
+    FinPara
+    poblacion_total:= poblacion_hombres + poblacion_mujeres
+    Escribir ("Población total: ", poblacion_total)
+    Escribir ("% masculinos: ", poblacion_hombres * 100 / poblacion_total)
+    Escribir ("% femeninos: ", poblacion_mujeres * 100 / poblacion_total)
+    Escribir ("% mayores de 18: ", poblacion_mayores * 100 / poblacion_total)
+    Escribir ("% menores de 18: ", poblacion_menores * 100 / poblacion_total)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.7
+// Se tiene una secuencia de enteros con los CUIT de los empleados de una
+// empresa, que termina con el CUIT 0. Generar una secuencia con los CUIT de
+// las personas cuyo número de documento termine con 0, 1, 2 o 3.
+// El CUIT es XX-DNI-Y: el último dígito del DNI es el anteúltimo del CUIT.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_7 es
+Ambiente
+    Sec, Salida: secuencia de enteros
+    cuit: entero
+Proceso
+    ARR(Sec)
+    CREAR(Salida)
+    AVZ(Sec, cuit)
+    Mientras cuit <> 0 hacer
+        Si (cuit div 10) mod 10 <= 3 entonces // salteo el dígito verificador
+            ESC(Salida, cuit)
+        FinSi
+        AVZ(Sec, cuit)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Salida)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.8
+// Igual al anterior, pero la secuencia de salida es de caracteres y los CUIT
+// se separan unos de otros con el caracter "-".
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_8 es
+Ambiente
+    Sec: secuencia de enteros
+    Salida: secuencia de caracteres
+    cuit, divisor: entero
+
+    Función ACaracter (d: entero): caracter es // convierte un dígito en caracter
+        Según d hacer
+            0: ACaracter:= "0"
+            1: ACaracter:= "1"
+            2: ACaracter:= "2"
+            3: ACaracter:= "3"
+            4: ACaracter:= "4"
+            5: ACaracter:= "5"
+            6: ACaracter:= "6"
+            7: ACaracter:= "7"
+            8: ACaracter:= "8"
+            9: ACaracter:= "9"
+        FinSegún
+    FinFunción
+
+Proceso
+    ARR(Sec)
+    CREAR(Salida)
+    AVZ(Sec, cuit)
+    Mientras cuit <> 0 hacer
+        Si (cuit div 10) mod 10 <= 3 entonces
+            divisor:= 10000000000 // el CUIT tiene 11 dígitos
+            Mientras divisor > 0 hacer
+                ESC(Salida, ACaracter((cuit div divisor) mod 10))
+                divisor:= divisor div 10
+            FinMientras
+            ESC(Salida, "-")
+        FinSi
+        AVZ(Sec, cuit)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Salida)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.9
+// Se dispone de una secuencia de caracteres. Se desea determinar la cantidad
+// de palabras que comienzan con la letra 'I'.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_9 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer // salteo blancos
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces // estoy en la primera letra de una palabra
+            Si v = "I" entonces
+                cont:= cont + 1
+            FinSi
+            Mientras NFDS(Sec) y (v <> " ") hacer // recorro el resto de la palabra
+                AVZ(Sec, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Escribir ("Palabras que empiezan con I: ", cont)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.10
+// Se dispone de una secuencia de caracteres. Contar la cantidad de palabras
+// que comienzan con una letra dada.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_10 es
+Ambiente
+    Sec: secuencia de caracteres
+    v, letra: caracter
+    cont: entero
+Proceso
+    Escribir ("Escriba una letra")
+    Leer (letra)
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces
+            Si v = letra entonces // solo se compara la primera letra de la palabra
+                cont:= cont + 1
+            FinSi
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                AVZ(Sec, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Escribir ("Palabras que empiezan con ", letra, ": ", cont)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.11
+// Dada una secuencia de caracteres, determinar la cantidad de palabras de 4
+// caracteres (letras).
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_11 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    cont, largo: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        largo:= 0
+        Mientras NFDS(Sec) y (v <> " ") hacer // cuento las letras de la palabra
+            largo:= largo + 1
+            AVZ(Sec, v)
+        FinMientras
+        Si largo = 4 entonces
+            cont:= cont + 1
+        FinSi
+    FinMientras
+    Escribir ("Palabras de 4 letras: ", cont)
+    CERRAR(Sec)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.12
+// Se dispone de una secuencia de caracteres. Se desea listar las palabras que
+// comiencen con "ALG" (se copian a una secuencia de salida separadas por " ").
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_12 es
+Ambiente
+    Sec, SecALG: secuencia de caracteres
+    v: caracter
+Proceso
+    ARR(Sec)
+    CREAR(SecALG)
+    AVZ(Sec, v)
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        // Voy comparando letra por letra: si falla alguna, la palabra se descarta
+        Si v = "A" entonces
+            AVZ(Sec, v)
+            Si v = "L" entonces
+                AVZ(Sec, v)
+                Si v = "G" entonces
+                    ESC(SecALG, "A")
+                    ESC(SecALG, "L")
+                    Mientras NFDS(Sec) y (v <> " ") hacer // copio desde la G hasta el final
+                        ESC(SecALG, v)
+                        AVZ(Sec, v)
+                    FinMientras
+                    ESC(SecALG, " ")
+                FinSi
+            FinSi
+        FinSi
+        Mientras NFDS(Sec) y (v <> " ") hacer // descarto lo que quede de la palabra
+            AVZ(Sec, v)
+        FinMientras
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(SecALG)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.15
+// Se desea saber la cantidad promedio de palabras que contienen las oraciones
+// de una secuencia de caracteres. Supóngase que los puntos son siempre
+// contiguos al último caracter de la palabra. La secuencia finaliza con una
+// marca.
+// --------------------------------------------------------------------------
+
+ACCIÓN Ejercicio2_1_15 ES
+AMBIENTE
+    s: secuencia de caracteres
+    v: caracter
+    cant_o, cant_p: entero
+    cantprom_p: real // el promedio puede tener decimales
+
+PROCESO
+    ARR(s)
+    AVZ(s, v)
+    cant_o:= 0
+    cant_p:= 0
+
+    MIENTRAS NFDS(s) HACER
+        MIENTRAS NFDS(s) y v <> "." HACER
+            MIENTRAS v = " " HACER
+                AVZ(s, v)
+            FINMIENTRAS
+
+            cant_p:= cant_p + 1
+
+            MIENTRAS NFDS(s) y v <> " " y v <> "." HACER
+                AVZ(s, v)
+            FINMIENTRAS
+        FINMIENTRAS
+
+        SI v = "." ENTONCES
+            cant_o:= cant_o + 1
+            AVZ(s, v) // hay que pasar el punto, si no el ciclo de afuera no avanza nunca
+        FINSI
+    FINMIENTRAS
+
+    SI cant_o > 0 ENTONCES
+        cantprom_p:= cant_p / cant_o
+        ESCRIBIR ("La cantidad promedio de palabras que contienen las oraciones es de: ", cantprom_p)
+    SINO
+        ESCRIBIR ("La secuencia no tiene oraciones")
+    FINSI
+    CERRAR(s)
+FINACCIÓN

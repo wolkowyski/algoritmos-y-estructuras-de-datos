@@ -1,0 +1,79 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Desafío de clase (21/06) - Mezcla de archivos con control de duplicados
+//
+//  Dos archivos con las páginas de un libro, ordenados por número de página,
+//  se mezclan en uno solo. Si una página aparece en los dos se graba en un
+//  archivo de errores con ambos contenidos.
+// ==========================================================================
+
+Acción Desafio21_06 es
+    Ambiente
+
+        Libro = Registro
+            Nro_Pag: N(4)
+            Contenido: AN(255)
+        FinRegistro
+
+        Error = Registro
+            Nro_Pag: N(4)
+            Contenido1: AN(255)
+            Contenido2: AN(255)
+        FinRegistro
+
+        Arch1, Arch2, Salida: Archivo de Libro ordenado por Nro_Pag
+        Reg1, Reg2, RegSalida: Registro de Libro
+
+        Errores: Archivo de Error ordenado por Nro_Pag
+        RegE: Registro de Error
+        HV = 9999 // mayor que cualquier número de página
+
+        Procedimiento Leer_Arch1 es
+            Leer(Arch1, Reg1)
+            Si FDA(Arch1) entonces
+                Reg1.Nro_Pag:= HV
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Leer_Arch2 es
+            Leer(Arch2, Reg2)
+            Si FDA(Arch2) entonces
+                Reg2.Nro_Pag:= HV
+            FinSi
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(Arch1)
+        Leer_Arch1
+        Abrir E/(Arch2)
+        Leer_Arch2
+        Abrir /S(Salida)
+        Abrir /S(Errores)
+
+        Mientras (Reg1.Nro_Pag <> HV) o (Reg2.Nro_Pag <> HV) hacer
+            Si (Reg1.Nro_Pag) < (Reg2.Nro_Pag) entonces
+                RegSalida:= Reg1
+                Escribir(Salida, RegSalida)
+                Leer_Arch1 //Subaccion 1
+            SiNo
+                Si (Reg1.Nro_Pag) > (Reg2.Nro_Pag) entonces
+                    RegSalida:= Reg2
+                    Escribir(Salida, RegSalida)
+                    Leer_Arch2 //Subaccion 2
+                SiNo
+                    Escribir("Error, clave duplicada")
+                    RegE.Nro_Pag:= Reg1.Nro_Pag
+                    RegE.Contenido1:= Reg1.Contenido
+                    RegE.Contenido2:= Reg2.Contenido
+                    Escribir(Errores, RegE)
+                    Leer_Arch1 //leo los 2 archivos
+                    Leer_Arch2
+                FinSi
+            FinSi
+        FinMientras
+
+        Cerrar(Arch1)
+        Cerrar(Arch2)
+        Cerrar(Salida)
+        Cerrar(Errores)
+FinAcción

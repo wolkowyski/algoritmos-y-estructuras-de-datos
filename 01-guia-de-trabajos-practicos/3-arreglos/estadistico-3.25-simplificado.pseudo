@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.25 simplificado
+//  Resolución modelo vista en clase (proceso estadístico en una matriz 2D).
+//  La fila 'D' y la columna 5 guardan los totales.
+// ==========================================================================
+
+Se toma como base el 3.25 y se le saca totales discriminados por mes, para tener una matriz de 2D
+
+3.25 simplificado 2D
+Una Fábrica que posee 4 plantas de producción en nuestro país y compra materia prima a 3 proveedores distintos, desea realizar un control de los montos totales correspondientes a compras realizadas en cada planta durante el último año, discriminados por proveedor, y también totales por proveedor y totales por planta.
+Para ello dispone de un archivo con los datos de las facturas correspondientes. (Aclaración: el archivo no está ordenado por ningún criterio)
+
+COMPRAS
+Nro_Factura  Proveedor    Fecha     Nro_Planta  Importe
+              (A,B,C)   dd/mm/aaaa    1..4
+
+
+Acción tp3_25 es
+AMBIENTE
+
+Variables
+    fecha = registro
+      dd: 1--31
+      mm: 1..12
+      aaaa: 2022     {pensar...que pasa si tengo más de un año??}
+    Fregistro;
+    fac = registro
+	  Nro_Factura
+	  Proveedor: 'A'..'C'   {OJO!! consttes alfanum. CON COMILLAS!!!}
+	  Fecha: fecha          { en este caso podria haber definido como AN(8)}
+	  Planta: 1..4
+	  Importe: real;
+    Fregistro;
+    compras: archivo de fac;
+    reg: fac;
+    a: arreglo ['A'..'D',1..5] de reales;  {proveedor,planta}
+
+ALGORITMO
+    Para i:= 'A' a 'D'hacer
+       Para j:= 1 a 5 hacer
+	  	  a[i,j]:=0;
+       Fpara;
+    Fpara;
+    Abrir (compras); Leer (compras,reg);
+    Mientras no FDA (compras) hacer
+	      a[reg.proveedor,reg.planta]:=a[reg.proveedor,reg.planta]+reg.importe;
+	      a[reg.proveedor,5]:=a[reg.proveedor,5]+reg.importe;
+	      a['D',reg.planta]:=a['D',reg.planta]+reg.importe;
+	      a['D',5]:=a['D',5]+reg.importe;
+	      Leer (compras,reg);
+    Fmientras;
+    Cerrar (compras);
+    Escribir ('  Proveedor               PLANTA              TOTAL x ');
+    Escribir ('              < -1-    -2-    -3-    -4->   proveedor.');
+     Para i:= 'A' a 'D'hacer
+       Si (i <> 'D')
+	      Entonces
+          Escribir (i);
+	      Sino
+          Escribir ('TOTAL x PLANTA');
+       Fsi;
+       Para j:= 1 a 5 hacer
+	        Escribir (a[i,j]);
+       Fpara;
+    Fpara;
+Facción.

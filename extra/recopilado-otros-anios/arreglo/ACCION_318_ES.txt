@@ -1,0 +1,33 @@
+AMBIENTE GENERAL
+    Lec: Arreglo de [1..4, 1..7, 1..50] de Reales
+ACCION_318_ES
+    AMBIENTE
+        Prom: Arreglo de [1..50, 1..7] de Reales
+        f, c, a, resf1, resf2: Entero
+        Max, Min: Reales
+    PROCESO
+        Para a:= 1 hasta 50 hacer
+            Para c:= 1 hasta 7 hacer
+                Max:= Lec[1,c]
+                Min:= Lec[1,c]
+                promedio:= 0
+                Para f:= 1 hasta 4 hacer
+                    Si (Lec[f,c] > Max) entonces
+                        Max:= Lec[f,c]
+                        resf1:= f
+                    Sino
+                        Si(Lec [f,c] < Min) entonces
+                            Min:= Lec[f,c]
+                            resf2:= f
+                        FS
+                    FS
+                    promedio:= promedio + Lec[f,c]
+                FP
+                ESC("La lectura máximo del paciente: ",a," del dia",c,"es: ",Max,"tomada en la lectura",resf1)
+                ESC("La lectura minima del paciente: ",a," del dia",c,"es: ",Min,"tomada en la lectura",resf2)
+                Prom[a, c]:= promedio / 4
+            FP
+        FP
+FA
+
+ACOTACION DE ALGUIEN: en las 3 dimenciones no puedes omitir ninguno de los valores del arreglo!!!!!!!!!!

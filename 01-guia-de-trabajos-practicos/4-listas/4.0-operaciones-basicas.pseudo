@@ -1,0 +1,77 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas: operaciones básicas (apunte)
+// ==========================================================================
+
+// Notación: p^.dato y *p.dato son equivalentes, significan "el campo dato
+// del nodo al que apunta p". En los ejercicios se usan las dos.
+//
+//   Nuevo(p)      reserva memoria para un nodo nuevo y deja p apuntándolo
+//   Disponer(p)   libera el nodo apuntado por p
+//   nil           puntero que no apunta a nada (lista vacía / fin de lista)
+//
+// Cargar un nodo:  Leer(q^.dato)            // de manera directa
+//                  Leer(algo); q^.dato:= algo // o con asignación
+// Avanzar:         p:= p^.prox
+// Mostrar:         Escribir(p^.dato)
+
+
+// Carga apilada (cada nodo nuevo queda primero: la lista sale al revés)
+Acción Carga es
+    Ambiente
+        Nodo = Registro
+            dato: entero
+            prox: puntero a Nodo
+        FinRegistro
+        prim, p: puntero a Nodo
+        valor: entero
+
+    Proceso
+        prim:= nil
+        Leer(valor)
+        Mientras valor <> 0 hacer // 0 como marca de fin
+            Nuevo(p)
+            p^.dato:= valor
+            p^.prox:= prim // el nuevo apunta al que era el primero
+            prim:= p       // y pasa a ser el primero
+            Leer(valor)
+        FinMientras
+FinAcción
+
+
+// Carga ordenada (inserción manteniendo la lista ordenada de menor a mayor)
+Acción Carga_Ordenada es
+    Ambiente
+        Nodo = Registro
+            dato: entero
+            prox: puntero a Nodo
+        FinRegistro
+        prim, p, q, anterior: puntero a Nodo
+        valor: entero
+
+    Proceso
+        prim:= nil
+        Leer(valor)
+        Mientras valor <> 0 hacer
+            Nuevo(p)
+            p^.dato:= valor
+
+            // Busco la posición: me detengo en el primer nodo mayor o igual
+            anterior:= nil
+            q:= prim
+            Mientras (q <> nil) y (q^.dato < valor) hacer
+                anterior:= q
+                q:= q^.prox
+            FinMientras
+
+            Si anterior = nil entonces // va primero (lista vacía o es el menor)
+                p^.prox:= prim
+                prim:= p
+            SiNo                       // va en el medio o al final
+                p^.prox:= q
+                anterior^.prox:= p
+            FinSi
+
+            Leer(valor)
+        FinMientras
+FinAcción

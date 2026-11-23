@@ -1,0 +1,44 @@
+Accion 2 (A: arreglo [1..48] de boolenano) es
+ Ambiente
+ inferior,superior,contaguiones,contpos: entero;
+ Caracteres: secuencia de caracteres;
+ VentanaSalida: caracter;
+
+Proceso
+inferior:=1; spuerior:= 4, guinoes:=0; contapos :=0.
+Para i:=1 a 12 hacer
+ x:=(8*A[inf])+(4*A[inf+1])+(2*A[inf+2])+(1*A[sup]);
+ Segun x hacer
+     = 0 : VentanaSalida:= 0;
+     = 1 : VentanaSalida:= 1;
+     = 2 : VentanaSalida:= 2;
+     = 3 : VentanaSalida:= 3;
+     = 4 : VentanaSalida:= 4;
+     = 5 : VentanaSalida:= 5;
+     = 6 : VentanaSalida:= 6;
+     = 7 : VentanaSalida:= 7;
+     = 8 : VentanaSalida:= 8;
+     = 9 : VentanaSalida:= 9;
+     = 10: VentanaSalida:= A;
+     = 11: VentanaSalida:= B;
+     = 12: VentanaSalida:= C;
+     = 13: VentanaSalida:= D;
+     = 14: VentanaSalida:= E;
+     = 15: VentanaSalida:= F;
+ Fin Segun
+ Escribir(Caracter,VentanaSalida);
+ contapos:= contapos + 1;
+  Si (guiones <> 5) entonces
+        Si (contapos = 3) entonces
+               VentanaSalida:= "-";
+               Escribir(Caracter.  Ventanasalida);
+               contaguiones: contaguiones + 1;
+               contapos:=0;
+        Finsi
+  FinSi
+ Inferior:= (Inferior +1);
+ Superior:= (Superior + 4);
+Fin Para
+Cerrar (Caracteres)
+
+Fin Acción.

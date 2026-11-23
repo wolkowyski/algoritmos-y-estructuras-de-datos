@@ -1,0 +1,186 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e2
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+-ingresar cuil y clave (verificar)
+-10 digitos clave original - se debe transformar en otra
+
+pasos para generar:
+1.pos par quedan asi. por impar + pos par
+2. dig1 div 3, dig2 div 4 si el res es mod 2, dejar dig 1 sino resultado
+
+buscar cuil + clave
+si existe v, sino f.
+
+ACCION
+Ambiente
+    a: registro
+        CLAVE:
+         cuil
+         contra
+    finreg
+
+    info: archivo de a indexado por clave
+    arch: a
+
+    c: arreglo de [1..10]
+
+    procedimiento tratarClave es
+        posicion:=10 //la unidad de la clave va en la ultima posicion del arreglo
+        para i= 1  hasta 10 hacer
+            num:= clave mod 10 //extraer el ultimo digito de la clave
+            clave:= clave div 10 //eliminar el ultimo digito ahora queda un num menos
+            c[posicion]:= num
+            posicion:= posicion - 1
+        finpara
+    finprocedimiento
+
+    num, clave, cuil, divisor, posicion, elem, division: entero
+
+
+    PROCESO
+
+    Mientras opcion = 'S' hacer
+        num, clave, cuil, divisor, posicion, elem, division:= 0
+        abrir S/(info)
+
+        escribir('ingresar cuil')
+        leer(cuil)
+        escribir('ingresar clave')
+        leer(clave)
+
+        tratarClave()
+
+        //clave desencriptada
+        divisor:= 3
+        Para i= 1 hasta 10 hacer
+            elem:= c[i]
+            si elem mod 2 = 0 entonces
+                elem:= c[i]
+            sino
+                elem:= c[i] + c[i+1]
+            finsi
+            division:= elem div divisor
+            si elem mod 2 <> 0 entonces
+                elem:= division
+            finsi
+            divisor:= divisor + 1
+        finpara
+
+        Para i:=1 a 10 Hacer
+	    Num_completo:= Num_completo + A[i] * divisor
+	    divisor:= divisor div 10
+        FinPara
+
+        arch.clave.cuil:= cuil
+        arch.clave.contra:= num_completo
+        leer(arch, a)
+
+        si EXISTE entonces
+            Escribir('true')
+        sino
+            Escribir('false')
+        finsi
+
+        cerrar(arch)
+
+        finprocedimiento
+    FinMientras
+    escribir('¿desea consultar por otro cuil y clave? S/N')
+    leer(opcion)
+    FINACCION
+
+
+
+
+
+
+EJERCICIO 2
+
+ACCION
+    Ambiente
+        EXP: registro
+            nroExp:
+            Det:
+            Fecha:
+            estado: 1, 2, 3
+        finreg
+
+        arch1: archivo de EXP
+        exped: exp
+
+        jui: registro
+            clave:   //la consigna dice indexado por DNI, el dni daría el orden.
+                dni:
+                juzg:
+                nro_Exp
+            finreg
+                cargo
+        finreg
+
+        arch2: archivo de jui
+        juicios: jui
+
+        procedimiento hacerRanking es
+            Nuevo (q)
+            q.nombre:= datos.nombfisc
+            si prim = nil entonces
+                prim:= q
+                *q.prox:= nil
+                q.casoCerrado:= 0
+            sino
+                Mientras p<> nil y p.nombre <> q.nombre hacer
+                    p:= *p.prox
+                FinMientras
+                Si p.nombre = q.nombre entonces
+                    p.casoCerrado:= p.casoCerrado + 1
+                sino
+                    *q.prox:= nil
+                    *p.prox:= q
+                    q.casoCerrado:= 0
+                finsi
+        finsi
+
+
+
+
+    PROCESO
+    abrir s/(arch1) abrir s/(arch2)
+    Leer(arch2, juicios)
+
+    Mientras no FDA(juicios)
+        dni:= juicios.clave.dni
+        nroexp:= juicios.clave.nro_exp
+        leer(arch1, nroexp) //leo un registro del archivo de juicios y luego lo busco en el de expedientes
+        leer(archdat, datos)
+        Si juicios.clave.juzg= 6 entonces
+            Escribir('Nro exped es:',  juicios.clave.nro_exp, '|Fecha de ingreso:', exped.fecha, '|Juez:', datos.nombrejuez)
+            Escribir('fiscal:', datos.nombfisc, 'defensor:', datosdef)
+        finsi
+
+        est:= exped.estado
+        si est = 3 entonces
+            hacerRanking()
+        finsi
+
+        Leer(arch2, juicios)
+    FinMientras
+
+    n:= 1
+    Mientras prim <> nil hacer
+        max:= 0
+        Mientras p <> nil hacer
+            si p.casoCerrado > max entonces
+                max:= p.casoCerrado
+                nom:= p.nombfisc
+                k:= *p.ant //guardo
+                m:= *p.prox //guardo
+                *p.prox
+            finsi
+        FinMientras
+        Escribir('En el puesto', n, 'el fiscal con mas casos resueltos: ', nom, 'con la cantidad de casos', max)
+        *(*p.ant).prox := m;
+        *(*p.prox).ant := k;
+    Finmientras

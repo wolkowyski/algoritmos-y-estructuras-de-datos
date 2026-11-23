@@ -1,0 +1,314 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e25
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+ACCION
+    Ambiente
+        ponencias= registro
+            id:
+            nomb:
+            fecha:
+            hora:
+            ponencia:
+            orden:
+            area:
+        finregistro
+
+        arch-pon: archivo de ponencias
+        pon: ponencias
+
+        nodo= registro
+            nombre:
+            orden:
+            area:
+            fecha:
+            hora:
+            asistentes:
+            prox: puntero a nodo
+        finregistro
+
+        procedimiento Crearnodo es
+            escribir('¿que aula asignamos a redes?')
+            leer(redes)
+            escribir('¿que aula asignamos a programacion?')
+            leer(progra)
+            escribir('¿que aula asignamos a sist. info?')
+            leer(sistinfo)
+            prim:= nil , p:= nil
+            Nuevo(q)
+            r:= q
+            q.area:= 'R'
+            q.aula:= redes
+            prim:= q
+            prim.prox:= nil
+            nuevo(q)
+            pro:= q
+            q.aula:= progra
+            q.area:= 'P'
+            q.prox:= nil
+            p:= q
+            *prim.prox:= q
+            nuevo(q)
+            si:=q
+            q.aula:= sistinfo
+            q.area:= 'SI'
+            q.prox:= nil
+            *p.prox:= q
+        finprocedimiento
+
+        q, p, prim, r, si, pro: puntero a nodo
+
+
+        procedimiento Asignacion es
+            crearNodo()
+            Mientras no FDA(arch-pon) hacer
+                p:= prim
+                Mientras p.area <> pon.area entonces
+                    p:= *p.prox
+                finmientras
+                Mientras p.hora < pon.hora y pon.area = p.area hacer
+                 p:= *p.prox
+                 ult:= p
+                finmientras
+                p:= ult
+                Mientras p.orden < pon.orden y pon.area = p.area o pon.hora = p.hora hacer
+                    p:= *p.prox
+                    ult:= p
+                finmientras
+                nuevo(q)
+                segun pon.area entonces
+                    'R': q.aula:= redes
+                    'P': q.aula:= progra
+                    'SI': q.aula:= sistinfo
+                finsegun
+                q.hora:= pon.hora
+                q.orden:= pon.orden
+                q.area:= pon.area
+                q.nombre:= pon.nombre
+                q.asistentes:= ''
+                leer(arch-pon, pon)
+            finmientras
+        finprocedimiento
+
+        procedimiento eliminar es
+        segun pon.area hacer
+                       'R:' A[1].no:= A[1].no+ 1
+                       'P': A[2].no := A[2].no+ 1
+                       'SI': A[3].no := A[3].no + 1
+                    finsegun
+            si p= prim entonces
+                prim:= *p.prox
+            sino
+                ant.prox:= *p.prox
+            finsi
+        finprocedimiento
+
+
+        procedimiento Asistencia es
+            Asignacion()
+            p= prim ,
+            Mientras p<> nil hacer
+                Escribir('ponente asistira? S/N')
+                leer(asist)
+                si asist = 'S' entonces
+                    escribir('¿cantidad de asistentes?')
+                    leer(cant)
+
+                    p.asistentes:= cant
+                    segun pon.area hacer
+                       'R:' A[1].si:= A[1].si + 1
+                       'R:' A[1].cant:= A[1].cant + cant
+                       'P': A[2].si := A[2].si + 1
+                       'P:' A[2].cant:= A[2].cant + cant
+                       'SI': A[3].si := A[3].si + 1
+                       'SI:' A[3].cant:= A[3].cant + cant
+                    finsegun
+                    finsegun
+                sino
+                    eliminar()
+                finsi
+                ant:= p
+                p:= *p.prox
+            finmientras
+
+            min:= 999
+            para i= 1 a 3 hacer
+                si  A[i] < min entonces
+                    min:= A[i]
+                    areamin:= i
+                finsi
+             si A[i] < 3 entonces
+                menor3:= A[i]
+                m3:= i
+            finsi
+            finpara
+
+            segun areamin hacer
+                1:= area:= R, punt:= r
+                2:= area:= P, punt:= pro
+                3:= area:= SI , punt:=s
+            finsegun
+            si menor3 > 0 entonces
+                p:= prim
+                mientras p.area <> area
+                    p:= *p.prox
+                finmientras
+                mientras p.area = area y p <> nil
+                    p:= *p.prox
+                    ant:= p
+                finmientras
+
+                *ant.prox:= punt
+                fin:= ultpunt //osea quiero poner el ultimo puntero de cad auno pero we un quilombo
+
+        FINPROCEDIMIENO
+
+        procedimiento estadisticas
+            Asistencia()
+            A[4].si:= A[3].si + A[2].si + A[1].si
+            Para i = 1 a 3 hacer
+                porc:= A[i].si / A[4].si  * 100
+                Escribir('para el area', i, 'se presentaran un porcentaje de' porc)
+            finpara
+
+            A[4].no:= A[3].no+ A[2].no + A[1].no
+            Escribir('las ponencias que no asitiran son:' A[4].no )
+        finpro
+
+
+
+    PROCESO
+        ABRIR(arch-pon) leer(arch-pon, pon)
+
+        cont:= 'S'
+        Mientras cont = 'S' hacer
+            Escribir('Hola a continuacion puede consultar sobre las opciones del Congreso Binacional:')
+            Escribir('Opcion 1: Asignacion de Aulas
+                    Opcion 2: Asistencia
+                    Opcion 3: Estadísticas')
+            Leer(opcion)
+
+            Segun opcion hacer
+                1: Asignacion()
+                2: Asistencia()
+                3: Estadísticas()
+            finsegun
+
+            Escribir('¿desea consultar otra cosa?')
+            leer(cont)
+        finmientras
+
+finaccion
+
+
+EJERCICIO 2
+ACCION
+    Ambiente
+        alqui= registro
+            zona:
+            tipo:
+            cod:
+            cant:
+            precioact:
+        finregistro
+
+        arch-a:= archivo de alqui
+        a:= alqui
+
+        A: arreglo de [1...4, 1...4]
+
+        procedimiento inicializr()es
+
+        para i
+        finproc
+
+        procedimiento corteZona es
+            corteTipo()
+            Escribir('cantidad total para la zona es', cantzona)
+            cantzona:= 0
+            reszona:= a.zona
+        finprocedimiento
+
+        procedimiento corteTipo es
+            Escribir('cantidad total para el tipo', resgtipo, 'es', canttipo)
+            cantzona:= cantzona +canttipo
+            canttipo:= 0
+            resgtipo:= a.tipo
+        finprocedimiento
+
+        salida= registro
+            cod-inm:
+            pcioact:
+        finregistro
+
+        sal:= archivo de salida
+        s:= salida
+
+    PROCESO
+        inicializar()
+        abrir S/(arch-a) leer(arch-a, a) abrir E/(sal)
+        resg.zona:= a.zona, resg.tipo:= a.tipo
+        Mientras no FDA hacer()
+            si resg.zona <> a.zona entonces
+                corteZona()
+            sino si resg.tipo <> a.tipo entonces
+                corteTipo()
+            finsi
+
+            segun a.zona hacer
+                'Am:': i:= 1
+                'Eu' :i:= 2
+                'Af': i:= 3
+            finsegun
+             segun a.tipo hacer
+                'de:': j:= 1
+                'ho' :j:= 2
+                'ca': j:= 3
+            finsegun
+
+            A[i,j]:= A[i,j] + 1
+            A[4,j]:= A[4,j] + 1
+            A[i,4]:= A[i,4] + 1
+
+            si a.cant > 100 entonces
+                porc:= precact * 0.15
+                actualizado:= a.precact + porc
+            sino si a.cant < 5 entonces
+                porc:= precact * 0.08
+                actualizado:= a.precact - porc
+            finsi
+            finsi
+
+            totTipo:= totTipo + a.cantalquilar
+            grabar(sal, a.cod) grabar(sal, porc)
+            leer(arch-a, a)
+        finmientras
+
+        EScribir('la cantidad total de alquileres por año es',  A[4,4])
+
+        prom:= A[4,4] / 3
+
+        may:= 0
+        para i= 1 a 3 hacer
+            para j= 1 a 3 hacer
+            si A[i,j] > may entonces
+                may:= A[i,j]
+                tipomax:= j
+                zonamax:= i
+            finsi
+            finpara
+        finpara
+
+        para j= 1 a 3 hacer
+            calc:= A[4,j] - prom
+            si calc >= 10 entonces
+                Escribir('el tipo', j, 'supera la demanda del promedio')
+            finsi
+        finpara
+
+        escribir('la zona y tipo mas demandada fue:' i, 'fue la zona', j, 'el tipo')
+
+        cerrar(sal) cerrar(acrh-a)
+FINACCION

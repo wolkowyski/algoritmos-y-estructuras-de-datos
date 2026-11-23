@@ -1,0 +1,164 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 7
+//  Enunciado: ../enunciados/final-07.jpg
+// ==========================================================================
+
+//consigna 1
+
+Accion produccion(N: Arreglo [1..10] de alfanumerico) es
+
+Ambiente
+
+	evento=registro
+		codigo:AN(5)
+		titulo:AN(30)
+		costo:N(4.2)
+		cod_cat:1..10
+		segmento:0..2
+	fin registro
+
+	reg_e: evento
+	arch_e: archivo de evento
+
+	fechas=registro
+		año:N(4)
+		mes:1..12
+		dia:1..31
+	fin registro
+
+	nodo=registro
+		fecha: fechas
+		nombre_cat:AN(30)
+		segmento:0..2
+		costo:N(4.2)
+		prox: puntero a nodo
+	fin registro
+
+	prim, p, a, q: puntero a nodo
+
+	info=registro
+		cant_eventos:N(5)
+		tot_invertido:N(10.2)
+	fin registro
+
+	A: Arreglo [1..10, 1..4] de info  //4 para totales
+
+	tot_eventos, seg, cat_dep, menor, menor_cat, mayor, mayor_cat_noche: entero
+	valor: real
+
+Proceso
+
+	ABRIR E/ (arch_e)
+	LEER(arch_e, reg_e)
+
+	Para i:=1 a 10 hacer
+		Para j:=1 a 4 hacer
+			A[i,j].cant_eventos:=0
+			A[i,j].tot_invertido:=0
+		Fin Para
+	Fin Para
+
+	prim:=nil
+
+	tot_eventos:=0
+
+	Escribir("Ingrese un valor")
+	Leer(valor)
+
+
+	Mientras NFDA (arch_e) hacer
+
+		Si (reg_e.costo>valor) entonces
+
+			nuevo(q)
+			*q.fecha:=fecha_actual()
+			*q.nombre_cat:=N[reg_e.cod_cat]
+			*q.segmento:=reg_e.segmento
+			*q.costo:=reg_e.costo
+
+			Si (prim=nil) entonces
+
+				prim:=q
+				*q.prox:=nil
+
+			Sino
+
+				p:=prim
+
+				Mientras (p<>nil) Y (reg_e.costo<*p.costo) hacer
+					a:=p
+					p:=*p.prox
+				Fin Mientras
+
+				Si (p=prim) entonces
+					prim:=q
+					*q.prox:=p
+				Sino
+					*a.prox:=q
+					*q.prox:=p
+				Fin Si
+
+			Fin Si
+
+		Fin Si
+
+
+
+		//segmento matinal=1; segmento tarde=2; segmento noche=3;
+
+		Segun (reg_e.segmento) hacer
+			=0: seg:=1
+			=1: seg:=2
+			=2: seg:=3
+		Fin Segun
+
+		A[reg_e.cod_cat,seg].cant_eventos:=A[reg_e.cod_cat,seg].cant_eventos+1
+		A[reg_e.cod_cat,seg].tot_invertido:=A[reg_e.cod_cat,seg].tot_invertido+reg_e.costo
+
+		A[reg_e.cod_cat,4].cant_eventos:=A[reg_e.cod_cat,4].cant_eventos+1
+		A[reg_e.cod_cat,4].tot_invertido:=A[reg_e.cod_cat,4].tot_invertido+reg_e.costo
+
+
+		tot_eventos:=tot_eventos+1
+
+		LEER(arch_e, reg_e)
+
+	Fin Mientras
+
+	menor:=HV
+	mayor:=0
+
+	Para i:=1 a 10 hacer
+
+		Si (N[i]="Deportivo") entonces
+			cat_dep:=i
+		Fin Si
+
+		Si (A[i,4].cant_eventos<menor) entonces
+			menor:=A[i,4].cant_eventos
+			menor_cat:=i
+		Fin Si
+
+		Si (A[i,3].cant_eventos>mayor) entonces
+			mayor:=A[i,3].cant_eventos
+			mayor_cat_noche:=i
+		Fin Si
+
+	Fin Para
+
+	Escribir("La cantidad de eventos que se han emitido en el segmento matinal en la categoría deportivo es de: ",A[cat_dep,1].cant_eventos)
+
+
+	Escribir("La categoría con menor cantidad de eventos publicados fue: ",N[menor_cat]," con ",menor," eventos publicados y el total invertido fue de ",A[menor_cat,4].tot_invertido)
+
+	porcentaje:=(mayor*100)/tot_eventos
+
+	Escribir("El porcentaje que representa la categoría con mayor cantidad de eventos publicados en el segmento noche es de: ",porcentaje,"%")
+
+	CERRAR(arch_e)
+
+Fin Proceso
+
+
+//consigna 2

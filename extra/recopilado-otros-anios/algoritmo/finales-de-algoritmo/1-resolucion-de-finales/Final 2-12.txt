@@ -1,0 +1,190 @@
+Accion AUDIT.com es
+AMBIENTE
+
+LAN_TRAFIC=registro
+	id:N(10)
+	Prot_Red: (1..3)
+	Prot_transp: (1..2)
+	Pto_orig: (1024 .. 65535)
+	Pto_dest: (1 .. 1023)
+	Horario: Hora;
+	Ip_Orig: (1..254)
+	Ip_Dest: (1..254)
+Fin Reg
+
+Puerto=registro
+	Prot_transp: (1..2)7
+	CodPto: N(8)
+	Desc: AN (30)
+Fin reg
+
+ArchLN: archivo de LAN_TRAFIC (ordenado por Id)
+reg LN: LAN_TRAFIC
+ArchP: archivo de Puerto (indexado por Prot_transp y CodPto)
+
+Nodo= Registro
+	dato: (1..254)
+	prox: puntero a nodo;
+Fin Reg
+prim,q,p: puntero a nodo
+
+Nodo2= Registro
+	dato2: (1..1023)
+	prox: puntero a nodo;
+Fin Reg
+primero,q',p': puntero a nodo
+
+A: Arreglo [1..3,1..1024,1..255] de numericos.
+k,i,j: entero
+cant_paq: entero
+existe: booleano
+origen: N(5)
+cont_puerto: entero
+ALGORITMO
+
+Abrir E/(archLN)
+Leer (archLN, regLN)
+Inicializar_lista
+Inicializar_Ranking
+Inicializar_Arreglo
+cant:paq:= 0
+cont_pto:=0
+
+Mientras NFDA (archLN) hacer
+	repP.Prot_tranp:=regLN.Prot_tranp:
+	leer(archP,regP)
+	Si EXISTE entonces
+		Si  (regLN.Pto_dest = 555) entonces
+			origen:=regLN.Ip_orig
+			GUARDAR(prim,origen)
+		Fin si
+		puerto:=regLN.PtoDest
+		TOP(primero,puerto)
+		SINO
+		
+			Esc ('Error, protocolo de tranporte inexistente');
+	Fin si
+	Realizar_estadistica;
+	Leer (archLN,regLN)
+Fin Mientras
+Mostrar_ranking;
+Mostrar_Lista;
+Mostrar_estadistica;
+cerrar(archLN)
+cerrar(archP)
+Fin Accion
+
+
+Subaccion guardar (prim: puntero a nodo; origen: N(5))es
+	nuevo (q)
+	^q.dato:=origen
+	prim:=q;
+	Si (p = nil) entonces
+		^q.prox:=nil
+		prim:=q
+		SINO
+			p:= prim
+			Mientas (p<> nil)hacer
+				p:=^p.prox
+			Fin Mientas
+			Si (p=nil) entonces
+				^p.prox:= q;
+				^q.prox:= nil
+			Fin si
+	Fin si
+Fin subaccion
+
+Subaccion TOP es:
+Si (cont_pto < 10) entonces
+		nuevo(q')
+		primero:=q'
+		^q'.dato:=regLN.PtoDest
+		Si (p' = nil) entonces
+			^q.prox:=nil
+			primero:=q'
+			cont_pto:= cont_pto +1
+		SINO
+		p':=primero
+		Mientras (p' <> nil) y (^p'.dato < ^q'.dato )hacer
+			p':=^p'.prox
+		Fin mientras
+		Si (p' = nil) entonces
+			^p'.prox:=q;
+			^q'.prox:=nil;
+			cont_pto:= cont_pto + 1
+			
+		Fin si
+Fin Si 
+	
+Fin Subaccion
+
+Subaccion Inicializar arreglo es:
+	Para k := 1 hasta 2 hacer                {placas}
+		Para i:= 1 hasta 255 hacer				{horizontal}
+			Para j:= 1 hasta 1024 hacer			{vertical}
+				A[k,i,j]:= 0;
+			Fin Para
+		Fin para
+	Fin Para
+Fin Subaccion
+
+Subaccion realizar estadistica es:
+	k:=regLN.Prot_tranp;
+	i:=regLN.Ip_dest;
+	j:=regLN.Pto_dest;
+	
+	
+	A[k,i,j] := A[k,i,j] + 1    {en la posicion especifica}
+	A[k,255,j] := A [k,255,j] + 1			{total por host (ip)}
+	A[k,i,1024] := A [k,i,1024] + 1 		{total por puerto}
+	A[k,255,1024] := A [k,255,1024] + 1		{total por protocolo}
+	
+Fin Subaccion
+
+Subaccion Mostrar_ estadistica es:
+	Para k := 1 hasta 2 hacer                {placas}
+		esc('Protocolo numero' k)
+		esc('							Host')
+		esc('IP destino')
+		Para i:= 1 hasta 255 hacer				{horizontal}
+			Para j:= 1 hasta 1024 hacer			{vertical}
+				esc (A[k,i,j])
+			Fin Para
+		Fin para
+	Fin Para
+Fin Subaccion
+
+Subaccion Mostrar Lista es:
+	esc('IP's que enviaron paquetes al puerto 555')
+	p:= prim
+	Mientras (p <> nil) hacer
+		Esc('IP de origen', ^p.dato);
+		p:= ^p.prox
+	Fin Mientras
+Fin subaccion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

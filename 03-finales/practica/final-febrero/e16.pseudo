@@ -1,0 +1,247 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e16
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+ACCION
+    Ambiente
+    sec: secuencia de caracteres
+    v: ventana
+
+    nodo= registro
+        caracter: N(1)
+        prox: puntero a nodo
+    finregistro
+
+    procedimiento numPar es
+        n:= n*n
+        nuevo(q)
+        q.caracter:= n
+        crearNodo()
+        valido:= valido + 1
+    finprocedimiento
+
+    procedimiento numImpar es
+        n:= n*2
+        nuevo(q)
+        q.caracter:= n
+        crearNodo()
+        valido:= valido + 1
+    finprocedimiento
+
+    procedimiento tratarVocal es
+        nuevo(q)
+        segun v hacer
+            'a': q.caracter:= A[3]
+            'e': q.caracter:= A[4]
+            'i': q.caracter:= A[5]
+            'o': q.caracter:= A[1]
+            'u': q.caracter:= A[2]
+        finsegun
+        crearNodo()
+        valido:= valido + 1
+    finprocedimiento
+
+    procedimiento crearnodo es
+        p= prim
+        si prim = nil entonces
+            prim:= q
+            q.prox:= nil
+        sino
+            mientras p <> nil hacer
+                p:= *p.prox
+            finmientras
+            q.prox:= nil
+            *p.prox:= q
+        finsi
+    fp
+
+
+
+    PROCESO
+        abrir(sec) avz(sec,v)
+        Mientras no FDS(sec) hacer
+            Mientras v <> '' hacer
+                si v = num entonces
+                    n:= convertir(v)
+                    si n mod 2 = 0 entonces
+                        numPar()
+                    sino
+                        numImpar()
+                    finsi
+                finsi
+                si v = vocal entonces
+                    tratarvocal()
+                    sino si v = abc entonces
+                        nuevo(q)
+                        q.caracter:= 1
+                        crearNodo()
+                        valido:= valido + 1
+                        sino
+                            nuevo(q)
+                            q.caracter:= @
+                            invalid:= invalid + 1
+                        finsi
+                finsi
+            finmientras
+            nuevo(q)
+            q.caracter:= ''
+            crearnodo()
+            avz(sec,v)
+            pal:= pal + 1
+        finmientras
+
+        Escribir('cantidad de palabras del mensaje:' pal)
+        tot:= valido + invalido
+        porcinv:= invalido/tot * 100
+        escribir('el porcentaje de caracteres incorrectos es:' porc)
+
+        porcvali:= valido/total * 100
+
+        si valido = invalido entonces
+            escribir('MENSAJE ALERTA')
+            sino
+                mit:= valido/2
+                si invalido < mit entonces
+                    escribir('MENSAJE CURADO')
+                resta:= porcval - porcinv
+                si resta < 10 entonces
+                    escribir('MENSAJE CORRUPTO')
+                finsi
+            finsi
+        finsi
+
+
+EJERCICIO 2
+
+ACCION inmobiliaria es
+    Ambiente
+        arch= registro
+            dep:
+            origen:
+            nivel:
+            valida:
+        finregistro
+
+        arch-mobi: archivo de arch
+        m: arch
+
+        arr: arreglo de [1...4,1...6, ] de dato
+
+        dato= registro
+            valido:= N(1)
+            invalido:= N(1)
+        finregistro
+
+        procedimiento inicializar es
+            para i= 1 a 4 hacer
+                para j=1 a 6 hacer
+                    A[i,j]:=0
+                finpara
+            finpara
+        finprocedimiento
+
+
+    PROCESO
+        ABRIR E/(arch) leer(arch-mobi, m)
+         inicializar()
+         Mientras no FDA(arch-mob) hacer
+            i:= m.origen
+            j:= m.nivel
+            si m.valida es 'S' entonces
+                A[i,j].valida:= A[i,j].valida + 1
+                A[4,j].valida:= A[4,j].valida + 1
+                A[i,6].valida:= A[i,6].valida + 1
+                val:= val + 1
+                sino
+                A[i,j].invalido:= A[i,j].invalido + 1
+                A[4,j].invalido:= A[4,j].invalido + 1
+                A[i,6].invalido:= A[i,6].invalido + 1
+            finsi
+            tot:= tot + 1
+            leer(arch-mobi, m)
+        finmientras
+
+        porc:= val/tot * 100
+        escribir('el porcentaje de las transacciones validas es:' porc)
+
+        min:= 999 , max:= 0, maynivel:= 0, mennivel
+        Para i= 1 a 4 hacer
+            Para j= 1 a 6 hacer
+                sum:=  A[i,j].valido + A[i,j].invalido
+                si sum < min entonces
+                    min:= sum
+                    nivelmin:= j
+                    origenmin:= i
+                finsi
+            finpara
+        finpara
+
+        escribir('el nivel con menores transacciones es', nivelmin , origen min)
+
+        para j= 1 a 6 hacer
+            s:= A[4,j].valido + A[4,j].invalido
+            si maynivel < s entonces
+                maynivel:= A[4,j]
+                nivelmax:= j
+            finsi
+
+            escribir('el total en el nivel,' j, 'es', A[4,j])
+        finpara
+
+        escribir('nivel con mayor cantidad de transacicones', maynivel)
+
+        para i= 1 a 4 hacer
+            si menorigen > A[i,6].validas entonces
+                menorigen:= A[i,6].validas
+                origenmin:= i
+            finsi
+        finpara
+
+        escirbir('nivel con menor transacciones validas es:', )
+
+            FINPROCESO
+
+
+
+EJERC 3
+ACCION
+    ambiente
+    nodo= registro
+     caracter:= N1
+     prox: puntero a nodo
+    finregistro
+
+    funcion palindrome(A:string)
+
+    finfuncion
+
+    procedimiento crearnodo es
+        p= prim
+        si prim= nil  entonces
+            prim:= q
+            q.prox:= nil
+        sino
+            mientras p <> nil hacer
+                p:= *p.prox
+            finmientras
+            q.prox:= nil
+            *p.prox:= q
+        finsi
+    finprocedimiento
+
+    PROCESO
+        i:= 0
+        Mientras i<= 16 hacer o opcion = 'N'
+            Escribir('ingresar frase, caracter a caracter')
+            leer(caracter)
+            si caracter <> ''
+                crearnodo()
+                nuevo(q)
+                q.caracter:= caracter
+            finsi
+            i:= i + 1
+            escribir('desea continuar S/N? ')
+            leer(opcion)
+        finmientras

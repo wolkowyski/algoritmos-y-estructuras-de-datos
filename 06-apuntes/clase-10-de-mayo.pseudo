@@ -1,0 +1,66 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Apuntes - Clase del 10 de mayo: subsecuencias enlazadas y jerárquicas
+// ==========================================================================
+
+SubSecuencias Enlazadas --->
+SubSecuencias Jerarquicas ---> Ciclos Anidados
+
+Para tratar los espcios en blanco (conviene tratarlos al principio)
+	Mientras (v) = "" hacer
+		AVZ(Sec, v)
+	FinMientras
+
+Tratar los demas espacios distintos de 0 (tratamos el NFDS y ventana distinto de 0)
+	Mientras NFDS(Sec) ^ (v) <> "" hacer
+		...
+	FinMientras
+
+
+Mientras NFDS(Sec) hacer
+	Mientras (v) <> "." hacer
+		Mientras (v) = "" hacer
+			AVZ(Sec, v)
+		FinMientras
+
+		Mientras (v) <> "." hacer
+			Mientras (v) <> " " hacer
+			...
+			FinMientras
+		FinMientras
+	FinMientras
+FinMientras
+
+
+CUANDO PREGUNTA MOSTRAR O LISTAR NO ES NECESARIO CREAR UNA NUEVA SECUENCIA, SINO QUE SOLO ESCIRBIR LAS VENTANAS DE LA MISMA
+
+
+
+EJERCICIO CLASE (NOMBRE - DNI)
+Subsecuencias Enlazadas
+
+
+Ambiente
+
+
+Proceso
+ARR(Sec)
+AVZ(Sec, v)
+Mientras NFDS(Sec) hacer
+	Mientras (v) <> "-" hacer
+		ESCRIBIR(Sec2, v2)
+		AVZ(Sec2, v2)
+	FinMientras
+	AVZ(Sec2, v2) //al salir del ciclo, antes de ingrrsar al siguiente ciclo, debemos avanzar la secuencia tratada... esto pq es de tipo impura y la ventana queda posicionada en el - el cual no debe ser tratado, contado ni escrito, unicamente sirve de referencia como señal de fin
+	Para i= 1 a 8 hacer
+		Escribir(Sec2, v2)
+		AVZ(Sec2, v2)
+	FinPara
+FinMientras
+
+
+
+
+
+EJERCICIO CLASE (JUGADOR PUESTO)
+SubSecuencia Jerarquicas

@@ -1,0 +1,25 @@
+Accion ej 5 es:
+Ambiente:
+A,B: arreglo de [1..30] de reales
+C: arreglo de [1..60] de reales
+i,j,k:entero
+
+Algoritmo:
+	i:= 1 , j:= 1
+	Para k := 1 hasta 60 hacer
+		Si A[i] < B[j] entonces
+			C[k]:= A[i]
+			i:= i + 1
+			SINO 
+			Si A[i] > B [j] entonces
+				C[k] := B[j]
+				j:= j + 1
+					SINO	
+					C[k] := B[j]
+					i:= i + 1
+					j:= j + 1
+			Fin si
+		Fin si
+	Fin para 
+	
+			

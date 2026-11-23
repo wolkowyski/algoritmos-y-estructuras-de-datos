@@ -1,0 +1,192 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales: ejercicios 1.1.5.1 a 1.1.5.7
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.1
+// Escribir un programa que permita calcular el precio de un artículo para un
+// año dado, considerando que la inflación es del 4 por 100 anual.
+// La fórmula del precio es: P = C * (1 + R) ^ (N - A)
+//   C - Precio actual.     N - Año futuro.
+//   R - Tasa de inflación. A - Año actual.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_1 es
+//Ambiente
+    Constantes
+        R = 4 / 100
+    Variables
+        C, P: Real
+        A: Entero(4)
+        N: Entero(4)
+//Algoritmo
+    Escribir ("Ingrese el precio actual del producto")
+    Leer (C)
+    Escribir ("Ingrese el año actual")
+    Leer (A)
+    Escribir ("Ingrese el año futuro")
+    Leer (N)
+        P:= C * (1 + R) ^ (N - A)
+    Escribir ("El precio del producto para el año dado, teniendo en cuenta la inflación del 4 por 100 anual es de ", P, " pesos.")
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.2
+// Las raíces de una ecuación de segundo grado son reales si y sólo si el
+// discriminante dado por (b^2 - 4ac) no es negativo. Se desea leer el valor
+// de los coeficientes a, b, c e imprimir el resultado del discriminante.
+// Realizar prueba de escritorio.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_2 es
+//Ambiente
+    Variables
+        a, b, c: Real
+        result: Real
+//Algoritmo
+    Escribir ("Ingrese los valores de los coeficientes de a, b y c")
+    Leer (a, b, c)
+        result:= b**2 - 4 * a * c
+    Escribir ("El resultado del discriminante es ", result)
+        Si result >= 0 Entonces // "no negativo" incluye al cero (raíz doble)
+            Escribir ("Las raíces de la ecuación son reales")
+        SiNo
+            Escribir ("El discriminante es negativo: la ecuación no tiene raíces reales (∅ en R)")
+        FinSi
+FinAcción
+
+// Prueba de escritorio: a = 1, b = 5, c = 6
+//   result = 5**2 - 4 * 1 * 6 = 25 - 24 = 1 -> raíces reales
+// Prueba de escritorio: a = 1, b = 2, c = 5
+//   result = 2**2 - 4 * 1 * 5 = 4 - 20 = -16 -> sin raíces reales
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.3
+// Se desea comprar una PC y una impresora. Calcular el precio total: el cual
+// está dado por la suma de los precios de costos, los porcentajes de ganancia
+// del vendedor y un 21% de IVA. Supóngase una ganancia del vendedor del 12% por
+// la PC y 7% por la impresora. Se leen los costos y se imprimen el precio total
+// de ventas.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_3 es
+//Ambiente
+    Constantes
+        ganancia_pc = 0,12
+        ganancia_impresora = 0,07
+        iva = 0,21
+    Variables
+        impresora: Real
+        pc: Real
+        p_ganancia_pc, p_ganancia_impresora, p_iva, total_ventas: Real
+//Algoritmo
+    Escribir ("Ingrese el costo de la impresora")
+    Leer (impresora)
+    Escribir ("Ingrese el costo de la PC")
+    Leer (pc)
+        p_ganancia_pc:= pc * ganancia_pc
+        p_ganancia_impresora:= impresora * ganancia_impresora
+        // El IVA se aplica sobre el precio con la ganancia ya sumada
+        p_iva:= (impresora + pc + p_ganancia_pc + p_ganancia_impresora) * iva
+        total_ventas:= impresora + pc + p_ganancia_pc + p_ganancia_impresora + p_iva
+    Escribir ("El precio total de ventas, incluyendo los costos, la ganancia del vendedor y un 21% de IVA es de: ", total_ventas)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.4
+// Se desea calcular la superficie de un trapecio, para la cual se ingresa la
+// longitud de ambas bases y la altura. Finalizando el proceso, emitir dicha
+// superficie y los valores ingresados.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_4 es
+//Ambiente
+    Variables
+        b_may, b_men, h, Sup: Real
+//Algoritmo
+    Escribir ("Ingrese los datos de la base mayor y menor del trapecio")
+    Leer (b_may, b_men)
+    Escribir ("Ingrese los datos de la altura")
+    Leer (h)
+        Sup:= ((b_may + b_men) * h) / 2
+    Escribir ("La superficie del trapecio es de ", Sup, " en base a los valores ingresados -> Base Mayor: ", b_may, " Base Menor: ", b_men, " y Altura: ", h)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.5
+// Se desea calcular el valor de la sección (S) de un conductor, la cual se
+// determina en función de la corriente eléctrica I y de la conductividad C del
+// material (C = I / S). Además, a la sección así obtenida se le incrementa un
+// 25% por razones de seguridad.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_5 es
+//Ambiente
+    Constantes
+        seguridad = 1,25
+    Variables
+        I, C, S: Real
+//Algoritmo
+    Escribir ("Ingrese el valor de la corriente eléctrica")
+    Leer (I)
+    Escribir ("Ingrese el valor de la conductividad del material")
+    Leer (C)
+        S:= (I / C) * seguridad // de C = I / S se despeja S = I / C
+    Escribir ("El valor de la sección del conductor, con un 25% extra por seguridad, es de: ", S)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.6
+// Realizar un programa que lea dos números complejos, y calcule su producto.
+// (a + bi) * (c + di) = (a*c - b*d) + (a*d + b*c)i
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_6 es
+//Ambiente
+    Variables
+        a, b, c, d: Real
+        parte_real, parte_imaginaria: Real
+//Algoritmo
+    Escribir ("Ingrese 2 números complejos en este formato (a, b) y (c, d)")
+    Leer (a, b, c, d)
+        // La parte real y la imaginaria se calculan por separado:
+        // no se pueden sumar entre sí porque i no es un número real
+        parte_real:= a*c - b*d
+        parte_imaginaria:= a*d + b*c
+    Escribir ("El producto entre los números complejos ingresados es: (", parte_real, ", ", parte_imaginaria, ")")
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.7
+// Escriba un algoritmo que halle la media geométrica de tres valores. Este debe
+// emitir los tres valores por separado y luego el valor medio.
+// Media geométrica = raíz cúbica de (x * y * z)
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_7 es
+//Ambiente
+    Variables
+        x, y, z, media_geom: Real
+//Algoritmo
+    Escribir ("Ingrese el valor de X, Y & Z")
+    Leer (x, y, z)
+        // (x + y + z) / 3 sería la media aritmética; la geométrica es la raíz cúbica del producto
+        media_geom:= (x * y * z) ** (1/3)
+    Escribir ("El valor de X es: ", x, " , el valor de Y es: ", y, " y el valor de Z es: ", z)
+    Escribir ("Por último, la media geométrica es: ", media_geom)
+FinAcción

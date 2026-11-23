@@ -1,0 +1,48 @@
+ACCION_415_ES (prim: puntero a nodo)
+    AMBIENTE
+        p,q,ant: puntero a nodo
+        opcion: entero
+    PROCESO
+        Mientras opcion <> 3 hacer
+            ESC("Insertar elemento -> 1")
+            ESC("Extraer un elemento -> 2")
+            ESC("Salir -> 3")
+            Leer(opcion)
+            Segun opcion hacer
+                =1: 
+                    Nuevo(p)
+                    *p.dato:=dato
+                    *p.prox:=nil
+                    ant:=Nil
+                    Mientras (p<>Nil) entonces
+                        ant:=p
+                        p:=*p.prox
+                    FM
+                    Si (prim = Nil) entonces
+                        prim:= p
+                    Sino
+                        *ant.prox:= p
+                    FS
+                =2:
+                    p:= prim
+                    ant:=Nil
+                    Mientras (p <> Nil) y (p<>valor) hacer
+                        ant:= p
+                        p:=*p.prox
+                    FM
+                    Si (p = Nil) entonces
+                        ESC("Elemento no encontrado")
+                    Sino
+                        Si (ant = nil) entonces
+                            prim:= *p.prox
+                            *p.prox:= Nil
+                        Sino
+                            *ant.prox:= *p.prox
+                            *p.prox:=Nil
+                        FS
+                    FS
+                    Disponer(p)
+                =3: ESC("Adios")
+            FS        
+        FM
+FA          

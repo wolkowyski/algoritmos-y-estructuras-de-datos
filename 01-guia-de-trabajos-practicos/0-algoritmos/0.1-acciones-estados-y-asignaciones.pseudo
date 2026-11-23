@@ -1,0 +1,258 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 0 - Algoritmos
+//  Acciones, estados, asignaciones y primeros algoritmos (0.1.1 a 0.1.5)
+// ==========================================================================
+
+Ejercicio 0.1.1
+Para los siguientes enunciados, identifique la acción principal y determine el estado inicial y final de los objetos sobre los que se actúa.
+
+Elaboración de una torta.
+Acción_Principal:= Elaborar una torta
+Estado_Inicial:= Torta sin elaborar
+Estado_Final:= Torta elaborada
+
+Dados los valores iniciales de A y C (23 y 7 respectivamente) y la relación existente en la fórmula A = 2B + C; hallar el valor de B.
+Accion Principal: Despejar y obtener el valor de "B"
+Estado_Inicial:= Variable "B" sin despejar y con valor desconocido
+Estado_Final:= Variable "B" despejada y con valor hallado: 8
+
+A partir de una nota de pedidos, un empleado administrativo obtiene la factura de un cliente.
+Acción_Principal:= Obtener la factura de un cliente
+Estado_Inicial:= Empleado administrativo sin factura de un cliente
+Estado_Final:= Empleado administrativo con factura de un cliente a partir de una nota de pedidos
+
+Se desea descargar determinado software desde Internet.
+Acción_Principal:= Descargar software de Internet
+Estado_Inicial:= Software sin descargar
+Estado_Final:= Software descargado y listo para usar
+
+Se quiere colocar una repisa en la pared, para lo cual se cuenta con un taladro, tacos fisher, tornillos, destornillador, etc.
+Acción_Principal:= Colocar una repisa en la pared
+Estado_Incicial:= Taladro, tacos fisher, tornillos y destornillados sin usar - Repisa sin colocar
+Estado_Final:= Taladro, tacos fisher, tornillos y destornillados utilizados - Repisa colocada en la pared
+
+
+
+Ejercicio 0.1.2
+Para los siguientes enunciados, identifique la acción principal y el objeto sobre el cual se realiza esa acción. Descomponga la acción en acciones más elementales, estableciendo los estados antes y después de cada una de ellas.
+
+Dadas las variables C y D, se desea intercambiar sus valores. Originalmente C vale 18 y D es igual a la mitad de C.
+Acción_Principal:= Intercambiar los valores de las variables C y D
+Objeto:= Variables C y D
+
+Estado_Inicial:= Variable C con valor de 18 y variable D con valor 1/2*C
+Acción_Intermedia:= Obtener el valor de D
+Estado_Intermedio:= Variable C con valor de 18 y variable D con valor 9
+Acción_Final:= Intercambiar valores de las variables
+Estado_Final:= Variable C con valor 9 y Variable D con valor 18
+
+
+En la oficina de correos un empleado controla la correspondencia para colocarle la tarifa. La misma se determina en función del tipo de carta, del destino y del medio por el cual se la envía. Los tipos pueden ser "simple", "expresa" o "certificada"; el destino puede ser "interior" o "exterior"; y los medios pueden ser "aérea" o "terrestre".
+
+Acción_Principal:= Control de correspondencia para colocar tarifa
+Objeto:= Tipo de carta, destino y medio
+
+Estado_Inicial:= Cartas sin controlar
+Acción_Incial:= Determinacion del tipo de carta: simple, expresa o certificada - destino: interior o exterior - medio: aérea o terrestre
+Estado_Intermedio:= Cartas determinadas en funcion de su tipo, destino y medio
+Acción_Final:= Entregar las cartas controladas
+Estado_Final:= Trabajo de correspondecnia finalizado
+
+
+
+Realizar los preparativos para mirar una película de video, teniendo en cuenta que aún no se la alquiló.
+Acción_Principal:= Realizar los preparativos para mirar una pelicula de video
+Objeto:= Pelicula
+
+Estado_Incial:= Pelicual sin alquilar
+Acción_Inicial:= Alquilar Pelicula
+Estado_Intermedio:= pelicula alquilada
+Acción_Final:= Finalizar con los preparativos
+Estado_Final:= Ambiente y pelicula listos
+
+
+
+Preparar mate amargo.
+Acción_Principal:= Preparar mate amargo
+Objeto:= Mate
+
+Estado_Incial:= Mate amargo sin Preparar
+Acción_Inicial:= Calentar agua y poner la yerba
+Estado_Intermedio:= Agua caliente y yerba lista
+Accion_Final:= Darle los ultimos toques
+Estado_Final:= Mate amargo preparado con éxito
+
+
+
+Una familia decide acampar el fin de semana.
+Acción_Principal:= Acampar el fin de semana
+Objeto:= familia
+
+Estado_Inicial:= Familia sin prepararse
+Acción_Inicial:= Preparar comida y ropa
+Estado_Intermedio:= Comida y ropa preparadas
+Acción_Final:= Emprender el viaje, llegar a destino y armar la carpa
+Estado_Final:= Llegada a destino y comienzo del acampaje
+
+
+
+Venir a la facultad en colectivo.
+Acción_Principal:= Venir a la facultad en colectivo
+Objeto:= colectivo
+
+Estado_Inicial:= Colectivo sin tomar
+Acción_Principal:= Tomar el colectivo
+Estado_Intermedio:= Colectivo tomado
+Acción_Final:= Esperar hasta llegar a la facultad
+Estado_Final:= Llegada con éxito a la facultad por medio del colectivo
+
+
+
+Ejercicio 0.1.3
+Suponga que los estados iniciales de K, Q y DOS son 4, 7 y 10. Especifique cuáles son los estados iniciales y finales de cada una de las variables después de las siguientes asignaciones.
+
+TOT := K*(DOS-Q)
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 12,0
+
+
+D := DOS/K + Q * 2
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 16,5
+
+
+E := TRUNC (Q*0,8 - DOS/3)
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 2,00
+
+
+R := REDOND (Q/(3/K))
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 9    // 7 / (3/4) = 7 / 0,75 = 9,33 -> REDOND da un entero: 9
+
+
+K := ABSO (K-Q) + 2 * DOS
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 23   // |4 - 7| + 2*10 = 3 + 20 = 23
+
+
+RESULTADO := REDOND (ABSO((K-DOS)/Q)+TRUNC(1,5))
+Estado_Inicial:=
+K ---> 4
+Q ---> 7
+DOS ---> 10
+
+Estado_Final:= 2    // |(4 - 10) / 7| + TRUNC(1,5) = 0,857 + 1 = 1,857 -> REDOND: 2
+
+
+
+Ejercicio 0.1.4
+Indique los estados iniciales, intermedios y finales para cada variable incluida en los siguientes enunciados:
+
+1.
+
+
+A := 1,3; X := 0; Y := 8;
+Z := A + Y * 2 - X/3;
+X := X + 2;
+C := (Z - X) * 1,2;
+    // A = 1,3 | X = 0 -> 2 | Y = 8 | Z = 1,3 + 8*2 - 0/3 = 17,3 | C = (17,3 - 2) * 1,2 = 18,36
+2.
+
+
+C := 1;
+C := 0;
+CA := REDOND (C*2,4 + 1);
+X := CA + 2;
+    // C = 1 -> 0 | CA = REDOND(0*2,4 + 1) = 1 | X = 1 + 2 = 3
+3.
+
+
+BETA := 3/2;
+ALFA := BETA * 2;
+AUXI := ALFA;
+ALFA := BETA;
+BETA := AUXI;
+    // BETA = 1,5 | ALFA = 3 | AUXI = 3 | ALFA = 1,5 | BETA = 3  (se intercambian ALFA y BETA)
+4.
+
+
+C := TRUNC (ABSO (4/-2) + 3);
+B := REDOND (-4,3);
+B := B + C;
+    // C = TRUNC(|4 / -2| + 3) = 5 | B = REDOND(-4,3) = -4 | B = -4 + 5 = 1
+5.
+
+
+ALFA := 2,5; JOTA := 2;
+BETA := ALFA**JOTA;
+I := 2 * JOTA;
+L := JOTA * I;
+ALFA := ALFA + BETA;
+    // ALFA = 2,5 | JOTA = 2 | BETA = 2,5**2 = 6,25 | I = 4 | L = 8 | ALFA = 2,5 + 6,25 = 8,75
+6.
+
+
+NUM := ABSO (-10); A := 3;
+NUM2 := TRUNC (NUM/A) ** 2 /A;
+NUM := NUM2 - NUM * 5;
+B := REDOND (NUM/NUM2);
+A := (A + B) - 9 * 2 -1;
+    // NUM = 10 | A = 3 | NUM2 = TRUNC(10/3)**2 / 3 = 9 / 3 = 3 | NUM = 3 - 10*5 = -47
+    // B = REDOND(-47 / 3) = REDOND(-15,67) = -16 | A = (3 - 16) - 18 - 1 = -32
+
+
+
+Ejercicio 0.1.5
+Diseñe un algoritmo que permita resolver cada uno de los ejercicios enunciados a continuación:
+
+Leer los datos de un automóvil en la forma ¨Marca¨ seguida de ¨Modelo¨, y escribir en la forma ¨Modelo¨ seguido por ¨Marca¨.
+Convertir una suma en dólares a PESOS. Se debe prever que el valor de conversión puede cambiar.
+
+Acción Ejericico0_1_5 es
+	Ambiente
+		Marca: Alfanumérico
+		Modelo: Alfanumérico
+
+	Proceso
+		Escribir("Bienvenido! Por favor, ingrese la marca de su vehiculo")
+		Leer(Marca)
+		Escribir("Ahora ingrese su modelo")
+		Leer(Modelo)
+		Escribir("Su automóvil es: ", Modelo, " de la marca ", Marca) // primero el modelo, después la marca
+FinAcción
+
+Acción Dolares es
+	Ambiente
+		Cotizacion: Numérico
+		Dolares: Numérico
+		Pesos: Numérico
+	Proceso
+		Escribir("Bienvenido! Por favor ingrese la cotización actual del Dólar a Peso")
+		Leer(Cotizacion)
+		Escribir("Ingrese la suma en dolares que desea convertir")
+		Leer(Dolares)
+		Pesos:= Dolares * Cotizacion
+		Escribir(Dolares, " dólares equivalen a: ", Pesos, " pesos.") // la cotización se pide cada vez porque puede cambiar
+FinAcción

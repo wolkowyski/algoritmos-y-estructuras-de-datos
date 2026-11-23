@@ -1,0 +1,116 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.15 (corte de control)
+// ==========================================================================
+
+// El organismo del cual dependen las escuelas de un distrito lleva un archivo
+// con los registros de todos los alumnos de nivel secundario del distrito:
+//
+//   ALUMNOS ordenado por Escuela, Año, División
+//   Escuela | Año | División | Nombre | Cant_Inasistencias
+//
+// Se introduce como dato el número de distrito y la cantidad de días de clase
+// dictados en el año. Los alumnos que superan el 20% de inasistencias están
+// LIBRES, de lo contrario son REGULARES.
+//
+// Se desea conocer:
+//   Para cada división: cantidad de alumnos.
+//   Para cada año: alumnos libres, alumnos regulares y total de alumnos.
+//   Todas las escuelas: total de alumnos, porcentaje de alumnos libres y
+//   promedio de inasistencias por alumno.
+
+Acción Ejercicio2_2_15 es
+    Ambiente
+        Alumno = Registro
+            Escuela: N(4)
+            Año: 1..6
+            Division: AN(2)
+            Nombre: AN(255)
+            Cant_Inasistencias: N(3)
+        FinRegistro
+
+        Arch: Archivo de Alumno ordenado por Escuela, Año y Division
+        Reg: Alumno
+
+        Distrito, Clases_Dictadas: N(3)
+        ResEscuela: N(4)
+        ResAño: 1..6
+        ResDivision: AN(2)
+
+        TotDivision: N(5)                          // alumnos de la división
+        TotAño, LibresAño, RegularesAño: N(5)      // contadores del año
+        TotGral, LibresGral, InasistenciasGral: N(7)
+
+        Procedimiento CorteDivision es // corte de menor nivel
+            Escribir("    División ", ResDivision, ": ", TotDivision, " alumnos")
+            TotAño:= TotAño + TotDivision
+            TotDivision:= 0
+            ResDivision:= Reg.Division
+        FinProcedimiento
+
+        Procedimiento CorteAño es
+            CorteDivision
+            Escribir("  Año ", ResAño, ": libres ", LibresAño, " - regulares ", RegularesAño, " - total ", TotAño)
+            TotGral:= TotGral + TotAño
+            TotAño:= 0
+            LibresAño:= 0
+            RegularesAño:= 0
+            ResAño:= Reg.Año
+        FinProcedimiento
+
+        Procedimiento CorteEscuela es // corte de mayor nivel: los totales van al general
+            CorteAño
+            ResEscuela:= Reg.Escuela
+        FinProcedimiento
+
+    Proceso
+        Escribir("Introduzca el número de distrito, por favor")
+        Leer(Distrito)
+        Escribir("Introduzca la cantidad de clases dictadas")
+        Leer(Clases_Dictadas)
+
+        Abrir E/(Arch)
+        Leer(Arch, Reg)
+        TotDivision:= 0
+        TotAño:= 0; LibresAño:= 0; RegularesAño:= 0
+        TotGral:= 0; LibresGral:= 0; InasistenciasGral:= 0
+
+        ResEscuela:= Reg.Escuela
+        ResAño:= Reg.Año
+        ResDivision:= Reg.Division
+
+        Mientras NO FDA(Arch) hacer
+            // Tratar corte: se pregunta del mayor al menor nivel
+            Si Reg.Escuela <> ResEscuela entonces
+                CorteEscuela
+            Sino
+                Si Reg.Año <> ResAño entonces
+                    CorteAño
+                Sino
+                    Si Reg.Division <> ResDivision entonces
+                        CorteDivision
+                    FinSi
+                FinSi
+            FinSi
+
+            // Tratar registro
+            TotDivision:= TotDivision + 1
+            InasistenciasGral:= InasistenciasGral + Reg.Cant_Inasistencias
+            Si Reg.Cant_Inasistencias > Clases_Dictadas * 0,2 entonces
+                LibresAño:= LibresAño + 1
+                LibresGral:= LibresGral + 1
+            Sino
+                RegularesAño:= RegularesAño + 1
+            FinSi
+
+            Leer(Arch, Reg)
+        FinMientras
+
+        CorteEscuela
+        Escribir("Distrito ", Distrito, " - total de alumnos: ", TotGral)
+        Si TotGral > 0 entonces
+            Escribir("Porcentaje de alumnos libres: ", LibresGral * 100 / TotGral, " %")
+            Escribir("Promedio de inasistencias por alumno: ", InasistenciasGral / TotGral)
+        FinSi
+        Cerrar(Arch)
+FinAcción

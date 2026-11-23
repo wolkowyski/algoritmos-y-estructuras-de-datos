@@ -1,0 +1,6 @@
+ARCHIVOS SECUENCIALES.
+Se refiere al procesamiento de los registros, no importa el orden en que se haga, para eso los registros están organizados en forma de una lista y recuperarlos y procesarlos uno por uno de principio a fin.
+Rudimentos de los archivos Secuenciales; dependiendo del dispositivo de almacenamiento utilizado el archivo se puede mostrar el usuario como si fuera un sistema secuencial.
+Al finalizar un archivo secuencial se denota con una marca de fin de archivo. ( end-of-file)
+El usuario de un archivo secuencial puede ver los registros en un orden secuencial simple.
+La única forma de recuperar registros es comenzar al principio y extraerlos en el orden contemplado.

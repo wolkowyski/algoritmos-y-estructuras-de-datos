@@ -1,0 +1,41 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Titpel: AN(50)
+        Nomb_del_director: AN(50)
+        Cat_Peli: AN(50)
+        Views: N(5)
+        Alquilado: {"SI", "NO"}
+    FR
+    P: Arreglo de [1..100] de reg
+
+ACCION_311_ES
+    AMBIENTE
+        j: Entero
+        Opcion1: {"Si", "No"}
+        Pelicula: Alfanumerico
+    PROCESO
+        ESC("Desea alquilar una película? Si/No ")
+        Leer(Opcion1)
+        Mientras (Opcion1 = "Si") hacer
+            j:= 1
+            ESC("Ingrese el nombre de la pelicula: ")
+            Leer(Pelicula)
+
+            Mientras (j < 100) y (P[j] < Pelicula) hacer
+                j:= j + 1
+            FM
+            Si no (P[j] = Pelicula) entonces
+                ESC("Pelicula no encontrada")
+            Sino
+                Si (P[j].Alquilado = "SI") entonces
+                    ESC("Pelicula no disponible")
+                Sino
+                    ESC("Pelicula disponible")
+                    P[j].Views:= Views + 1
+                    P[j].Alquilado:= "SI"
+                FS
+            FS
+            ESC("Desea alquilar otra pelicula? Si/No")
+            Leer(Opcion1)
+        FM
+FA

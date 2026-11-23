@@ -1,0 +1,95 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+El ministerio de salud pública de la nación posee información almacenada en un archivo producto de relevamiento realizado en hospitales públicos respecto a nacimientos.
+
+Los datos se almacenan en registros con el siguiente formato:
+
+Nacimientos ordenado por cod_ciu, cod_hosp y fch_analisis
+
+cod_ciu: AN(4) | cod_hosp: AN(4) |fch_analisis = Fecha | nacimientos: N(4) | sem_gestacion: N(2)
+
+Elaborar un algoritmo que permita:
+
+a) Se desea un informe con el formato que se muestra a continuación, teniendo en cuenta datos del segundo semestre del año actual:
+
+CIUDAD | HOSPITAL | FECHA DE ANALISIS | NACIMIENTOS
+
+b) Mostrar por pantalla el hospital con mayor cantidad de nacimientos.
+
+____________________________________________________________________________________________________________
+
+ACCION ministerioSalud ES
+	AMBIENTE
+
+		TIPOS
+
+			Fecha = REGISTRO
+				aa: 2000..2022;
+				mm: 1..12;
+				dd: 1..31;
+			FIN REGISTRO;
+
+			Nacimiento = REGISTRO
+				cod_ciu: AN(4);
+				cod_hosp: AN(4);
+				fecha_an = Fecha;
+				n_nac: N(4);
+				sem_gest: N(2);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			nacimientos: Archivo de Nacimiento ordenado por cod_ciu, fecha_an, n_nac y sem_gest;
+			n: Nacimiento;
+			resHosp, hosp_may: AN(4); may_n_nac, nac_hosp: entero;
+
+			PROCEDIMIENTO corteHospital()
+				SI (may_n_nac < nac_hosp) ENTONCES
+					may_n_nac := nac_hosp;
+					hosp_may := resHosp;
+				FIN SI;
+				nac_hosp := 0;
+				resHosp := n.cod_hosp;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				nac_hosp := nac_hosp + n.n_nac;
+				SI ((n.fecha_an.aa = aa_actual) ^ (n.fecha_an.mm > 6)) ENTONCES
+					ESC('Ciudad: ', n.cod_ciu, ' | Hospital: ', resHosp, ' | Fecha de analisis: ', n.fecha_an.dd, '/',n.fecha_an.mm, '/', n.fecha_an.aa, ' | Nacimientos: ', n.n_nac);
+				FIN SI;
+				LEER(nacimiento, n);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (n.cod_hosp <> resHosp) ENTONCES
+					corteHospital();
+				FIN SI;
+				tratarRegistro();
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				nac_hosp := 0; may_n_nac := 0;
+				ABRIR E/(nacimientos);
+				LEER(nacimientos, n);
+				resHosp := n.cod_hosp;
+				ESC('Ingrese el anio actual: '); LEER(aa_actual);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotal()
+				corteHospital();
+				ESC('El hospital con mayor cantidad de nacimientos es: ', hosp_may);
+				ESC('Total de nacimientos: ', may_n_nac);
+				CERRAR(nacimientos);
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+
+		inicializarDatos();
+		MIENTRAS NO FDA(nacimientos) HACER
+			tratarCorte();
+		FIN MIENTRAS;
+		emitirTotal();
+
+
+FIN ACCION;

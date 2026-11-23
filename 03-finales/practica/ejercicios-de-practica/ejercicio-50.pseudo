@@ -1,0 +1,227 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 50
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 50(Prim1:puntero a L1) es
+
+ Ambiente
+
+  Personas=Registro
+   DNI:N(8);
+   ayn:AN(40);
+   dir:AN(60);
+   es:{"S","C","O"};
+  finRegistro
+
+  Antecedentes=Registro
+   DNI:N(8);
+   Mes:[1..12];
+   Ingresos:N(7,2);
+   Gastos:N(7,2);
+  finRegistro
+
+  Pedidos=Registro
+   DNI:N(8);
+   Mes:[1..12];
+   Monto:N(7,2);
+  finRegistro
+
+  Archp: Archivo de Personas indexado por DNI;
+  p:Personas;
+
+  Archa: Archivo de Antecedentes indexado por DNI, mes;
+  a:Antecedentes;
+
+  Archpc: Archivo de Pedidos ordenado por DNI, mes;
+  pc:Pedidos;
+
+  L1=Registro
+   mes:[1..12];
+   es:{"S","C","O"};
+   min:N(2);
+   max:N(2);
+   prox:puntero a L1;
+  finRegistro
+
+  p,prim1:puntero a L1;
+
+  L2=Registro
+   DNI:N(8);
+   mes:[1..12];
+   Monto:N(7,2);
+   prox:puntero a l2;
+  finRegistro
+
+  ult2,q,Prim2: puntero a L2;
+
+
+  L3=Registro
+   DNI:N(8);
+   mes:[1..12];
+   monto:N(7,2);
+   motivo:[1..2];
+   prox:puntero a L3;
+  finRegistro
+
+  r,ult3,Prim3: puntero a L3;
+
+  cont,contr:entero;
+
+
+
+ Algoritmo
+
+  Abrir E/(Archp); Leer(Archp,p);
+  Abrir E/(Archa); Leer(Archa,a);
+  Abrir E/(Archpc); Leer(Archpc,pc);
+
+  Prim2:=Nil;
+  ult2:=Prim2;
+  Prim3:=Nil;
+  ult3:=Prim3;
+  cont:=0;
+  contr:=0;
+
+
+  Mientras NDFA(Archpc) hacer
+   p:=Prim1;
+   cont:=cont+1;
+   p.DNI:=pc.DNI;
+   Leer(Archp,p);
+   Si existe entonces
+    a.DNI:=pc.DNI;
+    a.mes:=pc.mes;
+    Leer(Archa,a);
+    Si existe entonces
+     Mientras *p.es<>p.es o *p.mes <> pc.mes hacer
+      p:=*p.prox;
+     finMientras
+
+     Si (*p.min * (a.Ingresos-a.Gastos)/100)<(pc.monto) entonces
+      Si (*p.max * (a.Ingresos-a.Gastos)/100)>(pc.monto) entonces
+       Nuevo(q);
+       *q.DNI:=pc.DNI;
+       *q.mes:=pc..mes;
+       *q.monto:=pc.monto;
+       Escribir(q);
+
+        Prim2:=q;
+        *q.prox:=ult2;
+        ult2:=q;
+
+       Sino
+        contr:=contr+1;
+        Nuevo(r);
+        *r.DNI:=pc.DNI;
+        *r.mes:=pc..mes;
+        *r.monto:=pc.monto;
+        *r.motivo:=1;
+        Escribir(r);
+
+        Prim3:=r;
+        *r.prox:=ult3;
+        ult3:=r;
+
+       finSino
+      finSi
+      Sino
+       contr:=contr+1;
+       Nuevo(r);
+       *r.DNI:=pc.DNI;
+       *r.mes:=pc..mes;
+       *r.monto:=pc.monto;
+       *r.motivo:=2;
+       Escribir(r);
+
+       Prim3:=r;
+       *r.prox:=ult3;
+       ult3:=r;
+      finSino
+     finSi
+    finSi
+   finSi
+   Leer(Archpc,pc);
+  finMientras
+
+  Escribir("El porcentaje de pedidos rechazados sobre el total de pedidos de compras es :", contr*100/cont);
+
+  Cerrar(Archp);
+  Cerrar(Archa);
+  Cerrar(Archpc);
+finAccion
+
+
+Accion ejercicio 50.recursividad(Prim:puntero a nodo) es
+
+ Ambiente
+
+  Nodo=Registro
+   codigo:N(12);
+   prox:puntero a nodo;
+  finRegistro
+
+  p,prim: puntero a nodo;
+
+  P,K,D:entero;
+
+
+
+  Funcion primo(K,P:entero):booleano;
+   Si K=1 entonces
+    primo:=True;
+    Sino
+     Si P=K entonces
+      primo(K-1);
+     finSi
+     Si P mod K <> 0 hacer
+      primo(K-1);
+      Sino
+       primo:=False;
+      finSino
+     finSi
+    finSino
+   finSi
+  finFuncion
+
+  Funcion posición(D:entero):entero
+   Segun D hacer
+    1: posición:=1;
+    2: posición:=10;
+    3: posición:=100;
+    4: posición:=1000;
+    5: posición:=10000;
+    6: posición:=100000;
+    7: posición:=1000000;
+    8: posición:=10000000;
+    9: posición:=100000000;
+    10: posición:=1000000000;
+    11: posición:=10000000000;
+    12: posición:=100000000000;
+   finSegun
+  finFuncion
+
+ Algoritmo
+
+  p:=Prim;
+
+  Escribir("Ingrese el número de alguna posición");
+  Leer(D);
+
+   Mientras *p.prox<>Prim hacer
+    K:= *p.codigo DIV posición(D);
+    K:= K mod 10;
+    P:=K;
+    Si primo(K,P) entonces
+     Escribir(*p.codigo);
+    finSi
+    p:=*p.prox;
+   finMientras
+   K:= *p.codigo DIV posición(D);
+   K:= K mod 10;
+   P:=K;
+   Si primo(K,P) entonces
+    Escribir(*p.codigo);
+   finSi
+finAccion

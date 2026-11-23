@@ -1,0 +1,50 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio complementario 3.2
+// ==========================================================================
+
+// Dado un vector con los siguientes datos de libros: Autor, Título, Cantidad
+// de hojas, en donde un autor puede tener varios libros, determinar cuál es el
+// Título del libro con mayor cantidad de hojas, para cada Autor, generando un
+// listado Autor - Título - Cantidad de hojas.
+//
+// Se supone el vector ordenado por Autor (así los libros de un mismo autor
+// quedan juntos y se resuelve como un corte de control sobre el arreglo).
+
+Acción Ejercicio3_2 es
+    Ambiente
+        N = 50
+
+        Libro = Registro
+            Autor: AN(30)
+            Titulo: AN(50)
+            Cant_Hojas: N(4)
+        FinRegistro
+
+        libros: arreglo de [1..N] de Libro // el índice va en el arreglo: libros[i].Autor
+        i: 1..N
+
+        resg_autor: AN(30)
+        titulo_max: AN(50)
+        hojas_max: N(4)
+
+    Proceso
+        resg_autor:= libros[1].Autor
+        titulo_max:= libros[1].Titulo
+        hojas_max:= libros[1].Cant_Hojas
+
+        Para i:= 2 hasta N, 1 hacer
+            Si libros[i].Autor <> resg_autor entonces // cambió el autor: emito el del anterior
+                Escribir(resg_autor, " - ", titulo_max, " - ", hojas_max)
+                resg_autor:= libros[i].Autor
+                titulo_max:= libros[i].Titulo
+                hojas_max:= libros[i].Cant_Hojas
+            Sino
+                Si libros[i].Cant_Hojas > hojas_max entonces
+                    titulo_max:= libros[i].Titulo
+                    hojas_max:= libros[i].Cant_Hojas
+                FinSi
+            FinSi
+        FinPara
+        Escribir(resg_autor, " - ", titulo_max, " - ", hojas_max) // el último autor
+FinAcción

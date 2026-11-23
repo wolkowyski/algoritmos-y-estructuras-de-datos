@@ -1,0 +1,35 @@
+ACCION_31_ES
+    AMBIENTE
+        A: Arreglo de [1..100] de Enteros
+        i: Entero
+        res_posmax, res_posmin: Entero
+        cont_par, suma_par: Entero
+        res_max, res_min: Entero
+    PROCESO
+        Para i:=1 hasta 100 hacer //Carga de valores
+            ESC("Ingrese un numero entero")
+            Leer(A[i])
+        FP
+        
+        cont_par:= 0; suma_par:=0
+        res_max:= 0; res_min:= 0
+        Para i:= 1 hasta 100 hacer
+            Si (A[i] mod 2 = 0) entonces
+                cont_par:= cont_par + 1
+                suma_par:= suma_par + A[i]
+            FS
+
+            Si (A[i] > res_max) entonces
+                res_max:= A[i]
+                res_posmax:= i
+            Sino
+                Si (A[i] < res_min) entonces
+                    res_min:= A[i]
+                    res_posmin:= i
+                FS
+            FS
+        FP
+        ESC("La cantidad de elementos pares es: ",cont_par,"y su suma total es: ",suma_par)
+        ESC("El mayor elemento ubicado en la posicion ",res_posmax,"es: ",res_max)
+        ESC("El menor elemento ubicado en la posicion ",res_posmin,"es: ",res_min)
+FA

@@ -1,0 +1,12 @@
+Procedimiento inv(A: arreglo de [1..n] de enteros; inicio,fin: entero)
+    AMBIENTE
+        aux: entero
+    PROCESO
+        Si (inicio > fin) entonces
+            aux:= A[inicio]
+            A[inicio]:= A[fin]
+            A[fin]:= aux
+        Sino
+            inv(A, inicio + 1, fin - 1)
+        FS
+FP

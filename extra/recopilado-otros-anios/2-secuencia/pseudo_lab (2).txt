@@ -1,0 +1,257 @@
+ACCIÓN mensaje ES
+ambiente
+message: secuencia de enteros
+
+(Creo tres respaldos para cada numero, son secuencias de enteros)
+respaldo1,respaldo2,respaldo3: secuencia de enteros
+
+(creo dos secuencia de respaldo, que posteriormente muestro por pantalla para mostrar los nombres)
+respaldo4,respaldo5: secuencia de caracter
+
+
+lee: entero
+num: entero
+deco: caracter
+
+(estas listas estan para poder manejar las iteraciones, entra si esta en la lista y sale cuando deje de estar)
+
+letras: {"1000","1001","1010","1011","1100","1101","1110","1111"}
+numeros:{"0000","0001","0010","0011","0100","0101","0110","0111"}
+
+(los contadores de octal (oct) los uso para saber la cantidad de cifras pasadas a octal para asi saber cual numero cambia)
+(cont y cont2 los uso para saber en que seccion del mensaje esta)
+
+oct1,oct2,oct3,cont,cont2, contBin, binario: entero
+
+"contBin sirve para ir contando hasta que el número binario este completo, binario guarda el número binario para comparar"
+
+(hice esto para reutilizar mi código y le cambio unas cosas al resto de procedimientos)
+procedimento numBinario()
+	Si contBin = 0 hacer
+		Según lee hacer:
+			0: contBin:= contBin+1
+			   AVZ(message,lee)
+			1: binario:= binario +1000
+			   contBin:= contBin+1
+			   Avz(message,lee)
+	Sino
+		Si contBin = 1 entonces
+			Según lee hacer
+				0: contBin:= contBin+1
+				   Avz(message,lee)
+				1: binario:= binario+100
+				   contBin:= contBin+1
+				   Avz(message,lee)
+		Sino
+			Si contBin = 2 entonces
+				Segùn lee hacer:
+					0: contBin:= ContBin+1
+					   AVZ(message,lee)
+					1: binario:= binario+10
+					   contBin:= contBin+1
+					   AVZ(message,lee)
+			Sino
+				Si contBin = 3 entonces
+					Segùn lee hacer:
+						0: contBin:= contBin+1
+						   AVZ(message,lee)
+						1: binario:= binario+1
+						   AVZ(message,lee)
+				fin si
+			fin si
+		fin si
+	fin si
+fin procedimento
+
+
+(si el contador esta en 0 esta en el primer numero, en 1 en el segundo, y en 2 en el tercero)
+procedimiento octal()
+	Si cont2 = 0 entonces
+		Escribir(respaldo1,num)
+		oct1:= oct1+1
+	Sino
+		Si cont2:= 1 entonces
+			Escribir(respaldo2,num)
+			oct2:= oct2+1
+		Sino
+			Escribir(respaldo3,num)
+			oct3:= oct3+1
+		Fin si
+	Fin si
+Fin procedimiento
+
+(lo mismo acá, este contador es para los nombres, si está en 0 se trata del pueblo, si está en 1 del lider)
+procedimiento nombres()
+	Si cont:= 0 entonces
+		Escribir(respaldo4.deco)
+	Sino
+		Escribir(respaldo5,deco)
+	Fin si
+fin procedimento
+
+procedimiento cerrarSecuencias()
+	cerrar(message)
+	cerrar(respaldo1)
+	cerrar(respaldo2)
+	cerrar(respaldo3)
+	cerrar(respaldo4)
+	cerrar(respaldo5)
+fin procedimiento 
+
+procedimiento inicializar()
+	ARR(message)
+	AVZ(message,lee)
+	CREAR(respaldo1)
+	CREAR(respaldo2)
+	CREAR(respaldo3)
+	CREAR(respaldo4)
+	CREAR(respaldo5)
+
+	cont:= 0
+	cont2:= 0
+	oct1:= 0
+	oct2:= 0
+	oct3:= 0
+	contBin:= 0
+	binario:= 0
+fin procedimiento
+
+(Acá me di cuenta que como puede haber un solo error, entonces habia 3 posiblidades que se podian reducir a 2 procedimientos, esto te explico en el audio)
+procedimiento canthab1()
+	ARR(respaldo1)
+	AVZ(respaldo1,lee)
+	Mientras NFDS(respaldo1) hacer
+		hab:= hab+ lee*(8**cont1)
+		cont1:= cont1-1
+		AVZ(respaldo1,lee)
+	Fin mientras
+	Cerrar(respaldo1)
+	Escribir("La cantidad de habitantes del pueblo es: ", hab)
+fin procedimiento
+
+procedimiento canthab2()
+	ARR(respaldo2)
+	AVZ(respaldo2,lee)
+	Mientras NFDS(respaldo1)
+		hab:= hab + lee*(8**cont2)
+		cont2:= cont2-1
+		AVZ(respaldo2,lee)
+	Fin Mientras
+	Cerrar(respaldo2)
+	Escribir("La cantidad de habitantes del pueblo es: ", hab)
+Fin procedimiento
+
+
+(Abro la secuencia de respaldo y muestro por pantalla caracter a caracter el nombre del pueblo)
+procedimiento pueblo()
+	ARR(respaldo4)
+	AVZ(respaldo4,deco)
+	Escribir("El nombre del pueblo es: ")
+	Mientras NFDS(respaldo4) hacer
+		Escribir(deco)
+		AVZ(respaldo4,deco)
+	Fin Mientras
+	Cerrar(respaldo4)
+fin procedimiento
+
+(abro la secuencia que tiene el nombre del lider y la mando caracter a caracter)
+procedimiento lider()
+	ARR(respaldo5)
+	AVZ(respaldo5,deco)
+	Escribir("El nombre del lider es: ")
+	Mientras NFDS(respaldo5) hacer
+		Escribir(deco)
+		AVZ(respaldo5,deco)
+	fin mientras
+	cerrar(respaldo5)
+fin procedimento
+
+PROCESO
+
+inicializar()
+
+Mientras NFDS(message) hacer	
+	
+	Mientras binario no en letras hacer:
+
+		Para i:= 0 hasta 4 hacer:
+			numBinario()
+		fin para
+
+		Si binario en numeros entonces:
+			Segun binario hacer:
+				0: num:= 0
+					octal()
+				1:	num:= 1
+					octal()
+				10:	num:= 2
+					octal()
+				11:	num:= 3
+					octal()
+				100: num:= 4
+					octal()
+				101: num:= 5
+					octal()
+				110: num:= 6
+					octal()	
+				111: num:= 7
+					octal()
+			Fin según
+		fin si
+		binario:= 0
+		contBin:= 0
+	Fin mientras
+
+	cont2:= cont2+1
+
+	Mientras binario no en numeros hacer
+		Para i:= 0 hasta 4 hacer:
+			numBinario()
+		fin para
+		Si binario en letras entonces:
+			Segun binario hacer:
+				1000: deco:= "O"
+					  nombres()
+				1001: deco:= "I" 
+					  nombres()
+				1010: deco:= "A"
+					  nombres()
+				1011: deco:= "B"
+					  nombres()
+				1100: deco:= "C"
+					  nombres()
+				1101: deco:= "D"
+					  nombres()
+				1110: deco:= "E"
+					  nombres()
+				1111: deco:= "F"
+					  nombres()
+			fin segun
+		fin si
+		binario:= 0
+		contBin:= 0
+	Fin mientras
+	cont:= cont+1
+
+Fin Mientras
+
+CerrarSecuencias()
+
+pueblo()
+lider()
+
+hab:= 0
+
+Si oct1 <> oct3  y oct2 == oct3 entonces
+	canthab1()
+Contrario
+	Si oct1 <> oct2 y oct1 = oct3 entonces
+		canthab2()
+	contario
+		Si oct3 <> oct2 y oct2 = oct1 entonces 
+			canthab1()
+	Fin si
+Fin Si
+
+
+FIN PROCESO

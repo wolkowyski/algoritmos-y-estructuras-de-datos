@@ -1,0 +1,77 @@
+TEORIA
+
+	CAMPO: conjunto de caracteres y datos
+			*continente: campo que permite ser dividido
+			*contenido: no se puede dividir
+	REGISTRO: (memoria interna) permite agrupar el maximo conjunto de campos que puedo lograr en una identidad (mayor campo continente)
+			*criterios jerarquicos: son los que dicen que la informacion tiene que ir del mayor nivel al menor, de importancia de datos
+			*autocontrol: 	
+				Consistencia: verifica que los datos que se ingresan estan definidos
+				Congruencia: el valor del dato cohincide con lo definido
+					Fina: trabaja en el mismo registro
+					Gruesa: trabaja con unidades dsitintas
+			*Representan:
+				arborea: arboles con raiz
+				grafica
+				literaria: encabezado y pie, un renglon por dato
+				
+	ARCHIVO: (memoria externa) conjunto de registros que representan una entidad superior que se alojan en memoria externa
+	
+	ACTUALIZACION:
+	
+	ORGANIZACION: la forma en como almacenamos los registros la primera vez en el archivo.
+				*Secuencial: continuidad fisica
+				*Directa: continuidad logica
+							Posicional: relativa( archivo reservado se use o no)
+							Clave indice: indexado (dato mas importante,automaticamente ordenado)
+	ACCESO: 
+				*Secuencial:se leen los registros secuencialmente uno tras otro
+				*Directo:
+					Al azar o puntual:conocido el valor de la clave se posiciona en el registro
+					Dinamico o Mixto: se posiciona en un registro y continua secuencialmente	
+	CARACTERIZTICAS DE LA ACTUALIZACION:
+	BATCH: la cantidad de informacion que tengo que agregar al maestro , viene de un archivo de novedades
+	DIFERIDO: informacion de todo un periodo
+	LENTO:se graba en el maestro actualizado, todo el maestro
+	SEGURO: no se modifica el maestro ni se reescribe, se crea uno actualizado
+	BACKUP AUTOMATICO: el maestro queda siempre guardado sin dar la orden
+	
+	PROCESOS:
+	Secuencial: archivo de entrada ordenado por clave compleja
+	Interaccion: proceso secuencial con interrupciones temporales
+	Ciclo excluyente:proceos independientes y/o combinados posterior al ciclo principal
+	Corte de control: listado de registros especiales
+	Definido: uso de contadores y variables estadisticas generales
+	Ciclo incluyente: uso de HV
+	Mezcla: apareo de archivos con igual formato para la obtencion de uno nuevo
+	Padrones: emision de todos los registros
+	Actualizacion indexada: actualizacion de contenido in situ ( en el momento) 
+	
+	ARREGLOS: (Memoria interna)
+	Tipo de dato, la cantidad de elementos del arreglo es conocido; es estatico, no se puede cambiar el tamaño)
+	 Dimension: 
+		Unidimensional: vector
+		Bidimensional:matriz
+		
+		PROCESOS DE ARREGLOS:
+			RECORRIDO:
+					TOTAL
+					PARCIAL
+			ORDENAMIENTO:
+					SIMPLE:
+							INSERCION
+							SELECCION
+							INTERCAMBIO
+					INDIRECTOS o avanzados: (SORT)
+							SHELL
+							HEAP
+							QUICK 
+			
+			BUSQUEDA:
+					ORDENADO:
+							BINARIA: no ordenada
+							LINEAL CON CENTINELA:busquedas de unicidad, desordenado y ordenado
+					DESORDENADO:
+							LINEAL: recorrido total,para procesos de multiplicidad o unicidad, no afecta el orden.
+							LINEAL CON CENTINELA: busquedas de unicidad, desordenado y ordenado
+					

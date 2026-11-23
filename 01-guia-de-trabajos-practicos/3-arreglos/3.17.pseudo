@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.17
+// ==========================================================================
+
+// Se precisa generar una secuencia con los datos de los 10 videos más vistos
+// de una categoría, a partir de una secuencia de entrada de 200 registros que
+// contiene el Título de la película, Nombre del Director, Categoría de película
+// y Cantidad de personas que la vieron, y que está ordenada por Título.
+//
+// Idea: paso a un arreglo solo los videos de la categoría pedida, lo ordeno
+// de mayor a menor por cantidad de vistas (inserción) y copio los 10 primeros.
+
+Acción Ejercicio3_17 es
+    Ambiente
+        Video = Registro
+            Titulo: AN(50)
+            Director: AN(30)
+            Categoria: AN(20)
+            Vistas: N(9)
+        FinRegistro
+
+        Entrada, Salida: archivo de Video
+        Reg, x: Video
+        Videos: arreglo de [1..200] de Video
+        n, i, j: entero
+        categoria_buscada: AN(20)
+
+    Proceso
+        Escribir("Ingrese la categoría")
+        Leer(categoria_buscada)
+
+        // 1. Cargo en el arreglo los videos de esa categoría
+        n:= 0
+        Abrir E/(Entrada)
+        Leer(Entrada, Reg)
+        Mientras No FDA(Entrada) hacer
+            Si Reg.Categoria = categoria_buscada entonces
+                n:= n + 1
+                Videos[n]:= Reg
+            FinSi
+            Leer(Entrada, Reg)
+        FinMientras
+        Cerrar(Entrada)
+
+        // 2. Ordeno por inserción, de mayor a menor cantidad de vistas
+        Para i:= 2 a n hacer
+            x:= Videos[i]
+            j:= i - 1
+            Mientras (j > 0) y (Videos[j].Vistas < x.Vistas) hacer
+                Videos[j + 1]:= Videos[j]
+                j:= j - 1
+            FinMientras
+            Videos[j + 1]:= x
+        FinPara
+
+        // 3. Grabo los 10 primeros (o menos, si la categoría tiene menos videos)
+        Abrir /S(Salida)
+        i:= 1
+        Mientras (i <= 10) y (i <= n) hacer
+            Escribir(Salida, Videos[i])
+            i:= i + 1
+        FinMientras
+        Cerrar(Salida)
+FinAcción

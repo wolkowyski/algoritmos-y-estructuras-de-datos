@@ -1,0 +1,102 @@
+ACCION_2221_ES
+    AMBIENTE
+        Fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+
+        Amigo = Registro de
+            Clave: Registro
+                Cod_Usuario: N(6)
+                Cod_Amigo: N(5)
+            FRegistro
+            Fecha_Amis: Fecha
+            MsjMuro: AN(100)
+        FRegistro
+
+        Notif = Registro de
+            Clave: Registro
+                Cod_Usuario: N(6)
+                Cod_Amigo: N(5)
+            FRegistro
+            Cod_Mov: {'A', 'B', 'M'}
+            Fecha_Amis: Fecha
+            MsjMuro: AN(100)
+        FRegistro
+
+        ArchAm, ArchAmS: Archivo de Amigo
+        ArchNo: Archivo de Notif
+        R_N: Notif 
+        R_A, R_S: Amigo
+
+        Procedimiento LeerA() Es
+            Leer(ArchAm, R_A)
+            Si FDA(ArchAm) Entonces
+                R_A.Clave.Cod_Usuario:= HV
+                R_A.Clave.Cod_Amigo:= HV
+            FSi
+        FProced
+
+        Procedimiento LeerB() Es
+            Leer(ArchNo, R_N)
+            Si FDA(ArchNo) Entonces
+                R_N.Clave.Cod_Usuario:= HV
+                R_N.Clave.Cod_Amigo:= HV
+            FSi
+        FProced
+
+        Procedimiento Alta Es
+            Si (R_N.Cod_Mov = 'A') Entonces
+                R_S.Cod_Usuario:=R_N.Clave.Cod_Usuario
+                R_S.Cod_Amigo:= R_N.Clave.Cod_Amigo
+                R_S.Fecha_Amis:= R_N.Fecha_Amis
+                R_S.MsjMuro:= R_N.MsjMuro
+                Grabar (ArchAmS, R_S)
+            Sino
+                Escribir('ERROR...Intenta modificar o borrar algo no existente')
+            FSi
+        FProced
+
+        Procedimiento MBA() Es
+            Si (R_N.Cod_Mov = 'A') Entonces
+                Escribir('ERROR quiere crear algo que ya existe...')
+                R_S:= R_A
+                Grabar(ArchAmS, R_S)
+            Sino
+                Si (R_N.Cod_Mov = 'M') Entonces
+                    R_S.Cod_Usuario:=R_N.Clave.Cod_Usuario
+                    R_S.Cod_Amigo:= R_N.Clave.Cod_Amigo
+                    R_S.Fecha_Amis:= R_N.Fecha_Amis
+                    R_S.MsjMuro:= R_N.MsjMuro
+                    Grabar (ArchAmS, R_S)
+                FSi
+            FSi
+        FProced
+
+        Proceso
+            Abrir E/(ArchNo)
+            Abrir E/(ArchAm)
+            Abrir S/(ArchAmS)
+            LeerA()
+            LeerB()
+            Mientras (R_N.Clave <> HV) v (R_A.Clave <> HV) Hacer
+                Si (R_A.Clave < R_N.Clave) Entonces
+                    R_S:= R_A
+                    Grabar(ArchAmS, R_S)
+                    LeerA()
+                Sino
+                    Si (R_A.Clave > R_N.Clave) Entonces
+                        Alta()
+                        LeerB()
+                    Sino
+                        MBA()
+                        LeerA()
+                        LeerB()
+                    FSi
+                FSi
+            FMientras
+            Cerrar(ArchAm)
+            Cerrar(ArchAmS)
+            Cerrar(ArchNo)
+FA

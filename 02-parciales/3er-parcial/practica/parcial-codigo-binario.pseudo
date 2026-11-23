@@ -1,0 +1,56 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Práctica: recursividad + listas
+//
+//  Dada una lista de enteros, pasar a una lista nueva los nodos cuya suma de
+//  dígitos (calculada con una función recursiva) sea impar, sacándolos de la
+//  lista original. (Enunciado reconstruido a partir de la resolución.)
+// ==========================================================================
+
+ACCION Parcial (prim: puntero a NODO) ES
+AMBIENTE
+    NODO = registro
+        dato: entero
+        prox: puntero a NODO
+    FIN_registro
+
+    a, p, sig, prim2, ult2: puntero a NODO
+
+    FUNCION SumaDigitos (n: entero): entero ES
+        SI n < 10 ENTONCES // caso base: un solo dígito
+            SumaDigitos:= n
+        SINO               // caso recursivo: último dígito + suma del resto
+            SumaDigitos:= n MOD 10 + SumaDigitos(n DIV 10)
+        FIN_SI
+    FIN_FUNCION
+
+ALGORITMO
+    prim2:= nil
+    ult2:= nil
+    a:= nil
+    p:= prim
+    MIENTRAS p <> nil HACER
+        sig:= *p.prox // guardo el siguiente antes de mover el nodo
+        SI SumaDigitos(*p.dato) MOD 2 <> 0 ENTONCES
+            // 1. Lo desengancho de la lista original (no hace falta NUEVO ni DISPONER:
+            //    el mismo nodo pasa de una lista a la otra)
+            SI p = prim ENTONCES
+                prim:= sig
+            SINO
+                *a.prox:= sig
+            FIN_SI
+            // 2. Lo engancho al final de la lista nueva (carga encolada)
+            *p.prox:= nil
+            SI prim2 = nil ENTONCES
+                prim2:= p
+            SINO
+                *ult2.prox:= p
+            FIN_SI
+            ult2:= p
+            // a no se mueve: sigue siendo el anterior de sig
+        SINO
+            a:= p
+        FIN_SI
+        p:= sig
+    FIN_MIENTRAS
+FIN_ACCION

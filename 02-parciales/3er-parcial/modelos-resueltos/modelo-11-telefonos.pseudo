@@ -1,0 +1,341 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Modelo 11: regalos para clientes (lista circular, simple y dobles)
+// ==========================================================================
+
+Una empresa de servicios telefónicos posee un archivo secuencial con todos los números de
+celulares de los clientes con el siguiente formato (el archivo no se encuentra ordenado por ningún campo):
+
++------------------------------+----------------------------+
+| Numero de cel (N: 13) | DNI del cliente (N: 8) |
++------------------------------+----------------------------+
+
+Cada cliente de la empresa puede tener una o más líneas de teléfono.
+La empresa desea dar a cada uno de sus clientes un regalo por el fin de año.
+Para ello cuenta con una lista circular simple que posee los siguientes campos:
+
++---------------------------------------------+-----------------------------------+
+| Identificador de Regalo (AN: 255) | Cantidad disponible (N: 4) |
++---------------------------------------------+-----------------------------------+
+
+Se pide:
+Realizar una lista simple que posea el DNI del cliente (sin repetir el cliente)
+con el identificador del regalo.
+//lista1
+
+En caso de haber quedado regalos disponibles, crear una lista doblemente encadenada que contenga
+el identificador de regalo y la cantidad disponible.
+//lista2
+
+En caso de que queden clientes sin regalos, crear una lista doblemente encadenada que contenga
+solamente los DNI (no repetidos) de los clientes sin regalos.
+//lista3
+
+La asignación de los regalos tiene que ser: el cliente 1 con el primer ítem de la lista doble,
+el cliente 2 con el segundo ítem de la lista, el cliente 3 con el próximo ítem de la lista doble, etc…
+
+Y para los temerarios (si quieren lo pueden hacer):
+
+Crear un top 5 de los clientes que posean la mayor cantidad de líneas,
+y mostrar por pantalla el DNI y la cantidad de líneas en forma descendente.
+//listatop
+
+ACCION TELEFONOS (Prim: Puntero a Regalos) es
+
+ AMBIENTE
+
+ Clientes = registro
+     Nro_celular: N (13)
+     DNI: N (8)
+     fin registro
+
+ Arch: archivo de Clientes
+ Reg: Clientes
+
+
+ Regalos = registro //lista original
+     ID_Regalo: AN (255)
+     Cantidad: N (4)
+     prox: puntero a Regalos
+     fin registro
+
+ Lista1 = registro  // Prim1
+     DNI: N(8)
+     ID_Regalo: AN(255)
+     prox: puntero a lista1
+     fin registro
+
+ Lista2 = registro // Prim2
+     ID_Regalo: AN (255)
+     Cantidad: N (4)
+     prox: puntero a lista2
+     ant: puntero a lista2
+     fin registro
+
+ Lista3 = registro // Prim3
+     DNI: N (8)
+     prox: puntero a lista3
+     ant: puntero a lista3
+     fin registro
+
+ ListaTop = registro //prim4
+     DNI: N (8)
+     cant_lineas: N (3)
+     prox: puntero a listatop
+     ant: puntero a listatop
+     fin registro
+
+ Ranking = registro //prim5
+     DNI: N(8)
+     cant_lineas: N(3)
+     prox:puntero a Ranking
+     fin registro
+
+
+ Procedimiento Lista1 es
+
+ //esta bandera la uso para saber si hay clientes con más de una linea
+ multilineas:= falso
+
+ //el puntero P es el que uso para recorrer la lista circular que tiene los idregalo
+ //el puntero Q es el nuevo nodo
+ //el puntero X es el que uso para recorrer la lista1
+ //el puntero A es el que uso para resguardar el último nodo que recorrí en la lista1, esto me sirve para hacer una carga encolada
+     Si prim1 = nil entonces
+     //si la lista está vacía
+         Nuevo (q);
+         *q.dni:= reg.dni;
+         *q.idregalo:= *p.idregalo
+         *q.prox:= nil
+         Prim1:= q;
+         *p.cantidad:= *p.cantidad – 1;
+
+     Sino
+         //si la lista no está vacia, hago la busqueda de ese cliente en la lista1
+
+         X:= prim1;
+         Mientras x<> nil y *x.dni <> reg.dni hacer
+             A:= x;
+             X:= *x.prox;
+         FinMientras
+
+         Si x = nil entonces
+         // terminé de recorrer y este dni no está cargado en la lista
+             Nuevo (q);
+             *q.dni := reg.dni;
+             *q.idregalo:= *p.idregalo
+             *a.prox:= q;
+             *q.prox:= nil;
+             *p.cantidad:= *p.cantidad – 1;
+         Sino
+         //al recorrer, encontre un cliente que tiene más de una linea, por lo tanto
+             multilineas:= verdadero
+             ListaTop()
+         Fin Si
+     Fin Si
+ Fin Procedimiento
+
+ Procedimiento ListaTop es
+         //si se repite el cliente, busco nuevamente el dni del cliente y cuento las lineas que tiene.
+
+         //el puntero H se usa para recorrer la listatop
+         //el puntero T es el nuevo que se inserta
+         //el puntero R es siempre el anterior de T para hacer la carga encolada.
+             H:= prim4
+
+             Mientras *h.prox <> nil y *h.dni <> reg.dni hacer
+                 r:= H
+                 H:= *H.prox;
+             FinMientras
+
+             Si h = nil entonces
+             //si la lista top está vacia
+                 Nuevo (t);
+                 *t.dni:= reg.dni;
+                 *t.cant_lineas:= 2
+                 *t.prox:= nil
+                 *t.ant:=r
+                 Prim4:= t
+
+             Sino
+             //si ya existen clientes en la lista, hago una carga encolada
+                 Nuevo (t);
+                 *t.dni:= reg.dni;
+                 *t.cant_lineas:= 2
+                 *r.prox:= t
+                 *t.ant:=r
+                 *t.prox:= nil
+             Fin Si
+
+             //acá si encuentro un nodo con ese mismo dni, aumento la cantidad de lineas.
+             Si *h.dni = reg.dni
+                 *t.cant_lineas:= *t.cant_lineas + 1
+             Fin Si
+
+ Fin Procedimiento
+
+ Procedimiento Ranking es
+ //hago una búsqueda de cual es el nodo que tiene mayor cantidad de lineas en listatop y lo resguardo
+ //luego a ese nodo lo tengo que eliminar jsdkj un quilombo
+
+ //acá trabajo con listatop (prim4) y ranking (prim5)
+
+ //el puntero H uso para recorrer la lista top
+
+ //el puntero B lo uso para comparar la cantidad de lineas de cada usuario
+
+ //el puntero G lo uso para resguardar el cliente con más lineas, que después lo voy a insertar en la lista ranking
+
+
+
+ //el puntero J lo uso para recorrer el ranking
+ //el puntero K lo uso para hacer la carga encolada en el ranking
+
+
+     h:=prim4
+     *b.cant_lineas:=0
+
+     Mientras *h.prox <> nil
+
+         Si *h.cant_lineas > *b.cant_lineas
+             g:= h
+         Fin Si
+         b:= H
+         H:= *H.prox;
+     FinMientras
+
+     J:= prim5
+
+     Mientras *j.prox <> nil
+         k:= j
+         j:= *j.prox;
+     FinMientras
+
+     Si j = nil entonces
+         //si la lista ranking está vacia
+         Nuevo (z);
+         *z.dni:= *g.dni
+         *z.cant_lineas:= *g.cant_lineas
+         *z.prox:= nil
+         Prim5:= t
+     Sino
+         //si ya existen clientes en la lista, hago una carga encolada
+         Nuevo (z);
+         *z.dni:= *g.dni
+         *z.cant_lineas:= *g.cant_lineas
+         k.prox:=z
+         z.prox:=nil
+     Fin Si
+
+     //acá reasigno los punteros y elimino el nodo G de la listatop que es el que más lineas tiene
+     *(*g.ant).prox:= *g.prox
+     *(*g.prox).amt:= *g.ant
+
+     Disponer (g)
+
+ Fin Procedimiento
+ //al finalizar este procedimiento 'listatop' se convierte en 'ranking', ordenado de mayor a menor.
+
+ Procedimiento Lista3 es
+  //el puntero S es el nuevo que se inserta
+  //el puntero T es el que uso para recorrer la lista 3
+  //el puntero 'Ult3' al ser una lista doble, lo uso para hacer una carga encolada.
+
+     Si Prim3 = Nil entonces
+         Nuevo (S);
+         *S.dni:= reg.dni;
+         *s.ant:= nil;
+         *s.prox:= nil;
+         Prim3:= s;
+         Ult3:= s;
+     Sino
+         t:= prim3;
+         Mientras t<> nil y *t.dni <> reg.dni hacer
+             t:= *t.prox;
+         FinMientras
+
+         Si t = nil entonces
+             Nuevo (s);
+             *s.dni  := reg.dni;
+             *Ult3.prox:= s;
+             *s.prox:= nil;
+             *s.ant:= Ult3;
+             Ult3:= s;
+         FinSi
+     FinSi
+ FinSi
+
+ Procedimiento Lista2 es
+ //el puntero P es el que uso para recorrer la lista original con idregalo
+ //el puntero M es el nuevo que inserto
+ //el puntero 'Ult2' al ser una lista doble, lo uso para hacer una carga encolada.
+         Nuevo (m);
+         *m.idregalo:= *p.idregalo;
+         *m.cantidad:= *p.cantidad
+
+         Si Prim2 = Nil entonces
+             *m.prox:= nil;
+             *m.ant:= nil;
+              Ult2:= m;
+              Prim2:= m
+         Sino
+             *Ult2.prox:=m;
+             *m.ant:= Ult2;
+             *m.prox:= nil;
+             Ult2:= m
+         FinSi
+ Fin Procedimiento
+
+
+ PROCESO
+
+ ABRIR e/ (Arch);
+ Leer (Arch, Reg);
+
+ P:= Prim;
+
+
+ Mientras NFDA (Arch) hacer
+//primero verifico si hay regalos suficientes
+
+     Si *p.Cantidad > 0 entonces
+     //si hay regalos suficientes, creo la lista1
+         Lista1()
+     Sino
+     // si no hay regalos suficientes, pasar cliente a lista 3 por quedarse sin regalo
+         Lista3()
+
+     //al tener una relación uno a uno, avanzo los dos al mismo tiempo
+     P:= *p.prox;
+     LEER (Arch, reg)
+
+ FinMientras
+
+ Cerrar(Arch)
+ //terminé de recorrer todo el archivo con los clientes, por lo tanto:
+
+//verifico si me quedan regalos disponibles y los paso a la lista 2
+ P:= Prim
+ Mientras *p.prox <> Prim hacer
+
+     Si *p.cantidad > 0 entonces
+
+         Lista2()
+     FinSi
+     P:= *p.prox;
+ FinMientras
+
+ //y tengo la 'listatop' con clientes que tienen más de una línea, pero no está ordenado
+ Ranking()
+
+
+ z:=prim5
+ Para i:= 1 a 5 hacer
+     Escribir (i,'° -')
+     Mientras z <> nil hacer
+         Escribir('Dni de Cliente:',*z.DNI, 'Cantidad de lineas que posee:', *z.lineas)
+         z:= *z.prox
+     Fin Mientras
+ Fin Para
+
+ FIN ACCIÓN

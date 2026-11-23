@@ -1,0 +1,24 @@
+ACCION_44_ES(prim: puntero a nodo1)
+    AMBIENTE
+        nodo1 = registro de
+            clave: entero
+            prox: puntero a nodo1
+        FR
+        p: puntero a nodo1
+
+        nodo2 = registro de
+            clave: entero
+            prox: puntero a nodo2
+        FR
+        q, ant, prim2: puntero a nodo2
+    PROCESO
+        p:= prim
+        prim2:= NIL
+        Mientras (p<> NIL) hacer
+            Nuevo(q)
+            *q.clave:= *p.clave
+            *q.prox:= prim
+            prim:= q
+            p:=*p.prox
+        FM
+FA

@@ -1,0 +1,129 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Enunciado.
+
+Se desea conocer la composición del parque automotor nacional. Para ello se cuenta con información de los vehículos de todo el país,  según el siguiente detalle:
+		- Provincia
+		- Departamento
+		- Ciudad
+		- Patente
+		- Modelo
+		- Tipo
+Se desea sacar un listado con  el siguiente detalle  por ciudad, departamento, provincia y total nacional:
+
+										 TOTAL       % del TOTAL
+Vehículos de más de 5 años               xxxxx         xx,xx %
+Vehículos de 5 años o menos              xxxxx         xx,xx %
+Total de vehículos                       xxxxx         100,00 %
+
+______________________________________________________________________________________________________
+
+
+ACCION parqueAutomotor ES
+
+	AMBIENTE
+
+		TIPOS
+
+			Auto = REGISTRO
+				clave = REGISTRO
+					prov, dpto, ciud: AN(20);
+				FIN REGISTRO;
+				patente: AN(10);
+				model: N(4);
+				tipo: AN(15);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			autosParque: Archivo de Auto ordenado por clave;
+			car: Auto;
+			resProv, resDpto, resCiud: AN(20);
+			totNacMas, totNacMen, totProvMas, totProvMen, totDptoMas, totDptoMen, totCiudMas, totCiudMen: entero;
+
+			SUBACCION mostrarTot(totMas, totMen: entero) ES
+				AMBIENTE
+					VARIABLES
+						porcMas, porcMen: N(3, 2);
+				PROCESO
+					porcMas := totMas * 100 / (totMas + totMen);
+					porcMen := totMen * 100 / (totMas + totMen);
+					ESC("• Autos con más de 5 anios: ", totMas, " | Porcentaje respecto total: ", porcMas, "%");
+					ESC("• Autos con 5 anios o menos: ", totMen, " | Porcentaje respecto total: ", porcMen, "%");
+					ESC("• Total de autos: ", (totMas + totMen), " | Porcentaje: 100%");
+			FIN SUBACCION;
+
+			SUBACCION corteProv ES
+				corteDpto;
+				ESC("Total provincia: ", resProv);
+				mostrarTot(totProvMas, totProvMen);
+				totNacMas := totNacMas + totProvMas;
+				totNacMen := totNacMen + totProvMen;
+				totProvMas := 0; totProvMen := 0;
+				resProv := car.clave.prov;
+			FIN SUBACCION;
+
+			SUBACCION corteDpto ES
+				corteCiud;
+				ESC("Provincia: ", resProv, " | Total dpto: ", resDpto);
+				mostrarTot(totDptoMas, totDptoMen);
+				totProvMas := totProvMas + totDptoMas;
+				totProvMen := totProvMen + totDptoMen;
+				totDptoMas := 0;totDptoMen := 0;
+				resDpto := car.clave.dpto;
+			FIN SUBACCION;
+
+			SUBACCION corteCiud ES
+				ESC("Provincia: ", resProv, " | Dpto: ", resDpto);
+				ESC("Total ciudad: ", resCiud);
+				mostrarTot(totCiudMas, totCiudMen);
+				totDptoMas := totDptoMas + totCiudMas;
+				totDptoMen := totDptoMen + totCiudMen;
+				totCiudMas := 0; totCiudMen := 0;
+				resCiud := car.clave.ciud;
+			FIN SUBACCION;
+
+		CONSTANTES
+
+			anioActual = 2022;
+
+	PROCESO
+
+		totNac := 0; totProvMas := 0; totProvMen := 0; totDptoMas := 0; totDptoMen := 0; totCiudMas := 0; totCiudMen := 0;
+		ABRIR E/(autosParque);
+		LEER(autosParque, car);
+		resProv := car.clave.prov; resDpto := car.clave.dpto; resCiud := car.clave.ciud;
+
+		MIENTRAS NO FDA(autosParque) HACER
+
+			SI (car.clave.prov <> resProv) ENTONCES
+				corteProv;
+			SINO SI (car.clave.dpto <> resDpto) ENTONCES
+					corteDpto;
+				SINO SI (car.clave.ciud <> resCiud) ENTONCES
+						corteCiud;
+					FIN SI;
+				FIN SI;
+			FIN SI;
+
+			SI (car.model > anioActual + 5 ) ENTONCES
+				totCiudMas := totCiudMas + 1;
+			SINO SI (car.model <= anioActual - 5) ENTONCES
+					totCiudMen := totCiudMen + 1;
+				FIN SI;
+			FIN SI;
+
+			LEER(autosParque, car);
+
+		FIN MIENTRAS;
+
+		corteProv;
+
+		ESC("El total nacional es: ");
+		mostrarTot(totNacMas, totNacMen);
+
+		CERRAR(autosParque);
+
+	FIN PROCESO;
+FIN ACCION;

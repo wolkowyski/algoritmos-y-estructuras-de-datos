@@ -1,0 +1,196 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 10
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 10 es
+ Ambiente
+  sec1: secuencia de caracter;
+  a: caracter;
+  sec2: secuencia de caracter;
+  b: caracter;
+
+  tot: entero;
+  estudios: entero;
+  cant_estudios: entero;
+  cont: entero;
+  pacientes: entero;
+
+  Funcion recaudado(a:caracter):entero
+   Según a hacer
+    "A": recaudado :=300;
+    "E": recuadado :=420;
+    "I": recaudado :=670;
+    otro: Escribir ("El protocolo es incorrecto");
+   finSegun
+  finFuncion
+
+  Funcion convertir(a:AN):entero
+   Según a hacer
+    "0": convertir:=0;
+    "1": convertir:=1;
+    "2": convertir:=2;
+    "3": convertir:=3;
+    "4": convertir:=4;
+    "5": convertir:=5;
+    "6": convertir:=6;
+    "7": convertir:=7;
+    "8": convertir:=8;
+    "9": convertir:=9;
+    finSegun
+   finFuncion
+
+
+
+
+
+ Algoritmo
+
+  ARR(sec1);
+  AVZ(sec1,a);
+  Crear(sec2);
+
+  tot:=0;
+  estudios:=0;
+  cant_estudios:=0;
+  cont:=0;
+  pacientes:=0;
+
+  Mientras a <> "*" hacer
+   tot:=tot + recaudado(a);
+   pacientes:= pacientes + 1;
+   Repetir
+    AVZ(sec1,a);
+   hasta que a <> ","
+   estudios:= convertir(a)*10;
+   AVZ(sec1,a);
+   estudios:= estudios + convertir(a);
+   AVZ(sec1,a);
+   Si estudios > 2 entonces
+    Mientras cont<> estudios hacer
+     Si a = "A" entonces
+      AVZ(sec1,a);
+      Para i:=1 hasta 3 hacer
+       Esc(sec2,a);
+       AVZ(sec1,a);
+      finPara
+      Esc(sec2,",");
+      Sino
+       Para i:=1 hasta 4 hacer
+        AVZ(sec1,a);
+       finPara
+      finSino
+     finSi
+     cont:=cont + 1;
+     AVZ(sec1,a);
+    finMientras
+    cont:=0;
+    Sino
+     Para i:=1 hasta 4 hacer
+      AVZ(sec1,a);
+     finPara
+    finSino
+   finSi
+   cant_estudios:=cant_estudios + estudios;
+   estudios:= 0;
+   finMientras
+
+   Esc("El total recaudado hoy es: ",tot);
+   Esc("El promedio de estudios por paciente es: ", cant_estudios/pacientes);
+
+finAccion
+
+Accion Ejercicio 10.corte es
+
+ Ambiente
+
+ Servicio= Registro
+  Sucursal: N(4);
+  Area: N(1);
+  Id_serv: N(6);
+  Desc: AN(45);
+  Cant_cli: N(4);
+  Monto: N(6,2);
+ finRegistro
+
+ Archs: Archivo de servicio ordenado por sucursal, area, id_serv;
+ s: servicio
+
+ res_sucursal: N(4);
+ res_area: N(1);
+
+ Procedimiento corte_area es
+  Escribir("La cantidad facurada en el area ", res_area, "es: ", cont_area,", de la sucursal ", res_sucursal);
+  Si res_area = 1 entonces
+   Si cont_area > 2000000 entonces
+    Escribir("El total facturado por el area siembra y cosecha de soja en la sucursal ", res_sucursal, " es mayor a $2.000.000")
+   finSi
+  finSi
+  cont_sucursal:= cont_sucursal + cont_area;
+  cont_area:=0;
+  res_area:=s.area;
+ finProcedimiento
+
+ Procedimiento corte_sucursal es
+  corte_area;
+  Escribir("La cantidad facurada en la sucursal ", res_sucursal, " es: ", cont_sucursal);
+  cont_gral:=cont_gral + cont_sucursal;
+  Si res_sucursal = 1 entonces
+   suc1:=cont_sucursal;
+  finSi
+  cont_sucursal:=0;
+  res_sucursal:= s.sucursal;
+ finProcedimiento
+
+
+
+
+ Algoritmo
+
+  Abrir E/ (Archs);
+  Leer(Archs,s);
+
+  res_sucursal:= s.sucursal;
+  res_area:=s.area;
+
+  Mientras NFDA(Archs) hacer
+   Si res_sucursal <> s.sucursal entonces
+    corte_sucursal
+    Sino
+     Si res_area <> s.area entonces
+      corte_area
+     finSi
+    finSino
+   finSi
+
+
+   Si s.cant_cli > 100 entonces
+    cont_area:= cont_area + s.monto;
+   finSi
+
+   Si s.cant_cli < 10 entonces
+    cant_contrataciones:= cant_contrataciones + 1;
+   finSi
+
+   monto:= monto + s.monto;
+
+   Leer(Archs,s);
+
+
+  finMientras
+
+  corte_sucursal
+
+  Escribir("La cantidad total facturada por servicios cuyos clientes son más de 100 es: ", cont_gral);
+  Escribir("La cantidad de contrataciones que no alcanzaron los diez clientes es: ", cant_contrataciones);
+
+  Si (suc1*100/monto)>20 entonces
+   Escribir( "El total facurado por la sucursal 1 representa más del 20% del total facutrado por la empresa");
+   Sino
+    Escribir( "El total facurado por la sucursal 1 no representa más del 20% del total facutrado por la empresa");
+   finSino
+  finSi
+
+  Cerrar(Archs);
+ finAccion

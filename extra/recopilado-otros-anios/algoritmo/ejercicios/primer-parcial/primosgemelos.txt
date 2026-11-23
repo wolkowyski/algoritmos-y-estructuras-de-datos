@@ -1,0 +1,46 @@
+var 
+
+x,suma,c1,c2,c3,result,resg,i : integer;
+
+negin
+
+for i := 1 to 999 do
+if i < 10 then
+
+   if resg mod 2 <> 0 then 
+   writeln (i,'es primo gemelo');
+   end;
+ ELSE
+    IF i => 10 then
+     c2:= i DIV 10;
+     c1:=i mod 10;
+     suma:= c1 +c2;
+      
+         if result = 2 then
+          writeln (i,' es numero primo gemelo');
+          resg:=i;
+         end
+      ELSE
+         c3:= i mod 10;
+         x:= i div 10;
+         c2:= x mod 10;
+         c1:=x div 10;
+         suma:= c1 + c2 + c3;
+ 
+          IF suma MOD 3 <> 0 then 
+          result:= resg -i;
+           IF result = 2 then
+           writeln (i, ' el numero es primo gemelo')
+           resg:= i;
+   end
+end;
+
+end.
+
+
+
+
+
+
+
+

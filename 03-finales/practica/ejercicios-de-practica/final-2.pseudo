@@ -1,0 +1,174 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Final 2
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Final2(sec: secuencia de caracter) es
+
+ Ambiente
+  sec:secuencia de caracter;
+  s: caracter;
+
+  arr: arreglo de (1..5,1..3,1..2) entero;
+
+  Nodo=Registro
+   caracter:AN(1);
+   prox:puntero a Nodo;
+  finRegistro
+
+  Lista=Registro
+   tipo:AN(20);
+   rango:AN(20);
+   nombre:Nodo;
+   nivel:AN(10);
+   cupo:N(2);
+   monto:N(6,2); //Que el usuario lo ingrese
+   prox:puntero a Lista;
+  finRegistro
+
+  Prim1, p, q: puntero a Nodo;
+  Prim, a, b, ant: puntero a Lista;
+
+
+ Algoritmo
+
+
+
+
+
+
+
+Accion recursividad es
+
+ Ambiente
+
+  arr: arreglo de (1..100) entero;
+  i: entero;
+
+  Funcion arreglo(i,x:entero):entero;
+   Si i=0 entonces
+    arreglo:=-1;
+    Sino
+     Si arr(i)=x entonces
+      arreglo:=i;
+      Sino
+       arreglo(i-1);
+      finSino
+     finsi
+    finSino
+   finsi
+  finFuncion
+
+ Algoritmo
+
+  Escribir("Ingrese el elemento sobre el que desea conocer su existencia");
+  Leer(x);
+
+  arreglo;
+
+finAccion
+
+
+
+Accion Ejercicio3 es
+
+ Ambiente
+
+  Cobros=Registro
+   Clave:N(13);
+   Cabina:{"Chaco","Corrientes", "Misiones", "Entre Rios", "Santa Fe", "Neuquen", "Ushuaia"};
+   Monto:N(6,2);
+   Patente:AN(7);
+   Hora:N(2);
+  finRegistro
+
+  Archc:Archivo de Cobros;
+  c: Cobros;
+
+  Funcion cabina(c.cabina:AN):entero
+   Segun c.cabina hacer
+    "Chaco": cabina:=1;
+    "Corrientes": cabina:=2;
+    "Misiones": cabina:=3;
+    "Entre Rios": cabina:=4;
+    "Santa Fe": cabina:=5;
+    "Neuquen": cabina :=6;
+    "Ushuaia": cabina:=7;
+   finSegun
+  finFuncion
+
+  Funcion cabina-1(i:entero):alfanumerico;
+   Segun i hacer
+    1: cabina-1:= "Chaco";
+    2: cabina-1:= "Corrientes";
+    3: cabina-1:="Misiones";
+    4: cabina-1:= "Entre Rios";
+    5: cabina-1:= "Santa Fe";
+    6: cabina-1_= "Neuquen";
+    7: cabina-1:= "Ushuaia";
+   finSegun
+  finFuncion
+
+
+  arr: arreglo de (1..7,1..25) real;
+  i,j,resi,resj: entero;
+
+  total,promedio,res,: real;
+
+
+
+
+ Algoritmo
+
+  Abrir E/(Archc);
+  Leer(Archc,c);
+
+  total:=0;
+  res:=0;
+
+  Para i:=1 hasta 7 hacer
+   Para j:=1 hasta 24 hacer
+    arr(i,j):=0;
+   finPara
+  finPara
+
+
+  Mientras NFDA(Archc) hacer
+
+   arr(cabina(c.cabina),c.hora+1):= arr(cabina(c.cabina),c.hora+1)+ c.monto;
+   arr(cabina(c.cabina),25):= arr(cabina(c.cabina),25)+ c.monto;
+
+   Leer(Archc,c);
+  finMientras
+
+  Para i:=1 hasta 7 hacer
+   total:= arr(i,25)+ total;
+  finPara
+
+  promedio:=total/7;
+
+  Para i:=1 hasta 7 hacer
+   Para j:=1 hasta 24 hacer
+    Si res < arr(i,j) hacer
+     res:= arr(i,j);
+     resi:=i;
+     resj:=j;
+    finsi
+   finPara
+  finPara
+
+  Escribir("La cabina en la que se produjo la mayor recaudación es ", cabina-1(resi), " a la hora ", resj-1);
+
+
+  Para i:=1 hasta 7 hacer
+   Si arr(i,25)< promedio entonces
+    Escribir ("La cabina ", cabina-1(i), " recaudó menos que el promedio");
+   finsi
+  finPara
+
+
+  Escribir("El total de recaudación fue :", total);
+
+  Cerrar(Archc);
+finAccion

@@ -1,0 +1,164 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final 2026 - Ejercicio de secuencias + listas (resuelto para el final)
+// ==========================================================================
+
+Accion Final2026 es
+    Ambiente
+
+        Secuencia: secuencia de caracter
+        c: caracter
+
+        Nodo = Registro // lista simple a crear
+            ID: N(6)
+            Firma: AF(7)
+            Criticidad: (1..9)
+            Carga_Datos: AF(999)
+            prox: puntero a Nodo
+        FinRegistro
+        prim, p, q, ant: puntero a Nodo
+
+        Funcion ACSII(c: caracter): alfanumerico // funcion pre-definida
+        ...
+        FinFuncion
+
+        Funcion Entero(c: caracter): entero // para operar
+            Segun (c) hacer
+                ="0": 0
+                ="1": 1
+                ="2": 2
+                ="3": 3
+                ="4": 4
+                ="5": 5
+                ="6": 6
+                ="7": 7
+                ="8": 8
+                ="9": 9
+            FinSegun
+        FinFuncion
+
+        vocales = {a, e, i, o, u}
+        consonante = {b, c, d, f, g, h, j, k, l, m, n, ñ, p, q, r, s, t, v, w, x, y, z}
+        numeros = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+    Proceso
+
+        contador_validos  := 0 // contadores de consigna b
+        contador_errores  := 0
+        prim := nil // inicializo lista
+
+        Arrancar(Secuencia)
+
+        Mientras NFDS(Secuencia) hacer // hasta q termine la secuencia
+
+            resguardo_identificador  := "" // limpio los resguardos
+            eesguardo_firma := ""
+            resguardo_criticidad := ""
+            resguardo_menos  := ""
+            resguardo_mas  := ""
+
+            Avanzar(Secuencia, c)
+
+            Para i := 1 a 5 hacer // recorro y resguardo el ID
+                resguardo_identificador := resguardo_identificador ++ (c)
+                Avanzar(Secuencia, c)
+            FinPara
+            Avanzar(Secuencia, c)
+
+            Para i := 1 a 6 hacer // recorro y guardo la firma
+                resguardo_firma := resguardo_firma ++ (c)
+                Avanzar(Secuencia, c)
+            FinPara
+            Avanzar(Secuencia, c)
+
+            resguardo_criticidad := (c) // resguardo el nivel de criticidad
+            Avanzar(Secuencia, c)
+
+            Mientras (c) <> ("+") y (c) <> ("-") hacer // recorro, transformo y resguardo los datos textuales importantes
+
+                // ES VOCAL
+                Si (c) existe en (vocales) entonces
+
+                    resguardo_menos := resguardo_menos ++ (c) // si termina en "-" vocales se mantienen igual
+
+                    Segun (c) hacer // si termina en "+" vocales se cambian por la ubicada 2 posicion antes en el conjunto [a,e,i,o,u], se interpreta como circular
+                        =a: resguardo_mas := resguardo_mas ++ "o"
+                        =e: resguardo_mas := resguardo_mas ++ "u"
+                        =i: resguardo_mas := resguardo_mas ++ "a"
+                        =o: resguardo_mas := resguardo_mas ++ "e"
+                        =u: resguardo_mas := resguardo_mas ++ "i"
+                    FinSegun
+                    contador_validos  := contador_validos + 1
+
+                SiNo
+
+                    // ES CONSONANTE
+                    Si (c) existe(consonantes) entonces
+                        resguardo_menos := resguardo_menos ++ (c) // si termina en "-" consonantes se mantienen igual
+                        resguardo_mas := resguardo_mas ++ ASCII(c) // si termina en "+" la consonante se cambia por el valor que devuelve la funcion ASCII
+                        contador_validos  := contador_validos + 1
+                    SiNo
+
+                        // ES NUMERO
+                        Si ( Entero(c) ) existe en (numeros) entonces // ES NUMERICO
+                            resguardo_mas := resguardo_mas ++ (c) // caracteres numericos se mantienen igual
+
+                            Si ( Entero(c) ) mod 2 = 0 // es par, lo cambio su doble
+                                resguardo_menos := resguardo_menos ++ ( (Entero (c) ) * 2)
+                            SiNo // es impar lo cambio por valor al cubo
+                                resguardo:menos := resguardo_menos ++ ( (Entero (c) ) ** 3)
+                            FinSi
+                            contador_validos  := contador_validos + 1
+
+                        SiNo
+
+                            // ES UN CARACTER ERROR
+                            resguardo_menos := resguardo_menos ++ ("!") // en ambos se registra como carracter de error que es el simbolo "!"
+                            resguardo_mas := resguardo_mas ++ ("!")
+                            contador_errores  := contador_errores + 1
+                        FinSi
+
+                    FinSi
+
+                FinSi
+
+                Avanzar(Secuencia, c)
+            FinMientras
+
+            Si (c) = "+" entonces // uso resguardo_mas
+                Nuevo(q)
+                q^.ID := resguardo_identificador
+                q^.Firma := resguardo_firma
+                q^.Criticidad := resguardo_criticidad
+                q^.Carga_Datos := resguardo_mas
+
+            SiNo // uso resguardo_menos
+
+                Nuevo(q)
+                q^.ID := resguardo_identificador
+                q^.Firma := resguardo_firma
+                q^.Criticidad := resguardo_criticidad
+                q^.Carga_Datos  := resguardo_menos
+            FinSi
+
+            // CARGA ORDENADA DE LA LISTA
+            ant := prim
+            p := prim
+
+            Mientras (p <> nil) y ((p^.Criticidad > resguardo_criticidad) o ((p^.Criticidad = resguardo_criticidad) y (p^.ID > resguardo_identificador))) hacer
+                ant  := p
+                p  := p^.prox
+            FinMientras
+
+            Si (a = nil) entonces
+                a.prox := prim
+                prim := q
+            SiNo
+                ant.prox := q
+                q.prox := p
+            FinSi
+
+            Avanzar(Secuencia, c)
+        FinMientras
+
+FinAccion

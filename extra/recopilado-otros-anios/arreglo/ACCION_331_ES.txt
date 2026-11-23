@@ -1,0 +1,84 @@
+ACCION_331_ES
+    AMBIENTE
+        reg = registro de 
+            edad: N(3)
+            Sexo: {"F", "M"}
+            Partido: {"P1", "P2", "P3", "P4", "Otro", "En Blanco", "Indeciso"}
+            Anterior: {"P1", "P2", "P3", "P4", "Otro", "En Blanco", "Indeciso"}
+        FR
+        Encuesta: Archivo de reg
+        E: reg
+        Votos: Arreglo de[1..7, 1..8, 1..2, 1..2] de Enteros //1-6 Edades | 1..7 Partidos | 1..2 Sexo | 1 Votados, 2 por votar
+        f,c,a,aa: entero
+        fil, colum: entero
+        Bus_par, bus_anpar: Alfanumerico
+        sexo: {"F", "M"}
+        edad: entero 
+
+        Funcion columna(a: Alfanumerico): Entero
+            Segun a hacer   
+                "P1": columna:= 1
+                "P2": columna:= 2
+                "P3": columna:= 3
+                "P4": columna:= 4
+                "Otro": columna:= 5
+                "En Blanco": columna:= 6
+                "Indeciso": columna:= 7
+            FS
+        FF
+
+        Funcion Fila(b: entero): entero
+            Segun b hacer
+                <25: Fila:= 1
+                <35: Fila:= 2
+                <45: Fila:= 3
+                <55: Fila:= 4
+                <65: Fila:= 5
+                otro: Fila:= 6
+            FS
+        FF
+    
+    PROCESO
+        ABRIR E/(Encuesta)
+        Leer(Encuesta, E)
+        Para aa:= 1 hasta 2 hacer
+            Para a:= 1 hasta 2 hacer
+                Para f:=1 hasta 7 hacer
+                    Para c:= 1 hasta 8 hacer
+                        Votos[f, c, a, aa]:= 0
+                    FP
+                FP
+            FP
+        FP
+
+        Mientras NFDA(Encuesta) hacer
+            fil:= Fila(E.edad)
+            colum:= columna(E.Partido)
+            Si (E.Sexo = F) entonces
+                Votos[fil, colum,1,2]:= Votos[fil, colum,1,2] + 1
+                Votos[7, colum, 1,2]:= Votos[7, colum, 1,2] + 1
+                Votos[fil, 8, 1,2]:= Votos[fil, 8, 1,2] + 1
+                Votos[7, 8, 1, 2]:= Votos[7, 8, 1, 2] + 1
+            Sino
+                Votos[fil, colum,2,2]:= Votos[fil, colum,2,2] + 1
+                Votos[7, colum, 2,2]:= Votos[7, colum, 2,2] + 1
+                Votos[fil, 8, 2,2]:= Votos[fil, 8, 2,2] + 1
+                Votos[7, 8, 2, 2]:= Votos[7, 8, 2, 2] + 1
+            FSI
+
+            colum:= columna(E.Anterior)
+            Si (E.Sexo = F) entonces
+                Votos[fil, colum,1,1]:= Votos[fil, colum,1,1] + 1
+                Votos[7, colum, 1,1]:= Votos[7, colum, 1,1] + 1
+                Votos[fil, 8, 1,1]:= Votos[fil, 8, 1,1] + 1
+                Votos[7, 8, 1, 1]:= Votos[7, 8, 1, 1] + 1
+            Sino
+                Votos[fil, colum,2,1]:= Votos[fil, colum,2,1] + 1
+                Votos[7, colum, 2,1]:= Votos[7, colum, 2,1] + 1
+                Votos[fil, 8, 2,1]:= Votos[fil, 8, 2,1] + 1
+                Votos[7, 8, 2, 1]:= Votos[7, 8, 2, 1] + 1
+            FSI
+            Leer(Encuesta, E)
+        FM
+
+        ESC("Ingrese el partido que desea buscar")

@@ -1,0 +1,157 @@
+ACCIÓN mensaje ES
+
+	ambiente
+
+		v: entero	
+		habitantes: secuencia de entero;
+		numero: secuencia de entero
+		cant_nombres,k: entero;
+		nombres: arreglo[1..2] de entero;
+		numeros: arreglo[1..3] de entero;
+		octal: secuencia de caracter [4];
+		char_num, letra_nom: secuencia de caracteres[1];
+
+			
+
+Procedimiento GuardarNombre (); //para controlar la cantidad de nombres que guardo en el arreglo
+	Algoritmo
+
+		para i:= 1 a 2 hacer
+
+			nombres := nombres + 1; //arreglo de nombre
+
+			nombres[cant_nombres] := nombre; //cant_nombres es la ventana
+		FinPara
+Fin Procedimiento;
+
+
+procedimiento GuardarNumeros(); //para controlar la cantidad de numeros que voy cargando al arreglo
+		para i:= 1 a 3 hacer
+
+				cant_numeros := cant_numeros+1;		
+
+				numeros[cant_numeros] := numero;
+Fin procedimiento
+
+Procedimiento MostrarNombres();
+	//lo hago asi para determinar cuando completó de leer los nombres que estan en los codigos
+		Para k := 0 a 1 hacer
+			segun k hacer
+				0: escribir('Nombre del pueblo: ', nombres[k]);					
+				1: escribir('Nombre del lider: ', nombres[k]);	
+			finSegun;
+finProcedimiento
+
+funcion OctToInt(octal_str:secuencia de entero): real;
+	variable
+		i: entero;
+		result: real;
+		resultado2: real; 
+
+		result := 0.0;
+	ambiente
+
+		para i := 1 a octal hacer
+			resultado:= octal MOD 8;
+			resultado2:= resultado * (octal - i);
+
+		OctToInt := resultado2;
+FinFuncion	
+
+
+Procedimiento MostrarNumeros();
+	ambiente
+		habitantes, val1, val2, val3: string;
+
+	algoritmo
+	
+		//Uso las variales para que se mas legible la comnparacion
+		val1 := numeros[1];
+		val2 := numeros[2];
+		val3 := numeros[3];
+
+		Si ((val1 = val2) y (val1 = val3)) o ((val1 = val2) y (val1 <> val3)) o ((val1 <> val2) y (val1 = val3)) entonces
+			habitantes := val1
+			Sino
+				si (val2 = val3) entonces
+					habitantes := val2
+					sino 
+						habitantes := '0'; //ERROR
+				FInSi
+		FinSi		
+
+			//Si la comparacion arroja 0 entonces muestro error
+		Si habitantes <> '0' entonces
+				Escribir('Cantidad de habitantes [OCTAL]: ', habitantes);
+				Escribir('Cantidad de habitantes [DECIMAL]: ', OctToInt(habitantes):0:0);
+			
+			sino
+				escribir('Cantidad de habitantes: ERROR');
+		FinSi
+finProcedimiento 
+
+Algoritmo
+
+
+Mientras NFDS(sec) hacer
+	arr (secOrig);
+	avz (v);
+	//Inicializo los indicadores de valores y nombres para la posicion dentro de cada vector
+
+	cant_nombres := 0;
+	cant_numeros := 0;
+
+	//Inicializo los indicadores de valores y nombres para la posicion dentro de cada vector
+
+	i := 1;
+	Para i <= 200 hacer  //se usa como un solo readln
+		escribir ("Linea original en OCTAL Y LETRAS");
+
+
+				//grabo cada octal en una secuencia de 4
+			Para j := i a i + 4 hacer 
+
+ 				octal = octal + linea[j];
+
+ 					Si octal[1] = 1 entonces
+ 						
+ 						Segun octal hacer
+ 								'1000': letra_nom := 'O';
+								'1001': letra_nom := 'I';
+								'1010': letra_nom := 'A';
+								'1011': letra_nom := 'B';
+								'1100': letra_nom := 'C';
+								'1101': letra_nom := 'D';
+								'1110': letra_nom := 'E';
+								'1111': letra_nom := 'F';
+
+							Escribir (letra_nom);
+						finSegun;
+
+						Sino
+							Segun octal hacer 
+
+								'0000': char_num :='0';
+								'0001': char_num :='1';
+								'0010': char_num :='2';
+								'0011': char_num :='3';
+								'0100': char_num :='4';
+								'0101': char_num :='5';
+								'0110': char_num :='6';
+								'0111': char_num :='7';
+
+								Escribir (letra_nom);
+							Fin Segun;
+			FinPara;
+	FinPara;	
+
+	//Muestro los nombres sacados del codigo					
+			MostrarNombres;
+
+			//Muestro los numeros sacados del codigo					
+			MostrarNumeros;
+
+			//Separador
+			escribir('***********************************');
+
+FinAccion

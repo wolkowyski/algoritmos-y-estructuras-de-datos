@@ -1,0 +1,514 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Final 1 completo
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Final1(sec:secuencia de caracter) es
+
+ Ambiente
+
+  sec:secuencia de caracter;
+  s,res:caracter;
+
+  L1=Registro
+   caracter:AN(1);
+   prox:puntero a L1;
+  finRegistro
+
+  L2=Registro
+   caracter:AN(1);
+   prox:puntero a L2;
+  finRegistro
+
+  eventos=Registro
+   segmento:{"M","E","N"};
+   titulo:L1;
+   tipo:AN(1);
+   prox:puntero a eventos;
+  finRegistro
+
+  Prim1,a,b,ant1: puntero a L1;
+  Prim2,c,d,ant2: puntero a L2;
+  Prim,p,q,ant, puntero a eventos;
+
+  arr: arreglo de(1..8,1..4) entero;
+  i,j: entero;
+
+  matutino: booleano
+  respuesta:AN(1);
+
+  Funcion tipo(res:caracter):entero
+   Segun res hacer
+    "1": tipo:=1;
+    "2": tipo:=2;
+    "3": tipo:=3;
+         matutino:=True;
+    "4": tipo:=4;
+    "5": tipo:=5;
+    "6": tipo:=6;
+    "7": tipo:=7;
+    "8": tipo:=8;
+   finSegun
+  finFuncion
+
+  Funcion hora(s:caracter):entero
+   Segun s hacer
+    "M": hora:=1;
+    "E": hora:=2;
+    "N": hora:=3;
+   finSegun
+  finFuncion
+
+
+
+ Algoritmo
+
+  ARR(sec);
+  AVZ(sec,s);
+
+  Prim1:=nil;
+  Prim:=nil;
+
+  Escribir("Ingrese la opcion que desee A/B/C/D");
+  Leer(respuesta);
+
+  Para i:=1 hasta 8 hacer
+   Para j:=1 hasta 4 hacer
+    arr(i,j):=0;
+   finPara
+  finPara
+
+  Mientras NFDS(sec) hacer
+   Nuevo(q);
+   Prim2:=nil;
+   b:=Prim1;
+   d:=Prim2;
+   matutino:=False;
+
+   Mientras s<>"@" hacer
+    Nuevo(a);
+    *(*q.a).caracter:=s;
+    Escribir(a);
+    Prim:=a;
+    *a.prox:=b;
+    b:=a;
+    AVZ(sec,s);
+   finMientras
+   AVZ(sec,s);
+   Mientras s<>"@" hacer
+    Nuevo(c);
+    *c.caracter:=s;
+    Escribir(c);
+    Prim:=c;
+    *c.prox:=d;
+    d:=c;
+    AVZ(sec,s);
+   finMientras
+   AVZ(sec,s);
+   res:=s;
+   AVZ(sec,s);
+   arr(tipo(res),hora(s)):=arr(tipo(res),hora(s))+1;
+   arr(tipo(res),4):=arr(tipo(res),4)+1;
+   Si res y s="M" y respuesta="C" entonces
+    a:=Prim1;
+    c:=Prim2;
+    Mientras a <> nil hacer
+     Escribir(*(*p.a).caracter);
+     a:=*a.prox;
+    finMientras
+    Escribir(" ");
+    Mientras c <> nil hacer
+     Escribir (*c.caracter);
+     c:=*c.prox;
+    finMientras
+   finSi
+
+
+   *q.segmento:=s;
+   *q.segmento:=res;
+   AVZ(sec,s);
+   Si s="N" entonces
+    Prim1:=nil;
+    a:=nil;
+   finSi
+   Si Prim=nil entonces
+    Prim:=q;
+    *q.prox:=nil;
+    Sino
+     p:=Prim;
+     ant:=nil;
+     Mientras p<>nil y hora(*q.segmento)<hora(*p.segmento) hacer
+      ant:=p;
+      p:=*p.prox;
+     finMientras
+     Si p=Prim entonces
+      Prim:=q;
+      *q.prox:=p;
+      Sino
+       *ant.prox:=q;
+       *q.prox:=p;
+      finSino
+     finSi
+    finSino
+   finSi
+   AVZ(sec,s);
+  finMientras
+
+  Si respuesta = "A" entonces
+   p:=Prim;
+   Mientras p<> nil hacer
+    Escribir(p);
+    p:=*p.prox;
+   finMientras
+  finSi
+  Si respuesta ="B" entonces
+   Para i:=1 hasta 8 hacer
+    Escribir("La cantidad de eventos de tipo ",i, "es: ",arr(i,4));
+   finPara
+  finSi
+  Si respuesta ="D" entonces
+   Para i:=1 hasta 8 hacer
+    Para j:=1 hasta 3 hacer
+     Escribir("La cantidad de noticias de tipo ",i, " en el segmento ",j, " es: ", arr(i,j));
+    finPara
+   finPara
+  finSi
+
+finAccion
+
+Accion Final1.2(vec1:arreglo de(1..8)alfanumerico, vec2:arreglo de(1..5)alfanumerico) es
+
+ Ambiente
+
+  Cables=Registro
+   codigo:N(4);
+   codcable:[1..8];
+   codind:[1..5];
+   mtscable:N(4,2);
+   rollos:N(3);
+  finRegistro
+
+  Archc: Archivo de Cables ordenado por codigo;
+  c: Cables;
+
+  Promedio=Registro
+   metros:real;
+   rollo:N(10);
+   cant:N(5);
+  finRegistro
+
+  arr: arreglo de(1..9,1..6)promedio;
+  i,j,destacada,res,resi,resj:entero;
+  des:booleano;
+
+  vec1:arreglo de(1..8)alfanumerico;
+  vec2:arreglo de(1..5)alfanumerico;
+
+  Nodo=Registro
+   promedio:real;
+   cable:[1..8];
+   prox:puntero a nodo;
+  finRegistro
+
+  Prim,p,q,ant: puntero a Nodo;
+
+
+
+
+ Algoritmo
+
+  Abrir E/(Archc);
+  Leer(Archc,c);
+
+  Para i:=1 hasta 9 hacer
+   Para j:=1 hasta 6 hacer
+    arr(i,j).metros:=0;
+    arr(i,j).cant:=0;
+   finPara
+  finPara
+  des:=False;
+  destacada:=0;
+  Prim:=nil;
+  res:=0;
+
+
+
+  Mientras NFDA(Archc) hacer
+   arr(c.codcable,c.codind).metros:=arr(c.codcable,c.codind).metros + c.rollos*c.mtscable;
+   arr(9,c.codind).metros:=arr(9,c.codind).metros + c.rollos*c.mtscable;
+   arr(c.codcable,6).metros:=arr(c.codcable,6).metros + c.rollos*c.mtscable;
+
+   arr(c.codcable,c.codind).rollos:=arr(c.codcable,c.codind).rollos + c.rollos;
+   arr(9,c.codind).rollos:=arr(9,c.codind).rollos + c.rollos;
+   arr(c.codcable,6).rollos:=arr(c.codcable,6).rollos + c.rollos;
+
+   arr(c.codcable,c.codind).cant:=arr(c.codcable,c.codind).cant +1;
+   arr(9,c.codind).cant:=arr(9,c.codind).cant +1;
+   arr(c.codcable,6).cant:=arr(c.codcable,6).cant +1;
+
+   Leer(Archc,c);
+  finMientras
+
+
+  Si arr(9,1).metros>arr(9,2).metros entonces
+   Escribir("El tipo de industria que destacó es :", vec2(1));
+   destacada:=1;
+   Sino
+    Para j:=2 hasta 4 hacer
+     Si arr(9,j).metros>arr(9,j-1) y arr(9,j)>arr(9,j+1) entonces
+      des:=True;
+      destacada:=j;
+      j:=4;
+     finSi
+    finPara
+    Si des entonces
+     Escribir("El tipo de industria que destacó es :", vec2(destacada));
+     Sino
+      Si arr(9,5).metros>arr(9,4).metros entonces
+       Escribir("El tipo de industria que destacó es :", vec2(5));
+       destacada:=5;
+       Sino
+        Escribir("Ninguna industria se destacó");
+       finSino
+      finSi
+     finSino
+    finSi
+   finSino
+  finsi
+
+  Si destacada <> 0 entonces
+   i:=8;
+   Mientras i<>0 hacer
+    Nuevo(q);
+    *q.promedio:= arr(i,6).cant*100/arr(i,6).mtscable;
+    *q.cable:=i;
+    Escribir(q);
+    Si Prim=nil entonces
+     Prim:=q;
+     *q.prox:=nil;
+     Sino
+      Mientras p<>nil y *p.promedio<*q.promedio entonces
+       ant:=p;
+       p:=*p.prox;
+      finMientras
+      Si p=Prim entonces
+       Prim:=q;
+       *q.prox:=p;
+       Sino
+        *ant.prox:=q;
+        *q.prox:=p;
+       finSino
+      finsi
+     finSino
+    finsi
+    i:=i-1;
+   finMientras
+  finsi
+
+  p:=Prim;
+  Mientras p<>nil hacer
+   Escribir("El promedio de rollos de cable para el tipo ", vec1(*p.cable), " es: ", *p.promedio);
+   p:=*p.prox;
+  finMientras
+
+
+  Para i:=1 hasta 8 hacer
+   Para i:=1 hasta 5 hacer
+    Si arr(i,j).rollos>res entonces
+     res:=arr(i,j).rollos;
+     resi:=i;
+     resj:=j;
+    finsi
+   finPara
+  finPara
+
+  Escribir("La combinacion tipo industria y tipo de cable que mayor cantidad de rollos entregó es :", vec1(resi), vec2(resj), " , entregó ", res, " rollos");
+
+  Cerrar(Archc);
+
+ finAccion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ Accion Final1.2(vec1:arreglo de(1..8)alfanumerico, vec2:arreglo de(1..5)alfanumerico) es
+
+ // Definimos el ambiente de la acción
+ Ambiente
+
+  // Registro para almacenar datos de los cables
+  Cables=Registro
+   codigo:N(4);          // Código único de cada cable (4 dígitos)
+   codcable:[1..8];      // Identificador del tipo de cable (1 a 8)
+   codind:[1..5];        // Identificador del tipo de industria (1 a 5)
+   mtscable:N(4,2);      // Metros de cable por rollo (hasta 2 decimales)
+   rollos:N(3);          // Cantidad de rollos
+  finRegistro
+
+  // Archivo ordenado por código del cable
+  Archc: Archivo de Cables ordenado por codigo;
+  c: Cables;             // Variable para leer registros del archivo
+
+  // Registro para almacenar promedios de metros y rollos
+  Promedio=Registro
+   metros:real;          // Total de metros acumulados
+   rollo:N(10);          // Total de rollos acumulados
+   cant:N(5);            // Cantidad de registros procesados
+  finRegistro
+
+  // Matriz que almacena los datos procesados
+  arr: arreglo de(1..9,1..6)promedio;
+
+  // Variables auxiliares
+  i,j,destacada,res,resi,resj:entero;
+  des:booleano;
+
+  // Parámetros de entrada (ya definidos en la acción, están duplicados aquí)
+  vec1:arreglo de(1..8)alfanumerico; // Tipos de cables
+  vec2:arreglo de(1..5)alfanumerico; // Tipos de industrias
+
+  // Definición de nodo para lista enlazada
+  Nodo=Registro
+   promedio:real;        // Promedio asociado al nodo
+   cable:[1..8];         // Identificador del cable asociado
+   prox:puntero a nodo;  // Puntero al siguiente nodo
+  finRegistro
+
+  // Punteros para manejar la lista enlazada
+  Prim,p,q,ant: puntero a Nodo;
+
+ Algoritmo
+
+  // Abrimos el archivo en modo lectura y leemos el primer registro
+  Abrir E/(Archc);
+  Leer(Archc,c);
+
+  // Inicializamos la matriz "arr" con valores cero
+  Para i:=1 hasta 9 hacer
+   Para j:=1 hasta 6 hacer
+    arr(i,j).metros:=0;
+    arr(i,j).cant:=0;
+   finPara
+  finPara
+
+  // Inicializamos variables auxiliares
+  des:=False;
+  destacada:=0;
+  Prim:=nil;    // Lista enlazada vacía al inicio
+  res:=0;
+
+  // Procesamos los registros del archivo mientras no sea fin de archivo
+  Mientras NFDA(Archc) hacer
+   // Acumulamos metros y rollos para cada combinación de cable e industria
+   arr(c.codcable,c.codind).metros:=arr(c.codcable,c.codind).metros + c.rollos*c.mtscable;
+   arr(9,c.codind).metros:=arr(9,c.codind).metros + c.rollos*c.mtscable; // Fila resumen de industrias
+   arr(c.codcable,6).metros:=arr(c.codcable,6).metros + c.rollos*c.mtscable; // Columna resumen de cables
+
+   arr(c.codcable,c.codind).rollos:=arr(c.codcable,c.codind).rollos + c.rollos;
+   arr(9,c.codind).rollos:=arr(9,c.codind).rollos + c.rollos;
+   arr(c.codcable,6).rollos:=arr(c.codcable,6).rollos + c.rollos;
+
+   arr(c.codcable,c.codind).cant:=arr(c.codcable,c.codind).cant +1;
+   arr(9,c.codind).cant:=arr(9,c.codind).cant +1;
+   arr(c.codcable,6).cant:=arr(c.codcable,6).cant +1;
+
+   // Leemos el siguiente registro
+   Leer(Archc,c);
+  finMientras
+
+  // Determinamos cuál industria destacó más en metros de cable
+  Si arr(9,1).metros>arr(9,2).metros entonces
+   Escribir("El tipo de industria que destacó es :", vec2(1));
+   destacada:=1;
+  Sino
+    // Buscamos la industria destacada entre las posiciones intermedias
+    Para j:=2 hasta 4 hacer
+     Si arr(9,j).metros>arr(9,j-1) y arr(9,j)>arr(9,j+1) entonces
+      des:=True;
+      destacada:=j;
+      j:=4; // Salimos del bucle
+     finSi
+    finPara
+
+    Si des entonces
+     Escribir("El tipo de industria que destacó es :", vec2(destacada));
+    Sino
+      Si arr(9,5).metros>arr(9,4).metros entonces
+       Escribir("El tipo de industria que destacó es :", vec2(5));
+       destacada:=5;
+      Sino
+        Escribir("Ninguna industria se destacó");
+      finSino
+     finSi
+    finSi
+   finSino
+  finsi
+
+  // Si hubo una industria destacada, calculamos los promedios por cable
+  Si destacada <> 0 entonces
+   i:=8; // Comenzamos con el último tipo de cable
+   Mientras i<>0 hacer
+    Nuevo(q); // Creamos un nuevo nodo
+    *q.promedio:= arr(i,6).cant*100/arr(i,6).mtscable;
+    *q.cable:=i;
+
+    // Insertamos el nodo en la lista enlazada en orden descendente
+    Si Prim=nil entonces
+     Prim:=q;
+     *q.prox:=nil;
+    Sino
+      Mientras p<>nil y *p.promedio<*q.promedio entonces
+       ant:=p;
+       p:=*p.prox;
+      finMientras
+      Si p=Prim entonces
+       Prim:=q;
+       *q.prox:=p;
+      Sino
+        *ant.prox:=q;
+        *q.prox:=p;
+      finSino
+     finsi
+    finsi
+    i:=i-1;
+   finMientras
+  finsi
+
+  // Recorremos la lista enlazada e imprimimos los promedios por cable
+  p:=Prim;
+  Mientras p<>nil hacer
+   Escribir("El promedio de rollos de cable para el tipo ", vec1(*p.cable), " es: ", *p.promedio);
+   p:=*p.prox;
+  finMientras
+
+  // Encontramos la combinación de industria y cable con más rollos entregados
+  Para i:=1 hasta 8 hacer
+   Para i:=1 hasta 5 hacer
+    Si arr(i,j).rollos>res entonces
+     res:=arr(i,j).rollos;
+     resi:=i;
+     resj:=j;
+    finsi
+   finPara
+  finPara
+
+  // Mostramos la combinación con mayor cantidad de rollos
+  Escribir("La combinacion tipo industria y tipo de cable que mayor cantidad de rollos entregó es :", vec1(resi), vec2(resj), " , entregó ", res, " rollos");
+
+  // Cerramos el archivo
+  Cerrar(Archc);
+
+ finAccion

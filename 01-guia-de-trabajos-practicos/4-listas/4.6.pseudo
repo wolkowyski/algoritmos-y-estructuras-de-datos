@@ -1,0 +1,171 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.6
+// ==========================================================================
+
+Ejercicio 4.6
+En el restaurante ÑOQUIS se está pensando en una solución informática para el soporte de datos del nuevo sistema de atención a clientes. Se han decidido por LISTAS por su dinamismo en cuanto a la cantidad de elementos. Diseñe un algoritmo que realice las siguientes funciones:
+
+Añadir cliente al ser atendido (lista simple ordenada por Nombre del Cliente).
+Registrar su consumo (Acumular el Total Consumido en valores de montos).
+Realizar el cobro (emitir ticket con Nombre, Fecha, Número de Mesa y Total).
+Eliminar del listado de atención.
+La información almacenada debe mantenerse ordenada por Nombre del cliente.
+
+
+Accion Ejercicio4_6
+    Ambiente
+
+        Nodo = Registro
+            NombreCliente: AN(30)
+            Fecha: formato_fecha
+            NroMesa: N(2)
+            Total: N(6,2)
+            prox: puntero a nodo
+        FinRegistro
+
+        formato_fecha = registro
+            a: N(4)
+            m: 1..12
+            d: 1..31
+        FinRegistro
+
+        prim, p, q, a: puntero a Nodo
+        cliente, nombre: AN(30)
+        mesa, opcion: entero
+        montos: real
+        error_rta1: ("S", "N")
+
+
+        // PROCEDIMIENTOS
+        Función FechaActual: formato_fecha es
+            // primitiva que devuelve la fecha del sistema
+        FinFunción
+
+        // Deja p en el cliente buscado (o en nil si no está) y a en su anterior
+        Procedimiento Busqueda es
+            a:= nil
+            p:= prim // muy importante
+
+            Escribir("Ingrese el nombre del Cliente sobre el cual desea operar")
+            Leer(cliente)
+
+            p:= prim // busqueda
+            Mientras (p <> nil) y (p^.NombreCliente <> cliente) hacer
+                a:= p
+                p:= p^.prox
+            FinMientras
+        FinProcedimiento
+
+
+        Procedimiento AñadirCliente es
+            a:= nil
+            Nuevo(q)
+            Escribir("Ingrese nombre del cliente")
+            Leer(nombre)
+            q^.NombreCliente:= nombre
+            q^.Fecha:= FechaActual
+            Escribir("Ingrese número de mesa del cliente")
+            Leer(mesa)
+            q^.NroMesa:= mesa
+            q^.Total:= 0
+
+            p:= prim
+
+            Mientras (p <> nil) y (p^.NombreCliente < nombre) hacer // insercion ordenada
+                a:= p
+                p:= p^.prox
+            FinMientras
+
+            Si (a = nil) entonces
+                q^.prox:= prim
+                prim:= q
+            SiNo
+                a^.prox:= q
+                q^.prox:= p
+            FinSi
+            Escribir("Carga exitosa, a la espera de registrar consumo")
+        FinProcedimiento
+
+
+        Procedimiento RegistrarConsumo es
+            Busqueda
+
+            Si p <> nil entonces // búsqueda exitosa: actualizamos el total
+                Escribir("Ingrese el monto de cada uno de los articulos consumidos para poder calcular el total, seleccione 0 para finalizar")
+                Leer(montos)
+                Mientras (montos) <> 0 hacer
+                    p^.Total:= p^.Total + montos
+                    Leer(montos)
+                FinMientras
+                Escribir("Carga exitosa, el monto total es: ", p^.Total)
+
+            SiNo // no se lo encontró
+                Escribir("No se encuentra cliente, desea añadirlo? S/N")
+                Leer(error_rta1)
+                Si (error_rta1) = "S" entonces
+                    AñadirCliente
+                FinSi
+            FinSi
+        FinProcedimiento
+
+
+        Procedimiento RealizarCobro es
+            Busqueda
+
+            Si p <> nil entonces // búsqueda exitosa
+                Escribir("ÑOQUIS by Wolkowyski Enterprise SRL")
+                Escribir("TICKET DE COMPRA")
+                Escribir("Cliente: ", p^.NombreCliente)
+                Escribir("Fecha: ", p^.Fecha.d, "/", p^.Fecha.m, "/", p^.Fecha.a)
+                Escribir("NroMesa: ", p^.NroMesa)
+                Escribir("Total: ", p^.Total)
+                Escribir("Gracias por confiar en nosotros, lo esperamos pronto, Dios lo bendiga")
+
+            SiNo // no se lo encontró
+                Escribir("No se encuentra cliente, desea añadirlo? S/N")
+                Leer(error_rta1)
+                Si (error_rta1) = "S" entonces
+                    AñadirCliente
+                FinSi
+            FinSi
+        FinProcedimiento
+
+
+        Procedimiento EliminarCliente es
+            Busqueda
+
+            Si p <> nil entonces // si es distinto de nil, la búsqueda lo encontró
+                Si (a = nil) entonces
+                    prim:= p^.prox
+                SiNo
+                    a^.prox:= p^.prox
+                FinSi
+                Disponer(p)
+
+            SiNo
+                Escribir("No se encuentra el cliente")
+            FinSi
+        FinProcedimiento
+
+
+    Proceso
+        prim:= nil
+        a:= nil
+        Escribir("Bienvenido, que operacion desea realizar")
+        Escribir("1- Añadir Cliente       2- Registrar Consumo       3- Realizar cobro          4- Eliminar Cliente       0- Salir")
+        Leer(opcion)
+        Mientras (opcion) <> 0 hacer
+            Segun (opcion) hacer
+                =1: AñadirCliente
+                =2: RegistrarConsumo
+                =3: RealizarCobro
+                =4: EliminarCliente
+                Otro: Escribir("Error")
+            FinSegun
+
+            Escribir("Bienvenido, que operacion desea realizar")
+            Escribir("1- Añadir Cliente       2- Registrar Consumo       3- Realizar cobro          4- Eliminar Cliente       0- Salir")
+            Leer(opcion)
+        FinMientras
+FinAccion

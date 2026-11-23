@@ -1,0 +1,110 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Actualización secuencial (ej. 2.2.21)
+//
+//  Red social: el maestro de amistades se actualiza con un archivo de
+//  movimientos (notificaciones). Ambos ordenados por la misma clave
+//  (Cod_Usuario + Cod_Amigo). Cod_Movimiento: A = alta, B = baja,
+//  C = cambio (modificación del mensaje del muro).
+//  Se genera un maestro nuevo (actualización secuencial = mezcla + reglas).
+// ==========================================================================
+
+Acción Ejercicio2_2_21 es
+    Ambiente
+
+        Fecha = Registro
+            aa: N(4)
+            mm: 1..12
+            dd: 1..31
+        FinRegistro
+
+        Clave_Amigo = Registro
+            Cod_Usuario: N(4)
+            Cod_Amigo: N(4)
+        FinRegistro
+
+        Amigo = Registro // Archivo Maestro
+            Clave: Clave_Amigo
+            Fecha_Amistad: Fecha
+            Mensaje_Muro: AN(255)
+        FinRegistro
+
+        Notificacion = Registro // Archivo de Movimientos
+            Clave: Clave_Amigo
+            Cod_Movimiento: ("A", "B", "C")
+            Fecha_Amistad: Fecha
+            Mensaje_Muro: AN(255)
+        FinRegistro
+
+        Mae_Amigos, Mae_Actualizado: Archivo de Amigo ordenado por Clave
+        Reg_Mae, Reg_Sal: Amigo
+
+        Mov_Notificaciones: Archivo de Notificacion ordenado por Clave
+        Reg_Mov: Notificacion
+
+        HV = 9999 // las claves se comparan como Cod_Usuario y luego Cod_Amigo
+
+        Procedimiento Leer_Maestro es
+            Leer(Mae_Amigos, Reg_Mae)
+            Si FDA(Mae_Amigos) entonces
+                Reg_Mae.Clave.Cod_Usuario:= HV
+                Reg_Mae.Clave.Cod_Amigo:= HV
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Leer_Movimiento es
+            Leer(Mov_Notificaciones, Reg_Mov)
+            Si FDA(Mov_Notificaciones) entonces
+                Reg_Mov.Clave.Cod_Usuario:= HV
+                Reg_Mov.Clave.Cod_Amigo:= HV
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Procesos_Iguales es // la clave existe en el maestro
+            Según Reg_Mov.Cod_Movimiento hacer
+                "A": Escribir("Error: la amistad ya existe")
+                     Escribir(Mae_Actualizado, Reg_Mae) // el maestro se conserva
+                "B": // baja: simplemente no se copia al maestro nuevo
+                "C": Reg_Sal:= Reg_Mae
+                     Reg_Sal.Mensaje_Muro:= Reg_Mov.Mensaje_Muro
+                     Escribir(Mae_Actualizado, Reg_Sal)
+            FinSegún
+            Leer_Maestro
+            Leer_Movimiento
+        FinProcedimiento
+
+        Procedimiento Movimiento_Sin_Maestro es // clave nueva
+            Si Reg_Mov.Cod_Movimiento = "A" entonces
+                Reg_Sal.Clave:= Reg_Mov.Clave
+                Reg_Sal.Fecha_Amistad:= Reg_Mov.Fecha_Amistad
+                Reg_Sal.Mensaje_Muro:= Reg_Mov.Mensaje_Muro
+                Escribir(Mae_Actualizado, Reg_Sal)
+            Sino
+                Escribir("Error: baja o cambio de una amistad que no existe")
+            FinSi
+            Leer_Movimiento
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(Mae_Amigos); Leer_Maestro
+        Abrir E/(Mov_Notificaciones); Leer_Movimiento
+        Abrir /S(Mae_Actualizado)
+
+        Mientras (Reg_Mae.Clave.Cod_Usuario <> HV) o (Reg_Mov.Clave.Cod_Usuario <> HV) hacer
+            Si Reg_Mae.Clave = Reg_Mov.Clave entonces
+                Procesos_Iguales
+            Sino
+                Si Reg_Mae.Clave < Reg_Mov.Clave entonces
+                    // el registro del maestro no tiene novedades: se copia tal cual
+                    Escribir(Mae_Actualizado, Reg_Mae)
+                    Leer_Maestro
+                Sino
+                    Movimiento_Sin_Maestro
+                FinSi
+            FinSi
+        FinMientras
+
+        Cerrar(Mae_Amigos)
+        Cerrar(Mov_Notificaciones)
+        Cerrar(Mae_Actualizado)
+FinAcción

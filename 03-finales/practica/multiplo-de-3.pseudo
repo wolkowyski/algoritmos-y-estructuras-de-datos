@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Funciones recursivas sobre dígitos
+// ==========================================================================
+
+Funcion CantDeCeros(x, cont: Entero;): Logico es
+			Si x < 10 entonces
+				Si x = 0 entonces 							101100
+					Si (cont + 1) Mod 3 = 0 entonces
+						CantDeCeros:= Verdadero;
+					sino
+						CantDeCeros:= Falso ;
+					FinSi
+				sino
+					Si (cont) Mod 3 = 0 entonces
+						CantDeCeros:= Verdadero;
+					sino
+						CantDeCeros:= Falso ;
+					FinSi
+				FinSi
+			Sino
+				Si X Mod 10 = 0 entonces
+					CantDeCeros:= CantDeCeros (X DIV 10, cont + 1)
+				sino
+					CantDeCeros:= CantDeCeros (X DIV 10, cont)
+				Finsi
+			FinSi
+		FinFuncion

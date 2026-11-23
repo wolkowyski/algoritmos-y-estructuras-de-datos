@@ -1,0 +1,133 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2023 - Asignación de aulas (listas dobles con nodos cabecera)
+//
+//  A cada alumno que no está libre (EsAlumnoLibre, dada) se le asigna un
+//  aula (AsignarAula, dada). Se arma una lista doble con un nodo cabecera
+//  por aula (legajo 0) y, detrás de cada cabecera, los alumnos asignados.
+//  Los alumnos asignados se sacan de la lista original. Informar el promedio
+//  de alumnos por aula y el aula con más alumnos.
+//  Enunciado: ../enunciados/2023-tema-1.jpg
+// ==========================================================================
+
+Accion Asignacion_Aula (Prim: puntero a Nodo) ES
+
+Ambiente
+
+	Nodo=Registro
+		legajo: N(5)
+		AyN: AN(30)
+		Comision: AN(4)
+		Notas: arreglo[1...5] de reales
+		prox: puntero a Nodo
+	Fin Registro
+
+	New_Nodo=Registro
+		Curso: (1...6)
+		cantidad: entero
+		legajo: N(5)
+		ant,prox: puntero a New_Nodo
+	Fin Registro
+
+	P, Ant_P, Z: puntero a Nodo
+	New_Prim, Ult, Q, R: puntero a New_Nodo
+
+	aula: (1...6)
+
+	Alum_X_Aulas: arreglo[1...6] de entero
+	i, acum, mas_alumnos, curso_mayor: entero
+
+Proceso
+	acum:= 0
+
+	// Carga de los nodos Aulas
+	New_Prim:= nil
+	Ult:= nil
+
+	Para (i:=1 hasta 6) hacer
+		Nuevo(Q)
+		*Q.Curso:= i
+		*Q.cantidad:= 0
+		*Q.legajo:= 0
+
+		Si (New_Prim = nil) entonces
+			*Q.prox:= nil
+			*Q.ant:= nil
+			New_Prim:= Q
+			Ult:= Q
+		SiNo
+			*Q.prox:= nil
+			*Q.ant:= Ult
+			*Ult.prox:= Q
+			Ult:= Q
+		Fin Si
+
+		// Inicializar arreglo
+		Alum_X_Aulas[i]:= 0
+	Fin Para
+
+	// Carga de Alumnos
+	P:= Prim
+
+	Mientras (P <> nil) hacer
+		R:= New_Prim
+
+		Si no(EsAlumnoLibre(*P.legajo)) entonces
+
+			aula:= AsignarAula()
+
+			Mientras (R <> nil) y (*R.Curso <> aula) hacer
+				R:= *R.prox
+			Fin Mientras
+
+			*R.cantidad:= *R.cantidad + 1
+
+			Nuevo(Q)
+			*Q.Curso:= aula
+			*Q.cantidad:= 1
+			*Q.legajo:= *P.legajo
+
+			Si (*R.Curso = 6) entonces
+
+				*Q.prox:= nil
+				*Q.ant:= Ult
+				*Ult.prox:= Q
+				Ult:= Q
+			SiNo
+				*Q.prox:= *R.prox
+				*Q.ant:= R
+				*(*R.prox).ant:= Q
+				*R.prox:= Q
+			Fin Si
+
+			Alum_X_Aulas[aula]:= Alum_X_Aulas[aula] + 1
+			acum:= acum + 1
+
+			Si (P = Prim) entonces
+				Prim:= *P.prox
+			SiNo
+				*Ant_P.prox:= *P.prox // se engancha el anterior con el siguiente
+			Fin Si
+
+			Z:= P
+			P:= *P.prox
+			Disponer(Z)
+		SiNo
+			Ant_P:= P
+			P:= *P.prox
+		Fin Si
+	Fin Mientras
+
+	mas_alumnos:= -1
+
+	Para (i:=1 hasta 6) hacer
+		Si (Alum_X_Aulas[i] > mas_alumnos) entonces
+			mas_alumnos:= Alum_X_Aulas[i]
+			curso_mayor:= i
+		Fin Si
+	Fin Para
+
+	Esc("El promedio de alumnos por aulas es: ", acum / 6)
+
+	Esc("Aula con mayor cantidad de alumnos: ", curso_mayor)
+Fin Accion

@@ -1,0 +1,89 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.5 - resolución compartida en Discord
+// ==========================================================================
+
+Dada una lista simplemente encadenada que contiene datos de todas las provincias de la República Argentina: nombre, capital, cantidad total de habitantes y cantidad de analfabetos, y
+está ordenada en forma decreciente por número de habitantes analfabetos, generar otras tres listas que contengan el nombre, la capital y el porcentaje de analfabetos de las Provincias
+que respondan a las siguientes restricciones.
+
+L1: <= 10 % analfabetos
+L2: 16 a 25 % analfabetos
+L3: => 26 % analfabetos
+
+ACCION 4.5 ES(prim_LP:puntero a NODO1)
+AMBIENTE
+NODO1 = registro
+    nombre:AN(30)
+    capital:AN(30)
+    habitantes: entero
+    analfabetos: entero
+    prox: puntero a NODO1
+fin_registro
+prim_LP,LP:puntero a nodo
+
+NODO2 = registro
+    nombre:AN(30)
+    capital:AN(30)
+    porcentaje:entero
+    prox:puntero a NODO2
+fin_registro
+prim_L1,A1,prim_L2,A2,prim_L3,A3,L:puntero a NODO2
+
+
+PROCEDIMIENTO ASIGNAR_L()
+    *L.nombre:= *LP.nombre
+    *L.capital:= *LP.capital
+    *L.porcentaje:= (*LP.analfabetos * 100) DIV *LP.habitantes
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO TRATAR_L1()
+    ASIGNAR_L()
+    SI prim_L1 = nil ENTONCES
+        prim_L1 = L
+        A1:= prim_L1
+    SINO
+        *A1.prox:= L
+        A1:= L
+    fin_si
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO TRATAR_L2()
+    ASIGNAR_L()
+    SI prim_L2 = nil ENTONCES
+        prim_L2 = L
+        A2:= prim_L2
+    SINO
+        *A2.prox:= L
+        A2:= L
+    fin_si
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO TRATAR_L3()
+    ASIGNAR_L()
+    SI prim_L3 = nil ENTONCES
+        prim_L3 = L
+        A3:= prim_L3
+    SINO
+        *A3.prox:= L
+        A3:= L
+    fin_si
+FIN_PROCEDIMIENTO
+
+
+ALGORITMO
+L1:=nil
+L2:=nil
+L3:=nil
+LP:= prim_LP
+MIENTRAS LP <> nil HACER
+    NUEVO(L)
+    SEGUN ((*LP.analfabetos * 100) DIV *LP.habitantes) HACER
+        <=10: TRATAR_L1()
+        <25: TRATAR_L2()
+        >=25: TRATAR_L3()
+    FIN_SEGUN
+    LP:= *LP.prox
+FIN_MIENTRAS
+
+FIN_ACCION.

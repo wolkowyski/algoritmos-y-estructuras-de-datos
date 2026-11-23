@@ -1,0 +1,60 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2022 - Tema 2 - Ejercicio 2 (recursividad + listas)
+//
+//  Lista de pacientes con 4 mediciones de presión arterial. Eliminar de la
+//  lista a los que tienen presión normal (promedio sistólica < 120 y
+//  diastólica < 80). El promedio se calcula con una función recursiva.
+//  Enunciado: ../enunciados/2022-tema-2.jpg
+// ==========================================================================
+
+Accion Tema2_Ejer2_2022 (Prim: puntero a Nodo) ES
+
+Ambiente
+
+	Nodo=Registro
+		DNI: N(8)
+		AyN: AN(30)
+		Nro_cama: N(3)
+		Nro_habit: N(3)
+		pa_sistolica: arreglo[1...4] de entero
+		pa_diastolica: arreglo[1...4] de entero
+		prox: puntero a Nodo
+	Fin Registro
+
+	P, A, Z: puntero a Nodo
+	prom_sis,prom_dia: entero
+
+	Funcion Promedio(Arr: arreglo [1...4] de entero, i: entero): entero ES
+
+		Si (i = 4) entonces
+			Promedio:= Arr[i] div 4
+		SiNo
+			Promedio:= (Arr[i] div 4) + Promedio(Arr, i + 1) // suma de cada medición / 4
+		Fin Si
+	Fin Funcion
+
+Proceso
+	P:= Prim
+
+	Mientras (P <> nil) hacer
+
+		prom_sis:= Promedio(*P.pa_sistolica, 1)
+		prom_dia:= Promedio(*P.pa_diastolica, 1)
+
+		Si (prom_sis < 120) y (prom_dia < 80) entonces
+			Si (P = Prim) entonces
+				Prim:= *P.prox
+			SiNo
+				*A.prox:= *P.prox
+			Fin Si
+
+			Z:= P
+			P:= *P.prox
+			Disponer(Z)
+		SiNo
+			A:= P
+			P:= *P.prox
+		Fin Si
+	Fin Mientras
+Fin Accion

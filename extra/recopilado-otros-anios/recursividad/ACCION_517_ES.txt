@@ -1,0 +1,12 @@
+Función MCD (m,n: entero):entero
+    Si (m < n) entonces
+        MCD:= MCD(n, m)
+    Sino
+        Si (n = 0) entonces
+            MCD:= m
+        Sino
+            MCD(n, m mod n)
+        FS
+    FS
+FF
+

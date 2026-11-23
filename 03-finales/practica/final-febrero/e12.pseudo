@@ -1,0 +1,243 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e12
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+/por codpack cant d pref
+/promedio de pref del tipo nula
+-info sobre packs con may de pref A que d
+-%de clientes P registraron diferente a N
+
+ACCION parcialAgosto
+    Ambiente
+    sec: secuencia de caracteres
+    v:ventana
+
+    nodo= registro
+        caracter:N(1)
+        pref: N(1)
+        tipo:
+        prox: puntero a nodo
+    finregistro
+
+    p,q,prim1, prim2, k: puntero a nodo
+
+    procedimiento cargarNodo es
+        nuevo(q)
+        //asigno valores al nodo
+        q.pref:=''
+        q.caracter:= v
+        q.tipo:= ''
+
+
+        k:= prim1
+        si prim1 = nil entonces
+            prim1:= q
+            q.prox:= nil
+        sino
+        mientras k <> nil hacer
+            p:= *p.prox
+            nodoult:= p
+        finmientras
+         nodoult.prox:= q
+         q.prox:= nil
+
+    finprocedimiento
+
+    procedimiento cargartotales()
+        p.prefDP:= p.prefDP + prefDP
+        p.prefDB:= p.prefDB + prefDB
+        p.prefAP:= p.prefAP + prefAP
+        p.prefDP:= p.prefDB + prefDP
+    finp
+
+
+    procedimiento cargarLista es
+        p:= prim2 k:=prim1
+        si prim2= nil entonces
+            prim2= nodoprim
+            nodoult.prox:= nil
+            p:= nodoult
+            cargartotales()
+        sino
+
+
+        bandera:= verdadero
+        mientras bandera hacer
+            mientras p.caracter <> '' o k.caracter <> p.caracter
+                p:= p.prox
+                k:= k.prox
+            finmientras
+
+            //codigonoExiste
+            si p.caracter = ' 'entonces
+                cargartotales()
+            finsi
+            si p = nil entonces
+                bandera: falso
+            sino
+                k:= prim1
+                mientras p.caracter <> ''
+                    p:= *p.prox
+                finmientras
+            finsi
+        finmientras
+
+        si bandera= falso entonces
+            mientras p <> nil hacer
+                p:= *p.prox
+                ultlista:= p
+            finmientras
+                nodoult.prox:= nil
+                ultlista.prox:= prim1
+                //tiene que ser nodo ultimo, me dio paja
+                cargartotales()
+        finsi
+
+
+
+
+
+
+
+    PROCESO
+    ARR(sec) AVZ(sec,v)
+    Mientras no FDS(sec)
+        Mientras v <> '/' hacer
+            tipo:= v
+            avz(sec,v)
+            Para i= i a 6 hacer
+                avz(sec,v)
+            finpara
+            e1:= v
+            avz(sec,v)
+            e2:=v
+            edad:= AGE(e1,e2)
+            Mientras v <> '-' hacer
+                cargarNodo()
+                avz(sec,v)
+            finmientras
+            avz(sec,v)
+            pref:= v
+            avz(sec,v)
+
+            cargarLista()
+
+            si tipo='P' entonces
+                segun pref hacer
+                    1: prefPA:= prefPA + 1
+                    2: prefPD:= prefPD + 1
+                finsegun
+            sino
+            si tipo = 'B' entonces
+                segunpref hacer
+                    1: prefBA:= prefBA + 1
+                    2: prefBD:= prefBD + 1
+                finsegun
+            finsi
+
+            si pref = 'N' entonces
+                prefN:= prefN + 1
+                edadp:= edadp + edad
+            finsi
+        finmientras
+    finmientras
+
+    p= prim1
+    Mientras p <> nil hacer
+        totA:= 0
+        totD:= 0
+        escribir('para el codigo de pack')
+        Mientras p.caracter <> '' hacer
+            p:= *p.prox
+            escribir(p.caracter)
+        finmientras
+        escribir('las preferencias de clientes Premium corresponden en Deseable a. 'p.prefDP, 'y en Alta a:', p.prefAP, 'en clientes Basicos preferencia deseable:', p.prefDB, 'y en preferencia alta:', p.prefAB)
+        totA:= prefAB + prefAP
+        totD:= totDB + totDP
+        si totA > totD entonces
+            escribir('este codigo de pack ademas tiene mayor cantidad de preferencia alta que deseable')
+        finsi
+        totgral:= totA+totD
+        totprem:= totAP + totDP
+    finmientras
+
+        porcpre:= totgral/totprem * 100
+        escribir(' el porcentaje de clientes premium con preferencias es', porcpre )
+
+        prom:= edado/prefN
+        escribir('el promedio de la edad de clientes que registraron pref N es' prom )
+
+    FINPROC
+
+    EJER 2
+    ACCION
+    Ambiente
+        control= registro
+            mesvisit:
+            nro_emp:
+            raz_soc:
+            cat: 1..3
+            hab: 'S', 'N'
+            cap:
+        finregistro
+
+
+        A: arreglo de [1...12,1...3] de dato
+
+        dato= registro
+            habilitado:
+            NOhab
+        finregistro
+
+        arch: archivo de control
+        c: control
+
+
+    PROCESO
+        ABRIR()
+        ABRIR S/(arch) LEER(arch,c)
+
+        para i = 1 hasta 12 hacer
+            para j= 1 hasta 3 hacer
+                A[i,j]:= 0
+            fp
+        fp
+
+        mientras no FDA(arch) hacer
+
+            si c.hab = 'S' entonces
+                A[c.mesvisit, c.cat],habilitado:=  A[c.mesvisit, c.cat].habilitado + 1
+            sino
+                A[c.mesvisit, c.cat].NOhab:= A[c.mesvisit, c.cat].NOhab + 1
+            finsi
+
+
+
+            si c.cap < 100 entonces
+                men100:= men100+1
+            finsi
+
+
+            leer(arch, c)
+        finmientras
+
+        min:= 999
+        Para i = 1 a 12
+            Para j= 1 a 3 hacer
+                escribir('para el mes', i, 'los restaurantes habilitados de la categoria', j, 'son' A[i,j].habilitado)
+                si A[i,j].habilitado < min
+                    min:=  A[i,j].habilitado
+                    mesmin:= i, catmin:= j
+                finsi
+                nohab:= nohab + A[i,j].NOhab
+                tothab:= tothab + A[i,j].habilitado
+            finpara
+        finpara
+
+        escribir('los restaurantes con una capacidad menor a 100 son', men1000)
+        escribir('el mes con menor cant de hab es', mesmin, 'de la categoria', catmin)
+        porc:= tothab / nohab * 100
+        escribir('el porcentaje de restaurantes no habilitados es:' porc )
+finproceso

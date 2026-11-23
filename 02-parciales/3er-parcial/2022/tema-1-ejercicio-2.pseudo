@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2022 - Tema 1 - Ejercicio 2 (recursividad + listas)
+//
+//  Lista de pacientes con 4 mediciones de temperatura. Mostrar nombre y
+//  apellido y eliminar de la lista a los que no registraron ninguna
+//  temperatura mayor a 36,5. La verificación se hace con una función recursiva.
+//  Enunciado: ../enunciados/2022-tema-1.jpg
+// ==========================================================================
+
+Accion Tema_1_Ejer_2_2022 (Prim: puntero a Nodo) ES
+
+Ambiente
+
+	Nodo=Registro
+		DNI: N(8)
+		AyN: AN(30)
+		Edad: N(2)
+		Nro_cama: N(3)
+		Nro_habit: N(3)
+		Temperatura: arreglo[1...4] de reales
+		prox: puntero a Nodo
+	Fin Registro
+
+	P, A, Z: puntero a Nodo
+
+	Funcion Fiebre(Arr: arreglo [1...4] de reales, i: entero): booleano ES
+
+		Si (Arr[i] > 36,5) entonces // con una sola medición alta alcanza
+
+			Fiebre:= Verdadero
+		SiNo
+			Si (i = 4) entonces
+
+				Fiebre:= Falso
+			SiNo
+				Fiebre:= Fiebre(Arr, i + 1) // caso recursivo: siguiente medición
+			Fin Si
+		Fin Si
+	Fin Funcion
+
+Proceso
+	P:= Prim
+
+	Mientras (P <> nil) hacer
+
+		Esc("Paciente: ", *P.AyN)
+
+		Si no(Fiebre(*P.Temperatura, 1)) entonces
+
+			Si (P = Prim) entonces
+				Prim:= *P.prox
+			SiNo
+				*A.prox:= *P.prox
+			Fin Si
+
+			Z:= P
+			P:= *P.prox
+			Disponer(Z)
+		SiNo
+			A:= P
+			P:= *P.prox
+		Fin Si
+	Fin Mientras
+Fin Accion

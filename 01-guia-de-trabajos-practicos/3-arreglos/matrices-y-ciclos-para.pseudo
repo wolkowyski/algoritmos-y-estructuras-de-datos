@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos: recorridos de matrices (apunte)
+//  i = filas, j = columnas. Paso -1 = recorrido "anti-natural" (de atrás hacia adelante)
+// ==========================================================================
+
+Recorrido Natural para Matrices - ejemplo de 4x3
+
+Para i:= 1 a 4, 1 hacer
+    Para j:= 1 a 3, 1 hacer
+        MatA[i,j]:= 0
+    FinPara
+FinPara
+
+
+
+Recorridos Anti-Naturales para Matrices - ejemplo de 4x3
+
+Para i:= 4 a 1, -1 hacer // filas de abajo hacia arriba
+    Para j:= 1 a 3, 1 hacer // la matriz tiene 3 columnas
+        MatA[i,j]:= 0
+    FinPara
+FinPara
+
+
+Para j:= 3 a 1, -1 hacer
+    Para i:= 1 a 4, 1 hacer
+        MatA[i,j]:= 0
+    FinPara
+FinPara
+
+
+Para i:= 4 a 1, -1 hacer
+    Para j:= 3 a 1, -1 hacer
+        MatA[i,j]:= 0
+    FinPara
+FinPara
+
+Para j:= 1 a 3, 1 hacer
+    Para i:= 4 a 1, -1 hacer
+        MatA[i,j]:= 0
+    FinPara
+FinPara
+
+
+
+
+Recorridos Particulares - en matrices cuadradas - ejemplo 4x4
+
+Poner en 0 toda la diagonal principal
+
+Necesito un solo para
+Para x:= 1 a 4, 1 hacer
+    MatA[x,x]:= 0
+FinPara
+
+
+Poner en 0 toda la diagonal secundaria // recorrido natural: fila + columna = n + 1
+Para x:= 1 a 4, 1 hacer
+    MatA[x, 5-x]:= 0
+FinPara
+
+Para x:= 4 a 1, -1 hacer // recorrido anti-natural
+    MatA[x, 5-x]:= 0
+FinPara

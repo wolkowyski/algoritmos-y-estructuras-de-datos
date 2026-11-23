@@ -1,0 +1,7 @@
+Funcion potencia(a, b:entero):entero
+    Si (b = 1) entonces
+        potencia:= a
+    Sino
+        potencia:= a *potencia(a, b-1)
+    FS
+FF

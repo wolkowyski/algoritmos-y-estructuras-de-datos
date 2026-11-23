@@ -1,0 +1,729 @@
+
+	Tratamiento de secuencias de caracteres
+----------------------------------------------------------------------------------------------------------------------------------------
+Accion 1.01 es
+	ambiente
+		S:secuencia de caracter
+		v:caracter
+		con: natural
+	algoritmo
+		arr(s)
+		Avz(s,v)
+		con:=0					(las variables que se debes inicializar en cero, son las del tipo contadores, que tienen este formato: "con:=con+1", ya que si "con" no esta inicializado con algun numero, no vale nada, y no podemos sumar 1 a algo indefinido)
+		Miesntras V<>"*" hacer
+			Mientras v=" " hacer		(avanza todos los blancos hasta el primer caracter, cuando sale de este mientras, es por que encontro un palabra)
+				Avz(S,v)
+			fin mientras
+			si V=i entonces			(verifica si V es igual a i)
+				con:=con+1		(si v es i, entonce esncontro una palabla que empieza con i, por lo que cuenta con el contador)
+			fin si
+			Mientras V<>" " hacer		(ya que conto la palabra, avanza todos los caracteres de la palabra, hasta encontrar un espacio)
+				avz(S,v)
+			fin mientras
+		fin mientras
+		si con=0 entonces
+			escribir("ninguna palabra de la secuencia comienza con i")
+		contrario
+			escribir(con, "palabra/s de la secuencia comienza/n con i")
+fin accion
+----------------------------------------------------------------------------------------------
+accion 1.02 es
+	ambiente
+		S: secuencia de caracter
+		V: caracter
+		con: natural
+		Letra:An(1)
+	algoritmo
+		arr(S)
+		Avz(S,V)
+		con:=0
+		escribir:("inserte una letra")		(inserta la letra con la que quiere que cuente las palabras)
+		leer:(letra)
+		Mientras V<>"*" hacer
+			Mientras v=" " hacer		(avanza todos los blancos hasta el primer caracter)
+				Avz(S,v)
+			fin mientras
+			si V="letra" entonces		(verifica si V es igual a i, y es igual cuenta una palabra con el contador)
+				con:=con+1
+			fin si
+			Mientras V<>" " hacer		(ya que conto la palabra, avanza todos los caracteres de la palabra, hasta encontrar un espacio)
+				avz(S,V)
+			fin mientras
+		fin mientras
+		si con=0 entonces
+			escribir("ninguna palabra de la secuencia comienza con ",letra)
+		contrario
+			escribir(con ,"palabra/s de la secuencia comienza/n con ",letra)
+fin accion
+----------------------------------------------------------------------------------------------
+accion 1.03 es
+	ambiente
+		S:secuencia de caracteres
+		V:caractere
+		con, cart:natural
+	algoritmo
+		Arr(S)
+		Avz(S,V)
+		con:=0
+		cart:=0
+		Mientras V<>"*" hacer
+			Mientras v=" " hacer
+				Avz(S,v)
+			fin mientras
+			Mientras V<>" " hacer		(cuenta cuantos caracteres tiene la palabra)
+				cart:=cart+1
+				avz(S,V)
+			fin mientras
+			si cart=4 entonces		(verifica si la palabra tienen 4 caracteres, y si es asi la cuenta)
+				con:=con+1
+			fin si
+			cart:=0
+		fin mientras
+		Si con=0 entonces
+			Escribir("ninguna palabra de la secuencia tiene 4 caracteres")
+		contrario
+			Escribir(con, "palabra/s de la secuencia tiene/n 4 caracteres")
+fin accion
+----------------------------------------------------------------------------------------------
+accion 1.04 es
+	ambiente
+		S:secuencia de caracter
+		V:caracter
+		con: entero
+	algoritmo
+		Arr(S)
+		Avz(S,V)
+		con:=0
+		Mientras V<>"*" hacer
+			Mientras v=" " hacer
+				Avz(S,v)
+			fin mientras
+			Si V="a" entonces
+				Avz(S,V)
+				Si V="l" entonces
+					Avz(S,V)
+					Si V="g" entonces	(con los si anidados verifica si la palabra empieza con "alg", y si es asi la cuenta)
+						con:=con+1
+					fin si
+				fin si
+			fin si
+			Mientras V<>" " entonces
+				Avz(S,V)
+			fin mientra
+		fin mientras
+		si con=0 entonces
+			Escribir("ninguna palabra de la secuencia comienza con Alg")
+		contrario
+			Escribir(con, "palabra/s de la secuencia comienzan con alg")
+fin accion
+-----------------------------------------------------------------------------------------------
+accion 1.05 es
+	ambiente
+		S:secuencia de caracter
+		V:caracter
+		con, cont: entero
+		porcen: real
+	algoritmo
+		Arr(S)
+		Avz(S,V)
+		con:=0
+		cont:=0
+		Mientras V<>"*" hacer
+			Mientras v=" " hacer
+				Avz(S,v)
+			fin mientras
+			cont:=cont+1				(este contador cuenta todas las palabras de la secuencia, esta abajao del mientras ya que al salir de este mientras es por que encontro una palabra)
+			Si V="a" entonces
+				Avz(S,V)
+				Si V="l" entonces
+					Avz(S,V)
+					Si V="g" entonces
+						con:=con+1	(este contador cuenta las palabras que cumplen con la condicion, es decir que empiezan con "alg")
+					fin si
+				fin si
+			fin si
+			Mientras V<>" " hacer
+				Avz(S,V)
+			fin mientras
+		fin mientras
+
+		porcen:=(con/cont)*100		(Para obtener el %, hago la cantidad de palabras que empiezan con "alg", dividido el total de palabras, eso por 100)
+
+		Escribir("Las palabras que comienzan con Alg reprecentan un", porcen ,"% del total de las palabras")
+fin accion
+--------------------------------------------------------------------------------------------------------------------
+accion 1.06 es (Hecha en clases)
+	ambiente
+		S:secuencia de caracter
+		V:caracter
+		con: entero
+	algoritmo
+		arr(S)
+		avz(S,V)
+		con:=0
+		Mientras V<>"*" hacer
+			Mientras V=" " hacer
+				Avz(S,v)
+			fin mientras
+			con:=con+1				(encontro un numero de socio, y lo cuenta)
+			Mientras V<>" " entonces		(avanza todo el numero, ya que puede ser un numero de 1, 2, 3, ... cifras)
+				Avz(S,V)
+			fin mientras
+		fin mientras
+		Escribir("Existen", con ,"socios registrados")
+fin accion
+--------------------------------------------------------------------------------------------------------------------------------------
+accion 1.07 es (Hecha en clases, en este ejercicio la variable v lee el numero entero, sin tener en cuenta la cantidad de sifras de esta)
+	ambiente
+		S:secuencia de caracter
+		V:caracter
+		con: entero
+	algoritmo
+		arr(S)
+		avz(S,V)
+		Crear(Ss,Vs)
+		num:=1					(pone a num en 1 para compararlo con el primer numero de socio de la secuencia)
+		Mientras V<>"*" hacer
+			Mientras v=" " hacer
+				Avz(S,v)
+			fin mientras
+			Mientras V>num hacer		(compara, si num es menor debe escribirce en la secuencia de salida, ya que es un numero de socio no registrado, si es igual, no entra en el mientras)
+				Vs:=num			(asigna num a la variable de salida para escribirla)
+				Escribir(Ss,Vs)
+				num:=num+1
+				Vs:=" "
+				Escribir(Ss,Vs)		(escribe un espacio entre los numertos de socios)
+			fin mientras			(esto se va a repetir hasta que num sea igual a v, cunado sale del mientras, es por que son iguales)
+			Avz(S,V)			(avanza la secuencia de socios registrados)
+			Mientras V<>" " entonces	(avanza los espacio entre los numero de los socios)
+				Avz(S,V)
+			fin mientras
+		fin mientras
+		Cerrar(Ss,Vs)
+fin accion						(hace la pueba de escritorio, para entender mejor)
+--------------------------------------------------------------------------------------------------------------------------------------
+Accion 1.08 es		(hecha en clases)
+	ambiente
+		S:secuencia de caracter
+		V:caracter
+		con, cont: entero
+	algoritmo
+		arr(v)
+		Avz(v,s)
+		con:=0
+		Mientras (V<>",")v(V<>"*") hacer		(Avanza hasta llegar hasta la primera coma, o a la marca, en caso de que no aya comas)
+			Avz(S,V)
+		fin mientras
+		Mientras V<>"*"					(si el mientras salio por marca, no entra a este mientras y termina el algoritmo, si salio por coma, entra al mientras)
+			cont:=0
+			Avz(S,V)				(avanza de la coma)
+			Mientras (V<>",")v(V<>"*") hacer	(importante controlar por marca tmb, ya que puede haber solo una coma en la secuancia)
+				cont:=cont+1			(cuenta la cantidad de caracters)
+				Avz(S,V)
+			fin mientras				(al salir de este mientras, puede ser que encontro una coma o la marca)
+			si V="," entonces			(verifico que aya salido por coma, si no entra al si es por que salio por marca y no debo contar esos caracteres)
+				Con:=con+cont			(si es asi le asigno a con, ca cantidad de caracteres encontrados entre comas(cont).)
+			fin si
+		fin mientras					(cont debe volver a cero antes de seguir contando caracteres, por eso se lo pone al principio del mientras)
+		Escribir:("Existe", Con, "caracteres entre comas")
+fin accion
+---------------------------------------------------------------------------------------------------------------------
+Accion 1.09 es
+	ambiente
+		S:secuencia de caracteres
+		V:caracter
+		conp, cono: entero
+		prom: real
+	algoritmo
+		Arr(S)
+		Avz(S,V)
+		conp:=0
+		cono:=0
+		Mientras V<>"*" hacer
+			Miestra V<>"." hacer
+				Mientras V=" " hacer
+					Avz(S,V)
+				fin mientras
+				conP:=conP+1			(Cuenta las palabras)
+				Mientras V<>" " hacer
+					Avz(S,V)
+				fin mientras
+			fin mientras
+			conO:=conO+1				(cuenta las oraciones, este contador debe ir fuera del mientras, ya que este sale cuando encuentra un punto)
+		fin mientras
+		Prom:=conP/conO					
+		Escribir("El promedio es de", prom, "palabras por oracion")
+fin accion
+----------------------------------------------------------------------------------------------------------------------
+Acciom 1.10 es
+	ambiente
+		S: secuencia de numeros
+		V: numerico
+		Mult3: entero
+	algoritmo
+		Arr(s)
+		Avz(S,V)
+		Crear(Ss,Vs)
+		Mientras V<>"*" hacer
+			sum:=0
+			Mientras V=" " hacer
+				Avz(s,v)
+			fin mientras
+			Crear(Sa,Va)				(Crea una secuancia auxiliar donde guardara el numero de documento. Es importante deonde se coloca el crear, por que debe suplantar a la secuancia auxiliar anterior)
+			mientras V<>" " hacer
+				Va:=V				
+				Escribir(Sa,Va)			(Escribe los numeros del DNI en la secuancia auxiliar)
+				sum:=sum+V			(suma todos los numero del documento, ejemplo del DNI 37915664, suma 3+7+9+1...)
+			fin mientras
+			Cerrar(Sa,Va)				(cierra la secuancia auxiliar donde esta guardado el DNI, para poder usarla luego)
+			mult3:=(sum MOD 3)			(con MOD 3, vemos si el numero era multiplo de 3, ya que MOD da el resto de la divicion, si es 0 era divisible)
+			si Mult3=0 entonces			(verifica si el DNI era multiplo de tres, y lo es debe escribirlo en la secuancia de salida para lo cual arrancamos y abrimos la secuencia auxiliar, donde tenemos guardado el DNI)
+				Arr(Sa)
+				Avz(Sa,Va)
+				Mientras Va<>"*" hacer
+					Va:=Vs
+					escribir(Ss,Vs)
+					Avz(Sa,Va)
+				fin mientras
+			fin si
+		fin mientras			
+-----------------------------------------------------------------------------------------------------------------------
+Accion 1.11 es
+	ambiente
+		S:secuencia de caracteres
+		V:caracter	
+	algoritmo
+		Arro(S)
+		Avz(S,V)
+		Mientras V<>"*" hacer
+			Mientras V<>" " hacer
+				con:=con+1		(Cuenta la cantidad de caracteresde las palabras)
+				Avz(V,S)
+			fin mientras
+			conp:=conp+1			(Cuenta la cantidad de palabras)
+			Avz(S,V)
+		fin mientras
+		porm:=con/conp				(saca el promedio de caracteres por palabras)
+		Si prom<=5 hacer			(segunel valos del promedio asigna un valor u otro)
+			costo:=conp*v1
+		contrario
+			costo:=conp*v2
+		fin si
+		escribir("el costo del telegrama es", costo)
+fin accion
+-----------------------------------------------------------------------------------------------------------------------
+Accion 1.12 es 
+   ambiente
+	S: secuencia de caracteres
+	V: caracter
+	cont, par: entero
+   algoritmo
+	arr(S)
+	avz(S,V)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras V<>"*" hacer
+	   Mientras V=" " hacer
+		avz(S,V)
+	   fin mientras
+	   	cont:= cont + 1				(cuenta la posicion de las palabras, para saber si esta en posicion par p impar)
+	  	par:= cont MOD 2			(usamos MOD 2 para verificar si es par o impar) 
+		Si (par=0)^(V="M") entonces		(verificamos que este en posicion par y comience con "s")	
+			mientras V<>" " entonces
+			   r:=V
+			   escribir:(Ss,Vs)		(escribe la palabra en la secuancia de salida)
+			   avz:(S,V)
+			fin mientras
+			r:=" "
+			escribir(ss,Vs)			(agrega un blanco entre palabras)
+		   fin si
+		fin si
+	fin mientras
+	Cerrar(Ss,Vs)					
+fin accion
+---------------------------------------------------------------------------------------------------------------------------------------
+accion 1.13 es
+   ambiente
+	S, Ss, Sa:secuencia de caracteres
+	V, Vs, Va:caracter
+	contp3, contp, cont:entero
+	%: real
+   algoritmo
+	arr(S)
+	avz(S,V)
+	crear(Ss,Vs)
+	contp3:= 0
+	contp:= 0
+	Mientras V<>"*" hacer
+		Mientras V=" " hacer
+			avz:(S,V)
+		fin mientas
+		contp:= contp + 1			(cuenta la cantidad de palabras)
+		Crear(Sa,Va)
+		Cont:=0
+		Mientras V<>" " hacer			(avanza la palabra, contando la cantidad de caracteres que tienen, y guardandola en una secuencia auxiliar)
+			cont:=cont+1			(cuenta la cantidad de caracteres de la palabra)
+			Va:=V
+			escribir(Sa,Va)
+			avz(S,V)
+		fin mientras
+		Cerrar(Sa,Va)				(cierra la secuencia auxiliar)
+		Si cont=3 entonces			(si el contador es igual a 3 entra al si)
+			ContP3:=contp3+1		(cuenta las palabras de 3 letras o caracteres)
+			Abrir(Sa,Va)			(abre la secuancia donde guardo la palabra)
+			Mientras Va<>"*" hacer		(la transcribe a la secuencia de salida)
+				Vs:=Va
+				escribir(Ss,Vs)
+				avz(Sa,Va)
+			fin mientras
+			Vs=" "				(agrega un espacio entre palabras)
+			escribir(Ss,Vs)
+		fin si
+	fin mientras
+	%:=(contp3*100)/contp							(saca el porcentaje de de palabras de 3 letras sobre el total de palabras)
+	escribir(" hay un", %,"% de palabras con tres letras del total")
+	cerrar(Ss,Vs)
+fin accion
+--------------------------------------------------------------------------------------------------------
+Accion 1.14	(hecha en clases)
+   ambiente
+	S1, S2: secuencia de caracteres
+	V1, V2: caracter
+	cont: entero
+   algoritmo
+	arr(S1), (S2)
+	avz(S1,V1), (S1,V1)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras (V1<>"*")^(V2<>"*") hacer			(pregunto por la marca de ambas secuencias ya que si termina una el algoritmo)
+		cont:=cont+1					(cuenta las oraciones de la secuencia 1 y 2, ya que van de a par, es decir avanzan las dos juntas)
+		Mientras V1<>"," hacer				(de la secuencia 1 trascribe a la secuencia de salida todo el sujeto, que es hasta una "coma")
+			Vs:=V1
+			escribir(SS,Vs)
+			Avz(S1,V1)
+		fin mientras
+		Mientras V1<>"." hacer				(el predicado de la sec1 la avanza nadamas, no la transcribe)
+			Avz(S1,V1)
+		fin mientras
+		Mientras V2<>"," hacer				(Avanza de la sec2 todo el sujeto, hasta la primera coma, sin transcribir nada)
+			Avz(S1,V1)
+		fin mientras
+		Mientras V2<>"." hacer				(desde la coma y hasta el punto, la trancribe a la sec de salida, ya que esto seria el predicado)
+			Vs:=V2
+			escribir(SS,Vs)
+			Avz(S1,V1)
+		fin mientras
+	fin mientras
+	Si V1="*" entonces							(pregunto cual de las secuencias llego a la marca)
+		escribir("En la secuencia 1 hay", cont, "oraciones") 		(si la la sec1 llego a la marca, escribo cuantas oraciones tenia, que es el valor del contador)
+		Mientras V2<>"*" hacer						(Luego debo contar las oraciones restantes de la otra secuencia)
+			mientras V2<>"." hacer
+				avz(S2,V2)
+			fin mientras
+			cont:=cont+1
+			avz(S2,V2)
+		fin mientras
+	escribir("En la secuencia 2 hay", cont, "oraciones")
+	contrario		
+		escribir("En la secuencia 2 hay", cont, "oraciones")		(aca hago lo miesmo pero alrevez, escribo la cantidad de oraciones de la sec2 y sigo contando la de la sec1)
+		Mientras V1<>"*" hacer
+			mientras V1<>"." hacer
+				avz(S1,V1)
+			fin mientras
+			cont:=cont+1
+			avz(S1,V1)
+		fin mientras
+	fin si
+	cerrar(Ss,Vs)
+	escribir("En la secuencia 1 hay", cont, "oraciones") 
+fin accion
+
+--------------------------------------------------------------------------------------------------------
+	(La 1.15 no lo hago por que es lo mismo que la 1.14)
+--------------------------------------------------------------------------------------------------------
+Accion 1.16	(hecha en clases)
+   ambiente
+	S1, S2: secuencia de caracteres
+	V1, V2: caracter
+	cont: entero
+   algoritmo
+	arr(S1), (S2)				(debemos arrancar y avanzar las dos secuencias, la S1 es la de los nombres de los socios, y la S2 el DNI)
+	avz(S1,V1), (S1,V1)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras V1<>"*" hacer
+		Mientras V1=" " hacer		(con este mientras solamente avanzamos los espacios en blanco entre nombres)
+			Avz(S1,V1)
+		fin mientras
+		Cont:=cont+1				(contamos la posicion del nombre del empleado)
+		impar:=cont MOD2
+		Si impar=1 entonces			(si cumple la condicion de posicion impar entra en el si)
+			Para (C:0,+1,8) hacer		(trascribimos los 8 numero, que corresponden al primer numero de documento)
+				Vs:=V2
+				escribir(Ss,Vs)
+				avz(S2,V2)
+			fin para
+			Vs:=","				(separamos con una coma el DNI del nombre)
+			escribir(Ss,Vs)
+			Mientras V1<>" " hacer		(trascribimos el nombre)
+				Vs:=V1
+				escribir(Ss,Vs)
+				avz(S1,V1)		
+			fin mientras
+			Vs:="#"				(separamos a cada socio con un numeral)
+			escribir(Ss,Vs)
+		contrario				(si el empleado no cumple con la codicion debe saltearlo)
+			Para (C:0,+1,8) hacer		(avanzamos todo el numero de documento)
+				avz(S2,V2)
+			fin para
+			Mientras V1<>" " hacer		(Avanzo todo el nombre)
+				avz(S1,V1)		
+			fin mientras
+		fin si
+	fin mientras
+	Cerrar(Ss,Vs)
+fin accion
+--------------------------------------------------------------------------------------------------------
+Accion 1.17
+   ambiente
+	S1, S2: secuencia de caracteres
+	V1, V2: caracter
+	cont: entero
+	impares:{"1","3","5","7","9"}
+   algoritmo
+	arr(S1), (S2)				(debemos arrancar y avanzar las dos secuencias, la S1 es la de los nombres de los socios, y la S2 el DNI)
+	avz(S1,V1), (S1,V1)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras V<>"*" hacer
+		Mientras V1=" " hacer		(con este mientras solamente avanzamos los espacios en blanco entre nombres)
+			Avz(S1,V1)
+		fin mientras
+		Si V2 en Impares entonces		(para esto debemos definir en el ambiente a impares como un conjunto: impares:{"1","3","5","7","9"}, hay que ponerlos entre coma ya que son caracteres alfanumerico)
+			Para (C:0,+1,8) hacer		(trascribimos los 8 numero, que corresponden al primer numero de documento)
+				Vs:=V2
+				escribir(Ss,Vs)
+				avz(S2,V2)
+			fin para
+			Vs:=","				(separamos con una coma el DNI del nombre)
+			escribir(Ss,Vs)
+			Mientras V1<>" " hacer		(trascribimos el nombre)
+				Vs:=V1
+				escribir(Ss,Vs)
+				avz(S1,V1)		
+			fin mientras
+			Vs:="#"				(separamos a cada socio con un numeral)
+			escribir(Ss,Vs)
+		contrario				(si el empleado no cumple con la codicion debe saltearlo)
+			Para (C:0,+1,8) hacer		(avanzamos todo el numero de documento)
+				avz(S2,V2)
+			fin para
+			Mientras V1<>" " hacer		(Avanzo todo el nombre)
+				avz(S1,V1)		
+			fin mientras
+		fin si
+	fin mientras
+	Cerrar(Ss,Vs)
+fin accion--------------------------------------------------------------------------------------------------------
+Accion 1.18	(hecha en clases)
+   ambiente
+	S1, S2: secuencia de caracteres
+	V1, V2: caracter
+	Vocales:{"a","e","i","o","u"}			(necesitamos un conjunto que sean las vocales)
+   algoritmo
+	arr:(S1), (S2)
+	avz:(S1,V1), (S1,V1)
+	crear:(Ss,Vs)
+	cont:= 0
+	Mientras V<>"*" hacer
+		Mientras V1=" " hacer
+			Avz(S1,V1)
+		fin mientras
+		Si V1 en vocales entonces		(si el empleado no cumple con la codicion debe saltearlo)
+			Para (C:0,+1,8) hacer		(avanzamos todo el numero de documento)
+				avz(S2,V2)
+			fin para
+			Mientras V1<>" " hacer		(tambien debo avanzar todo el nombre de la otra secuencia)
+				avz(S1,V1)		
+			fin mientras
+		contrario				(si el nombre no comienza con vocal, debo transcribirlo)
+			Mientras V1
+			Para (C:0,+1,8) hacer		(copio el DNI del socio)
+				Vs:=V2
+				escribir(Ss,Vs)
+				avz(S2,V2)
+			fin para
+			Vs:=","				(agrego una coma para separar el DNI del nombre)
+			escribir(Ss,Vs)
+			Mientras V1<>" " hacer		(en este mientras transcribo el nombre a la secuancia de salida)
+				Vs:=V1
+				escribir(Ss,Vs)
+				avz(S1,V1)		
+			fin mientras
+			Vs:="#"				(por ultimo agrego un numeral para separarlo del proximo socio)
+			escribir(Ss,Vs)
+		fin si
+	fin mientras
+	Cerrar(Ss,Vs)
+fin accion
+--------------------------------------------------------------------------------------------------------
+Accion 1.19	(hecha en clases)
+   ambiente
+	S, Ss1: secuencia de caracteres
+	V, Vs1: caracter
+	Ss2: secuencia numeriaa
+	Vs2: numerico
+	cont, contpalabra, contoracion: entero
+	prom: real
+	vocales:{"a","e","i","o","u"}
+   algoritmo
+	arr(S)
+	avz(S,V)
+	crear(Ss1,Vs2);(Ss1,Vs2)
+	cont:= 0
+	Mientras V<>"*" hacer
+	    contOracion:=contororacion+1			(cuenta las oraciones, va fuera del mientras v<>".")
+	    mientras V<>"." hacer
+		contpalabra:=contadorpalabra+1			(cuenta todas las palabras de la secuencia, va fuera del mientra v<>" ")
+		Mientras V=" " hacer
+			Avz(S,V)
+		fin mientras
+		cont:=0						(contador de vocales en cero)
+		Si V en vocales entonces			(verifica que la palabra empieza con vocal)
+			mientras V<>" " hacer			(si la palabra empieza con vocal entra al si y en este mientras trancribe la palabra a la secuencia de salida)
+				si V en vocales entonces	(si es una vocal la transcribe como un "*")
+					cont:=cont+1		(cuenta las vocales, dentro del si)
+					Vs:="*"
+					escribir(Ss1,Vs1)
+				contrario			(sino la trancribe normalmente)
+					Vs:=V
+					escribir(Ss1,Vs1)
+				fin si
+				avz(S,V)
+			fin mientras
+			Vs2:=cont				(trancribe en la segunda secuencia de salida la cantidad de vocales, contadas por el contaros, recordar poner en cero el contador para la proxima palabra)	
+			escribir(Ss2,Vs2)
+		contrario					(si la palabra no empieza con vocal, no hace nada y la avanza completamente)
+			mientras V<>" " hacer
+				avz(S,V)
+			fin mientras
+		fin si
+	    fin mientras
+	fin mientras
+	Prom:=contpalabra/contoracion					(saca el promedio de palabras por oracion, para lo cual necesitamos un contador de palabras y otro de oraciones) 
+	escribir("el promedio de palabras por oracion es de:", Prom)
+fin accion
+
+--------------------------------------------------------------------------------------------------------
+Accion 1.20	(hecha en clases) Este es bastante complicado, puede que los cunfunda mas.
+   ambiente
+	S1,S2, Ss, Sa: secuencia de caracteres
+	V1, V2, Vs, va: caracter
+	cont: entero
+	valido: logico					(en este algoritmo necesitamos unas una variable logica, que puede valer: verdadero o falso, a modo de dejar o no hacer siertas acciones del algoritmo)
+   algoritmo
+	arr(S1), (S2)
+	avz(S1,V1), (S2,V2)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras (V1<>"*")^(V2<>"*") hacer
+		Valido:=falso				(inicializamos la variable en falsa) 
+		Mientras V1=" " hacer			(en este mientras solo avanzamos los blancos de la sec1 hasta encontrar la palabra)
+			Avz(S1,V1)
+		fin mientras
+		Letra:=V1				(Guarda la primer letra de la palabra de la secuencia 1)
+		crear(Sa,Va)				(creamos una secuancia auxiliar para guardar la palabra entera, ya que al llegar a la ultima palabra podemos comprobar si debemos o no trancribirla)
+		Mientras V1<>" " hacer			(este mientras se repite hasta que termine la palabra, guardandola en la secuencia auxiliar y tambien guardando la ultima letra de la palabra)
+			Va:=V1
+			escribir(Sa,Va)
+			Ultima:=V1			(guarda la ultima letra, va antes del avanzar, ya que si avanza su encuentra un blanco, sale del mientras)
+			avz(S1,V1)
+		fin mientras					
+		Cerrar(Sa,Va)				(cerramos la auxiliar)
+		si letra=ultima entonces		(verificamos si la variable "letra" que contiene la primera letra de la palabra, y la variable "ultima" que quedo con la ultima letra son iguales)
+			valido: verdadero		(si se cumple la condicion: "valido" se vuelve verdadero, habilitandolo que pueda entrar en el proximo si)
+		fin si
+		si valido entonces			(preguntamos si valido es verdadero, si los es, entra al si, por lo cual lo trancribimos a la secuencia de salida)
+			arr(Sa)				(arrancamos la secuencia auxiliar y la avanzamos)
+			avz(Sa,Va)
+			Mientras Va<>"*" hacer		(en este mientras trancribimos, la palabra guardada en la secuancia auxiliar, a la secuencia de salida)
+				Vs:=Va
+				escribir(Ss,Vs)
+				avz(Sa,Va)
+			fin mientras
+		fin si
+		valido:=falso				(ponemos a valido con el valor de falso)
+		Mientras (NOvalido)^(V2<>"*") hacer	(mientras que valido sea "falso" o la secuencia llege a la "marca", repetira la accion, que sera encontrar una palabra con un numero en la posicion par, y trancribirla a la sec. de salida)
+			Mientras V2=" " hacer		(este mientras avanza los balancos nadamas)
+				Avz(S2,V2)
+			fin mientras
+			Mientras V2<>" " hacer					(en este mientras guarda la palabra a palabra cumple la condicion para trancribirla a la sec. de salida)		
+				cont:=cont+1					(cuenta la posicion de la plabra)
+				Par:=cont MOD2					(MOD2 da el resto de la divicion, si es sero es por que es divicible por, 2 por lo que es par)
+				si (par=0)^(V1 en numeros) entonces		(si en la posicion par de las letras hay un numero entra al si)
+					valido:=verdadero			(el si vuelve verdadero "valido")
+				fin si
+				Va:=V2
+				escribir(Sa,Va)					
+				Avz(S2,V2)
+			fin mientras
+			si valido entonces					(pregunta si es valido es verdadera, recuerden que si la variable "valido" cumplio con la condicion se volvio verdadera, si no, no entra al si)
+				mientras Va<>"*" hacer				(si es verdadera entra al si y transcribe la palabra guardada en la sec. auxiliar a la de salida)
+					Vs:=Va
+					escribir(Ss,Vs)
+					avz(Sa,Va)
+				fin mientras
+			fin si							(si no es valido, no entra al si, tampoco va a salir del del mientras, al menos que salga por la marca, con lo cual termina el algoritmo)
+		fin mientras
+	fin mientras
+fin accion
+--------------------------------------------------------------------------------------------------------
+Accion 1.21	(hecha en clases)
+   ambiente
+	S: secuencia de caracteres
+	V: caracter
+	cont, impar, numtarj, numValido: entero
+   algoritmo
+	arr(S)
+	avz(S,V)
+	crear(Ss,Vs)
+	cont:= 0
+	Mientras V<>"*" hacer
+		Crear(Sa,Va)					(Crea una secuancia auxiliar para guardar el numero completo de tarjeta, para abrirlo luego y pasarlo a secuancia de salida si cumple con la condicion)
+		Para (C:0,+1,16) hacer				(Este PARA realiza la accion 16 veces, la cantidad de numeros que corresponde a cada tarjeta)
+			Va:=V					(Guarda el numero de targeta en la secuancia auxiliar)
+			Escribir(Sa,Vs)
+			cont:=cont+1				(Cuenta la posicion del numero)
+			Impar:=cont MOD2
+			Si Impar=1 entonces			(Verifica que el numero corresponda a la posicion impar)
+				Segun V hacer			(ya que el valor en la variable "V" no es un numerico, sino un caracter, debemos asignarle un numero)
+					1: Num:=2		(vean que al 1, ya lo multiplico por dos)
+					2: Num:=4
+					3: Num:=6
+					4: Num:=8
+					5: Num:=1		(al 5 lo multiplico por dos y como da mayor a nueve le resto nueve, por lo tanto queda como 1)
+					6: Num:=3	
+					7: Num:=5
+					8: Num:=7
+					9: Num:=9
+				fin segun
+				NumTarj:=NumTarj+num		(en "numtarj" vamos sumando los numeros transformados de la posicion impara de la tarjeta, por lo tanto esta dentro de la condicion que si es impar)
+			fin si
+			Avz(S,V)
+		fin para
+		Cerrar(Sa,Va)					(cerramos la secuencia auxiliar una ves que guardamos los 16 numeros de la tarjeta, por eso va abajo del fin para)
+		NumValido:=Numtarj MOD10			(verificamos que "numtarj" sea multiplo de 10)
+		Si (Numvalido=0)^(NumTarj<=150)			(si es multiplo de 10 y es menor o igual a 150, la tarjeta es valida por lo cual debemos escribir todo ese numero a la secuencia de salida) 
+			Abrir(Sa)
+			Avz(Sa,Va)
+			Mientras Va<>"*" hacer			(En este mientras escribimos los 16 numeros de la primera tarjeta)
+				Vs:=Va
+				escribir(Ss,Vs)
+				avz(Sa,Va)
+			fin mientras
+		Fin si
+	Fin mientras
+fin accion
+----------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------

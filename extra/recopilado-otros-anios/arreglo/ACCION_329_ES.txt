@@ -1,0 +1,93 @@
+Sec: *Nmbrmascota*DDD 12345678#Direccion?...Final texto !
+ACCION_329_ES
+    AMBIENTE
+        Sec: Secuencia de caracteres
+        V: Caracter
+        reg = Registro de
+            Tipo_doc: N(1)
+            Numero: AN(8)
+            Nombre_Mascota: AN(30)
+            Direccion: AN(40)
+        FR
+        Sal: Archivo de reg
+        S: reg
+
+        Nmbrmascota: Arreglo de [1..30] de caracteres
+        Numero: Arreglo de [1..8] de caracteres
+        Direccion: Arreglo de [1..40] de caracteres
+
+        i, j, k, p, cont_salida: entero
+
+    PROCESO
+        ARR(Sec)
+        AVZ(Sec, V)
+        cont_salida:= 0
+        Mientras (V <> "!") hacer
+            cont_salida:= cont_salida + 1
+            i:= 1
+            AVZ(Sec, V)
+            Mientras (v <> "*") hacer
+                Si (i =< 30) entonces
+                    Nmbrmascota[i]:= V
+                    i:= i + 1
+                FS
+                AVZ(Sec, V)
+            FM
+            AVZ(Sec, V)
+
+            Segun v hacer
+                "D": 
+                    S.Tipo_doc:= 0
+                    Para j:= 1 hasta 4 hacer
+                        AVZ(Sec,V)
+                    FP
+                "P": 
+                    S.Tipo_doc:= 3
+                    Para j:= 1 hasta 4 hacer
+                        AVZ(Sec,V)
+                    FP
+                "L": 
+                    AVZ(Sec, V)
+                    Si ( V = "C") entonces
+                        S.Tipo_doc:= 1
+                    Sino
+                        Si (V = "E") entonces
+                            S.Tipo_doc:= 2
+                        Sino
+                            S.Tipo_doc:= 4
+                        FS
+                    FS
+                    Para j:= 1 hasta 3 hacer
+                        AVZ(Sec, V)
+                    FP
+                Otros:
+                    S.Tipo_doc:= 4
+                    Para j:= 1 hasta 4 hacer
+                        AVZ(Sec,V)
+                    FP
+            FS
+
+            k:= 1
+            Mientras (V <> "#") hacer
+                Numero[k]:= V
+                AVZ(Sec, V)
+            FM
+            AVZ(Sec, V)
+            p:= 1
+            Mientras (V <> "#") hacer
+                Si (p =< 40) entonces
+                    Direccion[j]:= V
+                    j:= j + 1
+                FS
+                AVZ(Sec, V)
+            FM
+            AVZ(Sec, V)
+
+            Copiadearr() ->Funcion que trabaja con los arreglos planteados
+            Grabar(Sal, S)
+        FM
+        Cerrar(Sec)
+        Cerrar(Sal)
+        ESC("Total de registros grabados: ",cont_salida)
+FA
+

@@ -1,0 +1,98 @@
+ACCION_EJ1_T2_ES (primd, ultd: puntero a nodo2)
+    AMBIENTE
+        fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg1 = Registro de
+            Fecha_compra: fecha
+            dni: N(9)
+            cant_art: N(3)
+            importe: N(6)
+        FR
+        compras: archivo de reg1 ordenado por Fecha_compra
+        comp: reg1
+
+        reg2 = Registro de
+            dni: N(9)
+            apynom: AN(50)
+            Fecha_ad: fecha
+            Categoria: AN(30)
+        FR
+        socios: archivo de reg2 indexado por dni
+        soc: reg2
+
+        nodo = Registro de
+            dni: N(9)
+            cant_compras: N(6)
+            impote_tot: N(8)
+            prox: puntero a nodo
+        FR
+        prim, p, q, ant: puntero a nodo
+
+        nodo2 = Registro de
+            importe_min: N(6)
+            importe_max: N(6)
+            descuento: N(1,2)
+            Cupo_disponible: booleano
+            Rubro_descuento: 1..9
+            prox,ant: puntero a nodo2
+        FR
+        s: puntero a nodo2
+
+        nuevo_importe: Real
+
+    PROCESO
+        ABRIR E/(compras)
+        ABRIR E/(socios)
+        Leer(compras, comp)
+        prim:=nil
+        Mientras NFDA(compras) hacer
+            soc.dni:= comp.dni
+            Leer(socios, soc)
+            Si no EXISTE entonces //Si no es socio, se lo agrea a la lista simple
+                p:=prim
+                ant:=nil
+                Mientras (p <> NIL) y (*p.dni < comp.dni) hacer //Buscamos que no este en la lista
+                    ant:=p
+                    p:=*p.prox
+                FM
+                Si (*p.dni = comp.dni) entonces //Se lo encontró
+                    *p.cant_compras:= *p.cant_compras + 1
+                    *p.impote_tot:= *p.importe_tot + comp.importe
+                Sino //No se lo encontró
+                    Nuevo (q)
+                    *q.dni:= comp.dni
+                    *q.cant_compras:= 1
+                    *q.impote_tot:= comp.importe
+                    Si (ant = NIL) entonces
+                        *q.prox:= prim
+                        prim:= q
+                    Sino
+                        *ant.prox:= q
+                        *q.prox:= p
+                    FS
+                FS
+            FS
+
+            //Descuento
+            s:=primd
+            Mientras (s <> NIL) y no (comp.importe <= *s.importe_max) hacer
+                s:= *s.prox
+            FM
+            Si (s = NIL) o no (*s.Cupo_disponible) entonces
+                ESC("Descuento no aplicable")
+            Sino
+                ESC("Descuento aplicable")
+                nuevo_importe:= comp.importe - (comp.importe * *s.Descuento)
+                ESC("Nuevo Importe: ",nuevo_importe)
+                ESC("Rubro descuento: ", *s.Rubro_descuento)
+            FS
+
+            leer(compras, comp)
+        FM 
+        cerrar(compras)
+        cerrar(socios)
+FA

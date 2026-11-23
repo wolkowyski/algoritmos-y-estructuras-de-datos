@@ -1,0 +1,126 @@
+
+El registro civil posee los datos de personas en dos secuencias. La primera (PERS1) de caracteres formada por el apellido(,)nombre (solo uno por persona) separados los datos de las distintas personas por blancos;
+La segunda secuencia (PERS2) numerica, posee los correspondientes numeros de documento de la primera secuencia en formato: tipo (1-5) y numero (8 posiciones) sin separaciones entre si.
+Se desea obtener una nueva secuencia de caracteres (PERS3) que contenga aquellas personas cuyo DNI  comienza con 9. La nueva secuencia debe generarse de la siguiente forma: primero el tipo de documento seguido por una coma y a continuacion el numero, un blanco y el nombre, con un * al final de cada persona y un # al final de la secuencia.
+Se desea obtener el ARCHIVO  PERS4 que contenga aquellas personas cuyo apellido comienza con una consonante. El registro de salida es SAL4
+TIPO-DOC N(1) NUMERO N(8) APEYNOM AN (30)
+Al finalizar indicar la cantidad de personas que contenia PERS1 y la cantidad grabadas en PERS3.
+
+
+AMBIENTE:
+
+pers1, pers3: secuencia de caracteres
+v1,v3: caracteres
+pers2: secuencia de enteros
+v2: enteros
+contpers3,contpers1: entero
+badera: booleano
+i:entero
+resgtipo: entero
+
+PERS4 = registro
+	tipo_doc: N(1)
+	numero: arreglo de [1..8] de enteros
+	ayn: arreglo de [1..30] de AN
+Fin reg
+
+Nodo = registro
+	prox:puntero a nodo
+	dato:caracter
+Fin reg
+p,q,prim: puntero a nodo
+
+
+ARCH: archivo de pers4
+reg:pers4
+VOCAL: ('a''e''i''o''u')
+
+ALGORITMO
+
+contperso1:=0; contpers3:= 0;
+ARR(pers1)
+ARR(pers2)
+ABRIR e/s (PERS4)
+AVZ(pers2,v2)
+AVZ(pers1,v1)
+Mientras (v1 <> '*') y (v2 <> '*') hacer
+	Mientras (v1 = '') hacer
+		avz(perso1,v1)
+	Fm
+		contpers1:= contpers1 + 1;
+		bandera:= falso;
+		Si (v1 NO en VOCAL) entonces
+			bandera:= veradero
+		Fs
+			Mientras (v1<>' ') hacer
+				para i:=1 hasta 30 hacer	
+					SI (V1 <> ' ') entonces
+						reg.ayn[i]:= v1;
+						guardar(prim,v1)
+						AVZ(pers1,v1)
+					
+					Fs
+				Fp
+				Si (i=30) y (v1 <> ' ' ) entonces
+					Mientras (v1 <> ' ') hacer
+						GUARDAR
+						AVZ(s,v)
+					Fin Mientras
+				Fin Si
+			Fm
+			
+			reg.tipo_doc:= v2
+			resgtipo:=v2
+			AVZ(PERS2,v2) {avz la coma}
+			AVZ(PERS2,V2) {avz y se para en el primer numero}
+	Si (v2=9)entonces
+		esc (pers3,resgtipo)
+		esc(pers3, ',')
+			PARA j:= 1 hasta 8 hacer
+				esc (pers3,v2)
+				reg.numero[j]:=v2
+			Fp
+				esc(pers3, '')
+				p:= prim;
+			Mientras (p<> nil) hacer
+				prim:= ^p.prox
+				esc (pers3,^p.dato)
+				disponer(p)
+				p:= prim
+			Fm
+				esc (pers3, '*')
+				contpers3:= contpers3 + 1
+			SINO
+				para j:= 1 hasta 8 hacer
+					reg.numero[j]:= v2
+					avz (pers2,v2)
+				Fp
+	Fs
+	
+	Si bandera entonces
+		esc (arc,reg)
+	fin si
+	
+Fm
+esc ('cantidad de personas que contenia pers1', contpers1)
+esc ('cantidad grabadas en pers3', contapers3)
+CERRAR(pers1) cerrar(pers2) cerrar(pers3) cerrar (arch)
+Fin accion
+
+
+Sub accion GUARDAR (prim: puntero a nodo, v1:caracter)es
+
+	nuevo (q)
+	^q.dato:= v1
+		Si (prim=nil) entonces
+			^q.prox:= nil
+			prim:=q
+				SINO	
+					p:= prim
+						Mientras (^p.prox <> nil ) hacer
+							p:= ^p.prox
+						Fm
+						^q.prox:= nil
+						^p.prox:=q
+		Fin
+Fin sub.

@@ -1,0 +1,133 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+------------------
+
+AN├üLISIS:
+
+// Para el informe:
+
+ò Cantidad total de reservas: debo contar cada reserva y almacenar el valor en una variable.
+
+ò El porcentaje de ocupaci¾n del estadio: debo determinar la capacidad del estadio y la cantidad de personas que lo estßn ocupando.
+
+// Para la secuencia de salida:
+
+Debo almacenar el nombre de los estadios y ·nicamente los asientos reservados para el tipo de reserva ingresado por el usuario, con el siguiente formato:
+
+nombreEstadio%asientosReservados@...@FDS
+
+------------------
+
+ACCION estadioQatar ES
+
+	AMBIENTE
+		VARIABLES
+
+			secIn, secOut: Secuencia de caracter;
+			v: caracter;
+
+			resTot, capacidad, contAsien: entero;
+			porcOcup: N(3,2);
+
+			FUNCION convANum(v: caracter): entero;
+				SEGUN (v) HACER
+					'0': convANum := 0;
+					'1': convANum := 1;
+					'2': convANum := 2;
+					'3': convANum := 3;
+					'4': convANum := 4;
+					'5': convANum := 5;
+					'6': convANum := 6;
+					'7': convANum := 7;
+					'8': convANum := 8;
+					'9': convANum := 9;
+				FIN SEGUN;
+			FIN FUNCION;
+
+	PROCESO
+
+		CREAR(secOut);
+
+		ARR(secIn); AVZ(secIn, v); resTot := 0; contAsien := 0;
+
+		ESC('Ingrese un tipo de reserva [E | P | Y]: '); LEER(tipRes);
+
+		MIENTRAS NO FDS(secIn) HACER
+
+			REPETIR
+				ESC(secOut, v);
+				AVZ(secIn, v);
+			HASTA QUE v = '%'; // Graba el nombre del estadio
+
+			ESC(secOut, v); // Graba el caracter "%"
+
+			AVZ(secIn, v); // Se posiciona en el primer dÝgito de capacidad (decena)
+
+			decCap := convANum(v) * 10; // Por eso lo multiplico por 10, por ser decena
+
+			AVZ(secIn, v); // Avanzo al siguiente dÝgito
+
+			unCap := convANum(v); // Lo convierto a n·mero asÝ como estß por ser unidad, con la funci¾n que cree en el ambiente
+
+			capacidad := (decCap + unCap) * 1000; // Sumo ambos dÝgitos y lo multiplico por 1000, recordemos que el enunciado dice que representa la capacidad en miles
+
+			AVZ(secIn, v);
+
+			AVZ(secIn, v);
+
+			// Ventana situada en tipo de reserva
+
+			REPETIR
+
+				SI (V = tipRes) ENTONCES
+
+					REPETIR
+						AVZ(secIn, v);
+					HASTA QUE v = "%";
+
+					AVZ(secIn, v);
+
+					REPETIR
+						ESC(secOut, v);
+						AVZ(secIn, v);
+						contAsien := contAsien + 1; // Al finalizar lo divido entre 3 y obtengo la cantidad de asientos (cada asiento tiene 3 caracteres)
+					HASTA QUE v = "_";
+
+				SINO
+
+					REPETIR
+						AVZ(secOut, v);
+					HASTA QUE v = "%";
+
+					AVZ(secIn, v);
+
+					REPETIR
+						AVZ(secIn, v);
+						contAsien := contAsien + 1; // Al finalizar lo divido entre 3 y obtengo la cantidad de asientos (cada asiento tiene 3 caracteres)
+					HASTA QUE v = "_";
+
+				FIN SI;
+
+				AVZ(secIn, v);
+
+			HASTA QUE v = "@";
+
+			ESC(secOut, v); // Escribe el caracter '@' en la salida, porque termin¾ de recorrer un estadio
+
+			resTot := contAsien DIV 3;
+
+			porcOcup := 100 * resTot / capacidad;
+
+			ESC('Cantidad total de reservas: ', resTot);
+			ESC('Porcentaje de ocupaci¾n: ', porcOcup, '%');
+
+			contAsien := 0; // Pongo en 0 el contador de asientos para el pr¾ximo bucle
+
+			AVZ(secIn, v);
+
+		FIN MIENTRAS;
+
+		CERRAR(secOut); CERRAR(secIn);
+
+FIN ACCION;

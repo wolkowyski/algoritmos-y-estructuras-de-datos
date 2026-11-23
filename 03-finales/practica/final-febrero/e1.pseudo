@@ -1,0 +1,109 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e1
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+Se pide: algoritmo que finalice cuando el usuario ingrese -1, en el subconjunto no se puede
+repetir un valor mas de dos veces. Cada subconjunto está separado por un 0, contar cuantos subconjuntos hay, el promedio de los valores de cada subconjuntos
+y el valor mas chico de cada subconjunto
+
+
+
+ejercicio 2
+ACCION
+Ambiente
+
+pel: registro
+    sup1
+    sup2
+    gpar1:
+    gpar2:
+    gtot1
+    gtot2
+finreg
+
+peleas: archivo de pel
+p: pel
+
+Super: arreglo [1...10] de dato
+
+dato:registro
+    nombre
+    puntos
+    recibidos
+    max_venc
+finregistro
+
+procedimiento asignarsuper es
+    Segun nom hacer
+        'batman': n:=1
+        'superman': n:= 2
+        'goku:': n:=3
+        .
+        .
+    finsegun
+finproc
+
+
+
+PROCESO
+ABRIR S/(peleas) LEER(pel)
+ inicializar()
+Mientras no FDA(peleas) hacer
+    nom:= pel.super1
+    asignarsuper()
+    n:= nom1
+    nom:= pel.super2
+    asignarsuper()
+    n:= nom2
+
+    parc:= pel.gparc1
+    espar()
+    totsup1:= pel.tot1 + parc
+    parc:= pel.2
+    espar()
+    totsup:2= pel.tot 2+ parc
+
+
+
+    si totsup1 > totsup2 entonces
+        A[num1].puntos:= A[num1].puntos + 5
+        A[num2].puntos:= A[num2].puntos + 1
+        A[num2].recibidos:= A[num2].recibidos + totsup1
+        A[num1].recibidos:= A[num1].recibidos + totsup2
+    sino
+        si totsup2 > totsup1  entonces
+        A[num1].puntos:= A[num1].puntos + 1
+        A[num2].puntos:= A[num2].puntos + 5
+        A[num2].recibidos:= A[num2].recibidos + totsup1
+        A[num1].recibidos:= A[num1].recibidos + totsup2
+    sino
+        A[num1].puntos:= A[num1].puntos + 2
+        A[num2].puntos:= A[num2].puntos + 2
+        A[num2].recibidos:= A[num2].recibidos + totsup1
+        A[num1].recibidos:= A[num1].recibidos + totsup2
+    finsi
+finsi
+
+    Leer(pel)
+FM
+
+max:= 0
+min:= 0
+Para i= 1 hasta 10 hacer
+    si A[i].puntos > max entonces
+        supermax:= A[i].nombre
+    finsi
+    si A[i].puntos < min entonces
+        supermin:= A[i].nombre
+    finsi
+    si A[i].puntos < 10 entonces
+        super:= A[i].nombre
+        Escribir('Superhereo que ha recibido menos de 10 golpes:0', super)
+    finsi
+finpara
+
+Escribir('el superhereo que será lider es:', supermax)
+Escribir('el superhereo con menos puntos es:', supermin)
+FINPROC

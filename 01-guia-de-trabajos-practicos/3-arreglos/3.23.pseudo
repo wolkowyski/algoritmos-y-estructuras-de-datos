@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.23
+//
+//  A 50 pacientes se les toma la temperatura 4 veces al día durante los 7
+//  días de la semana; los datos están en un arreglo de 3 dimensiones
+//  T[medición, día, paciente]. Calcular el promedio diario de cada paciente
+//  (en un arreglo nuevo) e informar la temperatura máxima y mínima de cada uno.
+//
+//  No es un proceso estadístico porque no hay archivo de entrada: los datos
+//  ya están en el arreglo.
+// ==========================================================================
+
+Acción Ejercicio3_23 es
+Ambiente
+	T: arreglo [1..4, 1..7, 1..50] de real   // (i, j, k)
+	Promedio: arreglo [1..50, 1..7] de real
+	i, j, k: entero
+	Acum, Max, Min: real
+
+Proceso
+	Para k:= 1 a 50 hacer // 50 pacientes
+		Max:= T[1,1,k] // máximo y mínimo de toda la semana del paciente
+		Min:= T[1,1,k]
+		Para j:= 1 a 7 hacer // 7 días de la semana
+			Acum:= 0 // inicializo el acumulador para cada día
+			Para i:= 1 a 4 hacer // 4 veces al día
+				Acum:= Acum + T[i,j,k]
+				Si T[i,j,k] > Max entonces
+					Max:= T[i,j,k]
+				FinSi
+				Si T[i,j,k] < Min entonces
+					Min:= T[i,j,k]
+				FinSi
+			FinPara
+			Promedio[k,j]:= Acum / 4 // cargo los promedios en el arreglo nuevo
+		FinPara
+		Escribir("Paciente ", k, ": máxima ", Max, " - mínima ", Min)
+	FinPara
+FinAcción

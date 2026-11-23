@@ -1,0 +1,109 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.24 (estadístico)
+//
+//  Un supermercado con 10 cajas registra cada venta (Caja, Horario, Importe)
+//  en un archivo sin orden. Se arma una matriz de 11 x 6: las filas son las
+//  cajas (más una fila 11 de totales) y las columnas las franjas horarias
+//  8-10, 10-12, 12-16, 16-18 y 18-20 (más una columna 6 de totales).
+//  Como el archivo no está ordenado no sirve el corte de control: se usa un
+//  proceso estadístico (acumular en la celda que corresponde).
+// ==========================================================================
+
+Acción Ejercicio3_24 es
+
+    Ambiente
+        Venta = Registro
+            Caja: 1..10
+            Horario: real // por ejemplo 10,5 = 10:30
+            Importe: real
+        FinRegistro
+
+        Archivo: archivo de Venta
+        Reg: Venta
+        Super: arreglo de [1..11, 1..6] de real
+        i, j: entero
+
+    Proceso
+        Para i:= 1 a 11 hacer // pongo en 0 todo el arreglo
+            Para j:= 1 a 6 hacer
+                Super[i,j]:= 0
+            FinPara
+        FinPara
+
+        Abrir E/(Archivo)
+        Leer(Archivo, Reg)
+        Mientras No FDA(Archivo) hacer // es un archivo secuencial
+            i:= Reg.Caja // la fila es directamente la caja
+            // La columna sale de la franja horaria. Según solo acepta valores
+            // ordinales, así que con horarios reales uso Si anidados
+            Si Reg.Horario < 10 entonces
+                j:= 1
+            Sino
+                Si Reg.Horario < 12 entonces
+                    j:= 2
+                Sino
+                    Si Reg.Horario < 16 entonces
+                        j:= 3
+                    Sino
+                        Si Reg.Horario < 18 entonces
+                            j:= 4
+                        Sino
+                            j:= 5
+                        FinSi
+                    FinSi
+                FinSi
+            FinSi
+
+            Super[i,j]:= Super[i,j] + Reg.Importe
+            Super[11,j]:= Super[11,j] + Reg.Importe // total de la franja
+            Super[i,6]:= Super[i,6] + Reg.Importe   // total de la caja
+            Super[11,6]:= Super[11,6] + Reg.Importe // total general (última fila y columna)
+
+            Leer(Archivo, Reg) // antes de cerrar el mientras
+        FinMientras
+        Cerrar(Archivo)
+
+        // Muestro la matriz con títulos
+        Escribir("Caja   8-10   10-12   12-16   16-18   18-20   Total")
+        Para i:= 1 a 11 hacer
+            Si i = 11 entonces
+                Escribir("Total")
+            Sino
+                Escribir("Caja ", i)
+            FinSi
+            Para j:= 1 a 6 hacer
+                Escribir(Super[i,j])
+            FinPara
+        FinPara
+FinAcción
+
+
+// Variante: si además de los importes se quiere la cantidad de ventas, cada
+// celda pasa a ser un registro con los dos acumuladores.
+
+Acción Ejercicio3_24_Por_Registro es
+
+    Ambiente
+        RegistroTotal = Registro
+            Importes: real
+            Cantidad: entero
+        FinRegistro
+
+        Super2: arreglo de [1..11, 1..6] de RegistroTotal
+        // (mismo archivo, registro e inicialización en 0 que la versión anterior)
+
+    Proceso
+        // ... mismo recorrido; en lugar de una suma por celda se actualizan dos campos:
+        Super2[i,j].Importes:= Super2[i,j].Importes + Reg.Importe
+        Super2[i,j].Cantidad:= Super2[i,j].Cantidad + 1
+
+        Super2[11,j].Importes:= Super2[11,j].Importes + Reg.Importe
+        Super2[11,j].Cantidad:= Super2[11,j].Cantidad + 1
+
+        Super2[i,6].Importes:= Super2[i,6].Importes + Reg.Importe
+        Super2[i,6].Cantidad:= Super2[i,6].Cantidad + 1
+
+        Super2[11,6].Importes:= Super2[11,6].Importes + Reg.Importe // última fila y columna
+        Super2[11,6].Cantidad:= Super2[11,6].Cantidad + 1
+FinAcción

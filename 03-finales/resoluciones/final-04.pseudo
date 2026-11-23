@@ -1,0 +1,258 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 4
+//  Enunciado: ../enunciados/final-04.jpg
+//  Estado: incompleto (falta el punto b) de la consigna 1).
+// ==========================================================================
+
+//consigna 1
+//Falta la b) no entiendo a que se refiere con los promedios de ventas x mes
+
+Accion viajantes() es
+
+Ambiente
+
+	viajante=registro
+		clave=registro
+			nro_leg:N(8)
+			mes:N(2)
+		fr
+		cant_vent:N(5)
+		import_vent:N(8.2)
+	fr
+
+	reg_v: viajante
+	arch_v: archivo de viajante ordenado por clave
+
+	filiacion=registro
+		clave=registro
+			nro_leg:N(8)
+		fr
+		apenom:AN(50)
+		est_civ:AN(20)
+		dirección:AN(50)
+	fr
+
+	reg_f: filiación
+	arch_f: archivo de filiación indexado por nro_leg
+
+	info=registro
+		legajo:N(8)
+		apenom:AN(50)
+		cant_vent:N(5)
+		import_vent(8.2)
+	fr
+
+	A: Arreglo [1..50] de info
+
+	cont: entero
+
+	Procedimiento selección() es
+		Para i:=1 a 49 hacer
+			x:=A[i].cant_vent
+			min:=i
+			Para j:=i+1 a 50 hacer
+				Si (A[j].cant_vent<x) entonces
+					x:=A[j].cant_vent
+					min:=j
+				Fin Si
+			Fin Para
+
+			A[min].cant_vent:=A[i].cant_vent
+			A[i].cant_vent:=x
+		Fin Para
+	Fin Procedimiento
+
+
+
+Proceso
+
+	ABRIR E/ (arch_v)
+	ABRIR E/ (arch_f)
+
+	Para i:=1 a 50 hacer
+		A[i].cant_vent:=0
+		A[i].import_vent:=0
+	Fin Para
+
+	LEER(arch_v, reg_v)
+
+	cont:=1
+
+	Mientras NFDA (arch_v) hacer
+
+		reg_f.clave.nro_leg:=reg_v.clave.nro_leg
+		LEER(arch_f, reg_f)
+
+		Si (existe) entonces
+
+			A[cont].legajo:=reg_v.clave.nro_leg
+			A[cont].apenom:=reg_f.apenom
+			A[cont].cant_vent:=reg_v.cant_vent
+			A[cont].import_vent:=reg_v.import_vent
+
+			LEER(arch_v, reg_v)
+
+			Mientras (A[cont].legajo=reg_v.clave.nro_leg) hacer
+				A[cont].cant_vent:=A[cont].cant_vent+reg_v.cant_vent
+				A[cont].import_vent:=A[cont].import_vent+reg_v.import_vent
+				LEER(arch_v, reg_v)
+			Fin Mientras
+
+
+		Sino
+			Escribir("No existe el viajante en el archivo de filiación")
+			LEER(arch_v, reg_v)
+		Fin Si
+
+		cont:=cont+1
+
+	Fin Mientras
+
+	Para i:=1 a 50 hacer
+		Escribir(i,"° viajante leg: ",A[i].legajo)
+		Escribir("Apellido y nombre: ",A[i].apenom)
+		//calculo que ventas realizadas será el importe (?
+		Escribir("Ventas realizadas: ",A[i].import_vent)
+		Escribir("Cantidad de ventas: ",A[i].cant_vent)
+	Fin Para
+
+	selección()
+
+	Para i:=1 a 3 hacer
+		Escribir(i,"° Puesto: ",A[i].apenom)
+	Fin Para
+
+	CERRAR(arch_v)
+	CERRAR(arch_f)
+
+Fin Proceso
+
+
+
+
+
+//consigna 2
+
+Accion sebastiani() es
+
+Ambiente
+
+	deu: secuencia de caracteres
+	v: caracter
+
+	deu_ctes=registro
+		dni:N(8)
+		marca:AN(20)
+		modelo:N(4) //no se que seria formato año?
+	fin registro
+
+	deu_rcia=registro
+		dni:N(8)
+		marca:AN(20)
+		modelo:N(4)
+	fin registro
+
+	reg_c: deu_ctes
+	rec_r: deu_rcia
+	arch_c: archivo de deu_ctes
+	arch_r: archivo de deu_rcia
+
+
+	Funcion car_a_ent(y:entero) es
+		Segun (y) hacer
+			="0": car_a_ent:=0
+			="1": car_a_ent:=1
+			="2": car_a_ent:=2
+			="3": car_a_ent:=3
+			="4": car_a_ent:=4
+			="5": car_a_ent:=5
+			="6": car_a_ent:=6
+			="7": car_a_ent:=7
+			="8": car_a_ent:=8
+			="9": car_a_ent:=9
+		Fin Segun
+	Fin Funcion
+
+	num, dni, año, suc: entero
+
+	Procedimiento convertir_num(x: entero, k:entero, m:entero) es
+		Para i:=1 a x hacer
+			num:=car_a_ent(v)
+			m:=m+(num*k)
+			k:=k/10
+			AVZ(deu, v)
+		Fin Para
+	Fin Procedimiento
+
+	marca: alfanumerico
+
+Proceso
+
+	ABRIR /S (arch_c)
+	ABRIR /S (arch_r)
+
+	ARR(deu)
+	AVZ(deu, v)
+
+	Mientras NFDS(deu) hacer
+
+		AVZ(deu, v)
+
+		Mientras (v<>"#") hacer
+
+			dni:=0
+			convertir_num(8, 10000000, dni)
+
+			AVZ(deu, v)
+			AVZ(deu, v)
+
+			Si (v="1") entonces
+				suc:=1
+			Sino
+				Si (v="2") entonces
+					suc:=2
+				Fin Si
+			Fin Si
+
+			AVZ(deu, v)
+			AVZ(deu, v)
+
+			//no se como hacer para que la marca sea un alfanumerico asi que uso concatenar
+
+			marca:=v
+			AVZ(deu, v)
+
+			Mientras (v<>"2") y (v<>"#") hacer
+				marca:=marca+concatenar(v)
+				AVZ(deu, v)
+			Fin Mientras
+
+			Si (v="2") entonces
+				año:=0
+				convertir_num(4,1000,año)
+			Fin Si
+
+			Si (año>=2019) entonces
+				Si (suc=1) entonces
+					reg_c.dni:=dni
+					reg_c.marca:=marca
+					reg_c.modelo:=año
+					GRABAR(arch_c, reg_c)
+				Sino
+					reg_r.dni:=dni
+					reg_r.marca:=marca
+					reg_r.modelo:=año
+					GRABAR(arch_r, reg_r)
+				Fin Si
+			Fin Si
+
+
+		Fin Mientras
+
+	Fin Mientras
+
+	CERRAR(arch_c)
+	CERRAR(arch_r)
+
+Fin Proceso

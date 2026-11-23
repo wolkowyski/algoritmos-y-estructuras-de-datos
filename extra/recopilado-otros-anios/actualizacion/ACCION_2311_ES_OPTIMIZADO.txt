@@ -1,0 +1,140 @@
+Una empresa dedicada a la venta de combustibles para automotores anunció una promoción 
+mediante la cual los clientes pueden acceder a beneficios importantes. 
+En cada carga los clientes suman 10 puntos por cada $100 de combustible 
+y dependiendo del medio de pago se le aplica un factor multiplicador, el cual se encuentra 
+en un arreglo (ya está cargado).  //¿Que digo? Cualquier cosa ese arreglo, nunca hablan de su utilidad, entonces se lo omite
+Los medios de pago posible son: Efectivo, Debito o Credito 
+La cantidad de puntos que tiene cada cliente están almacenados 
+en el archivo indexado PUNTOS el cual tiene el siguiente formato:
+
+PUNTOS Indexado por DNI
+
+DNICant_PuntosUlt_Carga
+Los datos de cada cliente se encuentran almacenados en el archivo CLIENTE también indexado con el siguiente formato
+
+CLIENTE Indexado por DNI
+
+DNIApe_NomEdadCiudad
+Se pide realizar el algoritmo que permita:
+
+Actualizar el archivo PUNTOS a partir del siguiente archivo secuencial (puede haber más de una carga por cliente), agregando los clientes que no existen en los archivos anteriores cuando sea necesario
+CARGAS Ordenado por DNI //Bien clarito dice secuencial y ponen indexado, que inutilidad
+
+DNI|Ape_Nom|Edad|Fecha|Ciudad|Monto| *Esta modificado, el medio de pago no me sirve, no tengo la edad ni tampoco un monto*
+Determinar la cantidad de cargas mayor a $1000
+Informar la cantidad de Clientes nuevos cargados
+
+ACCION_2311_ES //El arreglo no se le da uso alguno
+    AMBIENTE
+        regf = registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg1 = Registro de
+            DNI: N(9)
+            Cant_puntos: N(4)
+            Ult_carga: regf
+        FR
+        Puntos: Archivo de reg1 indexado por DNI
+        P:reg1
+
+        reg2 = Registro de
+            DNI: N(9)
+            Ape_Nom: AN(50)
+            Edad: N(2)
+            Ciudad: AN(30)
+        FR
+        Cliente: Archivo de reg2 indexado por DNI
+        C: reg2
+
+        reg3 = Registro de
+            DNI: N(9)
+            Mediodpago: {"Efectivo", "Debito", "Credito"} //Ni yo soy tan inutil como este campo
+            Ape_Nom: AN(50)
+            Fecha: regf
+            Ciudad: AN(30)
+            Monto: N(4)
+        FR
+        Cargas: Archivo de reg3 ordenado por DNI
+        Ca: reg3
+
+        Cont_masmil, Cont_nuevos, DNI: Entero
+        Cant_puntos: Entero
+
+        Funcion Calculopts(x: real): Entero
+            Si (x > 100) entonces
+                Calculopts:= x DIV 10
+            Sino
+                Calculopts:= 0
+            FS
+        FF
+
+    PROCESO
+        ABRIR E/(Cargas)
+        leer(Cargas, Ca)
+        ABRIR E/S (Cliente)
+        ABRIR E/S (Puntos)
+        Cont_masmil:= 0
+        Cont_nuevos:= 0
+        Mientras NFDA(Cargas) hacer
+            DNI := Ca.DNI
+            C.DNI:= DNI
+            Leer(Cliente, C)
+            Si EXISTE entonces 
+                P.DNI:= DNI
+                Leer(Puntos, P)
+                Si EXISTE entonces
+                    Mientras NFDA(Cargas) y (Ca.DNI = DNI) hacer
+                        Cant_puntos:= Calculopts(Ca.Monto)
+                        P.Cant_puntos:= P.Cant_puntos + Cant_puntos 
+                        P.Ult_carga:= Ca.Fecha
+
+                        Si (Ca.Monto > 1000) entonces
+                            Cont_masmil:= Cont_masmil + 1
+                        FS
+                        leer(Cargas, Ca)
+                    FM
+                    REGRABAR(Puntos,P)
+                Sino
+                    Mientras NFDA(Cargas) y (Ca.DNI = DNI) hacer
+                        Cant_puntos:= Calculopts(Ca.Monto)
+                        P.Cant_puntos:= P.Cant_puntos + Cant_puntos 
+                        P.Ult_carga:= Ca.Fecha
+
+                        Si (Ca.Monto > 1000) entonces
+                            Cont_masmil:= Cont_masmil + 1
+                        FS
+                        leer(Cargas, Ca)
+                    FM
+                    GRABAR(Puntos,P)
+                FS
+            Sino
+                C.DNI:= Ca.DNI
+                C.Ape_Nom:= Ca.Ape_Nom
+                C.Ciudad:= Ca.Ciudad
+                C.Edad:= Ca.Edad
+                GRABAR(Cliente, C)
+                Cont_nuevos:= Cont_nuevos + 1
+                Mientras NFDA(Cargas) y (Ca.DNI = DNI) hacer
+                    Cant_puntos:= Calculopts(Ca.Monto)
+                    P.Cant_puntos:= P.Cant_puntos + Cant_puntos 
+                    P.Ult_carga:= Ca.Fecha
+
+                    Si (Ca.Monto > 1000) entonces
+                        Cont_masmil:= Cont_masmil + 1
+                    FS
+                    leer(Cargas, Ca)
+                FM
+                GRABAR(Puntos,P)
+            FS
+        FM
+        ESC("Total de cargas mayores a 1000$ -> ", Cont_masmil)
+        ESC("Total de clientes nuevos -> ", Cont_nuevos)
+        Cerrar(Cargas)
+        Cerrar(Puntos)
+        Cerrar(Cliente)
+FA
+
+

@@ -1,0 +1,48 @@
+ACCION_EJ2_ES (prim: puntero a nodo)
+    AMBIENTE
+        nodo = Registro de 
+            DNI: N(9)
+            NyA: AN(50)
+            Edad: N(3)
+            Nrocama: N(3)
+            Nrohab: N(3)
+            temp: Arreglo de [1..4] de reales
+            prox: puntero a nodo
+        FR
+        p,q,ant: puntero a nodo
+        opcion: booleano
+
+        Función quitar(A: Arreglo de [1..4] de reales; n: entero):booleano
+            Si (A[n] > 36.5) entonces
+                quitar:= falso
+            Sino
+                Si (n > 1) entonces
+                    quitar:= quitar(A, n-1)
+                Sino
+                    quitar:= verdadero
+                FS
+            FS
+        FF
+
+    PROCESO
+        p:=prim
+        Mientras (p <> NIL) hacer
+            ESC("Nombre del paciente: ", *p.NyA)
+            opcion:= quitar(temp, 4)
+            Si opcion entonces
+                ESC("Temperatura mayor a 36.5° no encontrada")
+                Si (ant = NIL) entonces //Eliminación del primer elemento
+                    prim:=*p.prox
+                Sino //Eliminación intermedia
+                    *ant.prox:=*p.prox
+                FS
+                q:= *p.prox
+                Disponer(p)
+                p:= q
+            Sino
+                ESC("Temperatura mayor a 36.5° encontrada")
+                ant:=p
+                p:=*p.prox
+            FS
+        FM
+FA

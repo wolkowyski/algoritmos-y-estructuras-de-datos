@@ -1,0 +1,57 @@
+ACCION_325_ES
+    AMBIENTE
+        Fecha = Registro de 
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg = Registro de
+            Nro_fac: N(10)
+            Proveedor: {"A", "B", "C"}
+            Fecha: Fecha
+            Nro_Pl: {"1", "2", "3", "4"}
+            Importe: N(6)
+        FR
+        Compras: Archivo de reg
+        C: reg
+
+        Montos: Arreglo de [1..4, 1..13, 1..4] de Reales
+        c,f,a: Entero
+
+    PROCESO
+        ABRIR E/(Compras)
+        Leer(Compras, C)
+        Para a:= 1 hasta 4 hacer
+            Para c:= 1 hasta 13 hacer
+                Para f:= 1 hasta 4 hacer
+                    Montos[f, c, a]:= 0
+                FP
+            FP
+        FP
+
+        Mientras NFDA(Compras) hacer
+            Montos[C.Proveedor, C.Fecha.MM, C.Nro_Pl]:= Montos[C.Proveedor, C.Fecha.MM, C.Nro_Pl] + C.Importe
+            Montos[4, C.Fecha.MM, C.Nro_Pl]:= Montos[4, C.Fecha.MM, C.Nro_Pl] + C.Importe
+            Montos[C.Proveedor, 13, C.Nro_Pl]:= Montos[C.Proveedor, 13, C.Nro_Pl] + C.Importe
+            Montos [4, 13, C.Nro_Pl]:= Montos [4, 13, C.Nro_Pl] + C.Importe
+            Leer(Compras, C)
+        FM
+
+        Para a:= 1 hasta 4 hacer
+            ESC("Planta ",C.Nro_Pl)
+            ESC("Proveedor | Enero | Febrero | Marzo | Abril | Mayo... |TOTAL por Proveedor|")
+            Para c:= 1 hasta 13 hacer
+                Para f:= 1 hasta 4 hacer
+                    Si ( f = 4) entonces
+                        ESC("TOTAL por MES")
+                    Sino
+                        ESC("Proveedor ",C.Proveedor)
+                    FS
+                    ESC("Montos[f, c, a]")
+                FP
+            FP
+        FP
+        Cerrar(Compras)
+FA
+

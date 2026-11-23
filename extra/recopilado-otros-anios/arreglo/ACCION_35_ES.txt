@@ -1,0 +1,26 @@
+ACCION_35_ES (A, B: Arreglo de [1..30] de reales)
+    AMBIENTE
+        C: Arreglo de [1..60] de reales
+        a, b, c: enteros
+    PROCESO
+        a:= 1; b:= 1; c:= 1;
+        Mientras (a <> HV) o (b <> HV) o (c <> HV) hacer
+            Si (A[a] < B[b]) entonces
+                C[c]:= A[a]
+                a:= a + 1
+                Si (a = 30) entonces
+                    a:= HV
+                FS
+            Sino
+                C[c]:= B[b]
+                b:= b + 1
+                Si (b = 30) entonces
+                    b:= HV
+                FS
+            FS
+            c:= c + 1
+            Si (c = 30) entonces
+                c:= HV
+            FS
+        FM
+FA

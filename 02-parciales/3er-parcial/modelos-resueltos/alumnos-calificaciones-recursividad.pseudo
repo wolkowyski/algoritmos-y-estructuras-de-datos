@@ -1,0 +1,81 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial 2023 - Alumnos con 3 o más notas mayores a 6 (recursividad)
+//
+//  Dada la lista de alumnos con sus 5 notas, generar una lista nueva ordenada
+//  por legajo con los alumnos que tienen al menos 3 notas mayores a 6. La
+//  verificación se hace con una función recursiva.
+//  Enunciado: ../enunciados/2023-tema-2.jpg
+// ==========================================================================
+
+Accion Alumnos_Calificaciones (Prim: puntero a Nodo) ES
+
+Ambiente
+
+	Nodo=Registro
+		dato=Registro
+			legajo: N(5)
+			AyN: AN(30)
+			Comision: AN(4)
+			Notas: arreglo[1...5] de entero
+		Fin Registro
+		prox: puntero a Nodo
+	Fin Registro
+
+	P: puntero a Nodo
+	Prim_Sal, Q, R, A: puntero a Nodo
+
+	// i = nota que se mira, cont = notas mayores a 6 encontradas hasta ahora
+	Funcion Tiene_6(Arr: arreglo[1...5] de entero, i,cont: entero): booleano ES
+		Si (cont >= 3) entonces // caso base 1: ya alcanzó
+			Tiene_6:= Verdadero
+		SiNo
+			Si (i > 5) entonces // caso base 2: no quedan notas
+				Tiene_6:= Falso
+			SiNo // caso recursivo
+				Si (Arr[i] > 6) entonces
+					Tiene_6:= Tiene_6(Arr, i + 1, cont + 1)
+				SiNo
+					Tiene_6:= Tiene_6(Arr, i + 1, cont)
+				Fin Si
+			Fin Si
+		Fin Si
+	Fin Funcion
+
+Proceso
+	P:= Prim
+	Prim_Sal:= nil
+
+	Mientras (P <> nil) hacer
+		Si (Tiene_6(*P.dato.Notas,1,0)) entonces
+			Nuevo(Q)
+			*Q.dato:= *P.dato
+
+			// Inserción ordenada por legajo
+			R:= Prim_Sal
+			A:= nil
+			Mientras (R <> nil) y (*R.dato.legajo < *Q.dato.legajo) hacer
+				A:= R
+				R:= *R.prox
+			Fin Mientras
+
+			Si (A = nil) entonces // primero (o lista vacía)
+				*Q.prox:= Prim_Sal
+				Prim_Sal:= Q
+			SiNo // medio o final
+				*Q.prox:= R
+				*A.prox:= Q
+			Fin Si
+		Fin Si
+
+		P:= *P.prox
+	Fin Mientras
+Fin Accion
+
+// Prueba de escritorio de la función con Notas = [2, 1, 8, 7, 9]
+//   Tiene_6(Notas, 1, 0)       2 no es > 6
+//   Tiene_6(Notas, 2, 0)       1 no es > 6
+//   Tiene_6(Notas, 3, 0)       8 > 6 -> cont 1
+//   Tiene_6(Notas, 4, 1)       7 > 6 -> cont 2
+//   Tiene_6(Notas, 5, 2)       9 > 6 -> cont 3
+//   Tiene_6(Notas, 6, 3)       cont >= 3 -> Verdadero (se propaga hacia atrás)

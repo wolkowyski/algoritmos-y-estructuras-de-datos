@@ -1,0 +1,88 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Apuntes - ¿Qué es un registro? Campos y definición en el ambiente
+// ==========================================================================
+
+Que es un registro
+Un registro, es un tipo de dato estructurado formado por la union de varios/diversos elementos, logicamente relacionados - están formados por campos...
+
+
+Heterogeneidad de los datos: sus elementos pueden ser de diferente tipo
+
+
+CAMPOS
+Un campo es la entidad dlogica mas pequeña que conforman al registro
+Es la unidad minima de informacion de un registro (puede ser un dato estructurado)
+
+DEFINCION DE CAMPOS
+Nombre: nombre que puede tener el campo
+Tipo: tipo de caracteres que puede tener
+Tamaño: cantidad de caracteres/digitos (cuando es numerico o alfanumerico)
+
+Ejemplos de campos
+
+DNI: N(8)
+DNI: entero
+DIA: 1..31
+CARRERA: ("ISI", "IQ", "IEM", "LAR") //diferente a los conjuntos que están con = y no con :, pq el campo "CARRERA" puede tomar diferentes valores
+
+
+El registro debe definirse en el ambiente para ser usado en el algoritmo
+Por Ejemplo
+
+PERSONA = Registro // estamos creando un nuevo TIPO de DATO, por eso va con el igual, ahora PERSONA es un nuevo tipo de dato
+	DNI: Entero;
+	Nombre: AN(50);
+	Domicilio: AN(70)
+Fin Registro
+
+Reg: PERSONA // ahora Reg es de tipo de dato: PERSONA, en el algoritmo usamos la palabra Reg
+
+el punto es el selector de campo .
+Reg.DNI := 12345678 // asignación directa de un valor de ejemplo
+
+Leer(NroDni);
+Reg.DNI := NroDNI //estoy asignando el valor leido al campo DNI del reg, q es de tipo de dato PERSONA
+Escribir(Reg.Nombre)
+
+
+CONTENIDO Y CONTINENTE DENTRO DE UN REGISTRO
+
+
+ARCHIVO: tambien llamado fichero, es una coleccion homogenea de registros relacionados entre si y organzados para un proposito especifico
+Esta siempre guardado en memoria externa, su proocesamiento se realiza en la memoria interna
+Unidad basica o minima de intercambio de informacion // cuando leo, leo un registro completo, lo mismo para escribir
+
+
+
+ORGANIZACION DE ARCHIVOS
+Es la manera en la que se encuuentran almacenados los registros dentro de los archivos
+	SECUENCIAL ---> es una sucesion de registros almacenados consecuetivamente, por tal motivo, para acceder a un registro n es necesario pasar por todos los n-1 reigstros que le preceden
+
+	ACCESO SECUECIAL
+	implica el acceso a un archivo segun el orden de almacenamiento de sus reigstros, uno tras otro
+
+	RELATIVA ---> nou
+	INDEXADA ---> nou
+
+
+CAMPO CLAVE (key) es aquel que identifica al registro y lo diferencia de los otros registros. DEBE SER UNICO, es decir debe ser diferente para cada registro
+
+
+
+
+
+
+
+TRATAR ARCHVIOS
+
+ABRIR el archvio para su uso
+Los archivos secuenciales se peden abrir en un solor modo (E o S) Entrada o Salida
+
+LEER(Nombre del arhchivo, nombre del registro) es como AVANZAR...
+
+NO DFA(Nombre del archivo)
+Condicion de fin de recorrido
+
+CERRAR(Nombre del archivo)
+Es totalmente obligatorio cerrar los archivos de salida

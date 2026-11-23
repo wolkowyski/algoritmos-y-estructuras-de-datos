@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.10 - resolución compartida en Discord
+// ==========================================================================
+
+Se dispone de una lista circular con un conjunto de números naturales. Este conjunto está dividido
+en 6 grupos. En cada grupo el primer elemento indica la cantidad de números
+subsiguientes a él que integran dicho grupo. Se desea generar una nueva lista doblemente encadenada
+en la cual cada nodo contendrá el promedio de cada grupo. Dicha lista debe quedar
+ordenada en forma ascendente y, al final se debe informar cuál fue el máximo y el mínimo promedio de
+todo el conjunto de números.
+
+ACCION 4.10 ES(prim1)
+AMBIENTE
+NODO = registro
+    dato:N(3)
+    ant:puntero a NODO
+    prox:puntero a NODO
+fin_registro
+NODO2 = registro
+    prom:real(3)
+    ant:puntero a NODO2
+    prox:puntero a NODO2
+fin_registro
+p1:puntero a NODO
+p2,q,prim2,ult:puntero a NODO2
+i,j,cantidad:entero
+promedio:real
+
+ALGORITMO
+p:prim
+prim2:=nil
+PARA i:= 1 hasta 6 HACER
+    cantidad:= *p.dato
+    promedio:=0
+    PARA j:=1 hasta cantidad HACER
+        *p.prox
+        promedio:= *p.dato + promedio
+    FIN_PARA
+    NUEVO(q)
+    *q.prom:= promedio / cantidad
+    SI prim2 = nil ENTONCES
+        ult:=q
+        prim2:=q
+        *prim2.prox:=nil
+        *prim2.ant:=nil
+    SINO
+        SI *q.prom < *prim2.prom ENTONCES
+            *q.prox = prim2
+            *prim2.ant = q
+            prim2:= q
+        SINO
+            p2:=prim2
+            MIENTRAS *q.prom > *p2.prom y p2 <> nil HACER
+                p2:= *p.prox
+            FIN_MIENTRAS
+            *q.ant:= *p2.ant
+            *q.prox:= p2
+            *p2.ant:= q
+            *(*p2.ant).prox:= q
+        FIN_SI
+        SI *ult.prom < *ult.prom ENTONCES
+            ult:=q
+        FIN_SI
+    FIN_SI
+    p:= *p.prox
+FIN_PARA
+ESCRIBIR("EL mayor promedio fue ",*ult.prom,"el menor promedio fue",*prim2.prom)
+FIN_ACCION.

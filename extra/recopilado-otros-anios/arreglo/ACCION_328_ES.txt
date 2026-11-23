@@ -1,0 +1,69 @@
+ACCION_328_ES (V: Arreglo de [1..6] de Reales)
+    AMBIENTE
+        reg = Registro de
+            Nro_terr: N(5)
+            Zona: {"A", "B", "C", "D", "E", "F"}
+            Ubicacion: 1..10
+            Superficie: N(4)
+        FR
+        Terreno: Archivo de reg
+        T: reg
+
+        Valores: Arreglo de [1..7, 1..11] de Reales
+        Val_Ter: Real
+        f,c,x: entero
+
+        Funcion fila(a: alfanumerico): entero
+            Segun a hacer
+                "A": fila:= 1
+                "B": fila:= 2
+                "C": fila:= 3
+                "D": fila:= 4
+                "E": fila:= 5
+                "F": fila:= 6
+            FS
+        FF
+
+        Procedimiento letra(j: entero) es
+            Segun j hacer
+                1: ESC("A")
+                2: ESC("B")
+                3: ESC("C")
+                4: ESC("D")
+                5: ESC("E")
+                6: ESC("F")
+            FS
+        FP
+
+    PROCESO
+        Abrir E/(Terreno)
+        Leer (Terreno, T)
+        Para f:=1 hasta 7 hacer
+            Para c:= 1 hasta 11 hacer
+                Valores[f,c]:= 0
+            FP
+        FP
+
+        Mientras NFDA(Terrenos) hacer
+            x:= fila(T.Zona)
+            Val_Ter:= T.Superficie * V[x] * Coeficiente de incremento
+            Valores[x, T.Ubicacion]:= Valores[x, T.Ubicacion] + Val_Ter -> Valor individual
+            Valores[7, T.Ubicacion]:= Valores[7, T.Ubicacion] + Val_Ter -> Totales por Ubicacion
+            Valores[x, 11]:= Valores [x, 11] + Val_Ter -> Total por Zona
+            Valores[7, 11]:= Valores [7, 11] + Val_Ter -> Total general
+            Leer(Terreno, T)
+        FM
+
+        ESC("ZONAS | UBICACION 1 | UBICACION 2 | UBICACION 3 | UBICACION 4 | UBICACION 5 | UBICACION 6 | UBICACION 7 | UBICACION 8 | UBICACION 9 | UBICACION 10 | UBICACION 11 | TOTAL POR ZONA")
+        Para f:= 1 hasta 7 hacer
+            Si (f = 7) entonces
+                ESC("TOTAL por UBICACION")
+            Sino
+                letra(f)
+            FS
+            Para c:= 1 hasta 11 hacer
+                ESC(Valores[f,c])
+            FP
+        FP
+        Cerrar(Terreno)
+FA

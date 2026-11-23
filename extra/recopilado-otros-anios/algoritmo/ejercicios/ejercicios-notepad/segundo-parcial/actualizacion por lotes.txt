@@ -1,0 +1,58 @@
+ACTUALIZACION POR LOTES
+ambiente: {alta=1;modificacion=2;baja=3}
+
+Algoritmo:
+{Abrir archivos}
+{Leer archivos}
+	Mientras (clave_mae<> HV) o (clave_mov <> HV) hacer
+		Si (clave_mae < clave_mov ) entonces
+			reg_sal:=reg_mae
+			esc (sal,reg_Sal)
+			Leer_mae
+				sino
+					Si (clave_mae = clave_mov ) entonces
+						PROCESOS IGUALES	
+							sino	
+								PROCESOS DISTINTOS	
+					Fin si
+		Fin si
+	Fin mientras
+{Cerrar archivos}
+
+Subaccion PROCESOS IGUALES ES :
+AUX := reg_mae
+resg_clave:=reg_mov.clave_mov
+	Mientras (resg_clave = reg_mov.clave_mov) Hacer
+		Segun (reg_mov.cod_mov) hacer
+			1: esc ('error alta')
+			2: modificar
+			3: baja
+		Fin segun
+		Leer_mov
+	Fin Mientras
+	esc (sal,aux)
+	Leer_mae
+Fin sub
+
+
+Sub accion PROCESOS DISTINTOS es:
+	Si (reg_mov.cod_mov = 1 ) entonces
+		aux.clave_mae := reg_mov.clave_mov
+		aux.campo1:= reg_mov.campo1
+		.
+		.
+		.
+		resg_clave:=reg_mov.clave_mov
+		Leer_mov
+			Mientras ( resg_clave = reg_mov.clave_mov) hacer
+				Segun (reg_mov.cod_mov) hacer
+					2:modificar
+					3:baja
+				Fin segun
+				Leer_mov
+			Fin Mientras
+			esc (sal,aux)
+				sino
+					esc ('error')
+	Fin si
+Fin sub

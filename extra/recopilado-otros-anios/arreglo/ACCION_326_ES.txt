@@ -1,0 +1,70 @@
+ACCION_326_ES
+    AMBIENTE
+        Fec = Registro de
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg = Registro de
+            Nro_fac: N(10)
+            Nro_usu: N(5)
+            Zona: {"A", "B", "C", "D",}
+            Fecha: Fec
+            Consumo: N(6)
+        FR
+        Facturas: Archivo de reg
+        F: reg
+
+        x, f, c: Entero
+        importe: Real
+        Resum: Arreglo de [1..13, 1..5] de Reales 
+
+        Funcion columna(a: alfanumerico): Entero
+            Segun a hacer
+                "A": columna:= 1
+                "B": columna:= 2
+                "C": columna:= 3
+                "D": columna:= 4
+            FS         
+        FF   
+
+    PROCESO
+        Abrir E/(Facturas)
+        Leer(Facturas, F)
+
+        Para f:= 1 hasta 13 hacer
+            Para c:= 1 hasta 5 hacer
+                Resum[f,c]:= 0 -> Puesta a cero del cuadro estadístico
+            FP
+        FP
+
+        Mientras NFDA(Facturas) hacer
+            x:= columna(F.Zona)
+            Segun F.Zona hacer
+                "A": importe:= F.Consumo * 0,05
+                "B": importe:= F.Consumo * 0,07
+                "C": importe:= F.Consumo * 0,09
+                "D": importe:= F.Consumo * 0,13
+            FS
+            Resum[F.Fec.MM, x]:= Resum[F.Fec.MM, x] + importe
+            Resum[13, x]:= Resum[13, x] + importe -> Total por Zona
+            Resum[F.Fec.MM, 5]:= Resum[F.Fec.MM, 5] + importe -> Total por mes
+            Resum[13,5]:= Resum[13, 5] + importe -> Total general
+            Leer(Facturas, F)
+        FM
+
+        ESC("MES | Zona A | Zona B | Zona C | Zona D | Total por mes")
+
+        Para f:= 1 hasta 13 hacer
+            Si (f = 13) entonces
+                ESC("Total por Zona")
+            Sino
+                ESC(f)
+            FS
+            Para c:= 1 hasta 5 hacer
+                ESC(Resum[f,c])
+            FP
+        FP
+        Cerrar(Facturas)
+FA
+

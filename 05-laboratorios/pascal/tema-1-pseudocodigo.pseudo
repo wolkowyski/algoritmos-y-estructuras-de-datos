@@ -1,0 +1,147 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Laboratorio de Pascal (2023) - Tema 1 - Pseudocódigo
+//  Secuencia de registros de sustancias: conversión de libras a kilogramos
+//  y totales por mes. El programa en Pascal está en tema-1.pas
+// ==========================================================================
+
+Acción Tema1 es
+	Ambiente
+		Fecha = Registro
+			aa: N(4)
+			mm: 1..12
+			dd: 1..31
+		FinRegistro
+
+		Salida = Registro
+			FechaRegistro: Fecha
+			NombreSustancia: AN(20)
+		FinRegistro
+
+        Función Numero(s: carácter):entero es
+            Según (s) Hacer
+                "0": Numero:= 0
+                "1": Numero:= 1
+                "2": Numero:= 2
+                "3": Numero:= 3
+                "4": Numero:= 4
+                "5": Numero:= 5
+                "6": Numero:= 6
+                "7": Numero:= 7
+                "8": Numero:= 8
+                "9": Numero:= 9
+                OtroCaso: -
+            FinSegún
+        FinFunción
+
+		ArchSalida: Archivo de Salida ordenado por FechaRegistro
+		RegS: Registro de Salida
+
+		SecuenciaStar: Secuencia de carácter
+		s: carácter
+
+        Banderita: Booleano
+        mil, centena, decena, unidad: entero
+        dia, mes, año: entero
+        enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre: entero
+
+        Conversión = 0,453592
+
+	Proceso
+		Arrancar(SecuenciaStar)
+		Avanzar(SecuenciaStar, s)
+		Crear(ArchSalida)
+
+		Mientras NFDS(SecuenciaStar) hacer
+			Si (s) = "N" entonces
+                Banderita:= Verdadero
+            Sino
+                Banderita:= Falso
+            FinSi
+
+			Avanzar(SecuenciaStar, s)
+			decena:= Numero(s) * 10
+            Avanzar(SecuenciaStar, s)
+            unidad:= Numero(s)
+            dia:= (decena) + (unidad) // Obtengo el dia (entero)
+
+            Avanzar(SecuenciaStar, s)
+            decena:= Numero(s) * 10
+            Avanzar(SecuenciaStar, s)
+            unidad:= Numero(s)
+            mes:= (decena) + (unidad) // Obtengo el mes (entero)
+
+            Avanzar(SecuenciaStar, s)
+            mil:= Numero(s) * 1000
+            Avanzar(SecuenciaStar, s)
+            centena:= Numero(s) * 100
+            Avanzar(SecuenciaStar, s)
+            decena:= Numero(s) * 10
+            Avanzar(SecuenciaStar, s)
+            unidad:= Numero(s)
+            año:= (mil) + (centena) + (decena) + (unidad) // Obtengo el año (entero)
+
+            Avanzar(SecuenciaStar, s)
+            Escribir("El Nombre de la Sustancia es: ")
+            Mientras (s) <> "#" hacer
+                Escribir(s) // Emito por pantalla el nombre de la sustancia
+                nombre:= nombre, s // Grabo el nombre en una variable acumuladora
+                Avanzar(SecuenciaStar, s)
+            FinMientras
+            Avanzar(SecuenciaStar, s)
+
+            Si Banderita entonces
+                RegS.FechaRegistro.Fecha.dd:= dia
+                RegS.FechaRegistro.Fecha.mm:= mes
+                RegS.FechaRegistro.Fecha.aa:= año
+                RegS.NombreSustancia:= nombre
+                Escribir(ArchSalida, RegS) // Grabamos o Escribimo el Archivo de salida, con los datos de la fecha, seguido del nombre - Consigna 2
+            FinSi
+
+            Para i= 0 hasta 7 Hacer
+                Avanzar(SecuenciaStar, s)
+            FinPara
+            Mientras (s) <> "#" Hacer
+                LibrasTotales:= LibrasTotales * 10
+                Libras:= Numero(s)
+                LibrasTotales:=LibrasTotales + Libras
+                Avanzar(Secuencia, s)
+            FinMientras
+            Kilogramos:= Libras * Conversión
+            Escribir("El peso de la sustancia es de: ", Redond(Kilogramos)," kg.")
+
+            Si (año) = 2022 entonces
+                Segun (mes) hacer
+                    01: enero:= enero + Kilogramos
+                    02: febero:= febrero + Kilogramos
+                    03: marzo:= marzo + Kilogramos
+                    04: abril:= abril + Kilogramos
+                    05: mayo:= mayo + Kilogramos
+                    06: junio:= junio + Kilogramos
+                    07: julio:= julio + Kilogramos
+                    08: agosto:= agosto + Kilogramos
+                    09: septiembre:= septiembre
+                    10: octubre:= octubre + Kilogramos
+                    11: noviembre:= noviembre + Kilogramos
+                    12: diciembre:= diciembre + Kilogramos
+                FinSegún
+            FinSi
+            Avanzar(SecuenciaStar, s)
+        FinMientras
+
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de enero es: ", enero)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de febrero es: ", febrero)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de marzo es: ", marzo)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de abril es: ", abril)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de mayo es: ", mayo)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de junio es: ", junio)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de julio es: ", julio)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de agosto es: ", agosto)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de septiembre es: ", septiembre)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de octubre es: ", octubre)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de novimebre es: ", noviembre)
+        Escribir("El total de cantidades ingresadas del 2022 para el mes de diciembre es: ", diciembre)
+
+        Cerrar(SecuenciaStar)
+        Cerrar(ArchSalida)
+FinAcción

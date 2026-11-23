@@ -1,0 +1,124 @@
+ACCION_46_ES
+    AMBIENTE
+        Cliente = Registro de
+            Nombre: AN(50)
+            Fecha: Registro
+                AA:N(4)
+                MM: 1..12
+                DD: 1..31
+            FR
+            Nromesa: N(2)
+            Total: N(5,2)
+            prox: puntero a nodo
+        FR
+        p, c, prim, ant: puntero a Cliente
+        A, M, D: entero
+        opcion1: numerico
+        nombre: alfanumerico
+
+        Procedimiento Carga() es
+            p:=prim
+            ant:=NIL
+            Nuevo(q)
+            ESC("Ingrese el nombre del cliente"); leer(*q.nombre)
+            *q.Fecha.AA:= A
+            *q.Fecha.MM:= M
+            *q.Fecha.DD:= D
+            ESC("Ingrese el numero de mesa"); leer(*q.mesa) //Suponemos que siempre se ingresa una mesa libre
+            Mientras (p <> NIL) y (*p.nombre < *q.nombre) hacer
+                ant:= p
+                p:= *p.prox
+            FM
+            Si (ant = NIL) entonces
+                *q.prox:= prim
+                prim:= q
+            Sino
+                *ant.prox:= q
+                *q.prox:= p
+            FS
+        FP
+        Procedimiento Consumo(b: puntero a Cliente) es
+            AMBIENTE
+                precio: real
+                opcion: alfanumerico
+            PROCESO
+                opcion:= "S"
+                Mientras (opcion = "S") hacer
+                    precio:= 0
+                    ESC("Ingrese el consumo: ")
+                    leer (precio)
+                    *b.Total:= *b.Total + precio
+                    ESC("Ingresar otro consumo? S/N")
+                FM
+        FP
+
+        Procedimiento Cobro(b, a: puntero a Cliente)
+            ESC("Nombre: ", *b.nombre)
+            ESC("Fecha: ", *b.fecha)
+            ESC("Nromesa: ",*b.Nromesa)
+            ESC("Total consumido: ", *b.Total)
+           //Suponemos que si emitimos el ticket, es porque el cliente se retira y debemos eliminarlo de la lista
+            Si (a = NIL) entonces
+                prim:= *b.prox
+                *b.prox:= NIL
+            Sino
+                *a.prox:= *b.prox
+                *b.prox:= NIL
+            FS
+            Disponer(b)
+        FP
+
+        Procedimiento Eliminar(b, a: puntero a Cliente)
+             Si (a = NIL) entonces
+                prim:= *b.prox
+                *b.prox:= NIL
+            Sino
+                *a.prox:= *b.prox
+                *b.prox:= NIL
+            FS
+        FP
+
+        Procedimiento busqueda(n: alfanumerico, o: entero) es
+            p:= prim
+            ant:= NIL
+            Mientras (p <> NIL) y (*p.nombre <> n) hacer
+                ant:= p
+                p:= *p.prox
+            FM
+            Si p = NIL entonces
+                ESC("Error... Cliente no encontrado")
+            Sino
+                Segun o hacer
+                    = 2: Consumo(p)
+                    = 3: Cobro(p, ant)
+                    = 4: Eliminar(p, ant)
+                FS
+            FS
+        FP
+
+    PROCESO
+        ESC("Buenas! Antes de seguir con el programa ingrese la fecha en formato año, mes, día")
+        Leer( A, M, D)
+        opcion1:= 0
+        prim:= NIL
+        Mientras (opcion1 <> "5") hacer
+            ESC("Desea: ")
+            ESC("Añadir un Cliente -> 1")
+            ESC("Registrar consumo -> 2")
+            ESC("Realizar cobro -> 3")
+            ESC("Eliminar cliente de la lista de atención -> 4")
+            ESC("Cerrar programa -> 5")
+            ESC("opcion: ")
+            Leer(opcion1)
+            Si opcion = 1 entonces
+                Carga()
+            Sino
+                Si (opcion <> 5) entonces
+                    ESC("Ingrese el nombre del cliente"); leer(nombre)
+                    Busqueda(nombre, opcion)
+                Sino
+                    ESC("Adios!")
+                FS
+            FS
+        FM
+FA

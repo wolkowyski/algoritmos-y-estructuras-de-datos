@@ -1,0 +1,73 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.16 (mezcla con HV)
+// ==========================================================================
+
+Ejercicio 2.2.16 - mezcla peliculas
+
+Construir un algoritmo que a partir de un fichero de películas nuevas conteniendo:
+
+PELICULAS_NUEVAS Ordenado por Nro_Pelicula
+
+    Nro_Pelicula Titulo Genero Cant_Copias Fecha_Estreno
+
+y otro fichero de peliculas existentes, ambos ordenados por película,
+
+PELICULAS Ordenado por Nro_Pelicula
+
+    Nro_Pelicula Titulo Genero Cant_Copias Fecha_Estreno
+
+Genere un único archivo (con el mismo formato de los ficheros de entrada) que contenga todas las peliculas. Considerar que hay un solo registro por película y no se repiten entre ficheros.
+
+Accion 2.2.16 Es
+Ambiente
+   Fecha = Registro
+         DD: 1…31
+         MM: 1…12
+         AA: 2000…2020
+   Fin Registro
+
+Pelicula = Registro
+      Nro_Pel: N(6)
+      Titulo: AN(30)
+      Genero: AN(15)
+      Cant_Copias: N(3)
+      Fecha_Estreno: Fecha
+Fin Registro
+
+Arch_Act, Peliculas, P_Nuevas: Archivo de Pelicula, ordenado por Nro_Pel
+R_A, R_P, R_PN: Pelicula
+HV = 999999 // mayor que cualquier Nro_Pel (N(6))
+
+Procedimiento Leer_P es
+   Leer(Peliculas, R_P)
+   Si FDA(Peliculas) entonces
+      R_P.Nro_Pel:= HV
+   Fin si
+Fin procedimiento
+
+Procedimiento Leer_PN es
+   Leer(P_Nuevas, R_PN)
+   Si FDA(P_Nuevas) entonces
+      R_PN.Nro_Pel:= HV // tiene que ser el registro de películas nuevas, no el de existentes
+   Fin si
+Fin procedimiento
+
+Algoritmo
+   Abrir E/(Peliculas);Leer_P
+   Abrir E/(P_Nuevas); Leer_PN
+   Abrir /S(Arch_Act);
+
+
+Mientras (R_P.Nro_Pel<> HV) o (R_PN.Nro_Pel <> HV) hacer
+      Si R_P.Nro_Pel  < R_PN.Nro_Pel entonces
+            R_A:=R_P; Escribir(Arch_Act, R_A)
+            Leer_P
+      Sino
+            R_A:=R_PN; Escribir(Arch_Act, R_A)
+            Leer_PN
+      Fin Si
+Fin Mientras
+
+Cerrar(Peliculas); Cerrar(P_Nuevas); Cerrar(Arch_Act);
+Fin Acción

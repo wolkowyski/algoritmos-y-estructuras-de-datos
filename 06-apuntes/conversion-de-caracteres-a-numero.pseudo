@@ -1,0 +1,34 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Apuntes - Conversión de caracteres numéricos a número (secuencias)
+// ==========================================================================
+
+Ambiente
+    Funcion Conversion(v:caracter):entero
+        Segun (v) hacer:
+            "0": Conversion:= 0
+            "1": Conversion:= 1
+            "2": Conversion:= 2
+            "3": Conversion:= 3
+            "4": Conversion:= 4
+            ...
+        FinSegun
+    FinFuncion/FinSubaccion
+
+Accion/Proceso
+
+//Estoy posicionado en el "#"
+AVZ(SecuenciaNere, v) //estoy en el 4
+Conversion(v) //llamo a la funcion
+centena:= Conversion * 100 // obtengo el 400
+AVZ(SecuenciaNere, v) //estoy en el 5
+Conversion(v) //llamo a la funcion
+decena:= Conversion * 10 // obtengo el 50
+AVZ(SecuenciaNere, v) //estoy en el 6
+Conversion(v) //llamo a la funcion
+unidad:= Conversion * 1 // obtengo el 6
+NumeroFinal:= centena + decena + unidad //sumo 400 + 50 + 6 y obtengo 456
+
+Si NumeroFinal > 300 entonces
+    cont_asientos:= cont_asientos +1
+FinSi

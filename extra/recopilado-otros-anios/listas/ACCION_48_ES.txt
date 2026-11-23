@@ -1,0 +1,100 @@
+ACCION_48_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo= Registro de
+            elem: dato
+            prox: puntero a nodo
+        FR
+        p, q, s, ant: puntero a nodo
+        opcion: entero
+
+        procedimiento Eliminar() es
+            Si prim = p entonces
+                s:= prim
+                Mientras (*s.prox <> prim) hacer
+                    s:=*s.prox
+                FM
+                prim:= *p.prox
+                *s.prox:= prim
+                *p.prox:= Nil
+            Sino
+                *ant.prox:= *p.prox
+                *p.prox:= Nil
+            FS
+            Disponer(p)
+        FP
+
+        procedimiento buscar(o: entero) es
+            AMBIENTE
+                valor: dato
+            PROCESO
+                ESC("Ingrese el valor a buscar")
+                Leer(valor) 
+                p:=prim
+                ant:= Nil
+                Mientras (*p.prox <> prim) y (*p.elem <> valor) hacer
+                    ant:= p
+                    p:= *p.prox
+                FM
+                Si (*p.elem <> valor) entonces
+                    ESC("No se ha encontrado el elemento insertado")
+                Sino
+                    Si (opcion = 1) entonces
+                        ESC("Se ha encontrado el elemento: ",valor)
+                    Sino
+                        Eliminar()
+                    FS
+                FS
+        FP
+
+        procedimiento insertar() es
+            Nuevo(q)
+            ESC("Ingrese el elemento a agregar"); leer(*q.elem)
+            p:=prim
+            ant:= Nil
+            Mientras (*p.prox <> prim) y (*p.elem < *q.elem) hacer
+                ant:= p
+                p:= *p.prox
+            FM
+            Si (ant = Nil) entonces
+                Si (*q.elem > *p.elem) entonces
+                    *q.prox:= *prim.prox
+                    *prim.prox:= q
+                Sino
+                    *q.prox:= prim
+                    Mientras (*p.prox <> prim) hacer
+                        p:=*p.prox
+                    FM
+                    *p.prox:= q
+                    prim:= q
+                FS
+            Sino
+                Si (*p.prox = prim) entonces
+                    *p.prox:= q
+                    *q.prox:= prim
+                Sino
+                    *ant.prox:= q
+                    *q.prox:= p
+                FS
+            FS
+        FP
+
+    PROCESO
+        opcion:= 0
+        Mientras (opcion <> 4) hacer
+            ESC("Que desea realizar?")
+            ESC("Buscar un elemento -> 1")
+            ESC("Insertar un elemento -> 2")
+            ESC("Eliminar un elemento -> 3")
+            ESC("Salir del programa -> 4")
+            Leer(opcion)
+            Si (opcion = 2) entonces
+                Insertar()
+            Sino
+                Si (opcion <> 4) entonces
+                    Buscar(opcion)
+                Sino
+                    ESC("Adios...")
+                FS
+            FS
+        FM
+FA 

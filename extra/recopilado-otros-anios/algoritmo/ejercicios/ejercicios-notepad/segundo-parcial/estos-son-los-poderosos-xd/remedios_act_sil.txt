@@ -1,0 +1,123 @@
+Accion ej 2.20 es:
+	ambiente:
+		Remedios= registro
+			Clave1:clave
+			cant_act:
+            fecha_vence:
+		Fin reg
+		
+		Movimiento=Registro
+			clave2:clave
+			codmov: ( '1','2','3')
+			cant_rec:
+		Fin reg
+	    
+		RemVenc=Regitro
+			Medic:
+			cant_venc:
+		Fin reg
+		
+		Clave=Registro
+			farm:
+			medto:
+		Fin Reg
+		
+		Fecha=Registro
+			Dia: 1..31
+			mes: 1..12
+			año: N(4)
+		Fin Reg
+		
+		Subaccion LEER_Mae es:
+			leer(mae,r_mae)
+				Si FDA ( mae ) entonces
+					r_mae.clave1:=HV
+				Fin si
+		Fin Sub
+		
+		Subaccion LEER_Mov es:
+			leer(mov.r_mov)
+				Si FDA (mov) entonces
+					r_mov.clave2:=HV
+				Fin si
+		Fin Sub
+		
+		mae_actual,Mae: archivo de remedios
+		r_mae,r_actual:remedios
+		mov:archivo de movimientos
+		r_mov:moviento
+		RemV: archivo de remVenc
+		r_venc:remVenc
+		Fecha_ac:fecha
+		
+		
+    ALGORITMO
+	
+	ABRIR e/ (mae);  LEER Mae 
+	ABRIR/s (mae_actual);  LEER Mov
+	ABRIR e/ (mov)
+	ABRIR/s (remv)
+		
+		Mientras ((r_mae.clave1<> HV) v ((r_mov.clave2<>)) hacer
+			
+			Si (r_mae.clave1 < r_mov.clave2 ) entonces
+				r_mae:=r_actual
+				esc(mae_actual,r_actual)
+				LEER Mae
+				
+				SINO
+					Si ( r_mae_clave1= r_mov.clave2) entonces
+						PROCESOS IGUALES
+						LEER Mae
+						LEER Mov
+							
+							SINO
+								PROCESOS DISTINTOS
+								LEER Mov
+					Fin si
+			Fin si
+		Fin mientras
+		
+		CERRAR (mae)
+		CERRAR (mov)
+		CERRAR (mae_actual)
+		CERRAR (remv)
+Fin accion
+	
+	
+	Subaccion PROCESOS IGUALES es :
+		Si r_mov.codmov= '1' entonces
+			esc ('Error, Remedio ya existe')
+			sino
+				si r_mov.codmov= '2' entonces
+					r_venc.medic:=r_mov.clave2.medto;
+					r_venc.cant_venc:=(r_mae.cant_act + r_mov.cant_rec)
+					esc(remv,r_venc)
+					SINO
+						r_actual:=r_mae
+						r_actual.cant_act:=(r_mov.cant_rec + r_actual.cant_act)
+						esc(mae_actual,r_actual)
+				Fin si
+		Fin si
+	Finsub
+	
+	Subaccion PROCESOS DISTINTOS es:
+		Si r_mov.codmov = '1' entonces
+			r_actual.clave1:=r_mov.clave2
+			r_actual.cant_act:= r_mov.cant_rec
+		    esc('ingrese fecha actual')
+			leer(fecha_ac)
+			r_actual.fecha_venc:= (fecha_ac + 30)
+			esc(mae_actual,r_actual)
+			SINO
+				Si r_mov.codmov= '2' entonces
+					esc('Error,no se puede dar de baja,el medicamento no existe')
+					SINO
+						esc('Error,no se puede modificar, el medicamento no existe')
+				Fin si
+		Fin si
+	Fin sub
+	
+	
+		
+		

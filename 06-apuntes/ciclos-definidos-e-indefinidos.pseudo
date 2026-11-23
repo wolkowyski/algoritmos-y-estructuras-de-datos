@@ -1,0 +1,78 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Apuntes - Clase teórica del 31 de marzo: contadores, acumuladores y ciclos
+// ==========================================================================
+
+Algoritmos y Estrcturas de Datos
+Clase Teórica - 31 de marzo
+
+Contadores:
+tipo de variable que empleamos para llevar la cuenta de las veces que ocurre algo, y lo hace incrementando/decrementando en valores constantes (de a 1, de a 2,...)
+
+Acumuladores
+tipo de variable que almacenan la suma de diversas cantidades no constantes, es un incremento que se produce al ocurrir cierto acontecimiento.
+
+Banderas
+variables que alamcenan un cambio de estado o indicadores de la ocurrencia o no de un suceso. Por ejemplo: 1 o 0, encendido o apagado... Son booleanas o pueden tener solo 2 valores
+
+
+ESTRUCTURAS REPETITIVAS
+Características
+01- Iteración: cada vez que repetimos el conjunto de acciones, se itera
+02- Bucle: conuunto de acciones que se ejecutan en el ciclo
+
+
+ESTRUCTURAS REPETITIVAS
+Clasificacion
+
+01- Indefinidas: no conozco la cantidad de veces q se va a ejecutar
+	Ciclo Pre-test
+
+No se conoce la catidad de veces a iterar o repetir el conjunto de acciones
+
+El final del bucle está controlado con una condicion (expresion logica o booleana)
+
+El conjunto de acciones se ejecuta mientras la evaluacion de la condicion devuelva un resultado verdadero
+
+Evalua al principio
+
+El bucle se puede ejecutrar 0 o más veces
+
+
+
+	Ciclo Post-test
+
+No se conoce la cantidad de veces a iterar o repetir el conjunto de acciones
+
+El final de bucle está controlado con una condicion (expresion logica o booleana)
+
+El conjunto de acciones se ejecuta hasta que la evaluacion de la condicion devuelta u resultado verdadero
+
+Evalua al final
+
+El ciclo se puede ejecutrar 1 o más veces (Y VOLVER A PEDIR, YA UNA VEZ)
+
+Repetir
+	//procesos
+Hasta que (condición)
+
+
+SIEMPRE INICIALIZAR CONTADORES Y ACUMULADORES
+
+
+ESTRCUTRUAS REPETITIVAS DEFINIDAS
+se la cantidad de veces que debo repetir el bucle, conozco la cantidad de iteraciones
+
+Ciclo Manejado por Contadores
+
+Ahora si conocemos la cantidad de veces a iterar o repetir el conjunto de acciones
+
+El final de bucle está controlado por una variable contador (indica cantidad de iteraciones)
+
+La variable contador que maneja el bucle se incrementa automaticamente de acuerdo al incremento idnicado y hasta que el valor llegue al limite maximo
+
+Para i:= 1 hasta 20 hacer
+
+
+PRE Y POST TEST ----> valores booleanos, no se cuantas veces debo repetir por lo tanto hago uso de condiciones de verdadero o falso
+CICLO POR CONTADORES ----> valores constantes, conozco la cantidad de veces que debo repetir la accion, se usan rangos tambien 1 hasta 20, 2 por ejemplo

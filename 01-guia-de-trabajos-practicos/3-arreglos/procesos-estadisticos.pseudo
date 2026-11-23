@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos: recorrido en caracol (apunte)
+//
+//  Llena una matriz de 4 x 4 con los números del 1 al 16 en espiral
+//  (sentido horario, desde la esquina superior izquierda):
+//      1   2   3   4
+//     12  13  14   5
+//     11  16  15   6
+//     10   9   8   7
+// ==========================================================================
+
+Para j:= 1 a 4 hacer        // fila 1, de izquierda a derecha: 1..4
+	MatA[1,j]:= j
+FinPara
+
+Para i:= 2 a 4 hacer        // columna 4, hacia abajo: 5..7
+	MatA[i,4]:= i + 3
+FinPara
+
+Para j:= 3 a 1, -1 hacer    // fila 4, de derecha a izquierda: 8..10
+	MatA[4,j]:= 11 - j
+FinPara
+
+Para i:= 3 a 2, -1 hacer    // columna 1, hacia arriba: 11..12
+	MatA[i,1]:= 14 - i
+FinPara
+
+Para j:= 2 a 3, 1 hacer     // vuelta interior, fila 2: 13..14
+	MatA[2,j]:= 11 + j
+FinPara
+
+Para j:= 3 a 2, -1 hacer    // fila 3, de derecha a izquierda: 15..16
+	MatA[3,j]:= 18 - j
+FinPara

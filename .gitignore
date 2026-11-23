@@ -1,0 +1,8 @@
+# Compilados de Pascal y C
+*.exe
+*.o
+*.ppu
+votacion
+
+# Archivos temporales de Office
+~$*

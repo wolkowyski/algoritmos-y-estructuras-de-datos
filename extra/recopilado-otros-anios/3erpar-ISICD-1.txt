@@ -1,0 +1,124 @@
+ACCION_EJ1_ES (primc: puntero a nodoc)
+    AMBIENTE
+        nodoc = Registro de
+            extra: N(2)
+            prox: puntero a nodoc
+        FR
+        c: puntero a nodoc
+
+        nodo = Registro de
+            apynom: AN(50)
+            chances_tot:N(3)
+            prox, ant: puntero a nodo
+        FR
+        prim, ult, p, q: puntero a nodo
+
+        fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg1 = Registro de
+            Fecha_Compra: fecha
+            dni: N(9)
+            Cant_Art: N(3)
+            importe: N(6, 2)
+        FR
+        compras: Archivo de reg1 ordenado por Fecha_Compra
+        comp: reg1
+
+        reg2 = Registro de 
+            dni: N(9)
+            apynom: AN(50)
+            Fecha_ad: fecha
+            Categoría: AN(30)
+        FR
+        socios: Archivo de reg2 indexado por dni
+        soc: reg2
+
+        i, n: entero
+    PROCESO
+        ABRIR E/(compras)
+        ABRIR E/(socios)
+        prim:= NIL
+        ult:= NIL
+        Leer(compras, comp)
+        Mientras NFDA(compras) hacer
+            soc.dni:= comp.dni
+            Leer(socios, soc)
+            Si no EXISTE entonces
+                ESC("El cliente no es parte del programa de socios")
+            Sino
+                Si (comp.Fecha_Compra < soc.Fecha_ad) entonces
+                    ESC("La compra fue realizada antes de la fecha de adhesión")
+                Sino
+                    Si (prim = NIL) entonces //Lista Vacía-1er Nodo
+                        Nuevo(q)
+                        *q.apynom:= soc.apynom
+                        *q.chances_tot:= 5 + (comp.importe DIV 100)
+                        Si (soc.Categoría = "Black") entonces
+                            n:=TIRAR()
+                            c:=primc
+                            Para i:= 1 hasta n hacer
+                                c:= *c.prox
+                            FP
+                            *q.chances_tot:= *q.chances_tot + *c.extra
+                        FS
+                        *q.prox:= NIL
+                        *q.ant:= NIL
+                        prim:= q
+                        ult:= q
+                    Sino
+                        p:= prim
+                        Mientras (p <> NIL) y (*p.apynom < soc.apynom) hacer
+                            p:=*p.prox
+                        FM
+                        Si (*p.apynom = soc.apynom) entonces //Nombre encontrado en la lista
+                            *p.chances_tot:= *p.chances_tot + (comp.importe DIV 100)
+                            Si (soc.Categoría = "Black") entonces
+                                n:= TIRAR()
+                                c:= primc
+                                Para i:= 1 hasta n hacer
+                                    c:=*c.prox
+                                FP
+                                *p.chances_tot:= *p.chances_tot + *c.extra
+                            FS
+                        Sino //Nombre no encontrado, insercción en función de p
+                                Nuevo(q)
+                                *q.prox:= NIL
+                                *q.ant:= NIL
+                                *q.chances_tot:= 5 + (comp.importe DIV 100)
+                                Si (soc.Categoría = "Black") entonces
+                                    c:=primc
+                                    n:= TIRAR()
+                                    Para i:= 1 hasta n hacer
+                                        c:= *c.prox
+                                    FP
+                                    *q.chances_tot:= *q.chances_tot + *c.extra
+                                FS
+                            Si (p = prim) entonces
+                                *q.prox:= p
+                                *p.ant:= q
+                                prim:= q
+                            Sino
+                                Si (p = NIL) entonces
+                                    *ult.prox:= q
+                                    *q.ant:= ult
+                                    ult:= q
+                                Sino
+                                    *q.ant:= *p.ant
+                                    *(*p.ant).prox:= q
+                                    *q.prox:= p
+                                    *p.ant:= q
+                                FS
+                            FS
+                        FS
+                    FS
+                FS
+            FS
+            leer(compras, comp)
+        FM
+        cerrar(compras)
+        cerrar(socios)
+FA

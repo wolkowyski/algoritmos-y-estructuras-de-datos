@@ -1,0 +1,63 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.1 - resolución compartida en Discord
+// ==========================================================================
+
+/*Ejercicio 4.1
+Diseñar un algoritmo para acceder, eliminar o insertar el k-ésimo elemento de una lista (siendo k una posición dada). Si la lista está vacía o si el valor de k esta fuera del rango
+del índice de la lista, invocar al procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento solicitado.*/
+
+ACCION 4.1 ES(Prim:puntero a NODO)
+AMBIENTE
+Nodo = registro
+    Dato: AN(5)
+    Prox: puntero a nodo
+FIN_REGISTRO
+p,q,a:puntero a nodo
+cant_elementos,respuesta,posición:entero
+
+PROCEDIMIENTO acceder()
+    ESCRIBIR(*p.Dato)
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO eliminar()
+    *a.Prox := *p.prox
+    DISPONER(p)
+FIN_PROCEDIMIENTO
+
+PROCEDIMIENTO insertar()
+    NUEVO(q)
+    a*Prox := q
+    *q.Prox := p
+FIN_PROCEDIMIENTO
+
+PROCESO
+prim:=nil
+ESCRIBIR("QUE DESEA HACER?  1:ACCEDER, 2:eliminar, 3:insertar, 4:promocionar algoritmo")
+Leer(respuesta)
+ESCRIBIR("INGRESE UNA POSICION")
+Leer(posición)
+cant_elementos:=1
+p:=Prim
+MIENTRAS (*p.Prox <> nil) y (Prim <> nil) HACER
+    p:= *p.Prox
+    cant_elementos:= cant_elementos + 1
+FIN_MIENTRAS
+SI Prim = nil o posición > cant_elementos ENTONCES
+    ERROR()
+SINO
+    a := p
+    p := Prim
+    PARA cant_elementos:=  1 hasta posición HACER
+        a := p
+        p := *p.Prox
+    FIN_PARA
+    SEGUN respuesta HACER
+        =1: acceder()
+        =2: eliminar()
+        =3: insertar()
+        >=4: ERROR()
+    FIN_SEGUN
+FIN_SI
+
+FIN_ACCION.

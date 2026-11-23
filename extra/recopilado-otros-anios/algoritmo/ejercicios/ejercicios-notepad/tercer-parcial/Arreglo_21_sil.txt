@@ -1,0 +1,55 @@
+Accion arreglo_21 es:	
+Ambiente :
+
+M: arreglo de [1..4,1..7,1..50] de real
+i: 1..4
+j:1..7
+k:1..50
+P: arreglo de [1..50,1..7]
+
+MAX,MIN,SUM:real
+fmax,cmax,fmin,cmin: entero
+
+Algortimo:
+fmax:=0,cmax:=0,fmin:=0,cmin:=0
+MAX:=0,MIN:=0
+Para k:= 1 a 50 hacer
+		fmax:=0,cmax:= 0,fmin:=0,cmin:=0
+		MAX:=0,MIN:=0
+	Para j:= 1 a 7 hacer
+		Parai:= 1 a 4 hacer
+			Si max < M[i] entonces
+				max:= M [i]
+				fmax:= i
+				cmax:= j
+			Fin si
+			Si min > M [i] entonces
+				min:= M[i]
+				fmin:= i
+				cmin:= j
+			Fin son
+		Fin para
+	Fin para
+		esc('paciente',k)
+		esc('la temperatura minima fue ',min,'el dia',cmin,'en la lectura',fmin)
+		esc('la temperatura maxima fue',max,'el dia',cmax,'en la lectura',fmax)
+		
+Fin Para
+
+Para k:= 1 a 50 hacer
+	Paraj:= 1 a 7 hacer
+		SUM:=0
+			para i:= 1 a 4 hacer
+				SUM:= SUM + M[i,j,k]
+			Fin para
+		P[k,j]:= SUM/4
+	Fin para
+Fin para
+
+Para k:= 1 a 50 hacer
+	Para j:= 1 a 7 hacer
+		esc (P[k,j]
+	Fin para
+Fin para
+
+Fin accion.

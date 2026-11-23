@@ -1,0 +1,129 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final de abril - Resolución (secuencias + listas)
+// ==========================================================================
+
+Accion FinalAbril es
+    Ambiente
+        preferencia: secuencia de caracteres
+        c: caracter
+
+        Nodo = Registro // lista nueva que creo
+            codPack: AN(50)
+            prefA: N(3)
+            prefB: N(3)
+            prox: puntero a Nodo
+        FinRegistro
+
+        prim, p, q: puntero a Nodo
+
+        bandera: bool
+        cont_premium: entero
+        premium_y_preferencia: entero
+        resguardo_edad: entero
+        edad_nula: entero
+        cont_cliente_edad: entero
+        caracter1: caracter
+        caracter2: caracter
+        aux_codPack: alfanumerico
+
+    Proceso
+        cont_premium:= 0
+        premium_y_preferencia:= 0
+        resguardo_edad:= 0
+        edad_nula:= 0
+        cont_cliente_edad:= 0
+        caracter1:= nil
+        caracter2:= nil
+        prim:= nil
+
+        Arrancar(preferencia)
+
+        Mientras NFDS(preferencia) hacer
+            Mientras (v) <> "/" hacer
+                aux_codPack := ""
+                Avanzar(preferencia, c)
+
+                Si (v) = "P" entonces // proceso si es Premium o Básico
+                    bandera:= true
+                    cont_premium:= cont_premium + 1
+                FinSi
+
+                Avanzar(preferencia, c) // avanzo al siguiente
+
+                Para i:= 1 a 5 hacer // me salteo todo el nombre
+                    Avanzar(preferencia, c)
+                FinPara
+
+                Avanzar(preferencia, c) // avanzo al primer numero de la edad y lo guardo
+                caracter1:= v
+                Avanzar(preferencia, c) // lo mismo con el segundo
+                caracter2:= v
+                resgurado_edad:= AGE(caracter1, caracter2) // hago un resguardo de la edad como entero convertido por la funcion age
+
+                Avanzar(preferencia, c) // avanzo al codpak, tengo que ir cargandolo en la lista
+                Mientras (v) <> "-" hacer
+                    aux_codPack:= aux_codPack + (v) // voy cosechando el codigo caracter a caracter, hago una especie de concatenacion
+                    Avanzar(preferencia, c)
+                FinMientras
+
+                Avanzar(preferencia, c) // avanzo a la preferencia
+
+                p:= prim // recorro y lo busco en la lista
+                Si (p <> nil) y (p^.codPack = aux_codPack) entonces
+                    Segun (v) hacer // si ya lo tengo simplemente actualizo los totalizadores
+                        ="A": p^.prefA:= ^.prefA + 1
+                        ="D": p^.prefD:= ^.prefD + 1
+                    FinSegun
+                SiNo
+                    Nuevo(q) // sino lo creo y añado a la lista
+                    q^.codPack:= aux_codPack // ahi recien grabo el codigo entero ya como un string
+                    q^.prox:= prim
+                    prim:= q
+                    Segun (v) hacer // y actualizo el totalizador correspondiente
+                        ="A": p^.prefA:= ^.prefA + 1
+                        ="D": p^.prefD:= ^.prefD + 1
+                    FinSegun
+                FinSi
+
+                Si (bandera = true) y ((v) <> "N") entonces // premium y dejo preferencia
+                    premium_y_preferencia:= premium_y_preferencia + 1
+                SiNo
+                    edad_nula:= edad_nula + resguardo_edad // edad que no dejo preferencia
+                    cont_cliente_edad:= cont_cliente_edad + 1
+                FinSi
+
+                Avanzar(preferencia, c)
+            FinMientras
+        FinMientras
+
+        // consigna 1
+        p:= prim
+        Mientras (p <> nil) hacer
+            Escribir("--- INFORME ---")
+            Escribir("Codigo de pack: ", p^.codPack)
+            Escribir("Cantidad de preferencias registradas: ")
+            Escribir("ALTA: ", p^.prefA)
+            Escribir("DESEABLE: ", p^.prefB)
+            p:= p^.prox
+        FinMientras
+
+        // consigna b
+        Escribir("--- PROMEDIO EDAD ---")
+        Escribir("El promedio de edad de los clientes que han indicado preferencias del tipo nula es de: ", (edad_nula / cont_cliente_edad), " años")
+
+        // consigna c
+        Escribir("--- INFORMACION ---")
+        p:= prim
+        Mientras (p <> nil) y (p^.prefA > p^.prefB) hacer
+            Escribir("El pack: ", p^.codPack, "es de preferencia mas alta que deseable")
+            p:= p^.prox
+        FinMientras
+
+        // cosigna d
+        Escribir("--- PORCENTAJE PREMIUM---")
+        Escribir("El porcentaje de clientes premium que han registrado preferencias es de: ", premium_y_preferencia/cont_premium * 100)
+
+    FinProceso
+
+FinAccion

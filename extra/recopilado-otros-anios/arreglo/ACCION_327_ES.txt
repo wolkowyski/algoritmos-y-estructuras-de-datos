@@ -1,0 +1,78 @@
+ACCION_327_ES
+    AMBIENTE
+        reg = Registro de
+            Nro_Clien: N(5)
+            Zona: N(1)
+            Tipo_Merc: N(1)
+            Cant_Unidades: N(5)
+            Tot_grav: N(5)
+            Tot_exc: N(5)
+            Valor_IVA: N(2)
+        FR
+        Cliente: Archivo de reg
+        C: reg
+
+        Totales: Arreglo de [1..5, 1..10, 1..4] de Reales
+        f,c,a: Entero
+    PROCESO
+        Abrir E/(Cliente)
+        Leer(Cliente, C)
+        
+        Para a:=1 hasta 4 hacer
+            Para f:=1 hasta 5 hacer
+                Para c:= 1 hasta 10 hacer
+                    Totales[f,c,a]:= 0 -> Puesta a cero del cuadro estadístico
+                FP
+            FP
+        FP
+
+        Mientras NFDA(Cliente)
+            //Cantidad de unidades
+            Totales[C.Tipo_Merc, C.Zona, 1]:= Totales[C.Tipo_Merc, C.Zona, 1] + C.Cant_Unidades
+            Totales[C.Tipo_Merc, 10, 1]:= Totales[C.Tipo_Merc, 10, 1] + C.Cant_Unidades -> Total de venta por tipo de mercadería
+            Totales[5, C.Zona, 1]:= Totales[5, C.Zona, 1] + C.Cant_Unidades -> Total de mercadería por Zona
+            Totales[5, 10, 1]:= Totales[5, 10, 1] + C.Cant_Unidades -> Total General
+
+            //Total gravado
+            Totales[C.Tipo_Merc, C.Zona, 2]:= Totales[C.Tipo_Merc, C.Zona, 2] + C.Tot_grav
+            Totales[C.Tipo_Merc, 10, 2]:= Totales[C.Tipo_Merc, 10, 2] + C.Tot_grav -> Total gravado por tipo de mercadería
+            Totales[5, C.Zona, 2]:= Totales[5, C.Zona, 2] + C.Tot_grav -> Total gravado por Zona
+            Totales[5, 10, 2]:= Totales[5, 10, 2] + C.Tot_grav -> Total General
+
+            //Total Exento
+            Totales[C.Tipo_Merc, C.Zona, 3]:= Totales[C.Tipo_Merc, C.Zona, 3] + C.Tot_exc
+            Totales[C.Tipo_Merc, 10, 3]:= Totales[C.Tipo_Merc, 10, 3] + C.Tot_exc -> Total exento por tipo de mercadería
+            Totales[5, C.Zona, 3]:= Totales[5, C.Zona, 3] + C.Tot_exc -> Total exento por Zona
+            Totales[5, 10, 3]:= Totales[5, 10, 3] + C.Tot_exc -> Total General
+
+            //Total IVA
+            Totales[C.Tipo_Merc, C.Zona, 4]:= Totales[C.Tipo_Merc, C.Zona, 4] + (C.Tot_exc * C.Valor_IVA)
+            Totales[C.Tipo_Merc, 10, 4]:= Totales[C.Tipo_Merc, 10, 4] + (C.Tot_exc * C.Valor_IVA) -> Total IVA por tipo de mercadería
+            Totales[5, C.Zona, 4]:= Totales[5, C.Zona, 4] + (C.Tot_exc * C.Valor_IVA) -> Total IVA por Zona
+            Totales[5, 10, 4]:= Totales[5, 10, 4] + (C.Tot_exc * C.Valor_IVA) -> Total General
+
+            Leer(Cliente, C)
+        FM
+
+        Para a:= 1 hasta 4 hacer
+            Segun a hacer
+                =1: ESC("Cantidad de unidades")
+                =2: ESC("Total gravado")
+                =3: ESC("Total exento")
+                =4: ESC("Total IVA")
+            FS
+            ESC("TIPO DE MERCADERIA | ZONA 1 | ZONA 2 | ZONA 3 | ZONA 4 | ZONA 5 | ZONA 6 | ZONA 7 | ZONA 8 | ZONA 9 | TOTAL POR MERCADERIA")
+            Para f:= 1 hasta 5 hacer
+                Si (f = 5) entonces
+                    ESC("TOTAL POR ZONA")
+                Sino
+                    ESC(f)
+                FS
+                Para c:= 1 hasta 10 hacer
+                    ESC(Totales[f,c,a])
+                FP
+            FP
+        FP
+
+        Cerrar(Cliente)
+FA

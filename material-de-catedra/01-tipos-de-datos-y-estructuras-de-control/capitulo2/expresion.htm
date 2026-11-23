@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Expresiones L&oacute;gicas</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+            <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                                  <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                                  title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+
+      <h4>Expresiones L&oacute;gicas</h4>
+            <p class="entrada">Antes de entrar de lleno a el estudio de las estructuras de control analizaremos primero lo que son las expresiones logicas y como las utilizaremos en las estructuras de control.
+            <h5>Expresiones L&oacute;gicas</h5>
+            <p>En los programas con frecuencia debemos enfrentarnos con situaciones en las que se deben proporcionar instrucciones alternativas que pueden o no ejecutarse, dependiendo de los datos de entrada, reflejandose el cumplimiento o no de una deteminada condici&oacute;n.
+            <p>Por ejemplo, supongamos que queremos dise&ntilde;ar un programa para calcular el salario semanal de un empleado que trabaja por horas, la empresa paga una tasa de 1.5 la tasa normal por todas las horas trabajadas mayores a 40.&nbsp;El algoritmo ser&iacute;a:
+            <div class="codigo"><p>leer(tasa)<br>leer(Horas_trabajadas)<br><strong>si</strong> Horas &gt; 40 condici&oacute;n<br><strong>entonces</strong>(se cumple la condici&oacute;n)<br>&nbsp;&nbsp;paga &lt;- tasa * 40 + 1.5 * tasa *(horas - 40)<br><strong>sino</strong> (no se cumple la condici&oacute;n)<br>&nbsp;&nbsp;paga &lt; tasa * horas<br>fin_si
+            </div>    
+            <p>Si te das cuenta la soluci&oacute;n del problema requiere el uso de <a href="decisiones.htm" class="cambio" title="toma de decisiones">estructuras de control selectivas</a>:&nbsp;<strong>si(if), entonces(then), sino(else)</strong>.&nbsp;Para realizar el algoritmo anterior se necesita realizar la pregunta:&nbsp;Son las horas trabajadas mayores a 40?.
+           <p>Esto se realiza mediante la evaluaci&oacute;n de expresiones l&oacute;gicas, comparando dos valores y &uacute;tilizando un operador de relaci&oacute;n.
+           <p>Una expresi&oacute;n l&oacute;gica es una expresi&oacute;n que puede ser verdadera o falsa.
+           <a name="relacionales"></a>
+           <h5>Operadores de Relaci&oacute;n</h5>
+           <p>Se &uacute;tilizan para expresar condiciones y describen una relaci&oacute;n entre 2 variables.&nbsp;El conjunto de operaciones relacionales se muestran en la siguiente tabla.
+           <table width="400" class="tabla">
+            <tr><td align="center" class="titulo" width="100">Operadores</td><td width="100">&nbsp;</td><td align="center" class="titulo">Significado</td></tr>
+            <tr><td align="center" width="100">&lt;</td><td width="100">&nbsp;</td><td width="200" align="center">Menor que</td></tr>
+            <tr><td align="center" width="100">&gt;</td><td width="100">&nbsp;</td><td width="200" align="center">Mayor que</td></tr>
+            <tr><td align="center" width="100">=</td><td width="100">&nbsp;</td><td width="200" align="center">Igual a</td></tr>
+            <tr><td align="center" width="100">&gt;=</td><td width="100">&nbsp;</td><td width="200" align="center">Mayor o igual que</td></tr>
+            <tr><td align="center" width="100">&lt;=</td><td width="100">&nbsp;</td><td width="200" align="center">Menor o igual que</td></tr>
+            <tr><td align="center" width="100">&lt;&gt;</td><td width="100">&nbsp;</td><td width="200" align="center">Distinto o diferente a</td></tr>
+           </table>
+           <p>Estos operadores se &uacute;tilizan en condiciones cuyo formato tiene la siguiente forma.
+           <p class="tabla">variable &nbsp;<strong>operador relacional</strong> &nbsp;variable<br>contante &nbsp;<strong>operador relacional</strong> &nbsp;constante.
+           <p>El resultado de una expresi&oacute;n l&oacute;gica es un valor de tipo l&oacute;gico:&nbsp;verdadero o falso.
+           <p>Cuando se aplican a elementos de tipo caracter se verifican en orden alfabetico, tomando en cuenta el orden del c&oacute;digo ASCII.&nbsp;De la siguiente manera:
+           <p class="codigo">0 &lt; 1 &lt; 2 ... &lt; 9<br>
+                             a &lt; b &lt; c ... &lt; z<br>
+                             A &lt; B &lt; C ... &lt; Z<br>
+
+           <P STYLE="text-align:right;"><A HREF="cap2.htm" CLASS="cambio" title=cap2>Cap&iacute;tulo 2</A>&nbsp;&nbsp;<A HREF="tutor.htm" CLASS="cambio" title=indice>Indice</A>&nbsp;&nbsp;<A HREF="logicos.html" CLASS="cambio" title=operadores>Operadores L&oacute;gicos</A></p>
+        <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+        class="cab">luis_pirir@yahoo.com.ar</a></address>
+    
+      </body>
+    </html>

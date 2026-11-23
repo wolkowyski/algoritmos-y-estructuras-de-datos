@@ -1,0 +1,24 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Códigoloc: N(3)
+        Lluvia: N(3)
+    FR
+
+    A: Arreglo de [1..50] de reg
+ACCION_311_ES
+    AMBIENTE:
+        j: entero
+        loc: entero
+    PROCESO
+        ESC("Ingrese el codigo de la localidad que desea conocer las precipitaciones...")
+        Leer(loc);
+        j:= 1
+        Mientras (j<50) y (A[j].Códigoloc < loc) hacer   
+            j:= j + 1
+        FM
+        Si (A[j.Códigoloc = loc) hacer
+            ESC("La precipitacion total es: ",A[j].Lluvia)
+        Sino
+            ESC("Localidad no encontrada")
+        FS
+FA

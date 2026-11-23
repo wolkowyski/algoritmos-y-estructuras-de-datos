@@ -1,0 +1,221 @@
+ACCION_2219_ES
+    AMBIENTE
+        Fecha = Registro de
+                AA: N(4)
+                MM: 1..12
+                DD: 1..31
+        FRegistro
+
+        MAE_REMEDIOS = Registro de
+                Clave: Registro
+                    Farmacia:AN(30)
+                    Med: AN(30)
+                FRegistro
+                CantAct:N(8)
+                FechaV: Fecha 
+        FRegistro
+
+        Mov = Registro de 
+                Clave: Registro
+                    Farmacia:AN(30)
+                    Med: AN(30)
+                    CodM: {'1', '2', '3'}
+                FRegistro
+                CantRec: N(8)
+        FRegistro
+
+        REM_VEC = Registro de
+                Med: AN(30)
+                CantV: N(8)
+        FRegistro
+
+        Archmae, Archsal: Archivo de MAE_REMEDIOS
+        R_MAE, R_Sal: MAE_REMEDIOS
+        ArchMov: Archivo de Mov
+        R_Mov: Mov
+        ArchRM: Archivo de REM_VEC
+        R_RV: REM_VEC
+        M30: {4, 6, 9, 11}
+
+        Procedimiento Leermae() Es
+            Leer(Archmae, R_MAE)
+            Si FDA(Archmae) Entonces
+                R_MAE.Clave.Farmacia:=HV
+                R_MAE.Clave.Med:=HV
+            FSi
+        FProced
+
+        Procedimiento Leermov() Es
+            Leer(ArchMov, R_Mov)
+            Si FDA(ArchMov) Entonces
+                R_Mov.Clave.Farmacia:=HV
+                R_Mov.Clave.Med:= HV
+                R_Mov.Clave.CodM:= HV
+            FSI
+        FProced
+
+        Procedimiento FechaPosterior(An, Mes, Dia: Entero) Es
+
+            Si ( An MOD 4 = 0) y No((An MOD 100 = 0)) o ((An MOD 400 = 0)) Entonces
+                //Lo que hace este condicional es controlar si estamos en un año bisiesto o no
+                Si ( Mes en M30) Entonces // Si esta en algun mes que termine en 30
+                    R_Sal.FechaV.AA:= An
+                    R_Sal.FechaV.MM:= Mes + 1
+                    R_Sal.FechaV.DD:= Dia
+                Sino
+                    Si (Mes = 2) Entonces
+                        R_Sal.FechaV.AA:= An
+                        R_Sal.FechaV.MM:= Mes + 1
+                        R_Sal.FechaV.DD:= Dia + 1
+                    Sino //Son los meses restantes
+                        Segun Mes Hacer
+                            '1':
+                                Si (Dia = 31) Entonces
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 2
+                                    R_Sal.FechaV.DD:= Dia - 30
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 1
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                FSi
+                            '12':
+                                Si (Dia <> 1) Entonces
+                                    R_Sal.FechaV.AA:= An + 1
+                                    R_Sal.FechaV.MM:= Mes - 11
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes 
+                                    R_Sal.FechaV.DD:= Dia + 30
+                                FSi    
+                            Otros:
+                                Si (Dia <> 1) Entonces
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 1
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes 
+                                    R_Sal.FechaV.DD:= Dia + 30
+                                FSi
+                            FSegun
+                        FSi
+                    FSi
+                FSi
+            Sino //Vamos por años no bisiestos
+                Si ( Mes en M30) Entonces 
+                    R_Sal.FechaV.AA:= An
+                    R_Sal.FechaV.MM:= Mes + 1
+                    R_Sal.FechaV.DD:= Dia
+                Sino
+                    Si (Mes = 2) Entonces
+                        R_Sal.FechaV.AA:= An
+                        R_Sal.FechaV.MM:= Mes + 1
+                        R_Sal.FechaV.DD:= Dia + 2 //Como febrero tiene 28 Días en Años no bisiesto, hay que agregar 2 días
+                    Sino //Son los meses restantes
+                        Segun Mes Hacer
+                            '1':
+                                Si (Dia = 31) Entonces
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 2
+                                    R_Sal.FechaV.DD:= Dia - 30
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 1
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                FSi
+                            '12':
+                                Si (Dia <> 1) Entonces
+                                    R_Sal.FechaV.AA:= An + 1
+                                    R_Sal.FechaV.MM:= Mes - 11
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes 
+                                    R_Sal.FechaV.DD:= Dia + 30
+                                FSi    
+                            Otros:
+                                Si (Dia <> 1) Entonces
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes + 1
+                                    R_Sal.FechaV.DD:= Dia - 1
+                                Sino
+                                    R_Sal.FechaV.AA:= An
+                                    R_Sal.FechaV.MM:= Mes 
+                                    R_Sal.FechaV.DD:= Dia + 30
+                                FSi
+                            FSegun
+                        FSi
+                    FSi
+                FSi
+            FSi
+        FProced
+
+        Procedimiento Procmenor() Es
+            R_Sal:=R_MAE
+            Grabar(Archsal, R_Sal)
+            Leermae()
+            Leermov()
+        FProced
+
+        Procedimiento Procmayor() Es
+            Si (R_Mov.Clave.CodM = 1) Hacer
+                R_Sal.Clave.Farmacia:= R_Mov.Clave.Farmacia
+                R_Sal.Clave.Med:= R_Mov.Clave.Med
+                R_Sal.CantAct:= R_Mov.CantRec
+                FechaPosterior(R_MAE.FechaV.AA, R_MAE.FechaV.MM, R_MAE.FechaV.DD)
+            Sino
+                Si (R_Mov.Clave.CodM = 2) Entonces
+                    Escribir("ERROR... Intenta modificar algo no existente")
+                Sino
+                    Escribir("ERROR... Intenta borrar algo no existente")
+                FSi
+            FSi
+            Leermae()
+            Leermov()
+        FProced
+
+        Procedimiento Prociguales() Es
+            Según (R_Mov.Clave.CodM) Hacer
+                1:
+                    Escribir('ERROR...Intenta crear algo ya existente')
+                    R_Sal:=R_MAE
+                    Grabar(Archsal, R_Sal)
+                2:
+                    R_RV.Med:= R_MAE.Clave.Med
+                    R_Rv.CantV:= R_MAE.CantAct
+                    Grabar(ArchRM, R_RV)
+                3:
+                    R_Sal.Clave.Farmacia:= R_MAE.Clave.Farmacia
+                    R_Sal.Clave.Med:= R_MAE.Clave.Med
+                    R_Sal.CantAct:= R_Mov.CantRec
+                    R_Sal.FechaV:= R_Mov.FechaV
+            FSegun
+            Leermae()
+            Leermov()
+        FProced
+
+    PROCESO
+        Abrir E/(Archmae)
+        Abrir E/(ArchMov)
+        Abrir S/(ArchRM)
+        Abrir S/(Archsal)
+        Leermae()
+        Leermov()
+        Mientras (R_MAE.Clave <> HV) v (R_Mov.Clave <> HV) Hacer
+            Si (R_MAE.Clave < R_Mov.Clave) Entonces
+                Procmenor()
+            Sino
+                Si(R_MAE.Clave > R_Mov.Clave)
+                    Procmayor()
+                Sino
+                    Prociguales()
+                FSi
+            FSi
+        FMientras
+        Cerrar (Archmae)
+        Cerrar (ArchMov)
+        Cerrar (ArchRM)
+        Cerrar (Archsal)
+FA

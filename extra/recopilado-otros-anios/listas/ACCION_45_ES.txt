@@ -1,0 +1,60 @@
+ACCION_45_ES
+    AMBIENTE GENERAL
+        Nodo = Registro de
+            Provincia: Registro
+                Nomb: AN(50)
+                Cap: AN(50)
+                Canthabit: N(8)
+                Cantanalf: N(8)
+            FR
+            prox: puntero a Nodo
+        FR
+        prim: puntero a Nodo
+    AMBIENTE
+        Salida = Registro de
+            Sal: Registro
+                Nomb: AN(50)
+                Cap: AN(50)
+                Porc: N(3,2)
+            FR
+            prox: puntero a Nodo
+        FR
+        prim1, prim2, prim3: Puntero a Salida
+        p, q, s: Puntero a Salida
+        k: puntero a Nodo
+        porcentaje: real
+    PROCESO
+        prim1:= NIL
+        prim2:= NIL
+        prim3:= NIL
+        k:= prim
+        porcentaje:= 0
+        Mientras (k <> NIL) hacer
+            porcentaje:= (*k.Provincia.Cantanalf / *k.Provincia.Canthabit) * 100
+            Si (porcentaje <= *k.Provincia.Canthabit * 0,10) entonces
+                Nuevo(p)
+                *p.sal.Nomb:= *k.Provincia.Nomb
+                *p.sal.Cap:= *k.Provincia.Cap
+                *p.sal.porcentaje:= porcentaje
+                *p.prox:= prim1
+                prim1:= p
+            Sino
+                Si (porcentaje < *k.Provincia.Canthabit * 0.26) entonces
+                    Nuevo(q)
+                    *q.sal.Nomb:= *k.Provincia.Nomb
+                    *q.sal.Cap:= *k.Provincia.Cap
+                    *q.sal.porcentaje:= porcentaje
+                    *q.prox:= prim2
+                    prim2:= q
+                Sino
+                    Nuevo(s)
+                    *s.sal.Nomb:= *k.Provincia.Nomb
+                    *s.sal.Cap:= *k.Provincia.Cap
+                    *s.sal.porcentaje:= porcentaje
+                    *s.prox:= prim3
+                    prim3:= q
+                FS
+            FS
+            k:= *k.prox
+        FM
+FA 

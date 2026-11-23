@@ -1,0 +1,268 @@
+Para poder comprar dólares en una entidad bancaria al precio oficial ($9,40), el beneficiario, debe tener un ingreso promedio en los últimos 12 meses equivalente a dos veces el sueldo mínimo vital y móvil (el cual en la actualidad es de $5000 por mes). Luego, con el sueldo del mes actual, solo se permite comprar por un importe no superior al 30% del mismo.
+Por ej.: si una persona tiene un sueldo de $10.000, desde septiembre del año pasado, al dia de hoy esa persona cumple la condición para comprar y puede comprar dólares por un monto máximo de $3.000 (equivalente a U$S 319).
+Para ello se cuenta con dos archivos indexados:
+
+CABECERA_SUELDO Indexado por DNI, Periodo, Nro_Recibo
+
+DNI N(8)Periodo N(6)Nro_Recibo N(15)ApyNom AN(50)Empresa AN(50)
+El periodo está representado por 6 caracteres numéricos dispuestos de forma de año/mes (aaaamm). El número de recibo (Nro_Recibo) es único. Una persona puede tener varios recibos de sueldo. La clave de este archivo es DNI, Periodo y Nro_Recibo.
+
+RECIBO Indexado por Nro_Recibo
+
+Nro_Recibo N(15)Concepto N(8)Tipo (0..2)Monto N(15,2)
+El campo tipo puede contener los siguientes valores: 0 - Sueldo básico, 1 – Otros Ingresos, 2 – Descuentos. Para calcular el sueldo mínimo se suman el sueldo (tipo 0), y los otros ingresos (tipo 1), NO se restan los descuentos. La clave es Nro_Recibo.
+
+Dado el escenario descripto, se pide escribir dos algoritmos:
+
+Que el empleado del Banco ingrese un número de documento de algún interesado en comprar dólares, y le devuelva si está habilitado o no para comprar y, en caso positivo, cuál es el monto máximo en pesos que se le autoriza.
+Si el interesado desea comprar, solicite el monto en pesos que destinará a la compra, el cual deberá ser descontado de su cuenta. Los datos de la cuenta están en un archivo indexado con la siguiente estructura (indexado por DNI):
+
+DNI N(8)Nro_Cuenta N(25)Saldo N(15,2)
+Los puntos a) y b) se repiten hasta que el operador (empleado del Banco) indique que desea finalizar.
+
+Procesar peticiones de compra, de acuerdo a un archivo de entrada de peticiones, evaluando si es posible realizar la operación o no. Si no es posible, indicar cual es el motivo: 1 – No tiene el ingreso promedio suficiente, o 2 – Pide más del 30 % de su sueldo actual.
+
+PETICIONES
+
+DNI N(8)Cant_Soli N(15,2)
+El resultado de la evaluación se debe grabar en un nuevo archivo de salida con el siguiente formato:
+
+SALIDA
+
+DNI N(8)Cant_Soli N(15,2)Pudo (si,no)Error 1..2
+
+ACCION_235_ES {Algoritmo 1}
+    AMBIENTE
+        reg1 = Registro de
+            Clave : Registro
+                DNI: N(9)
+                Periodo: N(6)
+                Nro_recibo: N(15)
+            FRegistro
+            Apynom: AN(50)
+            Empresa: AN(50)
+        FRegistro
+        Sueldo: Archivo de reg1 indexado por Clave
+        S: reg1
+
+        reg2 = Registro de 
+            Nro_recibo: N(15)
+            Concepto: N(8)
+            Tipo: {0..2}
+            Monto: N(15,2)
+        FRegistro
+        Recibo: Archivo de reg2 indexado Nro_recibo
+        R: reg2
+
+        reg3 = Registro de
+            DNI: N(9)
+            Nro_Cuenta: N(25)
+            Saldo: N(15,2)
+        FRegistro
+        Cuenta: Archivo de reg3 indexado por DNI
+        C: reg3
+
+        doc: entero
+        sueldomin, sueldoprom, comprar, monto: Real
+        Opcion, Opcion2: {"S", "N"}
+        Fecha: entero
+        SMVM = 5000
+
+    Proceso
+        ABRIR E/(Sueldo)
+        ABRIR E/(Recibo)
+        ABRIR E/S(Cuenta)
+        ESC("Ingrese la fecha actual en el formato año-mes -> AAAAMM"); Leer(Fecha)
+        ESC("Desea iniciar una operación S/N"); Leer(Opcion);
+        Mientras (Opcion = "S") Hacer
+            ESC("Ingrese el Documento del cliente"); Leer(doc);
+            S.Clave.DNI:= doc
+            S.Clave.Periodo:= Fecha - 100
+            {Como es en un periodo de 12 meses y el formato es de AAAAMM, a la centena del
+            número total, le resto 100 para posicionarme 1 año atras, osea 12 meses atras}
+
+            S.Clave.Nro_recibo:= 0 
+            {Como el dni, se supone que es único, asigno un valor que es muy probable que no exista, así
+            puedo posicionarme en el primer nro de recibo de ese cliente}
+
+            Leer(Sueldo, S)
+            Si No EXISTE entonces
+                ESC("El cliente no está habilitado para la compra de dolares")
+                //Suponemos que al no existir el dni, o no cumplir con el periodo de 12 meses, o no encontrar recibo de sueldo alguno, ya lo inhabilita
+            Sino
+                Mientras (doc = S.Clave.DNI) Hacer
+                    R.Nro_recibo:= S.Clave.Nro_recibo
+                    Leer(Recibo, R)
+                    Si EXISTE entonces
+                        Si (R.Tipo = 1) O (R.Tipo = 0) entonces
+                            sueldomin:= sueldomin + R.Monto
+                        FSi
+                        Leer(Sueldo, S)
+                    FSi
+                FMientras
+                sueldoprom:= sueldomin / 12
+
+                Si (Sueldoprom < (SMVM * 2)) entonces
+                    ESC("El cliente no cumple con el monto mínimo para poder realizar la compra de dolares")
+                Sino
+                    comprar:= (sueldomin * 0,30) //Calculo del monto máximo que puede comprar
+                    ESC("El cliente puede comprar como máximo, en pesos: ",comprar)
+                    ESC("Desea realizar la compra? S/N"); Leer(Opcion2);
+                    Si (Opcion2 = N) entonces    
+                        ESC("Fin de la operación") //informamos que ya no hay nada para hacer, solo volver a ingresar otro dni
+                    Sino
+                        ESC("Cuanto desea comprar"); leer(monto);
+                        C.DNI:= doc
+                        Leer(Cuenta, C)
+
+                        Si no EXISTE entonces
+                            ESC("ERROR... Cuenta no existente")
+                        Sino
+                            C.Saldo:= C.Saldo - Monto
+                            REGRABAR(Cuenta,C)
+                        FSi
+                    FSi
+                FSi
+            FSi
+            ESC("Desea ingresar otro DNI? S/N"); leer(Opcion);
+            sueldomin:= 0
+            comprar:= 0
+        FMientras
+        Cerrar(Cuenta)
+        Cerrar(Recibo)
+        Cerrar(Sueldo)
+FACCION {Fin de Algoritmo 1}
+
+ACCION_235_ES {Algoritmo 2}
+    AMBIENTE
+        reg1 = Registro de
+            Clave : Registro
+                DNI: N(9)
+                Periodo: N(6)
+                Nro_recibo: N(15)
+            FRegistro
+            Apynom: AN(50)
+            Empresa: AN(50)
+        FRegistro
+        Sueldo: Archivo de reg1 indexado por Clave
+        S: reg1
+
+        reg2 = Registro de 
+            Nro_recibo: N(15)
+            Concepto: N(8)
+            Tipo: {0..2}
+            Monto: N(15,2)
+        FRegistro
+        Recibo: Archivo de reg2 indexado Nro_recibo
+        R: reg2
+
+        reg3 = Registro de
+            DNI: N(9)
+            Nro_Cuenta: N(25)
+            Saldo: N(15,2)
+        FRegistro
+        Cuenta: Archivo de reg3 indexado por DNI
+        C: reg3
+
+        reg4 = Registro de
+            DNI: N(9)
+            Cantsol: N(15,2)
+        FRegistro
+        Solicitud: Archivo de reg4
+        Sol: reg4
+
+        reg5 = Registro de
+            DNI: N(9)
+            Cantsol:N(15,2)
+            Pudo: {"SI", "NO"}
+            Error: {1, 2}
+        FRegistro
+        Salida: Archivo de reg5
+        Sal: reg5
+
+        sueldomin, sueldoprom, comprar, monto: Real
+        Fecha: entero
+        SMVM = 5000
+        Dolar = 9,40
+
+    Proceso
+        ABRIR E/(Sueldo)
+        ABRIR E/(Recibo)
+        ABRIR E/(Solicitud)
+        ABRIR E/S(Cuenta)
+        ABRIR /S(Salida)
+        ESC("Ingrese la fecha actual en el formato año-mes -> AAAAMM"); Leer(Fecha)
+        {Como el archivo de Solicitud es secuencial, no se requiere de preguntar para iniciar
+        Solo pedir la fecha actual, que si se quiere se puede obtener del equipo donde se ejecuta el programa, mediante una funcion}
+        Mientras NFDA(Solicitud) Hacer
+            S.Clave.DNI:= Sol.DNI
+            S.Clave.Periodo:= Fecha - 100
+            {Como es en un periodo de 12 meses y el formato es de AAAAMM, a la centena del
+            número total, le resto 100 para posicionarme 1 año atras, osea 12 meses atras}
+
+            S.Clave.Nro_recibo:= 0 
+            {Como el dni, se supone que es único, asigno un valor que es muy probable que no exista, así
+            puedo posicionarme en el primer nro de recibo de ese cliente}
+
+            Leer(Sueldo, S)
+
+            Si No EXISTE entonces
+                ESC("No se encuentro el DNI del solicitante")
+                {¿Como se procede? No tenemos nocion de si puede existir problema con el sueldo o la cantidad solicitada}
+            Sino
+                Mientras (Sol.DNI = S.Clave.DNI) Hacer
+                    R.Nro_recibo:= S.Clave.Nro_recibo
+                    Leer(Recibo, R)
+                    Si EXISTE entonces
+                        Si (R.Tipo = 1) O (R.Tipo = 0)
+                            sueldomin:= sueldomin + R.Monto
+                        FSi
+                        Leer(Sueldo, S)
+                    FSi
+                FMientras
+                sueldoprom:= sueldomin / 12
+
+                Si (Sueldoprom < (SMVM * 2)) entonces
+                    Sal.DNI:= Sol.DNI
+                    Sal.Cantsol:= Sol.Cantsol
+                    Sal.Pudo:= "NO"
+                    Sal.Error:= 1 //No tiene el promedio suficiente
+                    Grabar(Salida, Sal)
+                Sino
+                    comprar:= (sueldomin * 0,30) * Dolar //Por lógica la cantidad solicitada debe de estar en dolares...No?
+                    Si (comprar < Sol.Cantsol) entonces    
+                        Sal.DNI:= Sol.DNI
+                        Sal.Cantsol:= Sol.Cantsol
+                        Sal.Pudo:= "NO"
+                        Sal.Error:= 2 //La cantidad solicitada sobrepasa el 30%
+                        Grabar(Salida, Sal)                    
+                    Sino
+                        C.DNI:= Sol.DNI
+                        Leer(Cuenta, C)
+
+                        Si no EXISTE entonces
+                            ESC("ERROR... Cuenta no existente")
+                            {Nuevamente, que prosigue en esta situación?}
+                        Sino
+                            C.Saldo:= C.Saldo - (Sol.Cantsol / Dolar)
+                            REGRABAR(Cuenta,C)
+                            Sal.DNI:= Sol.DNI
+                            Sal.Cantsol:= Sol.Cantsol
+                            Sal.Pudo:= "SI"
+                            Grabar(Salida, Sal)    
+                        FSi
+                    FSi
+                FSi
+            FSi
+            leer(Solicitud, Sol)
+            sueldomin:= 0
+            comprar:= 0
+        FMientras
+        Cerrar(Cuenta)
+        Cerrar(Recibo)
+        Cerrar(Sueldo)
+        Cerrar(Solicitud)
+        Cerrar(Salida)
+FACCION
+
+

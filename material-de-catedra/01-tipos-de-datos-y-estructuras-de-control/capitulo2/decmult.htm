@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Toma de Decisiones M&uacute;ltiples - If Anidados</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+
+      <h5>Sentencias Selectivas Anidadas</h5>
+      <p>Dentro de las sentencias que figuran dentro de una sentencia if, pueden colocarse tambi&eacute;n
+         otras sentencias selectivas.  De esta manera:
+      <p class="entrada">Supongamos que deseamos imprimir en pantalla la nota de un alumno, clasificandolo
+         en &quot;aprobado&quot;, &quot;no aprobado&quot;, y &quot;deficiente&quot;.  El algoritmo quedar&iacute;a
+         de esta manera.
+      <p class="td">si (nota >= 60) entonces<br>
+                            &nbsp;&nbsp;escribir ("aprobado")<br>
+                    sino<br>
+                            &nbsp;&nbsp;si (nota < 60) and (nota >= 30) entonces<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;escribir ("no aprobado")<br>
+                            &nbsp;&nbsp;sino<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;si (nota < 30) entonces<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;escribir ("deficiente")<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;fin_si<br>
+                            &nbsp;&nbsp;fin_si<br>
+                    fin_si.
+      <p>Es muy importante que se &uacute;tilize un buen sangrado en cada sentencia selectiva, para que sea mas legible el
+         c&oacute;digo, y adem&aacute;s que se comente el c&oacute;digo, para que no te pierdas si llevas escritas varias
+         lineas, y tambi&eacute;n por si alguna otra persona, desea actualizar tu c&oacute;digo.
+      <a name="case"><h4>La Sentencia de Selecci&oacute;n Seg&uacute;n Sea (Case)</h4></a>
+      <p>Esta sentencia se &uacute;tiliza para elegir entre diferentes alternativas.  Esta se compone de varias sentencias
+         sentencias simples, cuando se ejecuta, una y solo una de las sentencias simples se selecciona y ejecuta.
+      <div class="td"><p>La sintaxis es la siguiente:
+                      <p>seg&uacute;n sea (selector) hacer<br>
+                         &nbsp;&nbsp;caso1, caso2,..: &nbsp;sentencia1<br>
+                                ....                :     .....<br>
+                         &nbsp;&nbsp;caso1n, caso2n,.: &nbsp;sentencian<br>
+                         sino<br>
+                          &nbsp;sentencia opcional<br>
+                         fin_seg&uacute;n
+      </div>
+      <p>El valor de selector debe ser un tipo ordinal, y los valores constantes deben tener el mismo tipo que el selector.
+      <p>Se pueden &uacute;tilizar sentencias if anidadas, pero la sentencia seg&uacute;n sea es mas legible.
+      <div class="td"><p>Vamos a realizar en seudoc&oacute;digo el ejemplo anterior, pero esta vez &uacute;tilizando la
+                      sentencia seg&uacute;n-sea.
+                      <p>segun sea (nota) hacer<br>
+                          &nbsp;100..60: escribir ("aprobado")<br>
+                          &nbsp;59..30: escribir ("reprobado")<br>
+                          &nbsp;29..0: escribir ("deficiente")<br>
+      </div>
+      <p>Si te das cuenta, he omitido la clausula sino del algoritmo, esta es opcional y se puede omitir.
+      <p style="text-align: right;"><a href="decisiones.htm" class="cambio" title="decisiones">Toma de Decisiones</a> &nbsp;<a href="tutor.htm"
+      class="cambio" title="indice">Indice</a> &nbsp;<a href="sentrep.htm" class="cambio" title="bucles">Estructuras de Control Repetitivas</a></p>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+
+    </body>
+  </html>
+
+
+
+      

@@ -1,0 +1,322 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 5
+//  Enunciado: ../enunciados/final-05.jpg
+//  Estado: incompleto (la consigna 2 quedó sin terminar).
+// ==========================================================================
+
+//consigna 1
+
+Accion facturas() es
+
+Ambiente
+
+	sec: secuencia de caracter de entrada
+	v: caracter
+
+	sec_min: secuencia de caracter de salida
+	sec_may: secuencia de caracter de salida
+
+	nodo=registro
+		caracter:AN(1)
+		prox: puntero a nodo
+	fin registro
+
+	prim, a, p, q: puntero a nodo
+
+	tot_min, tot_may: entero
+
+	Procedimiento carga(s: secuencia de caracter de salida) es
+		p:=prim
+		Mientras (p<>nil) hacer
+			ESC(s, *p.caracter)
+			p:=*p.prox
+		Fin Mientras
+		ESC(s," ")
+
+		AVZ(sec, v)
+
+		Para i:=1 a 8 hacer
+			ESC(s, v)
+			AVZ(sec, v)
+		Fin Para
+
+		ESC(s,"!")
+	Fin Procedimiento
+
+
+Proceso
+
+	prim:=nil
+
+	tot_min:=0
+	tot_may:=0
+
+	ARR(sec)
+	AVZ(sec, v)
+
+	CREAR(sec_min)
+	CREAR(sec_may)
+
+	Mientras NFDS (sec) hacer
+
+		Para i:=1 a 12 hacer
+			AVZ(sec, v)
+		Fin Para
+
+		nuevo(q)
+		*q.caracter:=v
+		prim:=q
+		*q.prox:=nil
+		p:=q
+		AVZ(sec, v)
+
+		Mientras (v<>"*") hacer
+			nuevo(q)
+			*q.caracter:=v
+			*p.prox:=q
+			*q.prox:=nil
+			p:=q
+			AVZ(sec, v)
+		Fin Mientras
+
+		AVZ(sec, v)
+		AVZ(sec, v)
+
+		Si (v="0") entonces
+			carga(sec_may)
+			tot_may:=tot_may+1
+		Sino
+			carga(sec_min)
+			tot_min:=tot_min+1
+		Fin Si
+
+
+		//borro lo que esta en la lista
+
+		p:=prim
+		Mientras (prim<>nil) hacer
+			prim:=*prim.prox
+			disponer(p)
+			p:=prim
+		Fin Mientras
+
+
+	Fin Mientras
+
+
+	Escribir("La cantidad de clientes en la secuencia mayorista es de ",tot_may)
+	Escribir("La cantidad de clientes en la secuencia minorista es de ",tot_min)
+
+Fin Proceso
+
+
+//consigna 2
+
+Accion remitos() es
+
+Ambiente
+
+	distribucion=registro
+		nro_rem=registro
+			pto_or:1..20
+			pto_dest:1..20
+			mes:N(2)
+			dia:N(2)
+			nro_cor:N(6)
+		fin registro
+		llegada=registro
+			fecha:N(4)
+			hora:N(2)
+		fin registro
+		cant_paq:N(2)
+		peso:N(3)
+	fin registro
+
+	reg_d: distribución
+	arch_d: archivo de distribución indexado por nro_rem
+
+	puestos=registro
+		clave=registro
+			código:1..20
+		fin registro
+		nombre_dist:AN(30)
+		dir:AN(30)
+		emp_trans:AN(30)
+	fin registro
+
+	reg_p: puestos
+	arch_p: archivo de puestos indexado por código
+
+	tiempos=registro
+		pto_or:1..20
+		pto_dest:1..20
+		dist_dias:N(2)
+	fin registro
+
+	reg_t: tiempos
+	arch_t: archivo de tiempos
+
+	origen, destino, rta: alfanumerico
+	cant, peso, cont, or, dest, cant_f, peso_f, mas_rem, may_pes, no_env, mayor1, mayor2: entero
+
+	info=registro
+		cant_rem:N(5)
+		cant_paq:N(6)
+		peso_tot:N(8)
+	fin registro
+
+	A: Arreglo [1..21, 1..20] de info
+
+	Procedimiento nuevo_rem(c:entero,p:entero) es
+
+		A[or,dest].cant_rem:=A[or,dest].cant_rem+1
+		A[21,dest].cant_rem:=A[21,dest].cant_rem+1
+
+		reg_d.nro_rem.pto_or:=or
+		reg_d.nro_rem.pto_dest:=dest
+		reg_d.nro_rem.mes:=mes_actual()
+		reg_d.nro_rem.dia:=dia_actual()
+		reg_d.nro_rem.nro_cor:=cont
+
+		cont:=cont+1
+
+		//no tengo idea que hacer si llega a FDA
+
+		Mientras (reg_t.pto_or<>or) Y (reg_t.pto_dest<>dest) hacer
+			LEER(arch_t, reg_t)
+		Fin Mientras
+
+		reg_d.llegada.fecha:=fecha_actual()+reg_t.dist_dias
+		reg_d.llegada.hora:=hora_actual()
+
+		Si (c>20) entonces
+			reg_d.cant_paq:=20
+			cant_f:=c-20
+		Sino
+			reg_d.cant_paq:=c
+			cant_f:=0
+		Fin Si
+
+		Si (p>150) entonces
+			reg_d.peso:=150
+			peso_f:=p-150
+		Sino
+			reg_d.peso:=p
+			peso_f:=0
+		Fin Si
+
+		GRABAR(arch_d, reg_d)
+
+		Si (cant_f<>0) Y (peso_f<>0) entonces
+			nuevo_rem(cant_f, peso_f)
+		Sino
+			Si (cant_f<>0) entonces
+				nuevo_rem(cant_f, p)
+			Sino
+				Si (peso_f<>0) entonces
+					nuevo_rem(c, peso_f)
+				Fin Si
+			Fin Si
+		Fin Si
+	Fin Procedimiento
+
+
+
+Proceso
+
+	ABRIR /S (arch_d)
+	ABRIR E/ (arch_p)
+	ABRIR E/ (arch_t)
+	LEER(arch_t, reg_t)
+
+	rta="si"
+
+	Para i:=1 a 21 hacer
+		Para j:=1 a 20 hacer
+			A[i,j].cant_rem:=0
+			A[i,j].cant_paq:=0
+			A[i,j].peso_tot:=0
+		Fin Para
+	Fin Para
+
+	cont:=0
+
+
+	Mientras (rta="si") hacer
+
+		Escribir("Ingrese el origen")
+		Leer(origen)
+
+		Escribir("Ingrese el destino")
+		Leer (destino)
+
+		Para i:=1 a 20 hacer
+			reg_p.clave.codigo:=i
+			LEER(arch_p, reg_p)
+			Si (existe) entonces
+				Si (reg_p.nom_dist=origen) entonces
+					or:=i
+				Sino
+					Si (reg_p.nom_dist=destino) entonces
+						dest:=i
+					Fin Si
+				Fin Si
+			Fin Si
+		Fin Para
+
+
+		Escribir("Ingrese la cantidad de paquetes")
+		Leer(cant)
+
+		Escribir("Ingrese el peso")
+		Leer(peso)
+
+		A[or,dest].cant_paq:=A[or,dest].cant_paq+cant
+		A[or,dest].peso_tot:=A[or,dest].peso_tot+peso
+		A[21,dest].peso_tot:=A[21,dest].peso_tot+peso
+
+		nuevo_rem(cant, peso)
+
+		Escribir("Si desea ingresar otro envio escriba 'si'")
+		Leer (rta)
+
+	Fin Mientras
+
+	mayor1:=0
+	mayor2:=0
+
+	Para i:=1 a 20 hacer
+		Si (A[21,i].cant_rem>mayor1) entonces
+			mayor1:=A[21,i].cant_rem
+			may_rem:=i
+		Fin Si
+		Si (A[21,i].peso_tot>mayor2) entonces
+			mayor2:=A[21,i].peso_tot
+			may_pes:=i
+		Fin Si
+
+		Para j:=1 a 20 hacer
+			Escribir("Origen: ",i)
+			Escribir("Destino: ",j)
+			Escribir("Cantidad de remitos: ",A[i,j].cant_rem)
+			Escribir("Cantidad de paquetes: ",A[i,j].cant_paq)
+			Escribir("Peso total: ",A[i,j].peso_tot)
+			Escribir("-------------------------------")
+		Fin Para
+	Fin Para
+
+	Escribir("El destino con mas remitos es ",may_rem," con ",mayor1," remitos)
+	Escribir("El destino con mas peso es ",may_pes," con ",mayor2," peso)
+
+	Para i:=1 a 20 hacer
+		Si (A[21,i].cant_rem=0) entonces
+			Escribir("En el destino ",i," no hubo envios")
+		Fin Si
+	Fin Para
+
+	CERRAR(arch_d)
+	CERRAR(arch_p)
+	CERRAR(arch_t)
+
+Fin Proceso

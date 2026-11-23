@@ -1,0 +1,85 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos: ordenamiento y búsqueda (apunte)
+//  Los ejemplos ordenan un arreglo A[1..N] de menor a mayor.
+// ==========================================================================
+
+
+// SELECCIÓN
+// Selecciona el menor elemento de la parte no ordenada y lo ubica al final de
+// la parte ordenada (intercambiándolo con el que está en la posición i).
+
+Para i:= 1 a (N-1) hacer
+	x:= A[i]
+	MIN:= i
+	Para j:= (i+1) a N hacer
+		Si A[j] < x entonces
+			MIN:= j
+			x:= A[j]
+		FinSi
+	FinPara
+	A[MIN]:= A[i] // intercambio el menor encontrado con el de la posición i
+	A[i]:= x
+FinPara
+
+
+
+// INSERCIÓN
+// Toma cada elemento y lo inserta en la posición correcta dentro de la parte
+// ya ordenada, corriendo los mayores un lugar a la derecha.
+// No conozco las veces que voy a comparar, por eso el ciclo interno es un Mientras.
+
+Para i:= 2 a N hacer
+	x:= A[i]
+	j:= i-1
+	Mientras (j > 0) ^ (x < A[j]) hacer // j > 0 primero, para no salirme del arreglo
+		A[j+1]:= A[j]
+		j:= j - 1
+	FinMientras
+	A[j+1]:= x
+FinPara
+
+
+
+// INTERCAMBIO (burbuja)
+// El mayor va "burbujeando" hacia el final en cada pasada. Es el menos
+// eficiente: deja de comparar recién cuando una pasada completa no hizo
+// ningún intercambio.
+
+Bandera:= Falso
+Mientras NO Bandera hacer // mientras haya habido algún intercambio
+	Bandera:= Verdadero
+	Para j:= 1 hasta (N-1) hacer
+		Si A[j] > A[j+1] entonces
+			aux:= A[j]
+			A[j]:= A[j+1]
+			A[j+1]:= aux
+			Bandera:= Falso // hubo intercambio: hace falta otra pasada
+		FinSi
+	FinPara
+FinMientras
+
+
+
+// MÉTODOS DE BÚSQUEDA
+// Buscar en un arreglo es recorrerlo con el fin de encontrar un elemento.
+//
+// 1. Lineal pura
+//    Recorre todo el arreglo con un Para. Es el único método que encuentra
+//    los repetidos: el éxito se trata dentro del ciclo y el fracaso afuera.
+//
+// 2. Lineal con centinela
+//    Usa un Mientras y corta al encontrarlo; solo en el peor caso recorre todo
+//    el arreglo (por ejemplo si está en la última posición). El éxito y el
+//    fracaso se tratan afuera del ciclo.
+//    Si el arreglo está ordenado por el criterio de búsqueda, alcanza con
+//    llegar al primer elemento mayor que el buscado.
+//    Si se consulta todo el tiempo conviene ordenarlo primero y usar el
+//    centinela ordenado; si es un uso puntual conviene buscar sin ordenar.
+//
+// 3. Binaria o dicotómica
+//    No empieza desde el principio: compara con el elemento del medio y
+//    descarta la mitad que no puede contenerlo. EL ARREGLO DEBE ESTAR ORDENADO.
+//    centro:= (izq + der) div 2   (div es división entera: (1 + 4) div 2 = 2)
+//    El éxito y el fracaso se tratan afuera del ciclo.
+//    (Ver la implementación de los tres métodos en 3.7.pseudo)

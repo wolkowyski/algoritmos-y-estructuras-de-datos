@@ -1,0 +1,20 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos: apuntes de clase
+// ==========================================================================
+
+// Cómo se definen en el ambiente
+
+Mi_Vector: arreglo de [1..7] de enteros        // unidimensional (vector)
+Mi_Matriz: arreglo de [1..7, 1..3] de enteros  // 2 dimensiones: [fila, columna]
+
+Mi_Vector2: arreglo de ["A".."Z"] de enteros
+// El índice es un caracter de la A a la Z, pero el tipo de dato de cada
+// elemento es entero. Cualquier tipo ordinal sirve como índice.
+
+// Si en el enunciado me dan "arreglo de N" debo darle un valor constante fijo
+// a N en el ambiente, por ejemplo N = 100. El tamaño de un arreglo no cambia
+// durante la ejecución (es una estructura estática).
+
+// Acceso: Mi_Vector[3] es el tercer elemento; Mi_Matriz[2, 1] es fila 2, columna 1.
+// Un arreglo se recorre con ciclos Para porque la cantidad de elementos se conoce.

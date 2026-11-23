@@ -1,0 +1,6 @@
+Procedimiento bin(n: entero) es
+    Si (n <> 0) entonces
+        bin(n DIV 2)
+    FS
+    ESC(n MOD 2)
+FP

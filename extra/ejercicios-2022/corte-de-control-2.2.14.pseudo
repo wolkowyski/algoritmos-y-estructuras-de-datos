@@ -1,0 +1,100 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Dados el siguiente fichero con datos de un censo de la ciudad de Corrientes:
+
+CENSO Ordenado por Radio, Manzana, Nro_Vivienda
+
+Radio | Manzana | Nro_Vivienda | Condicion_Vivienda | Cantidad_Habitantes
+
+Condición puede ser : Muy Buena, Buena o Mala. Obtener los siguientes totales de personas que habitan en viviendas cuya condición es muy buena: total en la ciudad y totales por Radio y Manzana).
+
+______________________________________________________________________________________________________________
+
+ACCION censoCtes ES
+
+	AMBIENTE
+
+		TIPOS
+
+			Censo = REGISTRO;
+				rad: N(3);
+				mz: AN(2);
+				n_viv: N(4);
+				cond_viv = {'Muy Buena', 'Buena', 'Mala'};
+				n_hab: N(2);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			censos: Archivo de Censo ordenado por radio, manzana y nro_vivienda;
+			c: Censo;
+			n_vivMB, n_vivMB_rad, n_vivMB_city: entero;
+			resMz: AN(2); resRad: N(3);
+
+			PROCEDIMIENTO printTot(n_vivMB: entero)
+				ESC('Total de viviendas en muy buen estado: ', n_vivMB);
+			FIN PROCEDIMIENTO;
+
+
+			PROCEDIMIENTO corteMz()
+				ESC('Radio: ', resRad, ' | Total en manzana: ', resMz);
+				printTot(n_vivMB);
+				n_vivMB_rad := n_vivMB_rad + n_vivMB;
+				n_vivMB := 0;
+				resMz := c.mz;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteRad()
+				corteMz();
+				ESC('Total en radio: ', resRad);
+				printTot(n_vivMB_rad);
+				n_vivMB_city := n_vivMB_city + n_vivMB_rad;
+				n_vivMB_rad := 0;
+				resRad := c.rad;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (c.rad <> resRad) ENTONCES
+					corteRad();
+				SINO SI (c.mz <> resMz) ENTONCES
+						corteMz();
+					FIN SI;
+				FIN SI;
+				tratarRegistro();
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				SI (c.cond_viv = 'Muy Buena') ENTONCES
+					n_vivMB := n_vivMB + 1;
+				FIN SI;
+				LEER(censos, c);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotal()
+				corteRad();
+				ESC('Total en Corrientes: ');
+				printTot(n_vivMB_city);
+				CERRAR(censos);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				n_vivMB := 0; n_vivMB_rad := 0; n_vivMB_city := 0;
+				ABRIR E/(censos);
+				LEER(censos, c);
+				resMz := c.mz; resRad := c.rad;
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+
+		inicializarDatos();
+
+		MIENTRAS NO FDA(censos) HACER
+			tratarCorte();
+		FIN MIENTRAS;
+
+		emitirTotal();
+
+FIN ACCION;
+
+//Petrovich, Julio E.

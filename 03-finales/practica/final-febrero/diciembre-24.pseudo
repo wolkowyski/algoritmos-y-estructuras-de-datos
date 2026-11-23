@@ -1,0 +1,230 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - diciembre-24
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+EJERCICIO 1
+
+AMBIENTE
+   arch1: registro
+      sede
+      nrodecanch
+      dep
+      estado
+      Qmax
+   Finreg
+
+   arch2: registro
+      nroRes
+      sede
+      dep
+      nrodecanch
+      NombRes
+   Finreg
+
+   canchas: archivo de arch 1
+   c: arch1
+
+   reserv: archivo de arch 2
+   r: arch 2
+
+   arr1: arreglo [1..14]  de dato
+   arr2: arreglo [1..19] de dato
+
+
+   dato: registro
+      deporte
+      estado
+   finregistro
+
+   procedimiento inicializar es
+      Para i= 1 a 15 es
+         arr1.[i]:= ''
+      finpara
+      Para j= 1 hasta 20 es
+        arr2.[j]:= ''
+      finpara
+   finproc
+
+
+   procedimiento TratarSede1 es
+      n:= 0
+      encontrado:= verdadero
+      arr1.[i]:= 1
+      Mientras encontrado hacer
+         Si arr1.deporte = opdepor y arr1.capMax = cant entonces
+            encontrado = falso
+            n:= arr1.[i]
+         finsi
+         arr1.[i]:= arr1.[i] + 1
+      FinMientras
+      Si encontrado = verdadero entonces
+         Escribir('No hay disponibilidad en Sede 1, desea consultar Sede 2? Escribir S/N')
+         Leer(vermas)
+         Si vermas = 'S' entonces
+            TratarSede2
+            opsede:= 2
+         finsi
+      finsi
+   finprocedimiento
+
+   procedimiento TratarSede2 es
+      n:= 0
+      encontrado:= verdadero
+      arr2.[i]:= 1
+      Mientras encontrado  y arr2.[i] < 14 hacer
+         Si arr2.deporte = opdepor y arr2.capMax = cant entonces
+            encontrado = falso
+            n:= arr2.[i]
+         finsi
+          arr2.[j]:= arr2.[j] + 1
+      FinMientras
+      Si encontrado = verdadero entonces
+         Escribir('No hay disponibilidad en Sede 2, desea consultar Sede 1? Escribir S/N')
+         Leer(vermas)
+         Si vermas = 'S' entonces
+            TratarSede1
+            opsede:= 1
+         finsi
+      finsi
+   finprocedimiento
+
+PROCESO
+   ABRIR S/(canchas) leer(canchas)
+   ABRIR E/(reserv) leer(reserv)
+
+      //iniciando en 0 el numero de reservas
+      ntkt:= 0
+      Mientras op = 'N' hacer
+         Escribir('¿nombre de usuario?)
+         Leer(usuario)
+         Escribir('¿sede?')
+         Leer(opsede)
+         Escribir('¿deporte?')
+         Leer(opdepor)
+         Escribir('cantidad de jugadores?')
+         Leer(Cant)
+
+         Si opsede = 1
+            TratarSede1()
+         Sino
+            TratarSede2()
+         finsi
+
+         Si n = 0 entonces
+            Escribir('no hay canchas disponibles en ninguna sede')
+            noreal:= noreal + 1
+         Sino
+            Escribir('Hay disponbilidad, indique el nombre de la reserva')
+            Leer(nombre)
+            //Generación de Tkt y Actualización
+            ntkt:= ntkt + 1
+            Escribir('Ticket de Reserva | Num de Reserva:', ntkt, '| Nombre de Usuario |', usuario)
+
+            reserv.nroRes:= ntkt
+            reserv.sede:= opsede
+            reserv.deporte:= opdepor
+            reserv.nrodecanch:= n
+            reserv.nombredereser:= nombre
+            EScribir(reserv)
+         finsi
+
+         Escribir('desea hacer otra reserva'? S/N)
+         Leer(op)
+      FinMientras
+
+
+      Mientras no FDA(reserv) hacer
+
+
+
+
+
+
+
+
+
+
+
+
+
+AMBIENTE
+   Sec: secuencia de caracteres
+   V: ventana
+
+   Nodo: reg
+      Char: caracter (1)
+      Prox: puntero a nodo
+   Finreg
+   P, q, prim: puntero a nodo
+   ultimo: caracter
+
+   num: '1', '2', '3', '4', '5'
+   abc: 'a', 'b', 'c', 'd', 'e', 'f', 'g'..
+Procedimiento Enlazar() es
+   Si prim = nil entonces
+      Prim := q
+      q.prox := nil
+   Sino
+      p := prim
+      Mientras (p.prox <> nil) hacer
+         p := p.prox
+      Finmientras
+      p.prox := q
+      q.prox := nil
+   finsi
+   q.char := v
+finproc
+
+Procedimiento NuevaSec() es
+   p := prim1
+   Mientras p <> nil hacer
+      Según p.char hacer
+        si p.char = num entonces
+            TratarNum()
+         si p.char =abc
+            Letra := SYMBOL(p.char)
+            Escribir(salida, letra)
+         si p.char ='#':
+            Escribir(salida, ' ')
+         si p.char = '0','$':
+            Escribir('error')
+      Finsegun
+      p := p.prox  // Avanzar el puntero
+   Finmientras
+Finproc
+
+Procedimiento Tratarnum es
+	Según p.char hacer
+		‘1’: escribir(salida, ‘a’)
+		‘2’: escribir(salida, ‘e’)
+		‘3’: escribir(salida, ‘i’)
+		‘4’: escribir(salida, ‘o’)
+‘5’: escribir(salida, ‘u’)
+	Finsegun
+Finproced
+
+
+PROCESO
+Crear(salida) ARR(sal)
+Prim:= nil
+P:= nil
+ARR(sec) AVZ(sec)
+Mientras no FDS(sec) hacer
+	Nuevo(q), prim1:= q
+Mientras v <> ‘+’ hacer
+	Ultimo:= v
+	Enlazar()
+	Avz(sec, v)
+Finmientras
+Si Ultimo = ‘A’ entonces
+	NuevaSec()
+Sino
+*prim1.ant:= p
+*p.prox:= nil
+Avz(sec, v)
+
+FinMientras
+
+finproc

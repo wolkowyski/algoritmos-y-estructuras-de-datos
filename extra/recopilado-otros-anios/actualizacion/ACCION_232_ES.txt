@@ -1,0 +1,108 @@
+ACCION_232_ES
+    AMBIENTE
+        EMPLEADOS = Registro de
+            Clave: Registro
+                Nro_Suc: N(4)
+                Categoria: {"A", "B", "C"}
+            FRegistro
+            Nmbr: AN(50)
+            Cod_Curso: N(3)
+            Tecnico: {"SI", "NO"}
+        FRegistro
+
+        Empleados: Archivo de EMPLEADOS ordenado por Clave
+        Emp: EMPLEADOS
+
+        Fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+
+        Curso = Registro de 
+            Cod_Curso: N(3)
+            Nmbr: N(50)
+            Fecha: Fecha
+            Cant_horas: N(3)
+        FRegistro
+
+        Curso: Archivo de Curso indexado por Cod_Curso
+        Cur: Curso
+
+        cattottec, cattot, cattotnotec: Entero
+        suctottec, suctot, suctotnotec: Entero
+        emptottec, emptot, emptotnotec: Entero
+        aux_suc: Entero(4)
+        aux_cat: Alfanumerico
+
+        Procedimiento Corte_Cat()
+            ESC("-----------------------------------------------------")
+            ESC("Categoria: ",aux_cat)
+            ESC("Empleados Técnicos | Empleados no Ténicos | Empleados")
+            ESC(cattottec, " | ",cattotnotec, " | ", cattot)
+            ESC("-----------------------------------------------------")
+            aux_cat:= Emp.Clave.Categoria
+            suctottec:= suctottec + cattottec
+            suctotnotec:= suctotnotec + cattotnotec
+            suctot:= suctot + cattot
+            cattot:=0
+            cattotnotec:= 0
+            cattottec:= 0
+        FProced
+
+        Procedimiento Corte_Suc()
+            Corte_Cat()
+            ESC("-----------------------------------------------------")
+            ESC("Sucursal: ",aux_suc)
+            ESC("Empleados Técnicos | Empleados no Ténicos | Empleados")
+            ESC(suctottec, " | ",suctotnotec, " | ", suctot)
+            ESC("-----------------------------------------------------")
+            aux_suc:= Emp.Clave.Nro_Suc
+            emptottec:= suctottec + emptottec
+            suctotnotec:= suctotnotec + emptotnotec
+            suctot:= suctot + emptot
+            suctot:=0
+            suctotnotec:= 0
+            suctottec:= 0
+        FProced
+    
+    PROCESO
+        Abrir E/ (Empleados)
+        Abrir E/ (Curso)
+        Leer (Empleados, Emp)
+        aux_suc:= Emp.Clave.Nro_Suc
+        aux_cat:= Emp.Clave.Categoria
+        ESC("| SUCURSAL | CATEGORÍA | Nombre del empleado | CURSO")
+        Mientras NFDA(Empleados) Hacer
+            Si (Emp.Clave.Nro_Suc <> aux_suc) Entonces
+                Corte_Suc()
+            Sino
+                Si (Emp.Clave.Categoria <> aux_cat) Entonces
+                    Corte_Cat()
+                FSI
+            FSI
+
+            Si (Emp.Tecnico = "SI") Entonces
+                cattottec:= cattottec + 1
+            Sino
+                cattotnotec:= cattotnotec + 1
+            FSI
+            cattot:= cattot + 1
+
+            Cur.Cod_Curso:= Emp.Cod_Curso
+            leer(Curso, Cur)
+            Si EXISTE entonces
+                ESC(Emp.Clave.Nro_Suc," | ", Emp.Clave.Categoria," | ", Emp.Nmbr, " | ", Cur.Nmbr )
+            Sino
+                ESC(Emp.Clave.Nro_Suc," | ", Emp.Clave.Categoria," | ", Emp.Nmbr, " | Curso no encontrado" )
+            FSI
+
+            leer(Empleados, Emp)
+        FMientras
+        Corte_Suc()
+        ESC("Total de la Empresa")
+        ESC("Empleados Técnicos | Empleados no Ténicos | Empleados")
+        ESC(emptottec, " | ",emptotnotec, " | ", emptot)
+        Cerrar(Empleados)
+        Cerrar(Curso)
+FACCION

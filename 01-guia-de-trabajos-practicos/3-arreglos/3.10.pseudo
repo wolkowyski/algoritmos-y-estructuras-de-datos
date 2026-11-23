@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 3 - Arreglos - Ejercicio 3.10
+// ==========================================================================
+
+// Dado un arreglo de 50 elementos, cada uno de los cuales tiene los siguientes
+// datos: Código de localidad y Lluvia caída en un año. Escribir un algoritmo
+// que permita saber, dada una localidad, cuánto llovió en el año. Aplicar el
+// método más adecuado considerando que el arreglo está ordenado por Código de
+// localidad.
+//
+// Como el arreglo está ordenado y la clave no se repite, el método más
+// adecuado es la búsqueda binaria (dicotómica).
+
+Acción Ejercicio3_10 es
+    Ambiente
+        lluvia_loc = registro
+            cod_local: entero
+            lluvia_mm: real
+        FinRegistro
+
+        lluvia: arreglo [1..50] de lluvia_loc
+        iz, de, centro: entero
+        cod_buscado: entero
+
+    Proceso
+        Escribir("Ingrese el código de localidad")
+        Leer(cod_buscado)
+
+        iz:= 1
+        de:= 50
+        centro:= (iz + de) div 2
+        Mientras (iz <= de) y (lluvia[centro].cod_local <> cod_buscado) hacer
+            Si lluvia[centro].cod_local > cod_buscado entonces
+                de:= centro - 1 // busco en la mitad izquierda
+            Sino
+                iz:= centro + 1 // busco en la mitad derecha
+            FinSi
+            centro:= (iz + de) div 2
+        FinMientras
+
+        // Éxito y fracaso se tratan afuera del ciclo
+        Si (iz <= de) entonces
+            Escribir("En la localidad ", cod_buscado, " llovieron ", lluvia[centro].lluvia_mm, " mm en el año")
+        Sino
+            Escribir("La localidad ", cod_buscado, " no está en el arreglo")
+        FinSi
+FinAcción

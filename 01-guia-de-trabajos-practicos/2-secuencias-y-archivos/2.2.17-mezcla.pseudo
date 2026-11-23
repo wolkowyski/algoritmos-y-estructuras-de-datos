@@ -1,0 +1,91 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.17 (mezcla con HV)
+//
+//  Aspirantes del ingreso de agosto y de febrero, ambos ordenados por DNI.
+//  Se genera un archivo de seguimiento con los aspirantes que rindieron en
+//  los dos turnos y no aprobaron en ninguno.
+// ==========================================================================
+
+Accion Ejercicio2_2_17 es
+    Ambiente
+
+        Fecha = Registro
+            dd: 1..31
+            mm: 1..12
+            aa: N(4)
+        FinRegistro
+
+        Aspirante = Registro
+            DNI: N(8)
+            ApeyNom: AF(255)
+            Carrera: AF(255)
+            F_Nac: Fecha
+            Email: AN(255)
+            ColegioSec: AN(254)
+            FechaInscripcion: Fecha
+            Aprobado: ("Si","No")
+        FinRegistro
+
+        Seguimiento = Registro
+            DNI: N(8)
+            ApeyNom: AF(255)
+            Email: AN(255)
+            ColegioSec: AN(254)
+        FinRegistro
+
+Aspirantes_Agosto, Aspirantes_Febrero: Archivo de Aspirante ordenado por DNI
+Reg1, Reg2: Registro de Aspirante
+
+ArchSeguimiento: Archivo de Seguimiento ordenado por DNI
+RegSeguimiento: Registro de Seguimiento
+HV = 99999999 // mayor que cualquier DNI
+cont_seguimiento: entero
+
+SubAccion Leer_Aspirantes_Agosto es
+    Leer(Aspirantes_Agosto, Reg1)
+    Si FDA(Aspirantes_Agosto) entonces
+        Reg1.DNI:= HV
+    FinSi
+FinSubAccion
+
+SubAccion Leer_Aspirantes_Febrero es
+    Leer(Aspirantes_Febrero, Reg2)
+    Si FDA(Aspirantes_Febrero) entonces
+        Reg2.DNI:= HV
+    FinSi
+FinSubAccion
+
+    Proceso
+        Abrir E/(Aspirantes_Agosto)
+        Leer_Aspirantes_Agosto // se usan las subacciones para que el HV se cargue al terminar
+        Abrir E/(Aspirantes_Febrero)
+        Leer_Aspirantes_Febrero
+        Abrir /S(ArchSeguimiento)
+        cont_seguimiento:= 0
+
+        Mientras (Reg1.DNI <> HV) o (Reg2.DNI <> HV) hacer
+            Si Reg1.DNI < Reg2.DNI entonces // alumno que cursó en agosto y no en febrero
+                Leer_Aspirantes_Agosto
+            SiNo
+                Si Reg1.DNI > Reg2.DNI entonces // cursó en febrero y no en agosto
+                    Leer_Aspirantes_Febrero
+                SiNo // mismo DNI: rindió en los dos turnos
+                    Si (Reg1.Aprobado = "No") y (Reg2.Aprobado = "No") entonces
+                        RegSeguimiento.DNI:= Reg1.DNI
+                        RegSeguimiento.ApeyNom:= Reg1.ApeyNom
+                        RegSeguimiento.Email:= Reg1.Email
+                        RegSeguimiento.ColegioSec:= Reg1.ColegioSec
+                        Escribir(ArchSeguimiento, RegSeguimiento)
+                        cont_seguimiento:= cont_seguimiento + 1
+                    FinSi
+                    Leer_Aspirantes_Agosto
+                    Leer_Aspirantes_Febrero
+                FinSi
+            FinSi
+        FinMientras
+        Escribir("Aspirantes que necesitan seguimiento: ", cont_seguimiento)
+        Cerrar(Aspirantes_Agosto)
+        Cerrar(Aspirantes_Febrero)
+        Cerrar(ArchSeguimiento)
+FinAccion

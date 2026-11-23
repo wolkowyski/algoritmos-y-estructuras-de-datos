@@ -1,0 +1,186 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final de febrero - e7
+//  Resoluciones de modelos de final hechas como práctica (enunciados en ../../enunciados/).
+// ==========================================================================
+
+EJER 1
+
+ACCION noticias
+ Ambiente
+  arch= registro
+    cod
+    tit
+    costo
+    cod-cat: 1...10
+    seg: 1...3
+    finregistro
+
+    arch-not: archivo de arch
+    noti: arch
+
+    A: arreglo de [1...10] de dato
+    dato= registro
+        nombre: N(30)
+    finregistro
+
+    ev: arreglo de [1...4, 1...11] de info
+    info= registro
+        costo:
+        cant:
+    finregistro
+
+    nodo= registro
+        costo:
+        fecha:
+        descrip: (nombre cat + segmento)
+        prox: puntero a nodo
+    finregistro
+
+    q,k,p,prim:= puntero a nodo
+
+    procedimiento cargaAsc es
+        nuevo(q)
+        q.costo:= c
+        q.fecha:= fecha
+        q.descrip:= detalle
+        si prim= nil entonces
+            prim= q
+            q.prox:= nil
+        sino
+        Mientras p.costo > c
+            p:= *p.prox
+        finmientras
+
+            q.prox:= *p.prox
+            *p.prox:= q
+
+    finprocedimiento
+
+
+
+
+    PROCESO
+        abrir(arch-not) leer(noti)
+        Escribir('ingresar monto minimo')
+        Leer(monto)
+
+        para i= 1 a 4
+            para j=1 a 11
+             ev[i,j]:=0
+             finp
+        finp
+        prim= nil
+        p= nil
+        Mientras no FDA(arch-not) hacer
+            c:= noti.costo
+            segun noti.seg hacer
+                1: nombresegm:= 'matinal'
+                2: nombresegm:= 'tarde'
+                2: nombresegm:= 'noche'
+            finsegun
+            si monto < c entonces
+                detalle:= A[noti.cod-cat].nombre , nombresegm
+                cargarAsc()
+            finsi
+            i:= noti.cod-cat
+            j:= noti.seg
+            ev[i,j].costo:= ev[i,j].costo + c
+            ev[i,j].cant:= ev[i,j].cant + 1
+
+            leer(arch-noti, not)
+        finmientras
+
+
+        Mientras A[i].nombre <> 'deportivo' hacer
+            A[i]:= A[i] + 1
+        finmientras
+        catdep:= i
+
+        Escribir('cantidad de eventos deportivos en segmento matival:' ev[, catdep])
+
+        min:= 999
+        categmin:= ''
+        para j= 1 a 10 hacer
+            si min > ev[4,j].cant entonces
+                min:= ev[4,j].cant
+                categ:= j
+            finsi
+        finpara
+
+        escribir('total invertido en la categora con menos eventos:' ev[4,cat].costo)
+
+
+    finACCION
+
+
+    EJER2-
+
+ACCION contraseñas
+Ambiente
+    sec: secuencia de caracteres
+    v: ventana
+
+    nodo= registro
+        caracter: N(1)
+        inicio: N(1)
+        prox: puntero a nodo
+    finregistro
+    prim, primer, ult, p, q, aux, k: puntero a nodo
+
+    procedimiento cargarNodo() es
+        nuevo(q)
+        q.caracter:= v
+        q.inicio:= 'N'
+        si prim = nil entonces
+            prim:= q
+            q.prox:= nil
+            *k.ant:= nil
+            ult:= nil
+        finsi
+        Mientras k <> nil hacer
+            p:= *p.prox
+        finmientras
+        *q.ant:= k
+       *q.prox:= nil
+        *k.prox:= q
+        ult:= q
+    finprocedimiento
+
+    procedimiento cargarLista()
+        p= prim
+        si prim1 = nil entonces
+            prim1:= prim
+            ult.prox:= nil
+            ult.ant:= nil
+        sino
+        Mientras p.inicio <> 'S' y p.caracter < prim.caracter entonces
+            p:= *p.prox
+        finmientras
+        *prim.ant:= *p.ant
+        *ult.prox:= p
+        (*p.ant).prox:= prim
+        *p.ant:= ult
+    finprocedimiento
+
+
+PROCESO
+    arr(sec) avz(sec,v )
+    Mientras no FDS(sec) hacer
+        nuevo(q)
+        q.caracter:= v
+        q.inicio: 'S'
+        cargarNodo()
+        avz(sec,v)
+        Mientras v <> '+' hacer
+            cargarNodo()
+            avz(sec,v)
+        finmientras
+        si prim.caracter <> ult.caracter entonces
+            cargarLista()
+        sino
+            Disponer(prim)
+            Disponer(ult)
+        finsi
+        avz(sec,v)
+    finmientras

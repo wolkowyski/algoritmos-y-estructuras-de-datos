@@ -1,0 +1,38 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Nro_art: N(5)
+        Tipo: N(1)
+        Cant_vend: N(4)
+    FR
+    Articulos: Arreglo de [1..n] de reg
+ACCION_316_ES
+    AMBIENTE
+        i,j: entero
+        max, x: entero
+        res: reg
+    PROCESO
+        Para i:= 1 hasta (n-1) hacer
+            res:=Articulos[i]
+            x:= Articulos[i].Cant_vend
+            max:= i
+            Para j:= (i+1) hasta n hacer
+                Si (Articulos[j].Cant_vend > x ) entonces
+                    res:= Articulos[j]
+                    x:= Articulos[j].Cant_vend
+                    max:= j
+                FS
+            FP
+            Articulos[max]:= Articulos[i]
+            Articulos[i]:= res
+        FP
+
+        ESC("Listado por cantidad vendidas de mayor a menor")
+
+        Para i:= 1 hasta n
+            ESC("--------------------------")
+            ESC("Articulo: ",Articulos[i].Nro_art)
+            ESC("Tipo: ",Articulos[i].Tipo)
+            ESC("Cantidad vendida: ",Articulos[i].Cant_vend)
+            ESC("--------------------------")
+        FP
+FA

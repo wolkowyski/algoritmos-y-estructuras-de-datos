@@ -1,0 +1,241 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Ejercicio 32
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Ejercicio 32 es
+
+ Ambiente
+
+  Ventas=Registro
+   Clave1=Registro
+    n_transaccion:N(8);
+    n_cliente:N(5);
+    n_vendedor:N(5);
+    fecha=Registro
+     AA:N(4);
+     MM:[1..12];
+     DD:[1..31];
+    finRegistro
+   finRegistro
+   costo:N(7,2);
+   ubicacion:AN(50);
+   puntuación:N(1);
+   opinion:N(1);
+  finRegistro
+
+  Transacciones=Registro
+   Clave2=Registro
+    n_transaccion:N(8);
+    n_cliente:N(5);
+    n_vendedor:N(5);
+    fecha=Registro
+     AA:N(4);
+     MM:[1..12];
+     DD:[1..31];
+    finRegistro
+   finRegistro
+   costo:N(7,2);
+   ubicacion:AN(50);
+   puntuación:N(1);
+   opinion:N(1);
+  finRegistro
+
+
+  Vendedores=Registro
+   n_vendedor:N(5);
+   nya:AN(50);
+   puntuación:N(1,1);
+   cant_ventas:N(7);
+   opinion:N(1,1);
+   tipo:AN(1);
+  finRegistro
+
+
+  Archvs: Archivo de Ventas ordenado por clave1;
+  vs:Ventas;
+
+  Archt: Archivo de Transacciones ordenado por clave2;
+  t:Transacciones;
+
+  Archvn: Archivo de Vendedores indexado por n_vendedor;
+  vn: Vendedores;
+
+ Algoritmo
+
+ Abrir E/S(Archvs);
+ Abrir E/(Archt);
+ Abrir E/S(Archvn);
+
+ Leer(Archvs);
+ Leer(Archt);
+
+ Mientras Clave1<>HV o Clave2<>HV hacer
+
+  Si t.n_cliente = null y t.fecha = null entonces
+   vn.n_vendedor:=t.n_vendedor;
+   Leer(Archvn,vn);
+   Eliminar(Archvn,vn);
+   Leer(Archt,t);
+   Si FDA(Archt) entonces
+    Clave2:=HV;
+   finSi
+  finSi
+
+  Si Clave1<Clave2 entonces
+   Leer(Archvs,vs);
+   Si FDA(Archvs) entonces
+    Clave1:=HV;
+   finSi
+   Sino
+    Si Clave1=Clave2 entonces
+     vn.n_vendedor:=t.n_vendedor;
+     Leer(Archvn,vn);
+     Si FDA(Archt) entonces
+      Clave2:=HV;
+     finSi
+     Si existe entonces
+      vn.puntuación:= (vn.puntuación*vn.cant_ventas+t.puntuación)/(vn.cant_ventas+1);
+      vn.opinion:= (vn.opinion*vn.cant_ventas+t.opinion)/(vn.cant_ventas+1);
+      vn.cant_ventas:= vn.cant_ventas+1;
+      Si vn.cant_ventas = 100 entonces
+       vn.tipo:= "P";
+       Sino
+        Si vn.cant_ventas = 500 entonces
+         vn.tipo:= "G";
+        finSi
+       finSino
+      finSino
+      Reescribir(Archvn,vn);
+     finSi
+     Leer(Archvs,vs);
+     Si FDA(Archvs) entonces
+      Clave1:=HV;
+     finSi
+     Leer(Archt,t);
+     Si FDA(Archt) entonces
+      Clave2:=HV;
+     finSi
+
+     Sino
+      Si Clave1>Clave2 entonces
+       vn.n_vendedor:=t.n_vendedor;
+       vn.puntuación:=t.puntuación;
+       vn.cant_ventas:=1;
+       vn.opinion:=t.opinion;
+       vn.tipo:="S";
+       Escribir(Archvn,vn);
+      finSi
+     finSino
+    finSi
+   finSino
+  finSi
+
+ finMientras
+
+ Cerrar(Archvs);
+ Cerrar(Archt);
+ Cerrar(Archvn);
+
+finAccion
+
+
+Accion Ejercicio 32.arreglo es
+
+ Ambiente
+
+
+ Promedio=Registro
+  puntuacion:real;
+  vendedores:entero;
+ finRegistro
+
+ a: arreglo de (1..6,1..4) promedio;
+ i,j: entero;
+
+ Vendedores=Registro
+  n_vendedor:N(5);
+  region:N(1);
+  puntuación:N(1,1);
+  opiniones:N(1,1);
+  tipo:AN(1);
+ finRegistro
+
+ Archv: Archivo de Vendedores indexado por n_vendedor;
+ v:Vendedores;
+
+ Funcion convertir(v.tipo:AN):entero
+  Segun v.tipo hacer
+   "S": convertir:=1;
+   "P": convertir:=2;
+   "G": convertir:=3:
+  finSegun
+ finFuncion
+
+ res:real;
+ resi:N(1);
+ resj:N(1);
+
+
+
+
+
+
+
+
+
+ Algoritmo
+
+  Abrir E/S(Archv);
+  Leer(Archv,v);
+
+  res:=0;
+  resi:=0;
+  resj:=0;
+
+
+  Para i:=1 hasta 6 hacer
+   Para j:=1 hasta 4 hacer
+    a(i,j).puntuacion:=0;
+    a(i,j).vendedores:=0;
+   finPara
+  finPara
+
+  Mientras NFA(Archv) hacer
+
+   a(v.region,convertir(v.tipo)).puntuacion:=a(v.region,convertir(v.tipo)).puntuacion+v.puntuación;
+   a(v.region,4).puntuacion:=a(v.region,4).puntuacion + v.puntuación;
+   a(6,v.tipo).puntuacion:=a(6,v.tipo).puntuacion + v.puntuación;
+
+   a(v.region,convertir(v.tipo)).vendedores:=a(v.region,convertir(v.tipo)).vendedores+1;
+   a(v.region,4).vendedores:=a(v.region,4).vendedores + 1;
+   a(6,v.tipo).vendedores:=a(6,v.tipo).vendedores + 1;
+
+   Leer(Archv,v);
+  finMientras
+
+   Para i:=1 hasta 6 hacer
+    Para j:=1 hasta 4 hacer
+     a(i,j).puntuacion:= a(i,j).puntuacion/a(i,j).vendedores;
+     Si a(i,j).puntuacion>res entonces
+      res:= a(i,j).puntuacion;
+      resi:=i;
+      resj:=j;
+     finSi
+    finPara
+   finPara
+
+  Para i:=1 hasta 5 hacer
+   Escribir("El promedio de puntuacion por vendedor en la region ", i, "es :" a(i,4).puntuacion);
+   Escribir("La region y tipo de mercadolider que mayor promedio de puntuacion por vendedor tiene está en la region ",resi, " y es de tipo ",resj, ", su promedio por vendedor es: ", res );
+   Para i:= 1 hasta 5 hacer
+    Escribir("El promedio de puntuacion por vendedor de la region ", i, " es: ", a(i,4).puntuacion);
+   finPara
+   Para j:=1 hasta 3 hacer
+    Escribir("El promedio de puntuacion por vendedor de tipo ", j, " es: ", a(j,6).puntuacion);
+   finPara
+
+  Cerrar(Archv);
+
+ finAccion

@@ -1,0 +1,62 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final 27 de febrero - Resolución
+// ==========================================================================
+
+Accion Ejercicio1 es
+	Ambiente
+		Movim = Registro
+			mes: n(2)
+			cliente: n(13)
+			cod_tran: (d, e, t)
+			moneda: (p, u, e)
+			importe: n(13, 2)
+		FinRegistro
+
+		tot_mensual
+		tot_anual
+		resg_mes
+
+		Procedimiento CorteMes es
+			Escribir("Para el mes de: ", resg_mes, " el total fue de: ", tot_mes)
+
+			max_cant := -1
+			pos_max := 0
+
+			Para i:= 1 a 3 Hacer
+				Si (Arr[i] > max_cant) Entonces
+					max_cant := Arr[i]
+					pos_max := i
+				FinSi
+			FinPara
+
+			Escribir("1- Deposito     2- Extraccion      3- Transferencia")
+			Escribir("La transaccion mas solicitada fue: ", pos_max, "con un total de: ", max_cant " solicitudes")
+
+			Para i:= 1 a 3 hacer
+				Arr[i]:= 0
+			FinPara
+
+			tot_anual:= tot_anual + tot_mes
+			tot_mes:= 0
+			tot_mas_solicitada:= 0
+			resg_mes:= reg.mes
+		FinProcedimiento
+
+	Proceso
+		Abrir E/ (ArchMovim)
+		Leer(ArchMovim, RegMovim)
+
+		Mientras NFDA(ArchMovim) hacer
+			Si reg.mes <> resg_mes entonces
+				CorteMes
+			FinSi
+
+			tot_mes:= tot_mes + convertir_a_peso(reg.importe, reg.moneda)
+
+			Segun (reg.cod_tran) hacer
+				="D": Arr[1]:= Arr[1] + 1
+				="E": Arr[2]:= Arr[2] + 1
+				="T": Arr[3]:= Arr[3] + 1
+			FinSegun
+FinAccion

@@ -1,0 +1,37 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.4 - resolución compartida en Discord
+// ==========================================================================
+
+Se dispone de una lista simplemente encadenada cuyos registros están ordenados en forma ascendente por una
+ clave de tipo entero; diseñar un algoritmo que invierta el orden de la lista.
+
+ACCION 4.4 ES(prim: puntero a NODO)
+AMBIENTE
+NODO = registro
+    clave: entero
+    prox: entero
+FIN_REGISTRO
+r_prim,p,q: puntero a nodo
+cant_elementos,i :entero
+
+ALGORITMO
+r_prim:= prim
+p:=prim
+cant_elementos:= 0;
+MIENTRAS *p.prox <> nil HACER
+    cant_elementos:=cant_elementos +1
+    p:= *p.prox
+FIN_MIENTRAS
+cant_elementos:= cant_elementos + 1
+prim:=p
+
+PARA i:= 1 hasta cant_elementos-1 HACER
+    q:= r_prim
+    MIENTRAS *q.prox <> p HACER
+        q:=*q.prox
+    FIN_MIENTRAS
+    *p.prox:= q
+    p:= q
+FIN_PARA
+FIN_ACCION.

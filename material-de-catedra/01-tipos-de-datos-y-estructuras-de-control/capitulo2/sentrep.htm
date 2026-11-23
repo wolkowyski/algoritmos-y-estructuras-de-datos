@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Estructuras de Control Repetitivas</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+
+      <h4>Estructuras de Control Repetitivas</h4>
+      <p class="entrada" title="introduccion">Las computadoras est&aacute;n especialmente dise&ntilde;adas para ejecutar
+      tareas repetidamente.  Las estructuras de control repetitivas son aquellas en las que una sentencia o grupos de
+      sentencias se repiten muchas veces.
+      <p>Una estructura de control que permite la repetici&oacute;n de una serie determinada de sentencias se denomina bucle
+      (lazo o ciclo).  El cuerpo del bucle contiene las sentencias que se repiten.
+      <p>La acci&oacute;n o acciones que se repiten en un bucle se denomina el cuerpo del bucle, y cada repetici&oacute;n
+      del cuerpo del bucle se denomina iteraci&oacute;n.
+      <a name="mientras"><h5>Sentencia Mientras..hacer (while)</h5></a>
+      <p>La estructura repetitiva mientras es aquella en la que el n&uacute;mero de iteraciones no se conoce por anticipado
+      y el cuerpo del bucle se repite <em>mientras</em> se cumple una determinada condici&oacute;n.  Por esta raz&oacute;n
+      a estos bucles se les denomina bucles condicionales.
+      <div class="codigo"><p>La sintaxis es la siguiente:
+                          <p>Mientras (condicion) hacer<br>
+                           &nbsp;sentencias<br>
+                           fin_mientras</div>
+      <p>Cuando la sentencia mientras se ejecuta, el primer paso es la evaluaci&oacute;n de la expresi&oacute;n l&oacute;gica.  Si
+      se eval&uacute;a a falso, ninguna acci&oacute;n se realiza y el programa prosigue en la siguiente sentencia despu&eacute;s
+      del bucle.  Si la expresi&oacute;n l&oacute;gica se eval&uacute;a a verdadera, entonces se ejecuta las sentencias contenidas
+      dentro del cuerpo del bucle y se eval&uacute;a de nuevo la expresi&oacute;n.  Este proceso se repite <em>mientras</em> que la
+      expresi&oacute;n l&oacute;gica sea verdadera.
+      <p>Despu&eacute;s de cada iteraci&oacute;n, la expresi&oacute;n l&oacute;gica se eval&uacute;a y se verifica de nuevo, y si es
+      verdadera, el bucle se repite de nuevo; si cambia de verdadera a falsa, la sentencia <em>mientras</em> finaliza y el programa
+      prosigue en la siguiente sentencia del programa.
+      <div class="codigo"><p>Calcular la suma de una lista de n&uacute;meros enteros ingresados por el usuario.
+      <p>Algoritmo Sumar<br>
+         Variables<br>
+          &nbsp;contador, num, sum, N: enteros<br>
+         Inicio<br>
+          &nbsp;Escribir ("Este programa suma numeros")<br>
+          &nbsp;Escribir ("Cuantos numeros desea sumar")<br>
+          &nbsp;Leer (N)<br>
+          &nbsp;Escribir ("Ingrese los numeros:")<br>
+          &nbsp;contador <-- 0<br>
+          &nbsp;suma <-- 0<br>
+          &nbsp;Mientras (contador < num) hacer<br>
+          &nbsp; &nbsp;Leer (num)<br>
+          &nbsp; &nbsp;suma <-- suma + num<br>
+          &nbsp; &nbsp;contador <-- contador + 1<br>
+          &nbsp;fin_mientras<br>
+          &nbsp;Escribir ("La suma de los",N,"numeros es",suma)<br>
+         Fin.</div>
+      <div class="td"><p>Al implementar este c&oacute;digo en un lenguaje de programaci&oacute;n, por ejemplo:  Pascal, este ser&iacute;a
+      el resultado, en pantalla, al ejecutarlo.
+      <p>Este programa suma numeros<br>
+      Cu&aacute;ntos numeros desea sumar<br>
+      <em>3</em><br>
+      Teclee los numeros enteros:<br>
+      <em>8 6 4</em><br>
+      La suma de los 3 numeros es 18</div>
+      <p style="text-align: right;"><a href="decmult.htm" class="cambio">Decisiones M&uacute;ltiples</a> &nbsp;<a href="tutor.htm"
+      class="cambio">Indice</a> &nbsp;<a href="bucrep.htm" class="cambio">Bucles Repetitivos [cont..]</a></p>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+
+    </body>
+  </html>

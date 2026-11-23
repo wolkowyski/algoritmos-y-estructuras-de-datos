@@ -1,0 +1,87 @@
+ACCION_EJ1_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo = Registro de
+            pais: AN(80)
+            edades: Arreglo de [1..26] de enteros
+            grupo: AN(1)
+            puntos:N(2)
+            tarj_am: N(2)
+            tarj_roj: N(2)
+            prom_edad: N(2)
+            prox: puntero a nodo
+        FR
+        p, q, ant: puntero a nodo
+        nomb_pais, grupo, may_eq, men_eq: alfanumérico
+        x: entero
+        bandera: booleano
+        may, men: entero
+    
+
+        Función promedio(A: Arreglo de [1..26] de enteros; i,n: enteros): entero
+            Si (i=1) entonces
+                promedio:= A[i] DIV n
+            Sino
+                promedio:= (A[i] DIV n) + promedio(A, i-1, n)
+            FS
+        FF
+    PROCESO
+        Para x:= 1 hasta 32 hacer
+            ESC("Ingrese el nombre del país: ")
+            Leer(nomb_pais)
+            ESC("Ingrese el grupo asignado: ")
+            Leer(grupo)
+            p:=prim
+            Mientras (p <> NIL) ^ (*p.pais <> nomb_pais) hacer
+                p:=*p.prox
+            FM
+            Si (p = NIL) entonces
+                ESC("El país ingresado no fue encontrado")
+            Sino
+                *p.grupo:= grupo
+                *p.prom_edad:= promedio(*p.prom_edad, 26, 26)
+            FS
+        FP
+
+        bandera:= verdadero
+        Mientras bandera hacer
+            p:=prim
+            q:=*p.prox
+            ant:=NIL
+            Mientras (q <> NIL) y (*p.grupo <= *q.grupo) hacer
+                ant:=p
+                q:=*q.prox
+                p:=*p.prox
+            FM
+            Si (q = NIL) entonces
+                bandera:= falso
+            Sino
+                Si (ant = NIL) entonces
+                    *p.prox:= *q.prox
+                    *q.prox:= p 
+                    prim:= q
+                Sino
+                    *p.prox:= *q.prox
+                    *ant.prox:= q
+                    *q.prox:= p
+                FS
+            FS
+        FM
+
+        p:=prim
+        may:= LV
+        men:= HV
+        Para x:=1 hasta 32 hacer
+            Si (*p.prom_edad > may) entonces
+                may:= *p.prom_edad
+                may_eq:= *p.pais
+            Sino
+                Si (*p.prom_edad < men) entonces
+                    men:= *p.prom_edad
+                    men_eq:= *p.pais
+                FS
+            FS
+            p:=*p.prox
+        FP
+        ESC("El equipo con mayor promedio de edad es: ",may_eq)
+        ESC("El equipo con menor promedio de edad es: ",men_eq)
+FA

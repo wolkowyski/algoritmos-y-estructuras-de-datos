@@ -1,0 +1,134 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Modelo resuelto: COSME (listas dobles + indexado)
+//  Un producto por rubro con el mayor % de descuento, en una lista doble.
+// ==========================================================================
+
+Empresa COSME cuenta semanalmente con una lista de las ofertas actuales que
+contiene código, rubro del producto y precio de oferta.
+
+Dicha lista esta ordenada por Rubro y puede existir mas de un producto por rubro en  oferta.
+COSME quiere lanzar via redes sociales una campaña con los productos en oferta
+mas destacados de cada rubro.
+Para ello nos solicita que generemos una lista doble donde se encuentre los productos que mayor
+porcentaje de descuento tengan en cada rubro (un producto por rubro).
+Esta lista debe contener, el código, nombre, precio de oferta y porcentaje de
+descuento.
+Ademas se cuenta con Los datos de todos los productos en el siguiente archivo:
+
+Productos indexado por código.
+Código  Nombre   Precio  Rubro   Stock
+
+ACCIÓN COSME (prim: Puntero a Ofertas) ES
+ AMBIENTE
+
+ Ofertas = registro
+     Codigo: N(10)
+     Rubro: AN (30)
+     PrecioOferta: N (6)
+     prox: puntero a Ofertas
+     fin registro
+
+ p, desc: puntero a Ofertas
+
+ Productos = registro
+     Codigo: N(10)
+     Nombre: AN (30)
+     Precio: N (6)
+     Rubro: AN (30)
+     Stock: N (4)
+     fin registro
+
+ ArchProd: archivo de productos indexado por Código
+ Reg: Productos
+
+ --------------------------
+
+ Descuentos = registro
+     Codigo: N(10)
+     Nombre: AN (30)
+     PrecioOferta: N (6)
+     PorcDesc: N(2,2)
+     prox: puntero a Descuentos
+     ant: puntero a Descuentos
+     fin registro
+
+ q, prim1, ult1: Puntero a Descuentos
+
+ porcdesc, may_desc: real
+ mismorubro: booleano
+
+
+ PROCESO
+ Abrir E/(ArchProd)
+
+ p:= prim
+ prim1:= nil
+ ult1:= nil
+ may_desc:= 0
+
+ Mientras p <> nil hacer
+
+     *p.Codigo:= Reg.Codigo
+     Leer (ArchProd, Reg)
+
+     Si existe entonces
+         rubro:= Reg.Rubro
+
+         mismorubro:= verdadero
+         may_desc:= 0
+         porcentaje:=0
+
+         Mientras mismorubro hacer
+
+             //recorrer productos del mismo rubro y comparar el porcentaje de descuentos
+             *p.Codigo:= Reg.Codigo
+             Leer (ArchProd, Reg)
+
+             Si existe entonces
+
+                 Si rubro <> Reg.Rubro
+                     mismorubro:= falso
+                 Sino
+                 porcdesc:= (100 - (*p.PrecioOferta * 100) / Reg.Precio))
+
+                 Si porcdesc > may_desc
+                 ////acá resguarde el puntero p que seria el que mayor descuentos tiene de un rubro.
+                     desc:= p
+                     nombre:=Reg.Nombre
+                     may_desc:= porcdesc
+                 Fin Si
+             Fin Si
+             p=*p.prox
+         Fin Mientras
+
+     //Cargo este producto en la nueva lista doble 'descuentos'
+     Si prim1 = nil entonces
+         nuevo (q)
+         *q.Codigo:= *desc.Codigo
+         *q.Nombre:=nombre
+         *q.PrecioOferta:= *desc.Ofertas
+         *q.PorcDesc:= may_desc
+
+         *q.prox:= nil
+         *q.ant:= nil
+         prim1:= q
+         ult1:= q
+
+     Sino
+         nuevo (q)
+         *q.Codigo:= *desc.Codigo
+         *q.Nombre:=nombre
+         *q.PrecioOferta:= *desc.Ofertas
+         *q.PorcDesc:= may_desc
+
+         *ult1.prox:=q
+         *q.ant:= ult1
+         *q.prox:= nil
+         ult1:=q
+     Fin Si
+
+ p:=*p.prox
+ Fin Mientras
+
+ FIN ACCIÓN

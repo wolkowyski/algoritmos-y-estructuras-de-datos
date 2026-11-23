@@ -1,0 +1,73 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de TP 4 (Listas) - Ejercicio 4.9 - resolución compartida en Discord
+// ==========================================================================
+
+Dada una lista circular de 8 elementos que contienen, cada uno, un valor numérico entero para encriptación,
+ encriptar un texto ingresado por teclado (arreglo de caracteres de 255 elementos como máximo). El texto
+ encriptado debe almacenarse en una lista de salida simplemente encadenada y, por último mostrar por
+ pantalla.
+
+ENCRIPTAR
+
+|Multiplicador N(5)|Prox Puntero|
+La encriptación se realiza según las siguientes pautas:
+
+Dada la posición del carácter dentro del texto, buscar en la lista circular de encriptación el
+multiplicador correspondiente, de acuerdo a su posición lógica en la lista. Por ejemplo: como solo hay 8
+multiplicadores, si se ingresa un arreglo de 10 caracteres, para encriptar los ultimos dos se utilizarían
+ multiplicadores 1 y 2.
+
+Se usa la función ASCII(Carácter) para convertir cada carácter del arreglo en un entero.
+Luego se lo multiplican los valores obtenidos en los 2 pasos anteriores.
+
+Por último se descompone el resultado obtenido en 3 en cada uno de sus dígitos, se los suma y se guarda en
+ la lista de salida. Ej: si en el paso 3 me dio 123, 1+2+3=6.
+
+ACCION 4.9 ES(prim1:puntero a NODO,  texto: arreglo [255] de caracteres )
+AMBIENTE
+NODO1 = registro
+    Multiplicador:N(5)
+    prox:puntero a NODO
+FIN_REGISTRO
+p1:puntero a NODO
+
+NODO2 = registro
+    numero:entero
+    prox:puntero a NODO
+FIN_REGISTRO
+prim2,p2,a2
+encriptado,multiplicacion,i: entero
+
+FUNCION Suma(a:entero):entero
+    AMBIENTE
+        b:entero
+    ALGORITMO
+        b:=0
+        MIENTRAS a >= 10 HACER
+            b:= b + (a MOD 10)
+            a:= a DIV 10
+        FIN_MIENTRAS
+        Suma:= a + b
+FIN_FUNCION
+
+ALGORITMO
+prim2:=nil
+i:=1
+p1:prim1
+MIENTRAS texto[i] <> "" HACER
+    multiplicacion:= *p1.Multiplicador * ASCII(texto[i])
+    NUEVO(p2)
+    SI prim2 = nil ENTONCES
+        *p2.numero:= Suma(multiplicacion)
+        prim2:= p2
+        a2:= p2
+    SINO
+        *p2.numero:= Suma(multiplicacion)
+        *a2.prox:= p2
+        a2:=p2
+    FIN_SI
+    p1:=*p1.prox
+    i:=i+1
+FIN_MIENTRAS
+FIN_ACCION

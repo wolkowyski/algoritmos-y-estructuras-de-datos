@@ -1,0 +1,23 @@
+ACCION_43_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo = registro de
+            num: entero
+            prox: puntero a nodo
+        FR
+        p: puntero a nodo
+        par, impar: entero
+    PROCESO
+        Impar:= 0
+        Par := 0
+        p:= prim
+        Mientras (p<> Nil) hacer
+            Si (*p.num mod 2 = 0) entonces
+                par:= par + *p.num
+            Sino
+                impar:= impar + *p.num                
+            FS
+            p:= *p.prox
+        FM
+        ESC("Pares: ",par)
+        ESC("Impares: ",impar)
+FA

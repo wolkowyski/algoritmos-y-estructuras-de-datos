@@ -1,0 +1,131 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Laboratorio de C (2023) - Tema 3: votación electrónica - Pseudocódigo
+//  Trabajo grupal "Los Chimichurris". El código en C está en tema-3.c
+// ==========================================================================
+
+Acción Tema3 es
+	Ambiente
+
+		i, j: entero
+		cant_votantes: entero
+		voto, voto_error: N(1)
+
+		EstructuraArreglo = Registro
+			Nombre: AN(30)
+			Cant_Votos: N(4)
+		FinRegistro
+
+		Candidatos: arreglo de [1..5] de EstructuraArreglo // Utilizamos un arreglo de 5 elementos en el cual guardamos el nombre del candidato con su total de votos
+		CantidadCandidatos = (1,2,3,4,5)
+		MenuOpciones = (1,2,3)
+
+		Procedimiento Carga_Arreglo es
+			Escribir("--------------------------------------------------------------------------------------------")
+			Escribir("- CARGA DE ARREGLO -")
+			Escribir("--------------------------------------------------------------------------------------------")
+			Escribir("Bienvenido, usted ha seleccionado la opción número 1")
+			Escribir("Por favor, ingrese el nombre de c/u de los candidatos para la votación")
+			Para i:= 1 a 5 hacer
+				Escribir("Ingrese el candidato número: ", i)
+				Leer(Candidatos[i].Nombre)
+			FinPara
+			Para i:= 1 a 5 hacer // Inicializo la cantidad de votos para cada candidato
+				Candidatos[i].Cant_Votos:= 0
+			FinPara
+		FinProcedimiento
+
+		Procedimiento Mensaje_Bienvenida es // Mensaje de Bienvenida
+			Escribir("--------------------------------------------------------------------------------------------")
+			Escribir("- VOTACION ELECTRÓNICA -")
+			Escribir("--------------------------------------------------------------------------------------------")
+			Escribir("Bienvenido, usted ha seleccionado la opción número 2")
+			Escribir("Nuestra empresa presenta una vacante en el cargo de gerente del departamento Innovación y existen 5 posibles aspirantes a cubrir dicho cargo, todos en igualdad de antecedentes")
+			Escribir("Usted ha sido convocado/a para elgir a tu futuro jefe mediante nuestro nuevo sistema de sufragio electrónico")
+			Escribir("Los candidatos en esta ocasión son:")
+			Para i:= 1 a 5 hacer // Muestro por pantalla los 5 candidatos
+				Escribir(Candidatos[i].Nombre)
+			FinPara
+		FinProcedimiento
+
+		Procedimiento Votacion es
+			Mensaje_Bienvenida()
+			Escribir("¿A quién decide votar? (Elija entre 1-5)")
+			Leer(voto)
+			Si (voto) en CantidadCandidatos entonces // Verificamos que la opcion elegida sea correcta
+				Candidatos[voto].Cant_Votos:= Candidatos[voto].Cant_Votos + 1
+				Escribir("Muchisimas gracias, su voto fue registrado de manera exitosa")
+				cant_votantes:= cant_votantes + 1 // Contador adicional
+			SiNo
+				Repetir
+					Escribir("Error, el candidato número: ", voto, " no existe") // Si la opcion es erronea mostramos un aviso
+					Escribir("Vuelva a ingresarlo")
+					Leer(voto_error)
+				Hasta que: (voto_error) <> CantidadCandidatos
+				Candidatos[voto_error].Cant_Votos:= Candidatos[voto_error].Cant_Votos + 1 //
+				Escribir("Muchisimas gracias, su voto fue registrado de manera exitosa")
+				cant_votantes:= cant_votantes + 1 // contador adicional
+			FinSi
+		FinProcedimiento
+
+		Procedimiento Ranking es
+			Para i:= 1 Hasta 4 hacer // Ordenamiento de Arreglo (Mayor a Menor)
+       			x:= Candidatos[i].Cant_Votos
+       			max:= i
+        		Para j:= i + 1 Hasta 5 hacer
+            		Si (x) < (Candidatos[j].Cant_Votos) entonces
+               			max:= j
+                		x:= Candidatos[j].Cant_Votos
+            		FinSi
+				FinPara
+        		temp:= Candidatos[max]
+        		Candidatos[max]:= Candidatos[i]
+        		Candidatos[i]:= temp
+    		FinPara
+
+
+			Para i:= 1 a 5 // Escribo el Ranking
+				Escribir("--------------------------------------------------------------------------------------------")
+				Escribir("- RANKING DE GANADORES -")
+				Escribir("--------------------------------------------------------------------------------------------")
+				Escribir(Candidatos[i].Nombre)
+				Escribir(Candidatos[i].Cant_Votos)
+			FinPara
+			Escribir("- CANDIDATO MAS VOTADO -")
+			Escribir("El candidato con más votos fue: ", Candidatos[1].Nombre, " con un total de: ", Candidatos[1].Cant_Votos)
+			Escribir("Cantidad total de votos registrados: ", cant_votantes)
+		FinProcedimiento
+
+	Proceso
+		Escribir("--------------------------------------------------------------------------------------------")
+		Escribir("Bienvenido/a a SCAM")
+		Escribir("--------------------------------------------------------------------------------------------")
+
+		Repetir
+			Escribir("- MENU DE OPCIONES -")
+			Escribir("¿Qué operación desea realizar?")
+			Escribir("1- Cargar los candidatos para la votación       |     2- Comenzar con la votación        |        3- Salir")
+			Leer(Menu_op)
+
+			Si (Menu_op) en MenuOpciones entonces
+				Segun (Menu_op) hacer
+					"1": Carga_Arreglo()
+					"2": Votacion()
+					"3": Salida()
+				FinSegun
+			SiNo
+				Escribir("Error, opción incorrecta")
+			FinSi
+		Hasta que: (Menu_op) = "3"
+
+		Escribir("Votación Finalizada")
+		Ranking()
+
+		Escribir("--------------------------------------------------------------------------------------------")
+
+		Escribir("Facultad Regional Resistencia - Universidad Tecnológica Nacional")
+		Escribir("Algoritmos y Estructuras de Datos - Tema 3")
+		Escribir("Programa hecho por: LOS CHIMICHURRIS")
+
+		Escribir("--------------------------------------------------------------------------------------------")
+FinAcción

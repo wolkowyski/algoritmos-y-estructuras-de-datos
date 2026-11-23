@@ -1,0 +1,242 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Final 14
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Final4(sec:secuencia de caracter) es
+
+ Ambiente
+
+  s:caracter;
+
+  Compras=Registro
+   codigo:arreglo (1..50) de entero;
+   cant:N(5);
+   nula:N(5);
+   deseable:N(5);
+   prox:puntero a Compras;
+  finRegistro
+
+  p,q,Prim: puntero a Compras;
+
+  res_edad,cant_n,edades,i:entero;
+
+  Funcion convertir(s:caracter):entero
+   Segun s hacer
+    "0": convertir:=0;
+    "1": convertir:=1;
+    "2": convertir:=2;
+    "3": convertir:=3;
+    "4": convertir:=4;
+    "5": convertir:=5;
+    "6": convertir:=6;
+    "7": convertir:=7;
+    "8": convertir:=8;
+    "9": convertir:=9;
+   finSegun
+  finFuncion
+
+  Procedimiento Nuevo_elemento es
+   *q.cant:=1;
+   Si s="D" entonces
+    *q.deseable:=1;
+    *q.nula:=0;
+    Sino
+     Si s="N" entonces
+      *q.nula:=1;
+      *q.deseable:=0;
+      Sino
+       *q.nula:=0;
+       *q.deseable:=0;
+      finSino
+     finsi
+    finSino
+   finsi
+  finProcedimiento
+
+
+
+
+ Algoritmo
+
+  ARR(sec);
+  AVZ(sec,s);
+  Prim:=nil;
+  edades:=0;
+  cant_n:=0;
+
+  Mientras NFDS(sec) hacer
+   res_edad:=0;
+   Para i:=1 hasta 7 hacer
+    AVZ(sec,s);
+   finPara
+
+   res_edad:=convertir(s)*10;
+   AVZ(sec,s);
+   res_edad:=res_edad+convertir(s);
+   AVZ(sec,s);
+   Nuevo(q);
+   i:=1;
+   Mientras s<> "-" hacer
+    *q.codigo(i):=s;
+    i:=i+1;
+   finMientras
+   AVZ(sec,s);
+   Si Prim=nil entonces
+    Prim:=q;
+    *q.prox:=nil;
+    Nuevo_elemento;
+    Sino
+     p:=Prim;
+     Mientras *p.codigo <> *q.codigo y p<>nil hacer
+      p:=*p.prox;
+     finMientras
+     Si p=nil entonces
+      Nuevo_elemento;
+      *q.prox:=Prim;
+      Prim:=q;
+      Sino
+       Disponer(q);
+       *p.cant:=*p.cant+1;
+       Si s="D" entonces
+        *p.deseable:=*p.deseable+1;
+        Sino
+         Si s="N" entonces
+          *p.nula:=*p.nula+1;
+         finsi
+        finSino
+       finsi
+      finSino
+     finsi
+    finSino
+   finsi
+   Si s="N" entonces
+    cant_n:=cant_n+1;
+    edades:=edades+res_edad;
+   finsi
+   AVZ(sec,s);
+  finMientras
+
+  Escribir("El promedio de edad de los clientes que han indicado preferencias del tipo nula es: ", edades DIV cant_n);
+
+  p:=Prim;
+
+  Mientras p<>nil hacer
+   Si *p.nula>*p.deseable entonces
+    Escribir("El producto cuyo código es :");
+    Para i:=1 hasta 50 hacer
+     Escribir(*p.codigo(i));
+    finPara
+    Escribir(" ha registrado mayor cantidad de preferencia nula que deseable");
+   finsi
+   p:=*p.prox;
+  finMientras
+
+
+
+ Cerrar(sec);
+finAccion
+
+
+Accion corte_Final es
+ Ambiente
+
+  Control=Registro
+   Site:AN(10);
+   Area:N(5);
+   Version:{"W","M"};
+   Integrantes:[3..6];
+   tickets:N(3);
+   estado:{"F","E"};
+  finRegistro
+
+  Archc: Archivo de Control ordenado por Site, Area, Version;
+  c:Control;
+
+  SiTo=Registro
+   Site:AN(10);
+   tickets:N(9);
+  finRegistro
+
+  ArchS: Archivo de SiTo ordenado por Site;
+  s:SiTo;
+
+
+  res_version: {"W","M"};
+  res_are: N(5);
+  res_site:AN(10);
+
+  cant_version, cant_area, cant_site, total: entero;
+
+
+  Procedimiento corte_version es
+   Escribir("La cantidad de informes resueltos de todos los proyectos de equipos de más de cuatro integrantes que no estén finalizados cuya versión es ", res_version, " en el area ", res_area, " en el site ", res_site, " es: ", cant_version);
+   cant_area:=cant_area+cant_version;
+   cant_version:=0;
+   res_version:=c.version;
+  finProcedimiento
+
+  Procedimiento corte_area es
+   corte_version;
+   Escribir("La cantidad de informes resueltos de todos los proyectos de equipos de más de cuatro integrantes que no estén finalizados en el area ", res_area, " en el site ", res_site, " es: ", cant_area);
+   cant_site:=cant_site+cant_area;
+   cant_area:=0;
+   res_area:=c.area;
+  finProcedimiento
+
+  Procedimiento corte_site es
+   corte_area;
+   Escribir("La cantidad de informes resueltos de todos los proyectos de equipos de más de cuatro integrantes que no estén finalizados en el site ", res_site, " es: ", cant_site);
+   total:=cant_site+total;
+   s.site:=res_site;
+   s.tickets:= cant_site;
+   Escribir(Archs,s);
+   cant_site:=0;
+   res_site:=c.site;
+  finProcedimiento
+
+ Algoritmo
+
+  Abrir E/(Archc);
+  Abrir /S(Archs);
+
+  Leer(Archc,c);
+
+  res_version:=c.version;
+  res_area:=c.area;
+  res_site:=c.site;
+  cant_version:=0;
+  cant_area:=0;
+  cant_site:=0;
+  total:=0;
+
+  Mientras NFDA(Archc) hacer
+   Si res_site<> c.site entonces
+    corte_site;
+    Sino
+     Si res_area <> c.area entonces
+      corte_area;
+      Sino
+       Si res_version<>c.version entonces
+        corte_version;
+       finsi
+      finSino
+     finsi
+    finSino
+   finsi
+
+   Si c.integrantes>4 entonces
+    Si c.estado = "E" entonces
+     cant_version:=cant_version+1;
+    finsi
+   finsi
+
+   Leer(Archc,c);
+  finMientras
+  corte_site;
+
+  Cerrar(Archc);
+  Cerrar(Archs);
+
+finAccion

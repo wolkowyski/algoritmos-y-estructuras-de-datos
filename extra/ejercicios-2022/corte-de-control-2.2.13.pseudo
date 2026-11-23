@@ -1,0 +1,127 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Un Casino de la región ha notado un incremento en los costos de las reparaciones de tragamonedas en sus sucursales. Por ello solicitó un informe con la cantidad de reparaciones y sus costos, discriminados según tragamonedas, modelo, marca, sucursal y total general.
+
+Se dispone de un archivo REPARACIONES, con el siguiente formato. Cada registro representa la reparación de un tragamonedas, tener en cuenta que puede existir más de una reparación por tragamonedas.
+
+REPARACIONES Ordenado por Cod_Sucursal, Marca, Modelo, Cod_Tragamonedas
+
+Cod_Sucursal | Marca | Modelo | Cod_Tragamonedas | Fecha_Reparacion | Costo_Reparacion
+
+Realice el algoritmo para emitir el informe con los totales solicitados.
+
+
+______________________________________________________________________________________________________________
+
+ACCION casinoReparaciones ES
+
+	AMBIENTE
+
+		TIPOS
+
+			Fecha = REGISTRO;
+				aa: 2000..2022;
+				mm: 1..12;
+				dd: 1..31;
+			FIN REGISTRO;
+
+			Reparacion = REGISTRO
+				cod_suc: N(5);
+				marca: AN(20);
+				mod: AN(10);
+				cod_trag: N(8);
+				fecha_rep: Fecha;
+				costo_rep: N(5);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			reparaciones: Archivo de Reparacion ordenado por cod_suc, marca, mod y cod_trag;
+			r: Reparacion;
+			p_trag, p_marc, p_mod, p_suc, p_tot: entero;
+			resTrag: N(8); resMod: AN(10); resMarca: AN(20); resSuc: N(5);
+
+			PROCEDIMIENTO corteTrag()
+				ESC('Sucursal: ', resSuc, ' | Marca: ', resMarca, ' | Modelo: ', resMod, ' | Total de tragamonedas Nº: ', resTrag);
+				ESC('Total en reparaciones: $', p_trag);
+				p_mod := p_mod + p_trag;
+				p_trag := 0;
+				resTrag := r.cod_trag;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteMod()
+				corteTrag();
+				ESC('Sucursal: ', resSuc, ' | Marca: ', resMarca, ' | Total modelo: ', resMod);
+				ESC('Total en reparaciones: $', p_mod);
+				p_marc := p_marc + p_mod;
+				p_mod := 0;
+				resMod := r.mod;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteMarca()
+				corteMod();
+				ESC('Sucursal: ', resSuc, ' | Total marca: ', resMarca);
+				ESC('Total en reparaciones: $', p_marc);
+				p_suc := p_suc + p_marc;
+				p_marc := 0;
+				resMarca := r.marca;
+			FIN PROCEDIMIENO;
+
+			PROCEDIMIENTO corteSuc()
+				corteMarca();
+				ESC('Total Sucursal: ', resSuc);
+				ESC('Total en reparaciones: $', p_suc);
+				p_tot := p_tot + p_suc;
+				p_suc := 0;
+				resSuc := r.cod_suc;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (r.cod_suc <> resSuc) ENTONCES
+					corteSuc();
+				SINO SI (r.marca <> resMarca) ENTONCES
+						corteMarca();
+					SINO SI (r.mod <> resMod) ENTONCES
+							corteMod();
+						SINO SI (r.cod_trag <> resTrag) ENTONCES
+								corteTrag();
+							FIN SI;
+						FIN SI;
+					FIN SI;
+				FIN SI;
+				tratarRegistro();
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				p_trag := p_trag + r.costo_rep;
+				LEER(reparaciones, r);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotal()
+				corteSuc();
+				ESC('Total en reparaciones de todas las sucursales: $', p_tot);
+				CERRAR(reparaciones);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				p_trag := 0; p_marc := 0; p_mod := 0; p_suc := 0; p_tot := 0;
+				ABRIR E/(reparaciones);
+				LEER(reparaciones, r);
+				resTrag := r.cod_trag; resMarca := r.marca;
+				resMod := r.mod; resSuc := r.cod_suc;
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+
+		inicializarDatos();
+
+		MIENTRAS NO FDA(reparaciones) HACER
+			tratarCorte();
+		FIN MIENTRAS;
+
+		emitirTotal();
+
+FIN ACCION;
+
+//Petrovich, Julio E.

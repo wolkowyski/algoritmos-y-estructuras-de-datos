@@ -1,0 +1,92 @@
+ACCION_239_ES
+    AMBIENTE
+        FECHA = Registro de 
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FR
+
+        reg1 = Registro de
+            ClienteID: N(10)
+            Clie_nom: AN(50)
+            Clie_CUIT: N(12)
+            Clie_Saldo:N(5)
+        FR
+        Clientes: Archivo de reg1 indeaxdo por ClienteID
+        Cl:reg1
+
+        reg2 = Registro de
+            Nro_op: N(10)
+            Fecha_op: FECHA
+            ClienteID: N(10)
+            Importe: N(8)
+            Factura: N(10)
+        FR
+        Det_Clientes: Archivo de reg2 indexado por Nro_op
+        DCl: reg2
+
+        reg3 = Registro de
+            Venta_num: N(10)
+            Venta_fecha: FECHA
+            Factura: N(10)
+            ProductoID: N(10)
+            Cant_vendida: N(8)
+            ClienteID: N(10)
+        FR
+        Ventas: Archivo de reg3 ordenado por Venta_num
+        V: reg3
+
+        reg4 = Registro de
+            ProductoID: N(10)
+            Stock: N(10)
+            Prod_Det: AN(50)
+            Costo_unit: N(5)
+        FR
+        Productos: Archivo de reg4 indecado por ProductoID
+        P: reg4
+
+        totprod: Entero
+        Importe: Real  
+
+    PROCESO
+        ABRIR E/S(Clientes)
+        ABRIR E/S(Productos)
+        ABRIR E/ (Ventas)
+        ABRIR /S (Det_Clientes)
+        Leer(Ventas, V)
+        totprod:= 0
+        Mientras NFDA(Ventas) hacer
+            Cl.ClienteID:= V.ClienteID
+            Leer(Clientes, Cl)
+            Si no EXISTE entonces
+                ESC("No se ha encontrado el cliente")
+            sino
+                P.ProductoID:= V.ProductoID
+                Leer(Productos, P)
+                Si no EXISTE entonces
+                    ESC("Producto no encontrado")
+                sino
+                    DCl.Nro_op:=V.Venta_num
+                    DCl.Fecha_op:= V.Venta_fecha
+                    DCl.ClienteID:= V.ClienteID
+                    Importe:= V.Cant_vendida * P.Costo_unit
+                    DCl.Importe:= Importe
+                    DCl.Factura:= V.Factura
+                    Grabar(Det_Clientes, DCl)
+                    P.Stock:= P.Stock - V.Cant_vendida
+                    Regrabar(Producto, P)
+                    Cl.Clie_Saldo:= Clie_Saldo - Importe
+                    Regrabar(Clientes, Cl)
+                    totprod:= totprod + V.Cant_vendida
+
+                    ESC("Cliente: ", Cl.Clie_nom," Saldo:", Cl.Clie_Saldo)
+                FS
+            FS
+            Leer(Ventas, V)
+        FM
+        ESC("Total de prodcutos vendidos: ",totprod)
+        Cerrar(Cliente)
+        Cerrar(Det_Clientes)
+        Cerrar(Producto)
+        Cerrar(Ventas)
+FA

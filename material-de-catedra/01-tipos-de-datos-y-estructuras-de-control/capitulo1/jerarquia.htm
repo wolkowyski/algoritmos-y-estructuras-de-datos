@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Jerarquia de Operadores</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+
+    <h4>Precedencia de Operadores</h4>
+    <p class=entrada>Cuando una expresi&oacute;n aritm&eacute;tica se eval&uacute;a, el resultado es un n&uacute;mero.&nbsp;Ahora bien, cuando aparecen dos o mas expresiones aritm&eacute;ticas, qu&eacute; operaciones se realizan primero?
+    <p>Una expresi&oacute;n aritm&eacute;tica en programaci&oacute;n tiene una sintaxis de la forma:<br><code style="color: gray; font-weight: Cursiva;text-align: center;">x<sup>2</sup>+1/2</code>
+    <p>Hay que observar que esta expresi&oacute;n es totalmente diferente a esta otra <code style="color: gray; font-weigth: Italic;">(x<sup>2</sup>+1)/2</code>, por lo que es importante <a href="fases.htm" class="cambio" title="fases para resolucion">codificar</a> las expresiones aritm&eacute;ticas correctamente.
+    <p>Para realizar esto se deber&aacute;n conocer las reglas de evaluaci&oacute;n de los operadores, que se estudian a continuaci&oacute;n.
+    <h5>Reglas de Evaluaci&oacute;n</h5>
+     <ul>
+      <li>Todas las subexpresiones entre parentesis se eval&uacute;n primero.&nbsp;Las subexpresiones entre parentesis anidados se eval&uacute;an de adentro hacia afuera, es decir, que el parentesis mas interno se eval&uacute;a primero.
+      <li><em style="font-weight: bold; color: blue;">Prioridad de Operaciones:</em>&nbsp;Dentro de una misma expresi&oacute;n o subexpresi&oacute;n, los operadores se eval&uacute;an en el siguiente orden:
+
+      <table width=400 CLASS="tabla">
+         <tr><td width=100 align=center>* , /</td><td width=300>Multiplicaci&oacute;n y divisi&oacute;n</td></tr>
+         <tr><td width=100 align=center>div,mod</td><td width=300>Divisi&oacute;n y Modulo de enteros</td></td>
+         <tr><td width=100 align=center>+,-</td><td width=400>Suma y Resta</td></tr></table>
+    
+      <li>Los operadores en una misma expresi&oacute;n o subexpresi&oacute;n con igual nivel de prioridad se eval&uacute;n de izquierda a derecha</ul>
+      <h5>Escritura de F&oacute;rmulas</h5>
+      <p>Las f&oacute;rmulas matematicas se deben escribir en formato lineal.&nbsp;Esto obliga al uso frecuente de parentesis que indiquen el orden de evaluaci&oacute;n correcto de las operaciones.
+      <p>Por ejemplo, si deseamos <A HREF="fases.htm" CLASS="cambio" title="fases para resolucion">codificar</A> la f&oacute;rmula de Vieta, tendr&iacute;amos que escribirla as&iacute;:
+      <P CLASS="codigo">Vamos a escribir el dato solo del valor positivo<br>
+       (-b+<STRONG>raiz</STRONG>(b*b-4*a*c))/(2*a)<br>Donde a,b,c son numeros reales.
+ 
+     <P STYLE="text-align:right;"><A HREF="operadores.htm" CLASS="cambio" title=operadores>Tipos de Operadores</A>&nbsp;&nbsp;<A HREF="tutor.htm" CLASS="cambio" title=indice>Indice</A>&nbsp;&nbsp;<A HREF="escritura.htm" CLASS="cambio" title=escritura>Escritura y Lectura de Datos</A></p>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+      
+     </body>
+   </html>

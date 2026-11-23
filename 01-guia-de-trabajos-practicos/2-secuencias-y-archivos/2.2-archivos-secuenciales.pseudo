@@ -1,0 +1,314 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+// ==========================================================================
+
+Ejercicio 2.2.1
+Se dispone de una secuencia con los datos de los alumnos de la facultad:
+
+Apellido y Nombre
+Carrera (ISI - IEM - IQ)
+Nº de Legajo
+Fecha de Nacimiento
+Fecha de Ingreso
+D.N.I.
+Sexo (M o F)
+Fecha de último examen aprobado
+Nota
+Se desea un listado de los mismos, con el siguiente formato:
+
+Nro_Legajo - Apellido_Nombre - Documento - Carrera
+
+
+Accion Ejercicio2_2_1 es
+Ambiente // Ambiente
+
+Fecha = Registro
+	dd: 1..31
+	mm: 1..12
+	aa: 1900..2023
+FinRegistro
+
+Datos = Registro
+	Apellido_Nombre: AF(30,20)
+	Carrera: ("ISI","IEM","IQ")
+	Nro_Legajo: N(5)
+	FechaNacimiento: Fecha
+	FechaIngreso: Fecha
+	Documento: N(8)
+	Sexo: ("M","F")
+	FechaExamen: Fecha
+	Nota: 1..10
+FinRegistro
+
+ArchFacultad: Archivo de Datos ordenado por Apellido y Nombre
+RegFacultad: Datos
+
+Proceso //Proceso
+	Abrir E/ (ArchFacultad)
+	Leer (ArchFacultad, RegFacultad) // lectura anticipada: antes de preguntar por FDA
+	Mientras No FDA(ArchFacultad) hacer
+		// Una línea por alumno con el formato pedido
+		Escribir(RegFacultad.Nro_Legajo, " - ", RegFacultad.Apellido_Nombre, " - ", RegFacultad.Documento, " - ", RegFacultad.Carrera)
+		Leer(ArchFacultad, RegFacultad)
+	FinMientras
+	Cerrar(ArchFacultad)
+Fin Acción
+
+
+
+
+Ejercicio 2.2.2
+Se dispone de una secuencia de facturas con los siguientes datos:
+
+Nº de Factura
+Fecha
+Total
+Se desea un listado de las facturas cuyas fechas sean posteriores a una fecha dada, y cuyos importes totales no alcancen los $1000, con el siguiente formato:
+Nro_Factura - Fecha - Importe_Total
+
+Accion Ejercicio2_2_2 es
+Ambiente //Ambiente
+
+Fecha = Registro
+	aa: N(4)
+	mm: 1..12
+	dd: 1..31
+FinRegistro
+
+Facturas = Registro
+	Nro_Factura: N(20)
+	FechaFact: Fecha
+	Importe_Total: N(6,2)
+FinRegistro
+
+ArchFacturas: Archivo de Facturas
+RegFacturas: Facturas
+FechaUsuario: Fecha //fecha ingresada
+fecha_dada, fecha_fact: N(8)
+
+Proceso //Proceso
+	Abrir E/(ArchFacturas)
+	Leer(ArchFacturas, RegFacturas)
+	Escribir("Ingrese una fecha con el formato A/M/D")
+	Leer(FechaUsuario.aa, FechaUsuario.mm, FechaUsuario.dd) // respeta la estructura del registro de fecha
+	fecha_dada:= FechaUsuario.aa * 10000 + FechaUsuario.mm * 100 + FechaUsuario.dd
+	Mientras No FDA(ArchFacturas) hacer
+		// Dos registros no se comparan directamente: paso cada fecha a un número aaaammdd
+		fecha_fact:= RegFacturas.FechaFact.aa * 10000 + RegFacturas.FechaFact.mm * 100 + RegFacturas.FechaFact.dd
+		Si (RegFacturas.Importe_Total < 1000) ^ (fecha_fact > fecha_dada) entonces
+			Escribir(RegFacturas.Nro_Factura, " - ", RegFacturas.FechaFact.dd, "/", RegFacturas.FechaFact.mm, "/", RegFacturas.FechaFact.aa, " - ", RegFacturas.Importe_Total)
+		FinSi
+		Leer(ArchFacturas, RegFacturas)
+	FinMientras
+	Cerrar(ArchFacturas)
+Fin Acción
+
+
+
+Ejercicio 2.2.3
+Dada la siguiente secuencia de datos con el siguiente formato:
+
+Nº de socio
+Nº de teléfono
+Apellido y Nombre
+Carrera (ISI - IEM - IQ - LAR)
+Domicilio
+Cantidad de unidades prestadas
+Correspondiente a los alumnos socios de la Biblioteca, generar la secuencia de los alumnos de “ISI” que tengan prestadas más de 4 unidades bibliográficas.
+
+Accion Ejercicio2_2_3 es
+Ambiente
+
+Biblioteca = Registro
+	Nro_Socio: N(6)
+	Nro_Tel: N(9)
+	Apellido_Nombre: AN(30,20)
+	Carrera: ("ISI","IEM","IQ","LAR")
+	Domicilio: AN(30)
+	Unidades_Prestadas: N(2)
+FinRegistro
+
+ArchBiblio, ArchSocios: Archivo de Biblioteca
+RegBiblio, RegSocios: Biblioteca
+
+Proceso
+	Abrir E/(ArchBiblio)
+	Leer E/(ArchBiblio, RegBiblio)
+	Abrir /S(ArchSocios)
+	Mientras No FDA(ArchBiblio) hacer
+		Si ( (RegBiblio.Carrera) = "ISI" ^ (RegBiblio.Unidades_Prestadas) > 4 ) entonces
+			RegSocios:= RegBiblio
+			Escribir(ArchSocios, RegSocios)
+		FinSi
+		Leer(ArchBiblio, RegBiblio)
+	FinMientras
+	Cerrar(ArchBiblio)
+	Cerrar(ArchSocios)
+Fin	Acción
+
+
+
+Ejercicio 2.2.4
+A partir de la secuencia del ejercicio 2.2.1 se desea generar otra secuencia con los alumnos de una carrera dada que aprobaron alguna materia este año, con nota mayor a 7 (siete).
+
+Accion Ejercicio2_2_4 es
+Ambiente // Ambiente
+
+Fecha = Registro
+	dd: 1..31
+	mm: 1..12
+	aa: 1900..2023
+FinRegistro
+
+Datos = Registro
+	Apellido_Nombre: AF(30,20)
+	Carrera: ("ISI","IEM","IQ")
+	Nro_Legajo: N(5)
+	FechaNacimiento: Fecha
+	FechaIngreso: Fecha
+	Documento: N(8)
+	Sexo: ("M","F")
+	FechaExamen: Fecha
+	Nota: 1..10
+FinRegistro
+
+ArchFacultad, ArchAlumnos7: Archivo de Datos ordenado por Apellido y Nombre
+RegFacultad, RegAlumnos7: Datos
+carrera_dada: ("ISI","IEM","IQ")
+anio_actual: N(4)
+
+Proceso //Proceso
+	Escribir("Ingrese la carrera y el año actual")
+	Leer(carrera_dada, anio_actual)
+	Abrir E/(ArchFacultad)
+	Leer(ArchFacultad, RegFacultad)
+	Abrir /S(ArchAlumnos7)
+	Mientras No FDA(ArchFacultad) hacer
+		// La carrera es la que ingresa el usuario y el examen tiene que ser de este año
+		Si (RegFacultad.Nota > 7) ^ (RegFacultad.Carrera = carrera_dada) ^ (RegFacultad.FechaExamen.aa = anio_actual) entonces
+			RegAlumnos7:= RegFacultad
+			Escribir(ArchAlumnos7, RegAlumnos7)
+		FinSi
+		Leer(ArchFacultad, RegFacultad)
+	FinMientras
+	Cerrar(ArchFacultad)
+	Cerrar(ArchAlumnos7)
+Fin Acción
+
+
+Ejercicio 2.2.5
+A partir de la secuencia del ejercicio 2.2.1 se desea generar un listado con los alumnos que aprobaron la última materia rendida con nota superior a 7, e ingresaron el año pasado, con el siguiente formato:
+
+Nro_Legajo - Apellido_Nombre - Carrera
+
+Accion Ejercicio2_2_5 es
+Ambiente
+
+Fecha = Registro
+	dd: 1..31
+	mm: 1..12
+	aa: 1900..2023
+FinRegistro
+
+Datos = Registro
+	Apellido_Nombre: AF(30,20)
+	Carrera: ("ISI","IEM","IQ")
+	Nro_Legajo: N(5)
+	FechaNacimiento: Fecha
+	FechaIngreso: Fecha
+	Documento: N(8)
+	Sexo: ("M","F")
+	FechaExamen: Fecha
+	Nota: 1..10
+FinRegistro
+
+ArchFacultad: Archivo de Datos ordenado por Apellido y Nombre
+RegFacultad: Datos
+anio_actual: N(4)
+
+Proceso
+	Escribir("Ingrese el año actual")
+	Leer(anio_actual)
+	Abrir E/(ArchFacultad)
+	Leer(ArchFacultad, RegFacultad)
+	Mientras No FDA(ArchFacultad) hacer
+		// Es un listado por pantalla, así que no hace falta un archivo de salida
+		Si (RegFacultad.Nota > 7) ^ (RegFacultad.FechaIngreso.aa = anio_actual - 1) entonces
+			Escribir(RegFacultad.Nro_Legajo, " - ", RegFacultad.Apellido_Nombre, " - ", RegFacultad.Carrera)
+		FinSi
+		Leer(ArchFacultad, RegFacultad)
+	FinMientras
+	Cerrar(ArchFacultad)
+Fin Acción
+
+
+
+
+
+
+
+
+Ejercicio 2.2.7
+Se dispone del padrón electoral. Generar: a) un archivo con los afiliados al
+partido "C" y b) un archivo con los empadronados de clase posterior a 1940.
+(El enunciado completo no quedó copiado; se reconstruyó a partir de la resolución.)
+
+Accion Ejercicio2_2_7 es
+Ambiente
+
+PadronElectoral = Registro
+	Nombre_Apellido: AN(60)
+	Clase: N(4)
+	DNI: N(8)
+	Dirección: AN(100)
+	Num_mesa: N(5)
+	Observaciones: AN(255)
+	Num_Circuito: N(4)
+	Partido: ("A", "B", "C", "D")
+FinRegistro
+
+ArchPadron: Archivo de PadronElectoral
+RegPadron: PadronElectoral
+
+
+AfiliadosC = Registro
+	Nombre_Apellido: AN(60)
+	DNI: N(8)
+	Dirección: AN(100)
+FinRegistro
+
+ArchAfiliadosC: Archivo de AfiliadosC //consigna a
+RegAfiliadosC: AfiliadosC
+
+ArchClase1940: Archivo de AfiliadosC //consigna b
+RegClase1940: AfiliadosC
+
+Proceso //Proceso
+	Abrir E/(ArchPadron)
+	Leer E/(ArchPadron, RegPadron)
+	Abrir /S(ArchAfiliadosC) //consigna a
+	Abrir /S(ArchClase1940) //consigna b
+	Mientras No FDA(ArchPadron) hacer
+		Si RegPadron.Partido = "C" entonces // consigna a
+			RegAfiliadosC.Nombre_Apellido:= RegPadron.Nombre_Apellido
+			RegAfiliadosC.DNI:= RegPadron.DNI
+			RegAfiliadosC.Dirección:= RegPadron.Dirección
+			Escribir(ArchAfiliadosC, RegAfiliadosC)
+		FinSi
+		// consigna b: va en un Si aparte (no en el Sino), porque un afiliado
+		// al partido C también puede ser de clase posterior a 1940
+		Si RegPadron.Clase > 1940 entonces
+			RegClase1940.Nombre_Apellido:= RegPadron.Nombre_Apellido
+			RegClase1940.DNI:= RegPadron.DNI
+			RegClase1940.Dirección:= RegPadron.Dirección
+			Escribir(ArchClase1940, RegClase1940)
+		FinSi
+		Leer(ArchPadron, RegPadron)
+	FinMientras
+	Cerrar(ArchPadron)
+	Cerrar(ArchAfiliadosC)
+	Cerrar(ArchClase1940)
+Fin Acción

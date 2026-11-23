@@ -1,0 +1,121 @@
+ACCION_2223_ES
+    AMBIENTE
+        Fecha = Registro de
+            AA: N(4)
+            MM: 1..12
+            DD: 1..31
+        FRegistro
+        Fechacomp, Auxfecha: Fecha
+
+        reg1 = Registro de
+            id_casa: N(4)
+            Fecha_Ult_Lectura: Fecha
+            Cant_Lectura: N(3)
+            Prom_Lecturas: N(8)
+            Tipo_cons: {"A", "B", "C"}
+        FRegistro
+        Cliente, Clientesal: Archivo de reg1
+        C, S: reg1
+
+        reg2 = Registro de 
+            id_casa: N(4)
+            Fecha_Medicion: Fecha
+            Consumo: N(8)
+        FRegistro
+        Mediciones: Archivo de reg2
+        M: reg2
+
+        Auxid, Contmediciones: Entero
+        Consumo: real
+
+        Procedimiento Leermae() es
+            Leer(Cliente, C)
+            Si FDA(Cliente) entonces
+                C.id_casa:= HV
+            FSi
+        FProced
+
+        Procedimiento Leermov() es
+            Leer(Mediciones, M)
+            Si FDA(Mediciones) entonces
+                M.id_casa:= HV
+            FSi
+        FProced
+
+        Procedimietno ALTA() es
+            Auxid:= M.id_casa
+            Contmediciones:= 0
+            Consumo:= 0
+            Mientras NFDA(Mediciones) y (M.Fecha_Medicion <= Fechacomp) y (Auxid = M.id_casa) Hacer
+                Auxfecha:=M.Fecha_Medicion
+                Consumo:= Consumo + M.Consumo
+                Contmediciones:= Contmediciones + 1
+                Leermov()
+            FMientras
+            S.id_casa:= Auxid
+            S.Fecha_Ult_Lectura:= Auxfecha
+            S.Cant_Lectura:= Contmediciones
+            S.Prom_Lecturas:= Consumo / Contmediciones
+            Si (S.Prom_Lecturas >= 40000) y (S.Prom_Lecturas > 20000) entonces
+                S.Tipo_cons:= "B"
+            Sino
+                Si (S.Prom_Lecturas >= 40000) entonces
+                    Sal.Tipo_cons:= "C"
+                Sino
+                    Sal.Tipo_cons:= "A"
+                FSi
+            FSi
+            Grabar(Clientesal, S)
+        FProced
+
+        Procedimietno MODIF() es
+            Contmediciones:= 0
+            Consumo:= 0
+            Mientras NFDA(Mediciones) y (M.Fecha_Medicion <= Fechacomp) y (Auxid = M.id_casa) Hacer
+                Auxfecha:=M.Fecha_Medicion
+                Consumo:= Consumo + M.Consumo
+                Contmediciones:= Contmediciones + 1
+                Leermov()
+            FMientras
+            S.id_casa:= C.id_casa
+            S.Fecha_Ult_Lectura:= Auxfecha
+            S.Cant_Lectura:= Contmediciones
+            S.Prom_Lecturas:= Consumo / Contmediciones
+            Si (S.Prom_Lecturas < 40000) y (S.Prom_Lecturas > 20000) entonces
+                S.Tipo_cons:= "B"
+            Sino
+                Si (S.Prom_Lecturas >= 40000) entonces
+                    Sal.Tipo_cons:= "C"
+                Sino
+                    Sal.Tipo_cons:= "A"
+                FSi
+            FSi
+            Grabar(Clientesal, S)
+            Leermae()
+        FProced
+
+    PROCESO
+        ABRIR E/ (Cliente)
+        ABRIR E/ (Mediciones)
+        ABRIR /S (Clientesal)
+        Leermae()
+        Leermov()
+        Fechacomp.AA:=2015
+        Fechacomp.MM:= 1
+        Fechacomp.DD:= 31
+        Mientras (C.id_casa <> HV) v (M.id_casa <> HV)
+            Si (C.id_casa < M.id_casa) entonces
+                ESC("Usuaria dado de baja")
+                Leermae()
+            Sino
+                Si (C.id_casa > M.id_casa) entonces
+                    ALTA()
+                Sino
+                    MODIF()
+                FSi
+            FSi
+        FMientras
+        Cerrar(Cliente)
+        Cerrar(Clientesal)
+        Cerrar(Mediciones)
+FA

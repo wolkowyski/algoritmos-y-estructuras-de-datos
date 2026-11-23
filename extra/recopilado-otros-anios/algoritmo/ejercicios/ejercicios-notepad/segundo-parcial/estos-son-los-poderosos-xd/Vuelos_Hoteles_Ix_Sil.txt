@@ -1,0 +1,132 @@
+accion es:
+ambiente
+   vuelo = registro {archivo indexado por codigo de vuelo, fecha_hora, asiento}
+      cod_vuelo: entero;
+	  fcha_hra = registro
+	     fecha: n(8);
+		 hora: n(4);
+	  fin registro
+	  asiento = registro
+	     nro_asto: n(3);
+		 pos_asto: ("v", "c", "p"); {posicion de asiento ventana, centro, pasillo }
+	  fin registro
+      cod_uso: ("l" , "c"); {libre, comprado}
+      costo: real;
+   fin registro
+   
+   hoteles = registro (archivo indexado por codigo de hotel,piso,habitacion)
+      cod_hotel: entero;
+	  piso: n(2);
+	  hab: n(3);
+	  tipo; ("s", "2", "3", "4", "a");
+	  desde: (0..8);
+	  hasta: (0..8);
+   fin registro
+   
+   arch_vuelo: archivo de vuelo; regv: vuelo;
+   arch_htel: archivo de hoteles; regh: hoteles;
+      
+  
+   fecha: n(8);
+   hora: n(4);
+   
+   hotel: entero; 
+   rta: ( 'S','N')
+   
+   
+   
+  Algoritmo
+ABRIR e/s (arch_vuelos)
+ABRIR e/s (arch_htel)  
+   	  
+   
+	  reg_v.cod_vuelo:= 123;
+	  esc( 'ingrese Fecha de vuelo')
+	  leer(fecha)
+	  regv.fcha_hra.fecha:=fecha;
+	  
+	  escribir("Ingrese la hora: ");
+	  leer(hora);
+	  regv.fcha_hra.hora:=hora
+	  regv.asiento := ' '
+	  
+	  leer(arch_vuelos,regv)
+	 
+	 
+	  Si existe entonces
+	     
+		 Mientras (regv.cod_vuelo=123) y(regv.fcha_hra.fecha=fecha) y (regv.fcha_hra.hora=hora)  hacer
+		  esc("Codigo de vuelo    Fecha    Hora    Asiento nro posicion     Costo")
+          esc (regv.cod_vuelo,regv.fcha_hra.fecha,regv.fcha_hra.hora,regv.asiento.nro_asto,regv.asiento.nro_pos,regv.costo)
+          
+		  esc('Desea reservar?'); 
+		  leer (rta)
+		  Si rta = 'S' entonces { ACA NOSE PORQUE ME DIJO QUE ENTRABA EN BUCLE...ESE NOMAS ERA EL ERROR,ALGO FALTA LEER :p}
+		    Si regv.cod_uso = 'L' entonces
+              regv.cog_uso:= 'C'
+			  re-esc(arch_vuelos,regv)
+			  HOTELES_RESERVAS
+			  COMPROBANTE
+			Sino
+			 esc(' El asiento ya ha sido reservado, elija otro por favor')
+             leer(arch_vuelos,regv)
+			Fin SI
+          sino
+		  leer(arch_vuelos,regv)
+		  Fin Si 
+		 Fin Mientras 
+	  Sino
+        esc (' El vuelo no existe')	  
+     Fin Si
+	
+Cerrar(arch_vuelos)
+Cerrar(archa_htel)
+
+Fin Accion
+
+
+		 
+Subaccion HOTELES_RESERVAS es      
+			
+      esc("Ingrese el codigo de hotel: ");
+	  leer(hotel);
+	  regh.cod_htel:= hotel;
+	  leer(arch_htel,regh);
+	  si existe entonces
+	  
+	     mientras (regh.cod_htel = hotel) hacer
+           esc("Codigo de hotel    Piso    Habitacion    Tipo    Desde   Hasta");
+           esc(regh.cod_htel    regh.piso    regh.hab    regh.tipo    regh.desde    regh.hasta);
+           esc('Desea reservar?'); 
+		   leer (rta)
+		   Si rta = 'S' entonces 
+			   si ((regh.desde = 0) ^ (regh.hast = 0)) entonces
+		         esc("Ingrese desde que fecha sera la estadia: ");
+                 leer(regh.desde);
+                 esc("Ingrese hasta que fecha sera la estadia: ");
+                 leer(regh.hasta);	 
+		         grabar(arch_htel,regh);
+		       SINO
+                 esc("Error, habitacion ocupada"); 
+			     leer(arch_htel,regh);
+               Fin Si
+		  Sino
+		   Leer(arch_htel,regh)
+		  Fin Si 
+		 Fin mientras
+      sino
+	     escribir("Error, no existe hotel");
+	  fin si				
+			
+Fin Subaccion
+
+Subaccion COMPROBANTE es:
+
+esc ('UD compro el vuelo:' )
+esc("Codigo de vuelo    Fecha    Hora    Asiento nro posicion     Costo")
+esc (regv.cod_vuelo,regv.fcha_hra.fecha,regv.fcha_hra.hora,regv.asiento.nro_asto,regv.asiento.nro_pos,regv.costo)
+esc( 'UD reservo el hotel')
+esc("Codigo de hotel    Piso    Habitacion    Tipo    Desde   Hasta");
+esc(regh.cod_htel    regh.piso    regh.hab    regh.tipo    regh.desde    regh.hasta);
+
+Fin Subaccion			

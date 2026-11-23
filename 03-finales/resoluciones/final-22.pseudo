@@ -1,0 +1,280 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 22
+//  Enunciado: ../enunciados/final-22.jpg
+// ==========================================================================
+
+//consigna 1
+
+Accion éxitos() es
+
+Ambiente
+
+	fecha=registro
+		año:N(4)
+		mes:1..12
+		dia:1..31
+	fin registro
+
+	movimiento=registro
+		clave=registro
+			codrubro:N(10)
+			codins:N(10)
+			nromov:N(10)
+		fin registro
+		fechmov: fecha
+		tipo:"I","E"
+		cant:N(5)
+		preciounit:N(8.2)
+		nrodep:1..4
+	fin registro
+
+	reg_m: movimiento
+	arch_m archivo de movimiento ordenado por clave
+
+	deposito=registro
+		clave=registro
+			codrubro:N(10)
+			codins:N(10)
+		fin registro
+		preciosug:N(8.2)
+		stock:N(10)
+		nrodep:1..4
+	fin registro
+
+	reg_d: deposito
+	arch_d: archivo de deposito indexado por clave
+
+	A: Arreglo [1..13, 1..5] de real
+	tot_gral, precio, comprado: real
+	ins, rubro, stock: entero
+	cambioprecio: booleano
+
+	Procedimiento proceso() es
+		Si (reg_m.tipo="I") entonces
+			stock:=stock+reg_m.cant
+
+			Si (reg_m.preciounit<precio) entonces
+				precio:=reg_m.preciounit
+				cambioprecio:=Verdadero
+			Fin Si
+
+			comprado:=reg_m.preciounit*reg_m.cant
+
+			A[reg_m.fechmov.mes,reg_m.nrodep]:=A[reg_m.fechmov.mes,reg_m.nrodep]+comprado
+			A[reg_m.fechmov.mes,5]:=A[reg_m.fechmov.mes,5]+comprado
+			A[13,reg_m.nrodep]:=A[13,reg_m.nrodep]+comprado
+
+			tot_gral:=tot_gral+comprado
+
+
+		Sino
+			Si ((stock-reg_m.cant)<0) entonces
+				Escribir("Error: la diferencia es ",reg_m.cant-stock)
+				stock:=0
+			Sino
+				stock:=stock-reg_m.cant
+			Fin Si
+		Fin Si
+	Fin Procedimiento
+
+
+
+Proceso
+
+	ABRIR E/ (arch_m)
+	ABRIR E/S (arch_d)
+
+	Para i:=1 a 13 hacer
+		Para j:=1 a 5 hacer
+			A[i,j]:=0
+		Fin Para
+	Fin Para
+
+	tot_gral:=0
+
+	LEER (arch_m, reg_m)
+
+	Mientras NFDA (arch_m) hacer
+
+		reg_d.clave.codrubro:=reg_m.clave.codrubro
+		LEER (arch_d, reg_d)
+
+		Si (existe) entonces
+
+			reg_d.clave.codins:=reg_m.clave.codins
+			LEER (arch_d, reg_d)
+
+			Si (existe) entonces
+
+				ins:=reg_m.clave.codins
+				rubro:=reg_m.clave.codrubro
+				stock:=reg_d.stock
+				precio:=reg_d.preciosug
+				cambioprecio:=Falso
+
+				Mientras (ins=reg_m.clave.codins) Y (rubro=reg_m.clave.codrubro) hacer
+					proceso()
+					LEER(arch_m, reg_m)
+				Fin Mientras
+
+				reg_d.stock:=stock
+				Si (cambioprecio=Verdadero) entonces
+					reg_d.preciosug:=precio
+				Fin Si
+				REGRABAR(arch_d, reg_d)
+
+			Sino
+
+				ins:=reg_m.clave.codins
+				rubro:=reg_m.clave.codrubro
+				stock:=reg_m.cant
+				precio:=reg_m.preciounit
+				dep:=reg_m.nrodep
+
+				Mientras (ins=reg_m.clave.codins) Y (rubro=reg_m.clave.codrubro) entonces
+					proceso()
+					LEER(arch_m, reg_m)
+				Fin Mientras
+
+				reg_d.clave.codrubro:=rubro
+				reg_d.clave.codins:=ins
+				reg_d.preciosug:=precio
+				reg_d.stock:=stock
+				reg_d.nrodep:=dep
+				GRABAR(arch_d, reg_d)
+
+
+			Fin Si
+
+		Sino
+			Escribir("No existe el código rubro en el archivo Deposito")
+			rubro:=reg_m.clave.codrubro
+			Mientras (rubro=reg_m.clave.codrubro)
+				LEER(arch_m, reg_m)
+			Fin Mientras
+		Fin Si
+
+	Fin Mientras
+
+	Para i:=1 a 12 hacer
+		Para j:=1 a 4 hacer
+			Escribir("Mes: ",i)
+			Escribir("Numero deposito: ",j)
+			Escribir("Total comprado: ",A[i,j])
+		Fin Para
+	Fin Para
+
+	Para i:=1 a 12 hacer
+		Escribir("Mes: ",i)
+		Escribir("Total comprado en el mes: ",A[i,5])
+	Fin Para
+
+	Para j:=1 a 4 hacer
+		Escribir("Numero deposito: ",j)
+		Escribir("Total comprado en el deposito: ",A[13,j])
+	Fin Para
+
+
+	Escribir("Total general comprado: ",tot_gral)
+
+	CERRAR(arch_m)
+	CERRAR(arch_d)
+
+Fin Proceso
+
+//consigna 2
+
+Accion palabras() es
+
+Ambiente
+
+	texto: secuencia de caracter de entrada
+	v: caracter
+
+	texto2: secuencia de caracter de salida
+
+	nodo=registro
+		car:AN(1)
+		prox: puntero a nodo
+	fin registro
+
+	prim, q, p, may_lis, i: puntero a nodo
+
+	cont, mayor: entero
+
+Proceso
+
+	ARR(texto)
+	AVZ(texto, v)
+
+	prim:=nil
+
+	Mientras NFDS (texto) hacer
+
+		Mientras (v<>"/") hacer
+
+			ESC(texto2," ")
+
+			mayor:=0
+			Mientras (v<>".") hacer
+				cont:=0
+				Mientras (v<>" ") Y (v<>".") hacer
+					nuevo(q)
+					*q.car:=v
+
+					Si (cont=0) entonces
+						i:=q
+					Fin Si
+
+					Si (prim=nil) entonces
+						prim:=q
+					Sino
+						*p.prox:=q
+					Fin Si
+					*q.prox:=nil
+					p:=q
+					cont:=cont+1
+
+					AVZ(texto, v)
+				Fin Mientras
+
+				Si (cont>mayor) entonces
+					mayor:=cont
+					may_lis:=i
+				Fin Si
+
+				Si (v=" ") entonces
+					AVZ(texto, v)
+				Fin Si
+
+			Fin Mientras
+
+			p:=may_lis
+
+			Mientras (p<>" ") Y (p<>nil) hacer
+				ESC(texto2, *p.car)
+				p:=*p.prox
+			Fin Mientras
+			ESC(texto2, ".")
+
+
+			//borro lo que hay en la lista
+
+			p:=prim
+			Mientras (prim<>nil) hacer
+				prim:=*prim.prox
+				disponer(p)
+				p:=prim
+			Fin Mientras
+
+			AVZ(texto, v)
+
+		Fin Mientras
+
+		AVZ(texto, v)
+		ESC(texto2, "/")
+
+	Fin Mientras
+
+Fin ProcesoS

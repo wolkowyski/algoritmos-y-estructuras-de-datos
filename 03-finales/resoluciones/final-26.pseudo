@@ -1,0 +1,242 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 26
+//  Enunciado: ../enunciados/final-26.jpg
+// ==========================================================================
+
+//Consigna 1
+
+Accion holidays() es
+
+Ambiente
+
+	cine=registro
+		clave=registro
+			cod_suc:AN(3)
+			cod_pel:AN(30)
+			fch_suc:N(5)
+			turno:1..3
+		fin registro
+		nombre:AN(30)
+		cant:N(3)
+		tipo:"3D","2D"
+	fin registro
+
+	suc=registro
+		clave=registro
+			cod_suc:AN(3)
+			cod_pel:AN(30)
+		fin registro
+		cant:N(7)
+	fin registro
+
+	reg_c: cine
+	arch_c: archivo de cine ordenado por clave
+	reg_s: suc
+	arch_s: archivo de suc ordenado por clave
+
+	A: Arreglo [1..3] de enteros
+
+	resg_suc, resg_pel, cod_may_vis: alfanumerico
+	tot_pel, tot_suc, tot_gral, cant_vis, may_vis: entero
+
+	Procedimiento corte_pel() es
+		Escribir("El total de personas que fueron a ver la pelicula de codigo ",resg_pel," en 3D fue de ",tot_pel)
+
+		tot_suc:=tot_suc+tot_pel
+		tot_pel:=0
+
+		Si (cant_vis>may_vis) entonces
+			may_vis:=cant_vis
+			cod_may_vis:=resg_pel
+		Fin Si
+
+		cant_vis:=0
+		resg_pel:=reg_c.clave.cod_pel
+	Fin Procedimiento
+
+	Procedimiento corte_suc() es
+		corte_pel()
+		Escribir("El total de personas que fueron a ver peliculas en 3D en la sucursal de codigo ",resg_suc," es de ",tot_suc)
+
+		tot_gral:=tot_gral+tot_suc
+
+		reg_s.clave.cod_suc:=resg_suc
+		reg_s.clave.cod_pel:=cod_may_vis
+		reg_s.cant:=may_vis
+		GRABAR(arch_s, reg_s)
+
+		tot_suc:=0
+		may_vis:=0
+		resg_suc:=reg_c.clave.cod_suc
+	Fin Procedimiento
+
+
+Proceso
+
+	Para i:=1 a 3 hacer
+		A[i]:=0
+	Fin Para
+
+	ABRIR E/ (arch_c)
+	LEER(arch_c, reg_c)
+	ABRIR /S (arch_u)
+
+	resg_pel:=reg_c.clave.cod_pel
+	resg_suc:=reg_c.clave.cod_suc
+
+	tot_pel:=0
+	tot_suc:=0
+	tot_gral:=0
+	cant_vis:=0
+	may_vis:=0
+
+	Mientras NFDA(arch_c) hacer
+
+		Si (resg_suc<>reg_c.clave.cod_suc) entonces
+			corte_suc()
+		Sino
+			Si (resg_pel<>reg_c.clave.cod_pel) entonces
+				corte_pel()
+			Fin Si
+		Fin Si
+
+		Si (reg_c.tipo="3D") entonces
+			tot_pel:=tot_pel+reg_c.cant
+		Fin Si
+
+		Si (reg_c.cant>100) entonces
+			A[reg_c.turno]:=A[reg_c.turno]+1
+		Fin Si
+
+		cant_vis:=cant_vis+reg_c.cant
+
+		LEER(arch_c, reg_c)
+
+	Fin Mientras
+
+	corte_suc()
+
+	Escribir("El total general de personas que fueron a ver peliculas en 3D fue de ",tot_gral)
+
+	Para i:=1 a 3 hacer
+		Escribir("En el turno ",i," un total de ",A[i]," peliculas superaron las 100 visitas")
+	Fin Para
+
+	CERRAR(arch_c)
+	CERRAR(arch_u)
+
+Fin Mientras
+
+
+//consigna 2
+
+Accion claves() es
+
+Ambiente
+
+	usuario=registro
+		clave=registro
+			cuil:N(11)
+			clave_of:N(10)
+		fin registro
+	fin registro
+
+	reg_u: usuario
+	arch_u: archivo de usuario indexado por clave
+
+	A: Arreglo [1..10] de enteros
+
+	clav, num, res, cuil, x, clave_des: entero
+
+	rta: alfanumerico
+
+	existencia: booleano
+
+	//como hago que un procedimiento devuelva una variable?
+
+	Procedimiento desencriptar()
+
+		reg_u.clave.cuil:=cuil
+		LEER(arch_u, reg_u)
+		Si (existe) entonces
+
+			Para i:=10 a 1, i-- hacer
+				A[i]:=clav MOD 10
+				clav:=clav/10
+			Fin Para
+
+			//paso 1
+			Para i:=1 a 10 hacer
+				Si (i MOD 2<>0) entonces
+					A[i]:=A[i]+A[i+1]
+				Fin Si
+			Fin Para
+
+			//paso 2
+			num:=3
+			Para i:=1 a 10 hacer
+				res:=A[i]/num
+				Si (res MOD 2<>0) entonces
+					A[i]:=res
+				Fin Si
+				num:=num+1
+			Fin Para
+
+			//
+
+			x:=1000000000
+			clave_des:=0
+
+			Para i:=1 a 10 hacer
+				clave_des:=clave_des+A[i]*x
+				x:=x/10
+			Fin Para
+
+			reg_u.clave.clave_of:=clave_des
+			LEER(arch_u, reg_u)
+			Si (existe) entonces
+				existencia:=Verdadero
+			Sino
+				existencia:=Falso
+			Fin Si
+
+		Sino
+			existencia:=Falso
+		Fin Si
+
+	Fin Procedimiento
+
+
+
+Proceso
+
+	ABRIR E/ (arch_u)
+	LEER (arch_u, reg_u)
+
+	rta="si"
+
+	Mientras (rta="si") hacer
+
+		Escribir("Ingrese su cuil")
+		Leer(cuil)
+
+		Escribir("Ingrese su clave encriptada")
+		Leer(clav)
+
+		desencriptar()
+
+		Si (existencia=Verdadero) entonces
+			Escribir("El usuario existe")
+		Sino
+			Escribir("El usuario no existe")
+		Fin Si
+
+		Escribir("Si desea ingresar otro usuario escriba 'si'")
+		Leer(rta)
+
+	Fin Mientras
+
+	CERRAR(arch_u)
+
+Fin Proceso

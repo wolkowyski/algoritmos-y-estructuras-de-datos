@@ -1,0 +1,54 @@
+ACCION_417_ES(s1. s2: secuencia de caracteres; v1, v2: caracteres)
+    AMBIENTE
+        sal: secuencia de caracteres
+        vs: caracteres
+
+        Nodo1 = Registro de
+            letra: AN(1)
+            prox: puntero a Nodo1
+        FR
+        p1, q1, a1, prim: puntero a Nodo1
+
+        Nodo2 = Registro de
+            letra: AN(1)
+            prox: puntero a Nodo
+        FR
+        p2, q2, a2, prim2: puntero a Nodo2
+
+        res_letra1, res_letra2: alfanumérico
+        pos: entero
+
+        b1, b2: Booleano
+
+    PROCESO
+        ARR(s1)
+        ARR(s2)
+        crear (sal)
+        AVZ(s1, v1)
+        AVZ(s2, v2)
+        prim1:= nil
+        prim2:= nil
+        b1:= falso
+        b2:= falso
+        Mientras NFDS(s1) y NFDS(s2) hacer
+            res_letra1:= v1
+            AVZ(s1, v1)
+            Mientras NFDS(s1) y no b1 hacer
+                Nuevo(p1)
+                *p1.letra:= v1
+                *p1.prox:= nil
+
+                Si (prim = nil) entonces
+                    prim:= p
+                sino
+                    *a.prox:= p
+                FS
+                a:= p
+                AVZ(s1, v1)
+            FM
+            
+                pos:= 1
+                Mientras NFDS(s2) y ()
+                nuevo(q1)
+                *q1.letra:= v2
+

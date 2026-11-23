@@ -1,0 +1,11 @@
+Funcion par(n: entero):booleano
+    Si (n = 2) entonces
+        par:= verdadero
+    Sino
+        Si (n = 1) entonces
+            par:= falso
+        Sino
+            par:= par(n - 2)
+        FS
+    FS
+FF

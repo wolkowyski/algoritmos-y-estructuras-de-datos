@@ -1,0 +1,7 @@
+Funcion div(m,n: entero):entero
+    Si (m<n) entonces
+        div:= 0
+    Sino
+        div:= 1 + div(m-n, n)
+    FS
+FF

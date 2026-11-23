@@ -1,0 +1,37 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Desafío de clase - Suma de números ingresados hasta un 0
+//  Opción 1: ciclo pre-test (Mientras). Si el primer número es 0 no entra.
+//  (Las versiones en PSeInt están en pseint/)
+// ==========================================================================
+
+Acción Desafio_Penales //UTILIZANDO PRE-TEST Y CONDICIONAL ALTERNATIVO
+Ambiente //Ambiente
+    Variables:
+        num, cont, sum: Entero
+	    op: Caracter
+Proceso //Proceso
+	Escribir("Bienvenido! Este programa registra los números ingresados y calcula la suma de todos ellos :)")
+	Escribir("¿Desea Continuar? - S/N")
+	Leer(op)
+
+	Si op = "S" Entonces
+		Escribir("Por favor, introduzca un número")
+		Leer(num)
+        cont:= 0 //contador inicializado
+	    sum:= 0 //contador inicializado
+		Mientras num <> 0 Hacer
+			Escribir("Ha introducido el número: ", num)
+			cont:= cont + 1 //acumulo cantidad de números ingresados
+			sum:= sum + num //acumulo el valor de los números y los sumo
+			Escribir("Ingrese un nuevo número")
+			Leer(num)
+		FinMientras
+
+		Escribir("Finalizado: se ha introducido el 0")
+		Escribir("La cantidad de números introducidos durante la ejecución del programa fue de: ", cont)
+		Escribir("La suma de todos ellos es de: ", sum)
+	SiNo
+		Escribir("Ok!, nos vemos en la próxima")
+	FinSi
+FinAcción

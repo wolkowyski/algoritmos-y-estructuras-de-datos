@@ -1,0 +1,237 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  2do Parcial - Modelo "Padrón electoral" (práctica antes del parcial)
+//
+//  Ejercicio 1: actualizar el padrón (maestro ordenado por DNI y sexo) con
+//  las novedades (ordenadas por DNI, sexo y novedad), tomando los datos del
+//  RENAPER (indexado por DNI).
+//    Novedad 1 = alta (nuevo elector), 2 = cambio de domicilio,
+//            3 = nuevo ejemplar de DNI, 4 = baja (no se graba).
+//  Ejercicio 2: con el padrón actualizado, armar por proceso estadístico un
+//  arreglo de electores por PROVINCIA, DEPARTAMENTO y MUNICIPIO.
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1 - Actualización secuencial con acceso a un indexado
+// --------------------------------------------------------------------------
+
+Accion Ejercicio1 es
+    AMBIENTE
+    Fecha = registro
+        año: N(4)
+        mes: 1..12
+        dia: 1..31
+    FinRegistro
+
+    Formato_Clave = registro
+        DNI: N(8)
+        sexo: ("M", "F", "X")
+    FinRegistro
+
+    Formato_Maestro = registro
+        clave: Formato_Clave
+        nombre: AN(50)
+        provincia: 1..24
+        departamento: 1..380
+        municipio: 1..760
+        circuito: N(4)
+        mesa: N(4)
+        ejemplar: AN(1)
+        domicilio: AN(60)
+        fecha_nacimiento: Fecha
+    FinRegistro
+
+    Arch_mae, Arch_sal: archivo de Formato_Maestro ordenado por clave
+    Reg_mae, Reg_sal: Formato_Maestro
+
+    Formato_mov = registro
+        clave: Formato_Clave
+        novedad: 1..4
+    FinRegistro
+
+    Arch_mov: archivo de Formato_mov ordenado por clave y novedad
+    Reg_mov: Formato_mov
+
+    Formato_index = registro
+        dni: N(8)
+        sexo: ("M", "F", "X")
+        domicilio: AN(60)
+        provincia: 1..24
+        departamento: 1..380
+        municipio: 1..760
+        ultimo_ejemplar_dni: AN(1)
+        fecha_nacimiento: Fecha
+        nombre: AN(50)
+    FinRegistro
+
+    Arch_index: archivo de Formato_index indexado por dni
+    Reg_index: Formato_index
+
+    HV = 99999999
+    aux: Formato_Clave
+    baja: booleano
+
+    // ObtenerJurisdiccionElectoral(dni): función dada por el enunciado que
+    // devuelve circuito y mesa juntos (circuito * 100 + mesa)
+
+    procedimiento leer_mae() es
+        leer(Arch_mae, Reg_mae)
+        si FDA(Arch_mae) entonces
+            Reg_mae.clave.DNI:= HV
+        fs
+    finprocedimiento
+
+    procedimiento leer_mov() es
+        leer(Arch_mov, Reg_mov)
+        si FDA(Arch_mov) entonces
+            Reg_mov.clave.DNI:= HV
+        fs
+    finprocedimiento
+
+    procedimiento alta es // arma el registro del elector nuevo con los datos del RENAPER
+        Reg_sal.clave:= Reg_mov.clave
+        Reg_index.dni:= Reg_mov.clave.DNI // acceso directo
+        leer(Arch_index, Reg_index)
+        si existe entonces
+            Reg_sal.nombre:= Reg_index.nombre
+            Reg_sal.provincia:= Reg_index.provincia
+            Reg_sal.departamento:= Reg_index.departamento
+            Reg_sal.municipio:= Reg_index.municipio
+            Reg_sal.circuito:= ObtenerJurisdiccionElectoral(Reg_mov.clave.DNI) div 100
+            Reg_sal.mesa:= ObtenerJurisdiccionElectoral(Reg_mov.clave.DNI) mod 100
+            Reg_sal.ejemplar:= Reg_index.ultimo_ejemplar_dni
+            Reg_sal.domicilio:= Reg_index.domicilio
+            Reg_sal.fecha_nacimiento:= Reg_index.fecha_nacimiento
+        sino
+            escribir("Error: el DNI ", Reg_mov.clave.DNI, " no está en el RENAPER")
+            baja:= verdadero // sin datos no se puede dar de alta
+        fs
+    finprocedimiento
+
+    procedimiento modificacion es // aplica una novedad 2, 3 o 4 sobre Reg_sal
+        Reg_index.dni:= Reg_mov.clave.DNI // acceso directo al indexado
+        según Reg_mov.novedad hacer
+            2: leer(Arch_index, Reg_index)
+               si existe entonces
+                   Reg_sal.domicilio:= Reg_index.domicilio
+               fs
+            3: leer(Arch_index, Reg_index)
+               si existe entonces
+                   Reg_sal.ejemplar:= Reg_index.ultimo_ejemplar_dni
+               fs
+            4: baja:= verdadero // baja física: no se graba en el maestro nuevo
+        finsegún
+    finprocedimiento
+
+    PROCESO
+    abrir E/(Arch_mae); leer_mae()
+    abrir E/(Arch_mov); leer_mov()
+    abrir E/(Arch_index)
+    abrir /S(Arch_sal)
+
+    mientras (Reg_mae.clave.DNI <> HV) o (Reg_mov.clave.DNI <> HV) hacer
+        si Reg_mae.clave < Reg_mov.clave entonces // elector sin novedades
+            Reg_sal:= Reg_mae
+            grabar(Arch_sal, Reg_sal)
+            leer_mae()
+        sino
+            baja:= falso
+            si Reg_mae.clave = Reg_mov.clave entonces // elector con novedades
+                Reg_sal:= Reg_mae
+                aux:= Reg_mae.clave
+                leer_mae()
+            sino // la clave solo está en movimientos
+                aux:= Reg_mov.clave
+                si Reg_mov.novedad = 1 entonces
+                    alta
+                    leer_mov() // la novedad 1 ya se aplicó
+                sino
+                    escribir("Error: novedad sobre un elector inexistente")
+                    baja:= verdadero
+                fs
+            fs
+            // Se tratan todas las novedades de la misma clave (pueden ser varias)
+            mientras Reg_mov.clave = aux hacer
+                si no baja entonces
+                    modificacion
+                fs
+                leer_mov()
+            fm
+            si no baja entonces
+                grabar(Arch_sal, Reg_sal)
+            fs
+        fs
+    fm
+
+    cerrar(Arch_mae)
+    cerrar(Arch_mov)
+    cerrar(Arch_index)
+    cerrar(Arch_sal) // importante: es el archivo que se generó
+FinAccion
+
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2
+// Respecto al archivo actualizado del padrón del ejercicio anterior, se desea
+// obtener por medio de un proceso estadístico un arreglo tridimensional de
+// electores por PROVINCIA, DEPARTAMENTO, MUNICIPIO, que permita responder:
+//   a. Provincia con mayor cantidad de electores habilitados.
+//   b. Municipio con menor cantidad de electores habilitados (y su
+//      correspondiente provincia y departamento).
+//   c. Total de electores habilitados en el país.
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2 es
+    Ambiente
+        // Arch_sal y Reg_sal: el padrón actualizado del ejercicio 1
+        A: arreglo [1..24, 1..380, 1..760] de entero
+        i, j, k: entero
+        total_pais, total_prov, mayor_prov, prov_mayor: entero
+        menor_mun, prov_menor, dep_menor, mun_menor: entero
+
+    Proceso
+        Para i:= 1 a 24 hacer // pongo todo el arreglo en 0
+            Para j:= 1 a 380 hacer
+                Para k:= 1 a 760 hacer
+                    A[i,j,k]:= 0
+                FinPara
+            FinPara
+        FinPara
+
+        Abrir E/(Arch_sal)
+        Leer(Arch_sal, Reg_sal)
+        Mientras NFDA(Arch_sal) hacer // cada elector suma 1 en su celda
+            A[Reg_sal.provincia, Reg_sal.departamento, Reg_sal.municipio]:=
+                A[Reg_sal.provincia, Reg_sal.departamento, Reg_sal.municipio] + 1
+            Leer(Arch_sal, Reg_sal)
+        FinMientras
+        Cerrar(Arch_sal)
+
+        total_pais:= 0
+        mayor_prov:= -1
+        menor_mun:= 99999999
+        Para i:= 1 a 24 hacer
+            total_prov:= 0
+            Para j:= 1 a 380 hacer
+                Para k:= 1 a 760 hacer
+                    total_prov:= total_prov + A[i,j,k]
+                    // b. solo cuentan los municipios que existen (con electores)
+                    Si (A[i,j,k] > 0) y (A[i,j,k] < menor_mun) entonces
+                        menor_mun:= A[i,j,k]
+                        prov_menor:= i; dep_menor:= j; mun_menor:= k
+                    FinSi
+                FinPara
+            FinPara
+            Si total_prov > mayor_prov entonces // a.
+                mayor_prov:= total_prov
+                prov_mayor:= i
+            FinSi
+            total_pais:= total_pais + total_prov // c.
+        FinPara
+
+        Escribir("a. Provincia con más electores: ", prov_mayor, " (", mayor_prov, ")")
+        Escribir("b. Municipio con menos electores: ", mun_menor, " del departamento ", dep_menor, " de la provincia ", prov_menor, " (", menor_mun, ")")
+        Escribir("c. Total de electores habilitados en el país: ", total_pais)
+FinAccion

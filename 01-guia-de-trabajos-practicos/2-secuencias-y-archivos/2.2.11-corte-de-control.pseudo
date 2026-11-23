@@ -1,0 +1,90 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.11 (corte de control)
+// ==========================================================================
+
+Se dispone de un archivo con datos de los alumnos de la U.T.N. con la siguiente información para cada alumno:
+Se desea un listado con el siguiente detalle por sexo, carrera y total general
+
+Total de alumnos que ingresaron en el año 2009 con más de 20 materias aprobadas.
+Total de alumnos que ingresaron en el año 2009 con menos de 20 materias aprobadas
+
+Accion Ejercicio2_2_11 es
+    Ambiente
+
+    Fecha = Registro
+        aa: N(4)
+        mm: 1..12
+        dd: 1..31
+    FinRegistro
+
+    Alumno = Registro
+        Sexo: ("M","F")
+        Carrera: ("ISI","IQ","IEM")
+        Nro_Legajo: N(5)
+        Fecha_Ingreso: Fecha
+        Total_Materias_Aprobadas: N(2)
+    FinRegistro
+
+    Alumnos: Archivo de Alumno ordenado por Sexo, Carrera y Nro_Legajo
+    A: Alumno
+
+    // Totalizadores: "mas" = más de 20 aprobadas, "menos" = menos de 20
+    mas_carrera, menos_carrera, mas_sexo, menos_sexo, mas_gral, menos_gral: N(6)
+    ResSexo: ("M","F")
+    ResCarrera: ("ISI","IQ","IEM")
+
+    Procedimiento CorteCarrera es // corte de menor nivel
+        Escribir("   Carrera ", ResCarrera, ": más de 20 = ", mas_carrera, " | menos de 20 = ", menos_carrera)
+        mas_sexo:= mas_sexo + mas_carrera
+        menos_sexo:= menos_sexo + menos_carrera
+        mas_carrera:= 0
+        menos_carrera:= 0
+        ResCarrera:= A.Carrera
+    FinProcedimiento
+
+    Procedimiento CorteSexo es // corte de mayor nivel
+        CorteCarrera
+        Escribir("Sexo ", ResSexo, ": más de 20 = ", mas_sexo, " | menos de 20 = ", menos_sexo)
+        mas_gral:= mas_gral + mas_sexo
+        menos_gral:= menos_gral + menos_sexo
+        mas_sexo:= 0
+        menos_sexo:= 0
+        ResSexo:= A.Sexo
+    FinProcedimiento
+
+    Proceso
+        Abrir E/(Alumnos)
+        Leer(Alumnos, A)
+        mas_carrera:= 0; menos_carrera:= 0
+        mas_sexo:= 0; menos_sexo:= 0
+        mas_gral:= 0; menos_gral:= 0
+        ResSexo:= A.Sexo
+        ResCarrera:= A.Carrera
+
+        Mientras No FDA(Alumnos) hacer
+            Si A.Sexo <> ResSexo entonces
+                CorteSexo
+            Sino
+                Si A.Carrera <> ResCarrera entonces
+                    CorteCarrera
+                FinSi
+            FinSi
+
+            Si A.Fecha_Ingreso.aa = 2009 entonces // solo cuentan los ingresantes 2009
+                Si A.Total_Materias_Aprobadas > 20 entonces
+                    mas_carrera:= mas_carrera + 1
+                Sino
+                    Si A.Total_Materias_Aprobadas < 20 entonces
+                        menos_carrera:= menos_carrera + 1
+                    FinSi
+                FinSi
+            FinSi
+
+            Leer(Alumnos, A)
+        FinMientras
+
+        CorteSexo
+        Escribir("Total general: más de 20 = ", mas_gral, " | menos de 20 = ", menos_gral)
+        Cerrar(Alumnos)
+FinAcción

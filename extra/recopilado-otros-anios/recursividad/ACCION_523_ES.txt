@@ -1,0 +1,6 @@
+Procedimiento nomb(p: puntero a nodo)
+    Si (*p.prox <> Nil) entonces
+        nomb(*p.prox)
+    FSI
+    ESC(*p.nombre)
+FP

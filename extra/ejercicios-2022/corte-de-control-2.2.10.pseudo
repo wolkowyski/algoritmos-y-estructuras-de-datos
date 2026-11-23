@@ -1,0 +1,81 @@
+// Resolución de 2022 (guía de esa cursada), incluida como material complementario.
+// Los archivos de corte de control están firmados por su autor, Julio E. Petrovich.
+
+Del archivo general de alumnos de la U.T.N. - Facultad Regional Resistencia, ordenado por carrera, se desea emitir la cantidad de alumnos correspondientes a cada carrera y el total general.
+
+______________________________________________________________________________________________________________
+
+ACCION materiasAprobadas ES
+
+	AMBIENTE
+		TIPOS
+
+			Alumno = REGISTRO
+				carrera = REGISTRO
+					esp: AN(20);
+					anio: N(1);
+				FIN REGISTRO;
+				name: AN(30);
+				edad: N(2);
+				n_leg: N(5);
+			FIN REGISTRO;
+
+		VARIABLES
+
+			alumnos: Archivo de Alumno ordenado por carrera;
+			a: Alumno;
+
+			PROCEDIMIENTO corteAnio()
+				al_esp := al_esp + al_anio;
+				al_anio := 0;
+				resAnio := a.carrera.anio;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO corteEsp()
+				corteAnio();
+				ESC('Total de alumnos en la carrera ', resEsp, ': ', al_esp);
+				al_tot := al_tot + al_esp;
+				al_esp := 0;
+				resEsp := a.carrera.esp;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarCorte()
+				SI (a.carrera.esp <> resEsp) ENTONCES
+					corteEsp();
+				SINO SI (a.carrera.anio <> resAnio) ENTONCES
+						corteAnio();
+					FIN SI;
+				FIN SI;
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO tratarRegistro()
+				al_anio := al_anio + 1;
+				LEER(alumnos, a);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO inicializarDatos()
+				al_anio := 0; al_esp := 0; al_tot := 0;
+				ABRIR E/(alumnos);
+				LEER(alumnos, a);
+			FIN PROCEDIMIENTO;
+
+			PROCEDIMIENTO emitirTotal()
+				corteEsp;
+				ESC('Cantidad de alumnos total de la UTN: ', al_tot);
+				CERRAR(alumnos);
+			FIN PROCEDIMIENTO;
+
+	PROCESO
+
+		inicializarDatos();
+
+		MIENTRAS NO FDA(alumnos) HACER
+			tratarCorte();
+			tratarRegistro();
+		FIN MIENTRAS;
+
+		emitirTotal();
+
+FIN ACCION;
+
+//Petrovich, Julio E.

@@ -1,0 +1,42 @@
+
+ Program sumatoria;
+uses CRT;
+type
+
+Cliente= array [1..5] of integer;
+
+var
+estructura:Cliente;
+
+procedure rellenar (VAR estructura:Cliente);
+var 
+i:integer;
+
+
+ begin
+ for i:=1 to 5 do
+     begin
+     writeln ('ingrese valor del arreglo:');
+     readln(estructura[i]); 
+     end;
+  end;
+ 
+function sumar (estructura:Cliente):integer;
+var
+i:integer;
+begin
+sumar:=0;
+for i:=1 to 5 do
+begin
+sumar:=sumar + estructura[i];
+end;
+write(sumar);
+end;
+ 
+begin
+rellenar (estructura);
+writeln (' ');
+sumar(estructura);
+
+end.  
+

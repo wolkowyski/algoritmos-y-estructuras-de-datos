@@ -1,0 +1,105 @@
+body {
+      background-color: #ffffff;
+      font: 11px Verdana,Arial,sans-serif;
+      padding: 0px 15px;
+      margin: 5px;
+      }
+H4 {
+    text-align: center; 
+    color: #131386;
+   }
+H5 {
+    font-style:italic;
+    color: red;
+   }
+A:link {
+        color: blue;
+        text-decoration: underline;
+       }
+A:visited {
+           color: purple;
+           text-decoration: underline;
+           }
+A:hover {
+         color: #FF6600;
+         text-decoration: none;
+        }
+A:active {
+          color: purple;
+          text-decoration: underline;
+          }
+A:link.cab {
+            color: #ffffff;
+            text-decoration: underline;
+            }
+A:hover.cab {
+            color: #ffffff;
+            text-decoration: none;
+            background-color: #aaaaaa;
+            }
+.cabecera {
+           font: 13px Arial, sans-serif;
+           padding: 5px;
+           border: solid 1px #aaa;
+           background-color: #131386;
+           text-align: center;
+           color: #ffffff;
+          }
+.entrada {
+	  font-weight:bold;
+         }
+.titulo {
+         padding-left: 5px; 
+         font: bold 12px Tahoma,Verdana,sans-serif; 
+         color: #131386;
+         background-color: #EAEAEA;
+         }
+.td {
+     padding: 10px;
+     border-left: 1px solid #131386;
+     border-right: 1px solid #131386;
+     border-top: 1px solid #000099;
+     border-bottom: 1px solid #000099;
+     font: 10px Verdana,Arial,sans-serif;
+    }
+.text {
+       font-family: bold 11px Tahoma,sans-serif; 
+       color: #131386;
+       }
+.datos {
+        font: bold 11px Verdana,sans-serif;
+        color: #131386;
+       }
+.boton{
+       width:80px;
+       height:25px;
+       background:#000099;
+       color:white;
+       border:0px;
+       font: bold 12px;
+       text-align: center;
+       }
+.codigo {
+        font: 11px "Courier New",Courier,Verdana,sans-serif;
+        background-color:#E0E0E0;
+        color:brown;
+        margin: 0px 30px;
+        padding: 10px;
+        }
+ADDRESS {
+         border: 2px #999 solid;
+         padding-bottom:3px;
+         font:  13px Arial,Verdana,sans-serif;
+         color: #ffffff;
+         text-align:center;
+         background-color: #131386;
+         }
+.tabla {
+        padding: 10px;
+        margin:10px 30px;
+        border-color: #808080 #808080 #EFEFEF #EFEFEF;
+        border-style: solid;
+        border-width: 1px;
+        font: 12px Tahoma,Arial Black,sans-serif;
+        color: #131386;
+        }

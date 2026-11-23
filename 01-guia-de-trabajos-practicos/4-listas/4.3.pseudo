@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.3
+//
+//  Dada una lista de enteros, sumar por separado los números pares y los
+//  impares.
+// ==========================================================================
+
+Accion Ejercicio4_3 (prim: puntero a nodo) es
+    Ambiente
+        nodo = Registro
+            num: entero
+            prox: puntero a nodo
+        finregistro
+
+        p: puntero a nodo
+        par, impar: entero
+
+        Procedimiento SumaPar (p: puntero a nodo) es
+            par:= par + p^.num
+        FinProcedimiento
+
+        Procedimiento SumaImpar (p: puntero a nodo) es
+            impar:= impar + p^.num
+        FinProcedimiento
+
+    Proceso
+        par:= 0 // los acumuladores arrancan en 0
+        impar:= 0
+        p:= prim
+        Mientras (p <> nil) hacer
+            Si (p^.num mod 2) = 0 entonces
+                SumaPar(p) // en la llamada solo va el parámetro, no su tipo
+            SiNo
+                SumaImpar(p)
+            FinSi
+            p:= p^.prox
+        FinMientras
+        Escribir("Suma de los números pares: ", par)
+        Escribir("Suma de los números impares: ", impar)
+FinAccion

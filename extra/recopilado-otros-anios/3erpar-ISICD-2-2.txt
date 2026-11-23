@@ -1,0 +1,42 @@
+ACCION_EJ2T2_ES(prim: puntero a nodo)
+    AMBIENTE
+        nodo = Registro de
+            dni: N(9)
+            nombyap: AN(50)
+            Nro_cama: N(3)
+            Nro_hab: N(3)
+            Pa_sist: Arreglo de [1..4] de Reales
+            Pa_diast: Arreglo de [1..4] de Reales
+        FR
+        p,q,ant: puntero a nodo
+        presion_art: Real
+
+        Función Promedio(A: Arreglo de [1..4] de Reales; i,n: entero): Real
+            Si (i = 1) entonces
+                Promedio:= A[i] / n
+            Sino
+                Promedio:= (A[i] / n) + Promedio(A, i-1, n)
+            FS
+        FF
+    PROCESO
+        p:=prim
+        Mientras (p <> NIL) hacer
+            ESC("Paciente: ",*p.nombyap)
+            presion_art:= Promedio(*p.Pa_sist, 4, 4) / Promedio(*p.Pa_diast, 4, 4)
+            Si (presion_art <= (120/80)) entonces //Presion Normal -> Eliminación
+                ESC("Paciente con presión promedio dentro de los valores normales")
+                q:=*p.prox
+                Si (ant = NIL) entonces
+                    prim:=*p.prox
+                Sino
+                    *ant.prox:=*p.prox
+                FS
+                Disponer(p)
+                p:=q
+            Sino //Presion Anormal -> Se mantiene
+                ESC("Paciente con presión promedio fuera de los valores normales")
+                ant:=p 
+                p:=*p.prox
+            FS
+        FM
+FA

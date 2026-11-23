@@ -1,0 +1,20 @@
+//Dada una matriz cuadrada de 5 x 5 de números, sumar filas y columnas 
+//y guardar en una matriz de 2 x 5, de modo que la fila 1 contenga la suma de cada fila 
+//y la fila 2, la suma de cada columna)
+
+ACCION_322_ES (Matriz55: Arreglo de [1..5, 1..5] de enteros)
+    AMBIENTE
+        Matriz25: Arreglo de [1..2, 1..5] de enteros
+        Fila, Columna, Columna2: Entero
+    Proceso
+        Columna2:= 1
+        Para Fila:= 1 hasta 5 hacer
+            Para Columna:= 1 hasta 5 hacer
+                Matriz25[1, Columna2]:= Matriz25[1, Columna2] + Matriz55[Fila, Columna] //Suma de las filas
+                Matriz25[2, Columna2]:= Matriz25[2, Columna2] + Matriz55 [Columna, Fila] //Suma de las columnas
+            FIN_PARA
+            //Esta variable, permite controlar las posiciones de la matriz 2x5
+            //Cuando ya recorri toda la fila, paso a la siguiente columna aumentado la variable "Columna2"
+            Columna2:= Columna2 + 1
+        FIN_PARA
+FIN_ACCION

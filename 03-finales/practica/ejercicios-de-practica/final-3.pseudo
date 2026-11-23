@@ -1,0 +1,43 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Práctica para el final - Final 3
+//  Ejercicios integradores (secuencias, listas, arreglos) resueltos como práctica.
+// ==========================================================================
+
+Accion Final 3 es
+
+ Ambiente
+
+  Dptos=Registro
+   numero:N(6);
+   descripcion:AN(200);
+   estado:{"D","A","R"};
+   nivel:[1..5];
+  finRegistro
+
+  Archd: Archivo de Dptos indexado por numero;
+  d: Dptos;
+
+  Dueño=Registro
+   numero:N(6);
+   dueño:N(8);
+   nombre:AN(20);
+   alquilado:N(4);
+   reservas:N(4);
+   cancelados:N(4);
+  finRegistro
+
+  Archdñ: Archivo de Dueño indexado por numero, dueño;
+  dñ: Dueño;
+
+
+ Algoritmo
+
+  Abrir E/S(Archd);
+  Abrir E/S(Archdñ);
+
+  Escribir("¿Desea alquilar, reservar o cancelar algún departamento? Si/No");
+  Leer(rta);
+
+
+  Mientras rta <> "no" hacer

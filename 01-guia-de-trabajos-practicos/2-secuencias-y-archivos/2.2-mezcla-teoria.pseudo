@@ -1,0 +1,115 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Mezcla (apareo) de archivos: esquemas
+//
+//  Ejemplo: películas nuevas + películas existentes, ambos ordenados por
+//  Nro_Pelicula, se mezclan en un único archivo Totales.
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Versión 1: mezcla "excluyente" (sin High Value)
+// Se mezcla mientras ninguno de los dos archivos terminó y después se copia
+// lo que haya quedado del otro.
+// --------------------------------------------------------------------------
+
+Acción Mezcla_Sin_HV es
+    Ambiente
+        Fecha = Registro
+            dd: 1..31
+            mm: 1..12
+            aa: N(4)
+        FinRegistro
+
+        Pelicula = Registro
+            Nro_Pelicula: N(8)
+            Titulo: AN(255)
+            Genero: AN(255)
+            Cant_Copias: N(8)
+            Fecha_Estreno: Fecha
+        FinRegistro
+
+        Peliculas_Nuevas, Peliculas, Totales: Archivo de Pelicula ordenado por Nro_Pelicula
+        Reg1, Reg2, RegTot: Pelicula
+
+    Proceso
+        Abrir E/(Peliculas_Nuevas)
+        Leer(Peliculas_Nuevas, Reg1)
+        Abrir E/(Peliculas)
+        Leer(Peliculas, Reg2)
+        Abrir /S(Totales)
+
+        Mientras No FDA(Peliculas_Nuevas) y No FDA(Peliculas) hacer
+            Si Reg1.Nro_Pelicula < Reg2.Nro_Pelicula entonces
+                RegTot:= Reg1 // No es 100% necesario, pero asigno el valor del registro menor a una variable nueva
+                Escribir(Totales, RegTot) // Escribo en el archivo de salida el registro menor
+                Leer(Peliculas_Nuevas, Reg1) // Avanzo en el archivo donde encontré la clave menor
+            SiNo
+                Escribir(Totales, Reg2) // Si no se da la condición, escribo el del segundo archivo
+                Leer(Peliculas, Reg2) // y avanzo en ese archivo
+            FinSi
+        FinMientras
+
+        // Uno de los dos terminó: copio el resto del otro
+        Mientras No FDA(Peliculas_Nuevas) hacer
+            Escribir(Totales, Reg1)
+            Leer(Peliculas_Nuevas, Reg1)
+        FinMientras
+
+        Mientras No FDA(Peliculas) hacer
+            Escribir(Totales, Reg2)
+            Leer(Peliculas, Reg2)
+        FinMientras
+
+        Cerrar(Totales)
+        Cerrar(Peliculas_Nuevas)
+        Cerrar(Peliculas)
+FinAcción
+
+
+
+// --------------------------------------------------------------------------
+// Versión 2: mezcla "incluyente" con High Value (HV)
+// Cuando un archivo termina, a su clave se le asigna HV (un valor mayor que
+// cualquier clave real). Así el otro archivo siempre "gana" la comparación y
+// un solo ciclo alcanza para procesar los dos hasta el final.
+// --------------------------------------------------------------------------
+
+Acción Mezcla_Con_HV es
+    Ambiente
+        // (mismos registros y archivos que la versión 1)
+        HV = 99999999 // mayor que cualquier Nro_Pelicula posible (N(8))
+
+        Procedimiento Leer_PN es
+            Leer(Peliculas_Nuevas, Reg1)
+            Si FDA(Peliculas_Nuevas) entonces
+                Reg1.Nro_Pelicula:= HV
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Leer_P es
+            Leer(Peliculas, Reg2)
+            Si FDA(Peliculas) entonces
+                Reg2.Nro_Pelicula:= HV
+            FinSi
+        FinProcedimiento
+
+    Proceso
+        Abrir E/(Peliculas_Nuevas); Leer_PN
+        Abrir E/(Peliculas); Leer_P
+        Abrir /S(Totales)
+
+        Mientras (Reg1.Nro_Pelicula <> HV) o (Reg2.Nro_Pelicula <> HV) hacer
+            Si Reg1.Nro_Pelicula < Reg2.Nro_Pelicula entonces
+                Escribir(Totales, Reg1)
+                Leer_PN // avanzo en el archivo del registro que escribí
+            SiNo
+                Escribir(Totales, Reg2)
+                Leer_P
+            FinSi
+        FinMientras
+
+        Cerrar(Totales)
+        Cerrar(Peliculas_Nuevas)
+        Cerrar(Peliculas)
+FinAcción

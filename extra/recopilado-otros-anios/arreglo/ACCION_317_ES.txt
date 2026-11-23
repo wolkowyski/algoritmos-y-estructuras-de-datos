@@ -1,0 +1,41 @@
+AMBIENTE GENERAL
+    reg = Registro de
+        Tit_vid: AN(50)
+        Nmbr_creador: AN(50)
+        Cat_vid: AN(50)
+        Views: N(10)
+    FR
+    Videos: Arreglo de [1..200] de reg
+ACCION_317_ES
+
+    AMBIENTE
+        i,j: entero
+        max, x: entero
+        res: reg
+    PROCESO
+        Para i:= 1 hasta (199) hacer
+            res:=Videos[i]
+            x:= Videos[i].Cat_vid
+            max:= i
+            Para j:= (i+1) hasta 200 hacer
+                Si (Videos[j].Cat_vid > x ) entonces
+                    res:= Videos[j]
+                    x:= Videos[j].Cat_vid
+                    max:= j
+                FS
+            FP
+            Videos[max]:= Videos[i]
+            Videos[i]:= res
+        FP
+
+        ESC("Top 10 Videos mas vistos")
+
+        Para i:= 1 hasta 10
+            ESC("--------------------------")
+            ESC("Video: ",Videos[i].Tit_vid)
+            ESC("Creador: ",Videos[i].Nmbr_creador)
+            ESC("Categoria: ",Videos[i].Cat_vid)
+            ESC("Visitas: ",Videos[i].Views)
+            ESC("--------------------------")
+        FP
+FA

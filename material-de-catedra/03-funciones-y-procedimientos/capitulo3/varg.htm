@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>Variables Globales y Variables Locales</title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+       <h4>Variables Locales y Variables Globales</h4>
+       <p class="entrada">Las variables utilizadas en un programa con subprogramas pueden ser de dos tipos: <em>locales y globales</em>.
+       <h5>Variables Locales</h5>
+       <p>Una variable local es una variable que esta declarada dentro de un subprograma y se dice que es local al subprograma. Una variable local solo esta
+          disponible durante el funcionamiento del subprograma, al terminar su funci&oacute;n el subprograma y regresar al programa llamador, se pierde el valor
+          que se encontraba guardado en la variable local.
+       <h5>Variables Globales</h5>
+       <p>Las variables declaradas en el programa principal se denominan variables globales. Al contrario que las variables locales cuyos valores se pueden utilizar
+          solo dentro del subprograma en que fueron declaradas, las variables globales se pueden utilizar en todo el programa principal y en todos los subprogramas, donde
+          se haga referencia al <a href="identificador.htm" class="cambio" title="identificador">identificador</a> de esta variable.
+       <a name="ambito"></a>
+       <h4>Ambito de un Identificador</h4>
+       <p>La mayor&iacute;a de los programas tienen una estructura tipo &aacute;rbol, el programa principal es la ra&iacute;z y de este penden muchas ramas (procedimientos
+          y funciones).
+       <p>Los subprogramas en los que un identificador puede ser utilizado se conocen como &aacute;mbito o alcance del identificador, dicho de otro modo, es en esta secci&oacute;n
+          donde el identificador es v&aacute;lido.
+       <h6>Reglas de Ambito</h6>
+       <ol>
+         <li>El &aacute;mbito de un identificador es el dominio en que esta declarado. Por consiguiente un identificador declarado en un bloque P puede ser usado en el subprograma
+             P y en todos los subprogramas llamados en el subprograma P.
+         <li>Si un identificador j declarado en el procedimiento P se redeclara en alg&uacute;n subprograma interno Q invocado en P, entonces el subprograma Q y todas sus invocaciones
+             a otros subprogramas se excluyen del &aacute;mbito de j declarado en P.
+       </ol>
+       <P STYLE="text-align:right;"><A HREF="par.htm" CLASS="cambio" title="tipos de parametros">Parametros Valor y Variable</A> &nbsp;<a href="tutor.htm" class="cambio" title="indice del tutor">Indice</a> &nbsp;
+        <a href="procedimiento.htm" class="cambio" title="procedimientos y funciones">Procedimientos y Funciones</a></P>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+
+    </body>
+  </html>

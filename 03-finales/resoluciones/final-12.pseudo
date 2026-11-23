@@ -1,0 +1,250 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Final - Resolución del modelo de final 12
+//  Enunciado: ../enunciados/final-12.jpg
+// ==========================================================================
+
+//consigna 1 (usando función concatenar) cadena:=cadena+concatenar(v)
+
+Accion turisteando() es
+
+Ambiente
+
+	nodo=registro
+		cod_pack:AN(50)
+		cant_alta:N(5)
+		cant_des:N(5)
+		prox: puntero a nodo
+	fin registro
+
+	edad_prom, edad, cant_cli, cant_nul, cant_prem_pref: entero
+
+	prim, p, q, a: puntero a nodo
+
+	sec: secuencia de caracter de entrada
+	v: caracter
+
+	tipo_cli, car, codigo: alfanumerico
+
+	Procedimiento premium() es
+		Si (tipo_cli="P") entonces
+			cant_prem_pref:=cant_prem_pref+1
+		Fin Si
+	Fin Procedimiento
+
+	Procedimiento preferencias() es
+		Si (v="A") entonces
+			*q.cant_alta:=1
+			*q.cant_des:=0
+			premium()
+		Sino
+			Si (v="D") entonces
+				*q.cant_des:=1
+				*q.cant_alta:=0
+				premium()
+			Sino
+				*q.cant_alta:=0
+				*q.cant_des:=0
+				edad_prom:=edad_prom+edad
+				cant_nul:=cant_nul+1
+			Fin Si
+		Fin Si
+	Fin Procedimiento
+
+
+Proceso
+
+	prim:=nil
+	cant_cli:=0
+	edad_prom:=0
+	cant_prem_pref:=0
+
+	ARR(sec)
+	AVZ(sec, v)
+
+	Mientras NFDS (sec) hacer
+
+		Mientras (v<>"/") hacer
+
+			cant_cli:=cant_cli+1
+
+			tipo_cli:=v
+
+			Para i:=1 a 7 hacer
+				AVZ(sec, v)
+			Fin Para
+
+			car:=v
+			AVZ(sec, v)
+
+			edad:=AGE(car, v)
+
+			AVZ(sec, v)
+
+			codigo:=v
+
+			AVZ(sec, v)
+
+			Mientras (v<>"-") hacer
+				codigo:=codigo+concatenar(v)
+				AVZ(sec, v)
+			Fin Mientras
+
+			AVZ(sec, v)
+
+			Si (prim=nil) entonces
+				nuevo(q)
+				*q.cod_pack:=codigo
+				preferencias()
+				prim:=q
+				*q.prox:=nil
+			Sino
+				p:=prim
+				Mientras (p<>nil) y (codigo<>*p.cod_pack) hacer
+					a:=p
+					p:=*p.prox
+				Fin Mientras
+
+				Si (codigo=*p.cod_pack) entonces
+					Si (v="A") entonces
+						*p.cant_alta:=*p.cant_alta+1
+						premium()
+					Sino
+						Si (v="D") entonces
+							*p.cant_des:=*p.cant_des+1
+							premium()
+						Sino
+							edadprom:=edadprom+edad
+							cant_nul:=cant_nul+1
+						Fin Si
+					Fin Si
+				Sino
+					nuevo(q)
+					*q.cod_pack:=codigo
+					preferencias()
+					*a.prox:=q
+					*q.prox:=nil
+				Fin Si
+			Fin Si
+
+			AVZ(sec, v)
+
+		Fin Mientras
+
+		AVZ(sec, v)
+
+	Fin Mientras
+
+	p:=prim
+
+	Mientras (p<>nil) hacer
+		Escribir("Codigo pack: ",*p.cod_pack)
+		Escribir("Cantidad preferencias alta: ",*p.cant_alta)
+		Escribir("Cantidad preferencias deseable: ",*p.cant_des)
+
+		Si (*p.cant_alta>*p.cant_des) entonces
+			Escribir("Este pack posee mayor cantidad de preferencia alta que deseable")
+		p:=*p.prox
+	Fin Mientras
+
+	edad_prom:=edad_prom/cant_nul
+
+	Escribir("La edad promedio de clientes que indicaron preferencia nula es de ",edad_prom)
+
+	porcentaje:=(cant_prem_pref*100)/cant_cli
+
+	Escribir("El porcentaje de clientes Premium que registraron preferencias es de: ",porcentaje,"%)
+
+	Cerrar(sec)
+
+Fin Proceso
+
+
+
+//consigna 2
+
+Accion bromatología() es
+
+Ambiente
+
+	control=registro
+		clave=registro
+			mes_visita:N(2)
+			nro_emp:N(6)
+		fin registro
+		raz_soc:AN(15)
+		categoria:1..3
+		habilitado:"si","no"
+		capacidad:N(3)
+	fin registro
+
+	reg_c: control
+	arch_c: archivo de control ordenado por clave
+
+	A: Arreglo [1..12,1..3] de entero
+
+	cant_menor, tot_resto, tot_nohab, menor, menor_mes, menor_cat, porcentaje: entero
+
+Proceso
+
+	Para i:=1 a 12 hacer
+		Para j:=1 a 3 hacer
+			A[i,j]:=0
+		Fin Para
+	Fin Para
+
+	ABRIR E/ (arch_c)
+	LEER(arch_c, reg_c)
+
+	cant_menor:=0
+	tot_resto:=0
+	tot_nohab:=0
+
+	Mientras NFDA (arch_c) hacer
+
+		Si (reg_c.habilitado="si") entonces
+
+			A[reg_c.clave.mes_visita, reg_c.categoria]:=A[reg_c.clave.mes_visita, reg_c.categoria]+1
+
+			Si (reg_c.capacidad<100) entonces
+				cant_menor:=cant_menor+1
+			Fin Si
+
+		Sino
+			tot_nohab:=tot_nohab+1
+		Fin Si
+
+		tot_resto:=tot_resto+1
+
+		LEER(arch_c, reg_c)
+
+	Fin Mientras
+
+	menor:=HV
+
+	Para i:=1 a 12 hacer
+		Para j:=1 a 3 hacer
+
+			Escribir("En el mes ",i," y en la categoria ",j," hubo ",A[i,j]," restaurantes habilitados")
+
+			Si (A[i,j]<menor) entonces
+				menor:=A[i,j]
+				menor_mes:=i
+				menor_cat:=j
+			Fin Si
+
+		Fin Para
+	Fin Para
+
+	Escribir("La cantidad de restaurantes cuya capacidad máxima habilitada no supera las 100 personas es de: ",cant_menor)
+
+	Escribir("El mes ",menor_mes," y la categoria ",menor_cat," tuvieron la menor cantidad de habilitaciones: ",menor)
+
+	porcentaje:=(tot_nohab*100)/tot_resto
+
+	Escribir("El porcentaje de restaurantes no habilitados es de ",porcentaje,"%)
+
+
+	CERRAR(arch_c)
+
+Fin Proceso

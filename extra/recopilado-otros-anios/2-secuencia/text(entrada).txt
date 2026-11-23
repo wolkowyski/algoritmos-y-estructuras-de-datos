@@ -1,0 +1,1 @@
+Thi distribution includes a sample character Kung Fu Man You can check his movelist in the readme file in his directory

@@ -1,0 +1,105 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  1er Parcial 2023 - Corte de control (resolución hecha en el parcial)
+//
+//  Archivo de ventas de entradas ordenado por provincia, ciudad, plataforma
+//  y fecha. Se pide (enunciado reconstruido a partir de la resolución):
+//    - Por ciudad y por provincia, la cantidad de ventas de más de 7500
+//      entradas, y el total general.
+//    - Un archivo de salida con el total de entradas vendidas en julio de
+//      2023 por cada provincia.
+//  Los enunciados de los parciales están en la carpeta enunciados/.
+// ==========================================================================
+
+Acción CorteControl es
+	Ambiente
+		Fecha = Registro
+			aa: N(4)
+			mm: 1..12
+			dd: 1..31
+		FinRegistro
+
+		Ventas = Registro
+			provincia: AN(30)
+			ciudad: AN(30)
+			plataforma: AN(30)
+			fecha: Fecha
+			entradas: N(5)
+		FinRegistro
+
+		Salida = Registro
+			provincia: AN(30)
+			entradas: N(7)
+		FinRegistro
+
+		ArchVentas: archivo de Ventas ordenado por provincia, ciudad, plataforma y fecha
+		RegVentas: Ventas
+		ArchSalida: archivo de Salida ordenado por provincia
+		RegSalida: Salida
+
+		TotProvincia: N(6)
+		TotCiudad: N(6)
+		TotGral: N(7)
+		EntradasJulio: N(7)
+
+		ResProvincia: AN(30)
+		ResCiudad: AN(30)
+
+		Procedimiento CorteCiudad es
+			Escribir("   Ciudad ", ResCiudad, ": ", TotCiudad, " ventas de más de 7500 entradas")
+			TotProvincia:= TotProvincia + TotCiudad
+			TotCiudad:= 0
+			ResCiudad:= RegVentas.ciudad
+		FinProcedimiento
+
+		Procedimiento CorteProvincia es
+			CorteCiudad
+			Escribir("El total en la provincia de: ", ResProvincia, " es de: ", TotProvincia)
+			// Se graba el total de julio de la provincia que terminó (no el registro actual)
+			RegSalida.provincia:= ResProvincia
+			RegSalida.entradas:= EntradasJulio
+			Escribir(ArchSalida, RegSalida)
+			TotGral:= TotGral + TotProvincia
+			TotProvincia:= 0
+			EntradasJulio:= 0
+			ResProvincia:= RegVentas.provincia
+		FinProcedimiento
+
+	Proceso
+		Abrir E/ (ArchVentas)
+		Abrir /S (ArchSalida)
+		Leer(ArchVentas, RegVentas)
+		TotProvincia:= 0
+		TotCiudad:= 0
+		TotGral:= 0
+		EntradasJulio:= 0
+
+		ResProvincia:= RegVentas.provincia
+		ResCiudad:= RegVentas.ciudad
+
+		Mientras No FDA(ArchVentas) hacer
+			// Tratar corte
+			Si RegVentas.provincia <> ResProvincia entonces
+				CorteProvincia
+			SiNo
+				Si RegVentas.ciudad <> ResCiudad entonces
+					CorteCiudad
+				FinSi
+			FinSi
+
+			// Tratar registro
+			Si RegVentas.entradas > 7500 entonces
+				TotCiudad:= TotCiudad + 1
+			FinSi
+			Si (RegVentas.fecha.aa = 2023) ^ (RegVentas.fecha.mm = 7) entonces // julio 2023
+				EntradasJulio:= EntradasJulio + RegVentas.entradas
+			FinSi
+
+			Leer(ArchVentas, RegVentas)
+		FinMientras
+
+		CorteProvincia
+		Escribir("Total general de ventas de más de 7500 entradas: ", TotGral)
+		Cerrar(ArchVentas)
+		Cerrar(ArchSalida)
+FinAcción

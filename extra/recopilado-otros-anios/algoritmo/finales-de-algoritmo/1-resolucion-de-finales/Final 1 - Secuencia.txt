@@ -1,0 +1,131 @@
+La empresa TICKET-TEC ha generado una secuencia de caracteres para almacenar informacion de sus ventas a los eventos del fin de semana:
+EJEMPLO:
+17/12/2011-1-I45-20:30|17/12/2011-3-D12-22.30|18/12/2011-2-C22-20:30
+(fecha de evento-codigo de evento [1..3]-butaca [sector I,C o D,numero [dos caracteres]]-horario evento [hh:mm, solo hay dos horarios 20.30 y 22.30])
+
+Se desea generar una secuencia por cada evento por separado y un promedio de ventas de tickets por cada horario en cada una.
+
+Ejercicio_Final_Emi:
+AMBIENTE:
+
+S,S1,S2,S3,: secuencia de caracteres;
+v,v1,v2,v3,E,H: caracter;
+A: Arreglo de [1..12] de caracteres;
+B: Arreglo de [1..6] de caracteres;
+C: Arreglo de [1..3] de caracteres;
+i,j,k,TOTAL1,TOTAL2,TOTAL3: entero;
+Ven_1_20, Ven_1_22,Ven_2_20, Ven_2_22, Ven_3_20, Ven_3_22: entero;
+
+ALGORITMO:
+ARR(s) AVZ (s,v)
+CREAR(s1) CREAR(s2) CREAR(s3)
+Ven_1_20:=0;Ven_1_22:=0;Ven_2_20:=0;Ven_2_22:=0;Ven_3_20:=0;Ven_3_22:=0;
+ 
+TOTAL1:=0;TOTAL2:=0;TOTAL3:=0;
+
+ Mientras v <> '*' hacer
+	Mientras v <> '|' hacer
+		
+		para i:= 1 a 12 hacer
+			A[i]:= v;
+			avz (s,v)
+		Fin Para.
+	 E:= v
+	 avz(s,v)
+		Para j:= 1 a 6 hacer 
+			B[j]:= v;
+			avz(s,v)
+		Fin Para
+		H:=v
+		avz(s,v)
+		Para k:= 1 a 3 hacer
+			C[k]:=v;
+			avz (s,v)
+		Fin Para
+		Segun E  hacer
+			= '1' : PRIMERA
+			= '2' : SEGUNDA
+			= '3' : TERCERA
+		Fin Segun.
+	 HORARIOS
+	avz (s,v)			 {avanzo '|'}
+	Fin Mientras
+	avz (s,v)
+Fin Mientas
+
+esc ('cantidad de tickets vendidos en el evento 1 a las 20:30hs son:', (ven_1_20/TOTAL1));
+esc ('cantidad de tickets vendidos en el evento 1 a las 22:30hs son:', (ven_1_22/TOTAL1));
+esc ('cantidad de tickets vendidos en el evento 2 a las 20:30hs son:', (ven_2_20/TOTAL2));
+esc ('cantidad de tickets vendidos en el evento 2 a las 22:30hs son:', (ven_2_22/TOTAL2));
+esc ('cantidad de tickets vendidos en el evento 3 a las 20:30hs son:', (ven_3_20/TOTAL3));
+esc ('cantidad de tickets vendidos en el evento 3 a las 22:30hs son:', (ven_3_22/TOTAL3));
+Fin Accion.
+
+Sub Accion PRIMERA es:
+	Para i:= 1 a 12 hacer
+		V1:= A[i];
+		es(S1,V1);
+	Fin Para
+	Para i:= 1 a 6 hacer
+		V1:= B[j];
+		es(S1,V1);
+	Fin Para
+	Para i:= 1 a 3 hacer
+		V1:= C[k];
+		es(S1,V1);
+	Fin Para
+Fin SubAccion.
+Sub Accion SEGUNDA es:
+	Para i:= 1 a 12 hacer
+		V2:= A[i];
+		es(S2,V2);
+	Fin Para
+	Para i:= 1 a 6 hacer
+		V2:= B[j];
+		es(S2,V2);
+	Fin Para
+	Para i:= 1 a 3 hacer
+		V2:= C[k];
+		es(S2,V2);
+	Fin Para
+
+Fin SubAccion.
+Sub Accion TERCERA es:
+	Para i:= 1 a 12 hacer
+		V3:= A[i];
+		es(S3,V3);
+	Fin Para
+	Para i:= 1 a 6 hacer
+		V3:= B[j];
+		es(S3,V3);
+	Fin Para
+	Para i:= 1 a 3 hacer
+		V3:= C[k];
+		es(S3,V3);
+	Fin Para
+Fin SubAccion.
+
+Sub Accion HORARIOS es:
+	
+		Si H= '0' entonces
+		 Segun E hacer
+				= '1' : Ven_1_20:= Ven_1_20 + 1; TOTAL1:=TOTAL1 + 1;
+				= '2' : Ven_2_20:= Ven_2_20 + 1; TOTAL2:=TOTAL2 + 1;
+				= '3' : Ven_3_20:= Ven_3_20 + 1; TOTAL3:=TOTAL3 + 1;
+		 Fin Segun.
+		Sino
+			Segun E hacer
+				= '1' : Ven_1_22:= Ven_1_22 + 1; TOTAL1:=TOTAL1 + 1;
+				= '2' : Ven_2_22:= Ven_2_22 + 1; TOTAL2:=TOTAL2 + 1;
+				= '3' : Ven_3_22:= Ven_3_22 + 1; TOTAL3:=TOTAL3 + 1;
+		 Fin Segun.
+	
+	
+Fin subaccion.
+	
+	
+	
+	
+	
+	
+	

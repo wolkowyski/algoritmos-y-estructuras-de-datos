@@ -1,0 +1,24 @@
+ACCION_Ackerman_ES
+    AMBIENTE
+        x,y,r: entero
+
+    Funcion ACK(m, n: entero):entero es
+        Si (m = 0) entonces
+            ACK:= n + 1
+        Sino
+            Si (n = 0) entonces
+                ACK:= ACK(m-1, 1)
+            Sino
+                ACK:= ACK(m-1, ACK(m, n-1))
+            Fin_Si
+        Fin_Si
+    Fin_Funcion
+    
+    PROCESO
+        Escribir("Ingrese un número, por favor")
+        Leer(x)
+        Escribir("Ingrese otro número, por favor")
+        Leer(y)
+        r:=ACK(x,y)
+        Escribir("El resultado obtenido por la Función Ackerman es: ", r)
+FIN_ACCION

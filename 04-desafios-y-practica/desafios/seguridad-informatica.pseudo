@@ -1,0 +1,108 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Desafío de clase - Seguridad informática (subsecuencias)
+// ==========================================================================
+
+// En seguridad informática muchas veces se usa el cifrado, un procedimiento
+// que transforma un mensaje para que sea difícil de comprender para quien no
+// sepa cómo desencriptarlo. Se cuenta con una secuencia de caracteres con
+// varios mensajes encriptados. Cada mensaje se compone por:
+//   - 1 número entre 1 y 5,
+//   - un mensaje de longitud desconocida que finaliza en un signo +,
+//   - un caracter N (no enviado) o E (entregado).
+// Obtener una nueva secuencia con los mensajes desencriptados:
+//   - Los números del 1 al 5 se transforman en vocales (1-a, 2-e, 3-i, 4-o, 5-u).
+//   - Las consonantes se desencriptan con la función CONSO (no se desarrolla).
+//   - El símbolo # representa un espacio en blanco.
+//   - Cualquier otro caracter es un error y se descarta.
+// La secuencia finaliza en un "*". Además informar:
+//   - Porcentaje de mensajes entregados sobre el total de mensajes.
+//   - Cantidad de palabras del mensaje más largo.
+//   - Total de caracteres erróneos en la secuencia.
+//
+// Interpretación: el número inicial forma parte del mensaje (es una vocal
+// encriptada); el "mensaje más largo" es el que tiene más palabras.
+
+Acción Seguridad_Informatica es
+Ambiente
+	Sec, SecD: secuencia de caracteres
+	v: caracter
+	letras = {"A".."Z", "a".."z"}
+	total_mensajes, entregados, total_error: entero
+	palabras, max_palabras: entero
+	en_palabra: booleano
+
+	Función CONSO (c: caracter): caracter es
+		// dada por la cátedra: no se desarrolla
+	FinFunción
+
+	Función Vocal (c: caracter): caracter es
+		Según c hacer
+			"1": Vocal:= "a"
+			"2": Vocal:= "e"
+			"3": Vocal:= "i"
+			"4": Vocal:= "o"
+			"5": Vocal:= "u"
+		FinSegún
+	FinFunción
+
+	// Escribe un caracter del mensaje y lleva la cuenta de palabras
+	Procedimiento EscribirLetra (c: caracter) es
+		ESC(SecD, c)
+		Si No en_palabra entonces // empieza una palabra nueva
+			palabras:= palabras + 1
+			en_palabra:= Verdadero
+		FinSi
+	FinProcedimiento
+
+Proceso
+	ARR(Sec)
+	AVZ(Sec, v)
+	CREAR(SecD)
+	total_mensajes:= 0
+	entregados:= 0
+	total_error:= 0
+	max_palabras:= 0
+
+	Mientras v <> "*" hacer // un mensaje por vuelta
+		total_mensajes:= total_mensajes + 1
+		palabras:= 0
+		en_palabra:= Falso
+
+		Mientras v <> "+" hacer // cuerpo del mensaje (incluye el número inicial)
+			Si v en {"1", "2", "3", "4", "5"} entonces
+				EscribirLetra(Vocal(v))
+			Sino
+				Si v = "#" entonces
+					ESC(SecD, " ")
+					en_palabra:= Falso // el espacio corta la palabra
+				Sino
+					Si v en letras entonces
+						EscribirLetra(CONSO(v))
+					Sino
+						total_error:= total_error + 1 // se descarta
+					FinSi
+				FinSi
+			FinSi
+			AVZ(Sec, v)
+		FinMientras
+
+		AVZ(Sec, v) // salteo el "+": ahora estoy en el estado (N/E)
+		Si v = "E" entonces
+			entregados:= entregados + 1
+		FinSi
+		ESC(SecD, "+") // separador entre mensajes en la salida
+		Si palabras > max_palabras entonces
+			max_palabras:= palabras
+		FinSi
+		AVZ(Sec, v) // paso al próximo mensaje
+	FinMientras
+
+	Si total_mensajes > 0 entonces
+		Escribir("Porcentaje de mensajes entregados: ", entregados * 100 / total_mensajes, " %")
+	FinSi
+	Escribir("Cantidad de palabras del mensaje más largo: ", max_palabras)
+	Escribir("Total de caracteres erróneos de la secuencia: ", total_error)
+	CERRAR(Sec)
+	CERRAR(SecD)
+FinAcción

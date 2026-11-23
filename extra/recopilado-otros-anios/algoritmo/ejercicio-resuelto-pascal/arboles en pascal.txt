@@ -1,0 +1,88 @@
+uses
+     crt;
+  type
+    arbol = ^pnodos;
+    pnodos = record
+           dat : char;
+           izq, der : arbol;
+         end;
+  var
+    nodo : arbol;
+    n, ta : integer;
+ 
+ 
+  procedure carga_arbol(var no : arbol; v : char);
+   begin
+       if no = nil then
+       begin
+          new(no);
+          no^.dat := v;
+          no^.izq := nil;
+          no^.der := nil;
+       end
+    else
+       if v > no^.dat then
+       carga_arbol(no^.izq,v);
+       if v < no^.dat then
+       carga_arbol(no^.der,v);
+   end;
+ 
+   procedure muestra_preorden(n : arbol);
+   begin
+       if n <> nil then
+       begin
+          write(' ',n^.dat);
+          muestra_preorden(n^.izq);
+          muestra_preorden(n^.der);
+       end;
+   end;
+ 
+   procedure muestra_inorden(n : arbol);
+   begin
+      if n <> nil then
+      begin
+      muestra_inorden(n^.izq);
+      write(' ',n^.dat);
+      muestra_inorden(n^.der);
+      end;
+   end;
+ 
+   procedure muestra_postorden(n : arbol);
+   begin
+      if n <> nil then
+      begin
+      muestra_inorden(n^.izq);
+      muestra_inorden(n^.der);
+      write(' ',n^.dat);
+      end;
+   end;
+ 
+ 
+  procedure altura(a : arbol; var tama : integer);
+  var
+    p, k : integer;
+  begin
+     if a = nil then
+     tama := 0
+    else
+       begin
+          altura(a^.izq,p);
+          altura(a^.der,k);
+      if p > k then
+      k := p;
+      tama := k + 1;
+      end;
+   end;
+ 
+  begin
+      clrscr;
+      ta := 0;
+      nodo := nil;
+      for n := 1 to 16 do
+      carga_arbol(nodo,chr(n + 64));
+      muestra_preorden(nodo);
+      writeln;
+      altura(nodo,ta);
+      writeln('   La Altura Es : ',ta);
+      readln;
+  end.

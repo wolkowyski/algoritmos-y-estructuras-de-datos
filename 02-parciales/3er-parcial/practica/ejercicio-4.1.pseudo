@@ -1,0 +1,100 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  3er Parcial - Práctica - Ejercicio 4.1 de la guía (lista por posición)
+// ==========================================================================
+
+// Diseñar un algoritmo para acceder, eliminar o insertar el k-ésimo elemento
+// de una lista (siendo k una posición dada). Si la lista está vacía o si el
+// valor de k está fuera del rango del índice de la lista, invocar al
+// procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento
+// solicitado.
+//
+// La búsqueda es por POSICIÓN (contando nodos), no por el contenido del nodo.
+
+Accion Ejercicio4_1 es
+    Ambiente
+        Nodo = Registro
+            Apell_Nombre: AN(30)
+            Edad: N(2)
+            Localidad: AN(30)
+            prox: puntero a Nodo
+        FinRegistro
+
+        Prim, p, q, ant: puntero a Nodo
+        k, pos: entero
+        eleccion: ("1", "2", "3", "4")
+
+        Procedimiento ERROR es
+            Escribir("ERROR: la lista está vacía o la posición ", k, " está fuera de rango")
+        FinProcedimiento
+
+        // Deja p en el nodo k (o en nil si no existe) y ant en el anterior
+        Procedimiento Posicionar es
+            p:= Prim
+            ant:= nil
+            pos:= 1
+            Mientras (p <> nil) y (pos < k) hacer
+                ant:= p
+                p:= *p.prox
+                pos:= pos + 1
+            FinMientras
+        FinProcedimiento
+
+        Procedimiento Acceso es
+            Posicionar
+            Si (Prim = nil) o (k < 1) o (p = nil) entonces
+                ERROR
+            Sino
+                Escribir(*p.Apell_Nombre, " - ", *p.Edad, " - ", *p.Localidad)
+            FinSi
+        FinProcedimiento
+
+        Procedimiento Eliminacion es
+            Posicionar
+            Si (Prim = nil) o (k < 1) o (p = nil) entonces
+                ERROR
+            Sino
+                Si (ant = nil) entonces // k = 1
+                    Prim:= *p.prox
+                Sino
+                    *ant.prox:= *p.prox
+                FinSi
+                Disponer(p)
+            FinSi
+        FinProcedimiento
+
+        // Insertar en la posición k: el nuevo nodo pasa a ser el k-ésimo.
+        // k puede valer cantidad + 1 (insertar al final); en lista vacía solo k = 1.
+        Procedimiento Insercion es
+            Posicionar
+            Si (k < 1) o ((p = nil) y (pos < k)) entonces
+                ERROR
+            Sino
+                Nuevo(q)
+                Escribir("Ingrese apellido y nombre, edad y localidad")
+                Leer(*q.Apell_Nombre, *q.Edad, *q.Localidad)
+                *q.prox:= p
+                Si (ant = nil) entonces
+                    Prim:= q
+                Sino
+                    *ant.prox:= q
+                FinSi
+            FinSi
+        FinProcedimiento
+
+    Proceso
+        Prim:= nil
+        Repetir
+            Escribir("1- Acceder    2- Eliminar    3- Insertar    4- Salir")
+            Leer(eleccion)
+            Si eleccion <> "4" entonces
+                Escribir("Ingrese la posición k")
+                Leer(k)
+                Segun (eleccion) hacer
+                    "1": Acceso
+                    "2": Eliminacion
+                    "3": Insercion
+                FinSegun
+            FinSi
+        Hasta que eleccion = "4"
+FinAccion

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+
+  <html>
+    <head>
+      <title>El Dise&ntilde;o Descendente - Subprogramas </title>
+
+      <link rel="stylesheet" type="text/css" href="atrib.css">
+    </head>
+
+    <body>
+      <div class="cabecera">Introducci&oacute;n a la Programaci&oacute;n<br>
+                            <a href="http://ar.geocities.com/luis_pirir/index.html" class="cab"
+                            title="visita la p&aacute;gina de introprogra">http://ar.geocities.com/luis_pirir/index.html</a></div>
+      <h4 title="metodo top-down">El Dise&ntilde;o Descendente: Subprogramas</h4>
+      <p class="entrada">Uno de los m&eacute;todos fundamentales para resolver un problema es dividirlo en problemas mas peque&ntilde;os, llamados <em>subproblemas</em>, en referencias sucesivas.
+      <p>Estos problemas a su vez pueden ser divididos repetidamente en problemas mas peque&ntilde;os hasta que los problemas mas peque&ntilde;os puedan ser solucionados.
+      <p>Esta t&eacute;cnica de dividir el problema principal en subproblemas se denomina frecuentemente <em>divide y vencer&aacute;s</em>. &nbsp;El m&eacute;todo de dise&ntilde;o se denomina dise&ntilde;o
+         descendente, debido a que se comienza en la parte superior con un problema general y se dise&ntilde;an soluciones especificas a sus subproblemas.
+      <p>El problema principal se resuelve con el programa principal (tambi&eacute;n llamado conductor del programa), y los subproblemas (m&oacute;dulos) mediante subprogramas: <em>procedimientos y funciones</em>.
+      <p>Un subprograma realiza una tarea concreta que se describe con una serie de instrucciones.
+      <div class="codigo"><p class="entrada">Veamos un ejemplo:
+        <p>Leer el radio de un c&iacute;rculo y calcular e imprimir su superficie y longitud.
+        <ul>
+          <li><strong>An&aacute;lisis</strong><br>
+              <u>Especificaciones de Entrada</u><br>
+               &nbsp;Radio: Real<br>
+              <u>Especificaciones de Salida</u><br>
+               &nbsp;Superficie: Real<br>
+               &nbsp;Longitud:   Real<br>
+          <li><strong>Algoritmo</strong>
+              <ol>
+                <li>Leer el valor del radio
+                <li>Calcular la Superficie
+                <li>Calcular la Longitud
+                <li>Visualizar los valores de la superficie y la longitud
+              </ol>
+          <li><strong>Refinamiento del Algoritmo</strong>
+              <ol>
+                <li>Leer el valor del radio
+                <li>Calcular la superficie
+                  <ol>
+                    <li>pi <- 3.141592 (constante pi)
+                    <li>S <- pi * Radio * Radio
+                  </ol>
+                <li>Calcular la longitud
+                  <ol>
+                    <li>pi <- 3.141592
+                    <li>L <- 2 * pi * Radio
+                  </ol>
+                <li>Visualizar los valores de la superficie y la longitud
+              </ol>
+        </ul>      
+      </div>
+      <p style="text-align: right;"><a href="cap3.htm" class="cambio" title="Programacion Modular">Programaci&oacute;n Modular</a> &nbsp;<a href="tutor.htm"
+      class="cambio" title="indice del tutor">Indice</a> &nbsp;<a href="modular.htm" class="cambio" title="dise&ntilde;o Modular">Dise&ntilde;o Modular</a></p>
+      <address>Copyright &copy; Todos los derechos reservados. 2001-2002.<br>Luis Enrique Pirir Aguilar &nbsp;e-mail: <a href="luis_pirir@yahoo.com.ar" title="escribir sugerencias"
+      class="cab">luis_pirir@yahoo.com.ar</a></address>
+
+    </body>
+  </html>

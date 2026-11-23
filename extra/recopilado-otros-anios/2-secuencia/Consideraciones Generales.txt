@@ -1,0 +1,43 @@
+ 1- Básicamente de PODER podes meter todas las etiquetas en todos lados.
+Vamos a limitar para este trabajo los siguientes:
+ - Las etiquetas de header <h1> <h2> y demas solo pueden contener texto plano (no otras etiquetas)
+ - Las etiquetas de lista <ul> <ol> solo contendrán elementos de item de lista <li>, donde ese item si puede tener cualquier cosa dentro.
+ - lo mismo las tablas, contendrán solo la estructura (filas, theader tfooter, tbody como muestra el enunciado) y recien los elementos de celda <th> y <td> puedan tener cualquier cosa dentro
+ - <head> contendrá solo las meta y el title
+ - <title> tiene solo texto
+ - El resto de etiquetas pueden tener cualquier cosa adentro
+
+2- Las etiquetas meta decimos que es obligatorio que esté meta chartset (lo cual obliga que haya un head) y además pueden venir otras genéricas (con name y content).
+ No nos importa qué venga dentro de name ="ACA" y dentro de content="aca" Solo que sea texto..
+
+3- El atributo lang es obligatorio, también considerar que el valor del atributo deben ser dos letras, no importa cuales.  Por ejemplo (lang="en", lang="es", lang="fr", lang="ag" .. )
+
+4- Respecto a los atributos, nos dimos cuenta que en los listados no incluímos algunos que sí ejemplificamos. Entonoces resumiendo y marcando los obligatorios:
+Globales (para todos): CLASS y ID
+Específicos, según el elemento (tag):
+<ol> TYPE 
+<li> VALUE
+<a> HREF (requerido)  y TARGET 
+<img> ALT SRC(reuqerido) WIDTH HEIGHT
+
+Los ejemplificados que también incluímos:
+<html> Lang (requerido)
+<table> BORDER 
+<meta> dichas mas arriba
+
+5- Todos los atributos (obligatorios y opcionales) pueden aparecer una sola vez dentro del tag. Primero vendrán los globales y luego los particulares de la etiqueta, siguiendo el orden indicado en el pdf del tp
+
+6- El atributo ID (utilizado por distintos tipos de etiquetas) puede ser definido una sola vez para todas las etiqueta
+
+7- ATRIBGLOBALES puede ser un no terminal que se emplee en varias producciones (dentro de varias etiquetas). Sin embargo, considerar para cada una de ellas el caso en el que no aparezcan ningún ATRIBGLOBALES (en lugar de una producción ATRIBGLOBALES --> lambda)
+
+AVERIGUAR
+=========
+
+%option noyywrap
+yyerror
+yyinitial
+yybegin
+
+
+

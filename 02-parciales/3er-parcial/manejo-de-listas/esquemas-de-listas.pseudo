@@ -173,7 +173,7 @@ FinSi
 // ------------------------- EJERCICIOS PARA PRACTICAR -----------------------
 // 1. Dada una lista simplemente encadenada de números enteros, generar otra
 //    lista con los nodos cuyos datos sean múltiplos de 3, eliminándolos de la
-//    lista original (inserción y eliminación). Ver ../../01-guia-de-trabajos-practicos/4-listas/4.2.pseudo
+//    lista original (inserción y eliminación). Ver ../../../01-guia-de-trabajos-practicos/4-listas/4.2.pseudo
 // 2. Dada una lista doble con las provincias (nombre, capital, habitantes y
 //    analfabetos) ordenada por nombre, generar una lista simple ordenada en
 //    forma decreciente por analfabetos.

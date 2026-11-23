@@ -1,0 +1,430 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.1
+// Escribir un algoritmo que tome como entrada 2 arreglos A y B de enteros,
+// de longitud n y devuelva como salida otro vector C, conteniendo los
+// componentes de B para los que los correspondientes de A sean negativos.
+// Además emitir el vector C e informar el valor y la posición del elemento
+// mayor de C.
+// --------------------------------------------------------------------------
+
+Acción Complementario3_1 es
+	Ambiente
+		N = 100
+		A, B, C: arreglo [1..N] de entero
+		n, i, k, pos_max: entero
+	Proceso
+		Escribir("Longitud n de los arreglos")
+		Leer(n)
+		Para i:= 1 a n hacer Leer(A[i], B[i]) FinPara
+		k:= 0
+		Para i:= 1 a n hacer
+			Si A[i] < 0 entonces
+				k:= k + 1
+				C[k]:= B[i]
+			FinSi
+		FinPara
+		Si k = 0 entonces
+			Escribir("C quedó vacío")
+		Sino
+			pos_max:= 1
+			Para i:= 1 a k hacer
+				Escribir(C[i])
+				Si C[i] > C[pos_max] entonces pos_max:= i FinSi
+			FinPara
+			Escribir("Mayor de C: ", C[pos_max], " en la posición ", pos_max)
+		FinSi
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.2
+// Dado un vector con los siguientes datos de libros: Autor, Título, Cantidad
+// de hojas, en donde un autor puede tener varios libros, determinar cuál es
+// el Título del libro con mayor cantidad de hojas, para cada Autor,
+// generando el siguiente listado:
+//
+// * Autor* Título* Cant. de hojas
+//
+// Considerar que el arreglo está ordenado por Autor y posee 50 elementos.
+// --------------------------------------------------------------------------
+
+// Se supone el vector ordenado por Autor (así los libros de un mismo autor
+// quedan juntos y se resuelve como un corte de control sobre el arreglo).
+Acción Complementario3_2 es
+    Ambiente
+        N = 50
+        Libro = Registro
+            Autor: AN(30)
+            Titulo: AN(50)
+            Cant_Hojas: N(4)
+        FinRegistro
+        libros: arreglo de [1..N] de Libro
+        i: 1..N
+        resg_autor: AN(30)
+        titulo_max: AN(50)
+        hojas_max: N(4)
+    Proceso
+        resg_autor:= libros[1].Autor
+        titulo_max:= libros[1].Titulo
+        hojas_max:= libros[1].Cant_Hojas
+        Para i:= 2 hasta N, 1 hacer
+            Si libros[i].Autor <> resg_autor entonces // cambió el autor: emito el anterior
+                Escribir(resg_autor, " - ", titulo_max, " - ", hojas_max)
+                resg_autor:= libros[i].Autor
+                titulo_max:= libros[i].Titulo
+                hojas_max:= libros[i].Cant_Hojas
+            Sino
+                Si libros[i].Cant_Hojas > hojas_max entonces
+                    titulo_max:= libros[i].Titulo
+                    hojas_max:= libros[i].Cant_Hojas
+                FinSi
+            FinSi
+        FinPara
+        Escribir(resg_autor, " - ", titulo_max, " - ", hojas_max) // el último autor
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.3
+// En el Laboratorio de I.S.I. se desea emitir un listado de los totales de
+// horas ociosas de cada uno de los equipos (son 20 en total), ordenados en
+// forma decreciente. Para ello se tiene la siguiente información almacenada
+// en un fichero secuencial:
+//
+// |  |  |  |  |  |  |
+// | --- | --- | --- | --- | --- | --- |
+// | Codigo Equipo | Descrip | Fecha Falla | | | Cant HS Ociosas |
+// |  |  | AAAA | MM | DD |  |
+//
+// 1. Considerar que el fichero se encuentra ordenado por código de equipo.
+// 2. Considerar que el fichero está desordenado.
+// --------------------------------------------------------------------------
+
+// Los códigos de equipo se toman como 1..20. En los dos casos se acumula en
+// un arreglo de 20 y después se ordena de mayor a menor; lo que cambia es
+// cómo se acumula.
+Acción Complementario3_3 es
+	Ambiente
+		Fecha = Registro
+			aaaa: N(4); mm: 1..12; dd: 1..31
+		FinRegistro
+		Falla = Registro
+			Codigo: 1..20
+			Descrip: AN(40)
+			Fecha_Falla: Fecha
+			Horas: N(4)
+		FinRegistro
+		FALLAS: Archivo de Falla
+		R: Falla
+		Equipo = Registro
+			Codigo: 1..20
+			Horas: N(6)
+		FinRegistro
+		T: arreglo [1..20] de Equipo
+		x: Equipo
+		i, j, res: entero
+	Proceso
+		Para i:= 1 a 20 hacer T[i].Codigo:= i; T[i].Horas:= 0 FinPara
+		Abrir E/(FALLAS); Leer(FALLAS, R)
+
+		// Caso 1: fichero ordenado por código -> corte de control por equipo
+		Mientras No FDA(FALLAS) hacer
+			res:= R.Codigo
+			Mientras No FDA(FALLAS) y (R.Codigo = res) hacer
+				T[res].Horas:= T[res].Horas + R.Horas
+				Leer(FALLAS, R)
+			FinMientras
+		FinMientras
+		// Caso 2: fichero desordenado -> proceso estadístico, acceso directo por código
+		//   Mientras No FDA(FALLAS) hacer
+		//       T[R.Codigo].Horas:= T[R.Codigo].Horas + R.Horas
+		//       Leer(FALLAS, R)
+		//   FinMientras
+		Cerrar(FALLAS)
+
+		Para i:= 2 a 20 hacer // inserción, decreciente por horas
+			x:= T[i]; j:= i - 1
+			Mientras (j > 0) y (T[j].Horas < x.Horas) hacer
+				T[j + 1]:= T[j]; j:= j - 1
+			FinMientras
+			T[j + 1]:= x
+		FinPara
+		Para i:= 1 a 20 hacer
+			Escribir("Equipo ", T[i].Codigo, ": ", T[i].Horas, " horas ociosas")
+		FinPara
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.4
+// Se dispone de una secuencia con datos de alumnos de la Facultad: Nro.
+// legajo, apellido y nombre, domicilio, fecha ingreso, cant. de materias
+// aprobadas, promedio, carrera, edad.
+//
+// 1. Se desea emitir una estadística de cantidad de alumnos con más de 20
+// materias aprobadas, por carreras y grupos de edades, con el siguiente
+// formato:
+//
+//    |  |  |  |  |  |
+//    | --- | --- | --- | --- | --- |
+//    | Edades | 18 - 25 | 26 - 30 | 31 o más | Total por Carrera |
+//    | Carreras |
+//    | ISI |  |  |  |  |
+//    | IQ |  |  |  |  |
+//    | IEM |  |  |  |  |
+//    | Totales por Grupos de Edades |  |  |  |  |
+// 2. Se desea emitir una estadística de cantidad de alumnos con promedio
+// mayor o igual que 7, por carreras y grupos de edades, con el mismo formato
+// que se usó en 4.a.
+// --------------------------------------------------------------------------
+
+// Las dos estadísticas se arman en el mismo recorrido, en dos matrices de
+// 4 x 4 (3 carreras + total, 3 grupos de edad + total).
+Acción Complementario3_4 es
+	Ambiente
+		Fecha = Registro
+			aa: N(4); mm: 1..12; dd: 1..31
+		FinRegistro
+		Alumno = Registro
+			Legajo: N(5)
+			ApyNom: AN(50)
+			Domicilio: AN(60)
+			Fecha_Ingreso: Fecha
+			Aprobadas: N(2)
+			Promedio: real
+			Carrera: ("ISI", "IQ", "IEM")
+			Edad: N(2)
+		FinRegistro
+		ALUMNOS: secuencia de Alumno
+		R: Alumno
+		Mat20, Prom7: arreglo [1..4, 1..4] de entero
+		c, g, i, j: entero
+		Nombre: arreglo [1..4] de AN(25)
+	Proceso
+		Para i:= 1 a 4 hacer Para j:= 1 a 4 hacer Mat20[i,j]:= 0; Prom7[i,j]:= 0 FinPara FinPara
+		ARR(ALUMNOS); AVZ(ALUMNOS, R)
+		Mientras NFDS(ALUMNOS) hacer
+			Según R.Carrera hacer "ISI": c:= 1  "IQ": c:= 2  "IEM": c:= 3 FinSegún
+			Si R.Edad <= 25 entonces g:= 1 Sino Si R.Edad <= 30 entonces g:= 2 Sino g:= 3 FinSi FinSi
+			Si R.Aprobadas > 20 entonces // a.
+				Mat20[c,g]:= Mat20[c,g] + 1; Mat20[c,4]:= Mat20[c,4] + 1
+				Mat20[4,g]:= Mat20[4,g] + 1; Mat20[4,4]:= Mat20[4,4] + 1
+			FinSi
+			Si R.Promedio >= 7 entonces // b.
+				Prom7[c,g]:= Prom7[c,g] + 1; Prom7[c,4]:= Prom7[c,4] + 1
+				Prom7[4,g]:= Prom7[4,g] + 1; Prom7[4,4]:= Prom7[4,4] + 1
+			FinSi
+			AVZ(ALUMNOS, R)
+		FinMientras
+		CERRAR(ALUMNOS)
+		Nombre[1]:= "ISI"; Nombre[2]:= "IQ"; Nombre[3]:= "IEM"; Nombre[4]:= "Totales por edades"
+		Escribir("a. Más de 20 materias aprobadas  |  18-25 | 26-30 | 31 o más | Total")
+		Para i:= 1 a 4 hacer
+			Escribir(Nombre[i])
+			Para j:= 1 a 4 hacer Escribir(Mat20[i,j]) FinPara
+		FinPara
+		Escribir("b. Promedio >= 7  |  18-25 | 26-30 | 31 o más | Total")
+		Para i:= 1 a 4 hacer
+			Escribir(Nombre[i])
+			Para j:= 1 a 4 hacer Escribir(Prom7[i,j]) FinPara
+		FinPara
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.5
+// Dada una matriz de N x N confeccionar un algoritmo para cargarla de la
+// siguiente forma:
+//
+// * Cada a[i,j] = i + j
+// * Los elementos de la última fila  a[N,j] =  Sumatoria de  a[i,j] donde i
+// varía entre 1...(n-1)
+// * Los elementos de la última columna a[i,N] =  Sumatoria de  a[i,j] donde
+// j varía entre 1...(n-1)
+// * La posición a[N,N] = Sumatoria de a[i,j] donde i = j
+//
+// Ejemplo:
+//
+// |  |  |  |  |
+// | --- | --- | --- | --- |
+// | 2 | 3 | 4 | 9 |
+// | 3 | 4 | 5 | 12 |
+// | 2 | 3 | 4 | 9 |
+// | 4 | 5 | 6 | 15 |
+// | 9 | 12 | 15 | 12 |
+// --------------------------------------------------------------------------
+
+Acción Complementario3_5 es
+	Ambiente
+		N = 5
+		a: arreglo [1..N, 1..N] de entero
+		i, j: entero
+	Proceso
+		Para i:= 1 a N - 1 hacer
+			Para j:= 1 a N - 1 hacer
+				a[i,j]:= i + j
+			FinPara
+		FinPara
+		Para i:= 1 a N - 1 hacer a[i,N]:= 0; a[N,i]:= 0 FinPara
+		a[N,N]:= 0
+		Para i:= 1 a N - 1 hacer
+			Para j:= 1 a N - 1 hacer
+				a[i,N]:= a[i,N] + a[i,j] // suma de la fila
+				a[N,j]:= a[N,j] + a[i,j] // suma de la columna
+			FinPara
+			a[N,N]:= a[N,N] + a[i,i] // suma de la diagonal
+		FinPara
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.6
+// Se lleva a cabo una encuesta a fin de anticipar los posibles porcen¬tajes
+// de votos que obtendrán cada uno de los 4 partidos políticos de mayor peso
+// en las elecciones. Los datos solicitados a los encuestados son: partido al
+// que votara, edad, sexo y partido al que votó en las elecciones anteriores.
+// Las respuestas se tabulan de acuerdo a los si¬guientes criterios:
+//
+// * Partidos: P1, P2, P3, P4, Otro, En Blanco, Indeciso
+// * Edad: 18-25, 26-35, 36-45, 46-55, 56-65, +65
+// * Sexo: Femenino, Masculino
+//
+// Diseñe un algoritmo que, utilizando un arreglo de 4 dimensiones (partido
+// al que votara, edad, sexo , partido al que votó), permita responder a las
+// siguientes consultas:
+//
+// * Cantidad de personas de cierta edad que votarán a un Partido dado.
+// * Cantidad de personas de un sexo dado que votarán a un determinado
+// Partido.
+// * Cantidad de personas de cierta edad que votaron a un determinado Partido
+// y actualmente votarán a otro Partido dado.
+// * Cantidad de personas de un sexo dado que votaron a un determinado
+// Partido y actualmente votarán a otro Partido dado.
+// --------------------------------------------------------------------------
+
+// Mismo enunciado que el ejercicio 3.31 de la práctica: la resolución está en
+// ../3-arreglos/3.31.pseudo (arreglo E[votará, rango de edad, sexo, votó]).
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.7
+// Diseñe un algoritmo que basándose en los datos del ejercicio anterior
+// construya los siguientes cuadros:
+//
+// * Partido actual/Partido anterior
+// * Partido actual/Edad
+// * Partido actual/Edad/Sexo
+// --------------------------------------------------------------------------
+
+// Con el arreglo E del 3.31 de la práctica ya cargado, cada cuadro se obtiene
+// sumando las dimensiones que no aparecen en él.
+Acción Complementario3_7 es
+	Ambiente
+		E: arreglo [1..7, 1..6, 1..2, 1..7] de entero // (cargado como en el 3.31)
+		a, b, c, d, total: entero
+	Proceso
+		Escribir("Partido actual / Partido anterior")
+		Para a:= 1 a 7 hacer
+			Para d:= 1 a 7 hacer
+				total:= 0
+				Para b:= 1 a 6 hacer Para c:= 1 a 2 hacer total:= total + E[a,b,c,d] FinPara FinPara
+				Escribir(total)
+			FinPara
+		FinPara
+		Escribir("Partido actual / Edad")
+		Para a:= 1 a 7 hacer
+			Para b:= 1 a 6 hacer
+				total:= 0
+				Para c:= 1 a 2 hacer Para d:= 1 a 7 hacer total:= total + E[a,b,c,d] FinPara FinPara
+				Escribir(total)
+			FinPara
+		FinPara
+		Escribir("Partido actual / Edad / Sexo")
+		Para a:= 1 a 7 hacer
+			Para b:= 1 a 6 hacer
+				Para c:= 1 a 2 hacer
+					total:= 0
+					Para d:= 1 a 7 hacer total:= total + E[a,b,c,d] FinPara
+					Escribir(total)
+				FinPara
+			FinPara
+		FinPara
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.8
+// Con la secuencia de facturas del ejercicio 26, se precisa generar otra
+// secuencia actualizada, a partir de una secuencia de Descuentos a clientes,
+// la cual solamente contiene el Número correspondiente al cliente, su Razón
+// Social, y Porcentaje de descuento. Dicho porcentaje se fija a través de
+// una tabla que establece la relación entre el total (con IVA) de las
+// compras realizadas en el mes, considerado por rangos, y un determinado
+// descuento del que gozará el cliente en el mes siguiente. Se desea además
+// contar con un listado de los descuentos establecidos para el mes.
+// Construya un algoritmo que satisfaga los requerimientos enunciados;
+// considere que la secuencia de facturas es consistente, es decir no hay
+// facturas de clientes no registrados, pero pueden existir clientes que no
+// hayan efectuado compras en el mes.
+// --------------------------------------------------------------------------
+
+// Se asume que las dos secuencias están ordenadas por número de cliente
+// (facturas del ejercicio 3.27 de la práctica). La tabla de descuentos por
+// rango de compras se guarda en un arreglo de registros.
+Acción Complementario3_8 es
+	Ambiente
+		Factura = Registro
+			Nro_Factura, Nro_Cliente: N(8)
+			Zona: 1..9
+			Tipo: 1..4
+			Cantidad: N(6)
+			Gravado, Exento, IVA: real
+		FinRegistro
+		Descuento = Registro
+			Nro_Cliente: N(8)
+			Razon_Social: AN(50)
+			Porcentaje: real
+		FinRegistro
+		Rango = Registro
+			Hasta: real // tope del rango (total con IVA)
+			Porc: real
+		FinRegistro
+		FACTURAS: secuencia de Factura
+		DESCUENTOS, DESCUENTOS_ACT: secuencia de Descuento
+		RF: Factura
+		RD: Descuento
+		Tabla: arreglo [1..5] de Rango
+		total: real
+		i: entero
+	Proceso
+		// Tabla de ejemplo: hasta $10.000 -> 0%, hasta 50.000 -> 2%, ...
+		Tabla[1].Hasta:= 10000;    Tabla[1].Porc:= 0
+		Tabla[2].Hasta:= 50000;    Tabla[2].Porc:= 2
+		Tabla[3].Hasta:= 100000;   Tabla[3].Porc:= 5
+		Tabla[4].Hasta:= 500000;   Tabla[4].Porc:= 8
+		Tabla[5].Hasta:= 999999999; Tabla[5].Porc:= 10
+		ARR(FACTURAS); AVZ(FACTURAS, RF)
+		ARR(DESCUENTOS); AVZ(DESCUENTOS, RD)
+		CREAR(DESCUENTOS_ACT)
+		Escribir("Descuentos para el mes siguiente")
+		Mientras NFDS(DESCUENTOS) hacer // un registro por cliente
+			total:= 0
+			Mientras NFDS(FACTURAS) y (RF.Nro_Cliente = RD.Nro_Cliente) hacer
+				total:= total + RF.Gravado + RF.Exento + RF.IVA
+				AVZ(FACTURAS, RF)
+			FinMientras
+			i:= 1 // busco el rango (lineal con centinela)
+			Mientras total > Tabla[i].Hasta hacer i:= i + 1 FinMientras
+			RD.Porcentaje:= Tabla[i].Porc // sin compras -> primer rango
+			ESC(DESCUENTOS_ACT, RD)
+			Escribir(RD.Nro_Cliente, " - ", RD.Razon_Social, " - ", RD.Porcentaje, "%")
+			AVZ(DESCUENTOS, RD)
+		FinMientras
+		CERRAR(FACTURAS); CERRAR(DESCUENTOS); CERRAR(DESCUENTOS_ACT)
+FinAcción

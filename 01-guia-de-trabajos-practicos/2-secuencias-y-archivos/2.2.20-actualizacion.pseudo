@@ -1,0 +1,92 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.20 (actualización por lotes)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.20
+// Se desea generar una secuencia, a partir de la secuencia del problema
+// 2.01, donde se actualice la fecha de aprobación del último exámen, para
+// ello se cuenta con información del último turno de exámen, según el
+// siguiente detalle:
+//
+// EXAMENES Ordenado por Nro_Legajo
+//
+// * Nro_Legajo* Carrera* Cod_Materia* Fecha_Examen* Nota
+//
+// Se debe considerar que no necesariamente todos los alumnos se presentan en
+// cada turno de exámen, y que un alumno puede presentarse a rendir más de
+// una materia en un mismo turno. Supónganse ambas secuencias ordenadas por
+// Número de Legajo.
+// --------------------------------------------------------------------------
+
+// Maestro: alumnos del 2.2.1 (ordenado por legajo). Movimientos: exámenes del
+// último turno, varios por legajo. Se actualiza la fecha del último examen
+// aprobado (nota >= 6) y su nota.
+Accion Ejercicio2_2_20 es
+Ambiente
+	Fecha = Registro
+		dd: 1..31; mm: 1..12; aa: 1900..2100
+	FinRegistro
+	Datos = Registro
+		Apellido_Nombre: AN(50)
+		Carrera: ("ISI","IEM","IQ")
+		Nro_Legajo: N(5)
+		FechaNacimiento, FechaIngreso: Fecha
+		Documento: N(8)
+		Sexo: ("M","F")
+		FechaExamen: Fecha
+		Nota: 1..10
+	FinRegistro
+	Examen = Registro
+		Nro_Legajo: N(5)
+		Carrera: ("ISI","IEM","IQ")
+		Cod_Materia: N(4)
+		Fecha_Examen: Fecha
+		Nota: 1..10
+	FinRegistro
+	ALUMNOS, ALUMNOS_ACT: Archivo de Datos ordenado por Nro_Legajo
+	EXAMENES: Archivo de Examen ordenado por Nro_Legajo
+	RA, Aux: Datos
+	RE: Examen
+	HV = 99999
+
+	Procedimiento LeerAlu es
+		Leer(ALUMNOS, RA)
+		Si FDA(ALUMNOS) entonces RA.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento LeerExa es
+		Leer(EXAMENES, RE)
+		Si FDA(EXAMENES) entonces RE.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Abrir E/(ALUMNOS); LeerAlu
+	Abrir E/(EXAMENES); LeerExa
+	Abrir /S(ALUMNOS_ACT)
+	Mientras (RA.Nro_Legajo <> HV) o (RE.Nro_Legajo <> HV) hacer
+		Si RA.Nro_Legajo < RE.Nro_Legajo entonces // no rindió en este turno
+			Escribir(ALUMNOS_ACT, RA)
+			LeerAlu
+		Sino
+			Si RA.Nro_Legajo = RE.Nro_Legajo entonces
+				Aux:= RA
+				Mientras RE.Nro_Legajo = Aux.Nro_Legajo hacer // todos sus exámenes (lote)
+					Si RE.Nota >= 6 entonces
+						Aux.FechaExamen:= RE.Fecha_Examen
+						Aux.Nota:= RE.Nota
+					FinSi
+					LeerExa
+				FinMientras
+				Escribir(ALUMNOS_ACT, Aux)
+				LeerAlu
+			Sino // examen de un legajo que no existe
+				Escribir("Error: legajo ", RE.Nro_Legajo, " no está en el archivo de alumnos")
+				LeerExa
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(ALUMNOS); Cerrar(EXAMENES); Cerrar(ALUMNOS_ACT)
+Fin Acción

@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.25 (actualización por lotes)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.25
+// IDEM 2.21 pero suponiendo que hay mas de un registro de notificaciones por
+// cada registro de amigos.
+// --------------------------------------------------------------------------
+
+// Como el 2.2.21 pero con varias notificaciones por amistad: se arma el
+// registro en un auxiliar, se aplican todas las notificaciones de esa clave
+// y recién al final se decide si se graba.
+Accion Ejercicio2_2_25 es
+Ambiente
+	// (mismos tipos, archivos y lecturas con HV que el 2.2.21)
+	Aux: Amigo
+	existe: booleano // si la amistad existe en este momento del proceso
+
+Proceso
+	Abrir E/(AMIGOS); LeerAmigos
+	Abrir E/(NOTIFICACIONES); LeerNotif
+	Abrir /S(AMIGOS_ACT)
+	Mientras (RA.Clave.Cod_Usuario <> HV) o (RN.Clave.Cod_Usuario <> HV) hacer
+		Si RA.Clave < RN.Clave entonces
+			Escribir(AMIGOS_ACT, RA)
+			LeerAmigos
+		Sino
+			Si RA.Clave = RN.Clave entonces
+				Aux:= RA
+				existe:= Verdadero
+				LeerAmigos
+			Sino
+				Aux.Clave:= RN.Clave
+				existe:= Falso
+			FinSi
+			Mientras RN.Clave = Aux.Clave hacer // todas las notificaciones de la clave
+				Según RN.Cod_Movimiento hacer
+					"A": Si existe entonces
+					         Escribir("Error: la amistad ya existe")
+					     Sino
+					         Aux.Fecha_Amistad:= RN.Fecha_Amistad
+					         Aux.Mensaje_Muro:= RN.Mensaje_Muro
+					         existe:= Verdadero
+					     FinSi
+					"B": Si existe entonces
+					         existe:= Falso
+					     Sino
+					         Escribir("Error: baja de una amistad inexistente")
+					     FinSi
+					"M": Si existe entonces
+					         Aux.Mensaje_Muro:= RN.Mensaje_Muro
+					     Sino
+					         Escribir("Error: mensaje para una amistad inexistente")
+					     FinSi
+				FinSegún
+				LeerNotif
+			FinMientras
+			Si existe entonces
+				Escribir(AMIGOS_ACT, Aux)
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(AMIGOS); Cerrar(NOTIFICACIONES); Cerrar(AMIGOS_ACT)
+Fin Acción

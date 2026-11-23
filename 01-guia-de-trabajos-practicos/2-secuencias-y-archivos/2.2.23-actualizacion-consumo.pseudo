@@ -1,0 +1,127 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.23 (actualización por lotes)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.23
+// Una empresa de distribución de energía eléctrica posee un archivo maestro
+// con los siguientes datos de sus
+// clientes (la fecha de última lectura son las mediciones realizadas hasta
+// el mes de mayo del 2014):
+//
+// CLIENTE Ordenado por Id_Casa
+//
+// * Id_Casa* Fecha_Ult_Lectura* Cant_Lecturas* Prom_Lecturas*
+// Tipo_Consumidor
+//
+// El campo tipo de consumidor puede ser:
+//
+// * A (cuando el promedio de lectura es menor a 20K)
+// * B (cuando el promedio de lectura es menor a 40K)
+// * C (cuando el promedio de lectura es igual o supera los 40K)
+//
+// Cuenta además con el siguiente archivo con datos de las mediciones
+// realizadas en los dos últimos años (desde junio
+// del 2014 hasta junio del 2016)
+//
+// Mediciones Ordenado por Id_Casa
+//
+// * Id_Casa* Fecha_Medicion* Consumo
+//
+// Se pide actualizar el archivo maestro con la información de las lecturas
+// hasta el mes de enero del año 2015 inclusive.
+// Los campos que se deben actualizar son: la fecha de ultima lectura,
+// cantidad de lecturas, el promedio y modificar (en
+// caso de ser necesario) el tipo de consumidor.
+// En caso en que no exista el ID casa (una conexión nueva) se tiene que
+// crear en el maestro y actualizar los otros
+// campos.
+// --------------------------------------------------------------------------
+
+// Solo se usan las mediciones hasta enero de 2015 inclusive.
+Accion Ejercicio2_2_23 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Cliente = Registro
+		Id_Casa: N(8)
+		Fecha_Ult_Lectura: Fecha
+		Cant_Lecturas: N(4)
+		Prom_Lecturas: real
+		Tipo_Consumidor: ("A", "B", "C")
+	FinRegistro
+	Medicion = Registro
+		Id_Casa: N(8)
+		Fecha_Medicion: Fecha
+		Consumo: real
+	FinRegistro
+	CLIENTE, CLIENTE_ACT: Archivo de Cliente ordenado por Id_Casa
+	MEDICIONES: Archivo de Medicion ordenado por Id_Casa
+	RC, Aux: Cliente
+	RM: Medicion
+	total: real
+	HV = 99999999
+
+	Procedimiento LeerCli es
+		Leer(CLIENTE, RC)
+		Si FDA(CLIENTE) entonces RC.Id_Casa:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento LeerMed es // salteo las mediciones posteriores a enero 2015
+		Repetir
+			Leer(MEDICIONES, RM)
+		Hasta que FDA(MEDICIONES) o (RM.Fecha_Medicion.aa * 100 + RM.Fecha_Medicion.mm <= 201501)
+		Si FDA(MEDICIONES) entonces RM.Id_Casa:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento Tipo es // recalcula el tipo según el promedio
+		Si Aux.Prom_Lecturas < 20 entonces
+			Aux.Tipo_Consumidor:= "A"
+		Sino
+			Si Aux.Prom_Lecturas < 40 entonces
+				Aux.Tipo_Consumidor:= "B"
+			Sino
+				Aux.Tipo_Consumidor:= "C"
+			FinSi
+		FinSi
+	FinProcedimiento
+
+	Procedimiento AplicarMediciones es // todas las mediciones de Aux.Id_Casa
+		total:= Aux.Prom_Lecturas * Aux.Cant_Lecturas // vuelvo al total acumulado
+		Mientras RM.Id_Casa = Aux.Id_Casa hacer
+			total:= total + RM.Consumo
+			Aux.Cant_Lecturas:= Aux.Cant_Lecturas + 1
+			Aux.Fecha_Ult_Lectura:= RM.Fecha_Medicion
+			LeerMed
+		FinMientras
+		Aux.Prom_Lecturas:= total / Aux.Cant_Lecturas
+		Tipo
+	FinProcedimiento
+
+Proceso
+	Abrir E/(CLIENTE); LeerCli
+	Abrir E/(MEDICIONES); LeerMed
+	Abrir /S(CLIENTE_ACT)
+	Mientras (RC.Id_Casa <> HV) o (RM.Id_Casa <> HV) hacer
+		Si RC.Id_Casa < RM.Id_Casa entonces
+			Escribir(CLIENTE_ACT, RC)
+			LeerCli
+		Sino
+			Si RC.Id_Casa = RM.Id_Casa entonces
+				Aux:= RC
+				AplicarMediciones
+				LeerCli
+			Sino // conexión nueva
+				Aux.Id_Casa:= RM.Id_Casa
+				Aux.Cant_Lecturas:= 0
+				Aux.Prom_Lecturas:= 0
+				AplicarMediciones
+			FinSi
+			Escribir(CLIENTE_ACT, Aux)
+		FinSi
+	FinMientras
+	Cerrar(CLIENTE); Cerrar(MEDICIONES); Cerrar(CLIENTE_ACT)
+Fin Acción

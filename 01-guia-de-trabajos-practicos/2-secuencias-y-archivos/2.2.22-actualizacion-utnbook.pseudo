@@ -1,0 +1,43 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.22
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.22
+// IDEM ejercicio 2.21 pero agregando al enunciado: “Al finalizar el proceso
+// se desea conocer: el usuario que posee más amigos.”
+// --------------------------------------------------------------------------
+
+// Mismo algoritmo que el 2.2.21. Como el maestro nuevo queda ordenado por
+// usuario, la cantidad de amigos se cuenta con un corte de control sobre lo
+// que se va grabando: cada vez que se graba un registro se llama a Contar.
+Accion Ejercicio2_2_22 es
+Ambiente
+	// (mismos tipos, archivos y lecturas con HV que el 2.2.21)
+	usuario_act, cant_act, usuario_max, cant_max: entero
+
+	Procedimiento Grabar (r: Amigo) es
+		Escribir(AMIGOS_ACT, r)
+		Si r.Clave.Cod_Usuario <> usuario_act entonces // cambió el usuario
+			Si cant_act > cant_max entonces
+				cant_max:= cant_act
+				usuario_max:= usuario_act
+			FinSi
+			usuario_act:= r.Clave.Cod_Usuario
+			cant_act:= 0
+		FinSi
+		cant_act:= cant_act + 1
+	FinProcedimiento
+
+Proceso
+	usuario_act:= -1; cant_act:= 0; cant_max:= 0
+	// ... el mismo ciclo del 2.2.21, reemplazando cada Escribir(AMIGOS_ACT, x)
+	//     por Grabar(x) ...
+	Si cant_act > cant_max entonces // el último usuario
+		cant_max:= cant_act
+		usuario_max:= usuario_act
+	FinSi
+	Escribir("El usuario con más amigos es ", usuario_max, " (", cant_max, " amigos)")
+Fin Acción

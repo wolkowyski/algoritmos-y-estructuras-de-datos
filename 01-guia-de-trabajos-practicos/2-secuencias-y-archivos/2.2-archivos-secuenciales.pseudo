@@ -1,6 +1,6 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
-//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales: ejercicios 2.2.1 a 2.2.7
 //  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
 //              FDA (fin de archivo) | Cerrar
 // ==========================================================================
@@ -58,8 +58,6 @@ Proceso //Proceso
 Fin Acción
 
 
-
-
 Ejercicio 2.2.2
 Se dispone de una secuencia de facturas con los siguientes datos:
 
@@ -107,7 +105,6 @@ Proceso //Proceso
 Fin Acción
 
 
-
 Ejercicio 2.2.3
 Dada la siguiente secuencia de datos con el siguiente formato:
 
@@ -148,7 +145,6 @@ Proceso
 	Cerrar(ArchBiblio)
 	Cerrar(ArchSocios)
 Fin	Acción
-
 
 
 Ejercicio 2.2.4
@@ -245,70 +241,131 @@ Proceso
 Fin Acción
 
 
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.6
+// Se cuenta con una secuencia que contiene el Apellido y Nombre y Promedio
+// General de los Graduados de una Facultad, y se solicita generar un listado
+// con diversas recomendaciones para cubrir vacantes en una importante
+// Empresa. Las mencionadas recomendaciones serán establecidas del siguiente
+// modo: si el promedio es menor que 7, la recomendación será negativa
+// ("NO"); por el contrario, si el promedio es menor que 8, la recomendación
+// será positiva ("SI"); de lo contrario, si el promedio es menor que 9, la
+// recomendación será favorable ("F"); por último, si el promedio supera los
+// 9 puntos, la recomendación será muy favorable("MF").
+// El listado deber respetar el siguiente formato:
+//
+// * Apellido_Nombre* Promedio* Recomendación
+//
+// Además, se solicita la impresión del total de graduados que recibieron
+// cada una de las recomendaciones, y el promedio global de los mismos.
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_2_6 es
+Ambiente
+	Graduado = Registro
+		Apellido_Nombre: AN(50)
+		Promedio: real
+	FinRegistro
+	ArchGrad: Archivo de Graduado
+	Reg: Graduado
+	rec: AN(2)
+	cont_no, cont_si, cont_f, cont_mf, total: entero
+	suma_prom: real
+Proceso
+	Abrir E/(ArchGrad)
+	Leer(ArchGrad, Reg)
+	cont_no:= 0; cont_si:= 0; cont_f:= 0; cont_mf:= 0
+	total:= 0; suma_prom:= 0
+	Mientras No FDA(ArchGrad) hacer
+		Si Reg.Promedio < 7 entonces
+			rec:= "NO"; cont_no:= cont_no + 1
+		Sino
+			Si Reg.Promedio < 8 entonces
+				rec:= "SI"; cont_si:= cont_si + 1
+			Sino
+				Si Reg.Promedio < 9 entonces
+					rec:= "F"; cont_f:= cont_f + 1
+				Sino
+					rec:= "MF"; cont_mf:= cont_mf + 1
+				FinSi
+			FinSi
+		FinSi
+		Escribir(Reg.Apellido_Nombre, " - ", Reg.Promedio, " - ", rec)
+		total:= total + 1
+		suma_prom:= suma_prom + Reg.Promedio
+		Leer(ArchGrad, Reg)
+	FinMientras
+	Escribir("NO: ", cont_no, " | SI: ", cont_si, " | F: ", cont_f, " | MF: ", cont_mf)
+	Si total > 0 entonces
+		Escribir("Promedio global: ", suma_prom / total)
+	FinSi
+	Cerrar(ArchGrad)
+Fin Acción
 
 
-
-
-
-
-Ejercicio 2.2.7
-Se dispone del padrón electoral. Generar: a) un archivo con los afiliados al
-partido "C" y b) un archivo con los empadronados de clase posterior a 1940.
-(El enunciado completo no quedó copiado; se reconstruyó a partir de la resolución.)
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.7
+// Se dispone de un archivo con los datos de un padrón electoral con la
+// siguiente información:
+//
+// * Nombre y apellido
+// * Clase
+// * DNI
+// * Dirección
+// * Nº de Mesa
+// * Observaciones
+// * Nº de Circuito
+// * Partido (0= independiente, 1=‘A’, 2=‘B’, 3=‘C’)
+//
+// Generar:
+// a) Una secuencia de salida con nombre y apellido, DNI, y dirección de
+// todas las personas afiliadas al partido “C”.
+// b) Una secuencia de salida con nombre y apellido, DNI, y dirección de
+// todas las personas no afiliadas a ningún partido y de clase posterior a
+// 1940.
+// --------------------------------------------------------------------------
 
 Accion Ejercicio2_2_7 es
 Ambiente
+	PadronElectoral = Registro
+		Nombre_Apellido: AN(60)
+		Clase: N(4)
+		DNI: N(8)
+		Dirección: AN(100)
+		Num_mesa: N(5)
+		Observaciones: AN(255)
+		Num_Circuito: N(4)
+		Partido: 0..3 // 0 = independiente, 1 = 'A', 2 = 'B', 3 = 'C'
+	FinRegistro
+	ArchPadron: Archivo de PadronElectoral
+	RegPadron: PadronElectoral
 
-PadronElectoral = Registro
-	Nombre_Apellido: AN(60)
-	Clase: N(4)
-	DNI: N(8)
-	Dirección: AN(100)
-	Num_mesa: N(5)
-	Observaciones: AN(255)
-	Num_Circuito: N(4)
-	Partido: ("A", "B", "C", "D")
-FinRegistro
-
-ArchPadron: Archivo de PadronElectoral
-RegPadron: PadronElectoral
-
-
-AfiliadosC = Registro
-	Nombre_Apellido: AN(60)
-	DNI: N(8)
-	Dirección: AN(100)
-FinRegistro
-
-ArchAfiliadosC: Archivo de AfiliadosC //consigna a
-RegAfiliadosC: AfiliadosC
-
-ArchClase1940: Archivo de AfiliadosC //consigna b
-RegClase1940: AfiliadosC
-
-Proceso //Proceso
+	Persona = Registro
+		Nombre_Apellido: AN(60)
+		DNI: N(8)
+		Dirección: AN(100)
+	FinRegistro
+	SalidaC, SalidaIndep: Archivo de Persona // a) y b)
+	RegSal: Persona
+Proceso
 	Abrir E/(ArchPadron)
-	Leer E/(ArchPadron, RegPadron)
-	Abrir /S(ArchAfiliadosC) //consigna a
-	Abrir /S(ArchClase1940) //consigna b
+	Leer(ArchPadron, RegPadron)
+	Abrir /S(SalidaC)
+	Abrir /S(SalidaIndep)
 	Mientras No FDA(ArchPadron) hacer
-		Si RegPadron.Partido = "C" entonces // consigna a
-			RegAfiliadosC.Nombre_Apellido:= RegPadron.Nombre_Apellido
-			RegAfiliadosC.DNI:= RegPadron.DNI
-			RegAfiliadosC.Dirección:= RegPadron.Dirección
-			Escribir(ArchAfiliadosC, RegAfiliadosC)
-		FinSi
-		// consigna b: va en un Si aparte (no en el Sino), porque un afiliado
-		// al partido C también puede ser de clase posterior a 1940
-		Si RegPadron.Clase > 1940 entonces
-			RegClase1940.Nombre_Apellido:= RegPadron.Nombre_Apellido
-			RegClase1940.DNI:= RegPadron.DNI
-			RegClase1940.Dirección:= RegPadron.Dirección
-			Escribir(ArchClase1940, RegClase1940)
+		RegSal.Nombre_Apellido:= RegPadron.Nombre_Apellido
+		RegSal.DNI:= RegPadron.DNI
+		RegSal.Dirección:= RegPadron.Dirección
+		Si RegPadron.Partido = 3 entonces // a) afiliados al partido C
+			Escribir(SalidaC, RegSal)
+		Sino
+			Si (RegPadron.Partido = 0) y (RegPadron.Clase > 1940) entonces // b)
+				Escribir(SalidaIndep, RegSal)
+			FinSi
 		FinSi
 		Leer(ArchPadron, RegPadron)
 	FinMientras
 	Cerrar(ArchPadron)
-	Cerrar(ArchAfiliadosC)
-	Cerrar(ArchClase1940)
+	Cerrar(SalidaC)
+	Cerrar(SalidaIndep)
 Fin Acción

@@ -1,0 +1,105 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.21 (actualización secuencial UTNBook)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.21
+// En un práctico para la Facultad un grupo de alumnos debe implementar una
+// Red Social llamada UTNBook. Para lo cual debe utilizar los siguientes
+// archivos:
+//
+// AMIGOS Ordenado por Cod_Usuario y Cod_Amigo
+//
+// * Cod_Usuario* Cod_Amigo* Fecha_Amistad* Mensaje_Muro
+//
+// Cada registro indica la fecha desde que los usuarios son amigos y el
+// último mensaje que un amigo ha escrito en el muro del usuario.
+//
+// NOTIFICACIONES Ordenado por Cod_Usuario y Cod_Amigo
+//
+// * Cod_Usuario* Cod_Amigo* Cod_Movimiento* Fecha_Amistad* Mensaje_Muro
+//
+// Periódicamente se debe actualizar el archivo Amigos, con el fin de que
+// refleje las amistades que posee cada usuario. En el archivo notificaciones
+// pueden existir tres tipos de acciones: la solicitud de una amistad
+// (Cod_mov = 'A'); la eliminación de una amistad (Cod_mov = 'B'); o la
+// información de un mensaje que un amigo ha escrito en el muro del usuario
+// (Cod_mov = 'M'). Considerar que la eliminación de una amistad implica la
+// baja física de un registro y que hay un solo registro de Notificaciones
+// por cada registro de Amigo.
+// --------------------------------------------------------------------------
+
+// Hay una sola notificación por registro de amigos (actualización unitaria).
+// A = alta de amistad, B = baja física, M = mensaje nuevo en el muro.
+Accion Ejercicio2_2_21 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Clave_Amigo = Registro
+		Cod_Usuario: N(6)
+		Cod_Amigo: N(6)
+	FinRegistro
+	Amigo = Registro
+		Clave: Clave_Amigo
+		Fecha_Amistad: Fecha
+		Mensaje_Muro: AN(255)
+	FinRegistro
+	Notificacion = Registro
+		Clave: Clave_Amigo
+		Cod_Movimiento: ("A", "B", "M")
+		Fecha_Amistad: Fecha
+		Mensaje_Muro: AN(255)
+	FinRegistro
+	AMIGOS, AMIGOS_ACT: Archivo de Amigo ordenado por Clave
+	NOTIFICACIONES: Archivo de Notificacion ordenado por Clave
+	RA, RS: Amigo
+	RN: Notificacion
+	HV = 999999
+
+	Procedimiento LeerAmigos es
+		Leer(AMIGOS, RA)
+		Si FDA(AMIGOS) entonces RA.Clave.Cod_Usuario:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento LeerNotif es
+		Leer(NOTIFICACIONES, RN)
+		Si FDA(NOTIFICACIONES) entonces RN.Clave.Cod_Usuario:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Abrir E/(AMIGOS); LeerAmigos
+	Abrir E/(NOTIFICACIONES); LeerNotif
+	Abrir /S(AMIGOS_ACT)
+	Mientras (RA.Clave.Cod_Usuario <> HV) o (RN.Clave.Cod_Usuario <> HV) hacer
+		Si RA.Clave < RN.Clave entonces // sin novedades
+			Escribir(AMIGOS_ACT, RA)
+			LeerAmigos
+		Sino
+			Si RA.Clave = RN.Clave entonces
+				Según RN.Cod_Movimiento hacer
+					"A": Escribir("Error: la amistad ya existe")
+					     Escribir(AMIGOS_ACT, RA)
+					"B": // baja física: no se graba
+					"M": RA.Mensaje_Muro:= RN.Mensaje_Muro
+					     Escribir(AMIGOS_ACT, RA)
+				FinSegún
+				LeerAmigos
+				LeerNotif
+			Sino // la amistad no existe
+				Si RN.Cod_Movimiento = "A" entonces
+					RS.Clave:= RN.Clave
+					RS.Fecha_Amistad:= RN.Fecha_Amistad
+					RS.Mensaje_Muro:= RN.Mensaje_Muro
+					Escribir(AMIGOS_ACT, RS)
+				Sino
+					Escribir("Error: baja o mensaje para una amistad inexistente")
+				FinSi
+				LeerNotif
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(AMIGOS); Cerrar(NOTIFICACIONES); Cerrar(AMIGOS_ACT)
+Fin Acción

@@ -1,0 +1,109 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.13 (corte de control de 4 niveles)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.13
+// Un Casino de la región ha notado un incremento en los costos de las
+// reparaciones de tragamonedas en sus sucursales. Por ello solicitó un
+// informe con la cantidad de reparaciones y sus costos, discriminados según
+// tragamonedas, modelo, marca, sucursal y total general.
+//
+// Se dispone de un archivo REPARACIONES, con el siguiente formato. Cada
+// registro representa la reparación de un tragamonedas, tener en cuenta que
+// puede existir más de una reparación por tragamonedas.
+//
+// REPARACIONES Ordenado por Cod_Sucursal, Marca, Modelo, Cod_Tragamonedas
+//
+// * Cod_Sucursal* Marca* Modelo* Cod_Tragamonedas* Fecha_Reparacion*
+// Costo_Reparacion
+//
+// Realice el algoritmo para emitir el informe con los totales solicitados
+// --------------------------------------------------------------------------
+
+// Niveles de corte, de mayor a menor: Sucursal > Marca > Modelo > Tragamonedas.
+// En cada nivel se informa cantidad de reparaciones y costo.
+Accion Ejercicio2_2_13 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Reparacion = Registro
+		Cod_Sucursal: N(3)
+		Marca, Modelo: AN(30)
+		Cod_Tragamonedas: N(6)
+		Fecha_Reparacion: Fecha
+		Costo_Reparacion: real
+	FinRegistro
+	REPARACIONES: Archivo de Reparacion ordenado por Cod_Sucursal, Marca, Modelo, Cod_Tragamonedas
+	Reg: Reparacion
+	ResSuc: N(3)
+	ResMarca, ResModelo: AN(30)
+	ResTraga: N(6)
+	// cantidad y costo por nivel
+	cTraga, cModelo, cMarca, cSuc, cGral: entero
+	costoTraga, costoModelo, costoMarca, costoSuc, costoGral: real
+
+	Procedimiento CorteTraga es
+		Escribir("      Tragamonedas ", ResTraga, ": ", cTraga, " reparaciones - $", costoTraga)
+		cModelo:= cModelo + cTraga; costoModelo:= costoModelo + costoTraga
+		cTraga:= 0; costoTraga:= 0
+		ResTraga:= Reg.Cod_Tragamonedas
+	FinProcedimiento
+
+	Procedimiento CorteModelo es
+		CorteTraga
+		Escribir("    Modelo ", ResModelo, ": ", cModelo, " reparaciones - $", costoModelo)
+		cMarca:= cMarca + cModelo; costoMarca:= costoMarca + costoModelo
+		cModelo:= 0; costoModelo:= 0
+		ResModelo:= Reg.Modelo
+	FinProcedimiento
+
+	Procedimiento CorteMarca es
+		CorteModelo
+		Escribir("  Marca ", ResMarca, ": ", cMarca, " reparaciones - $", costoMarca)
+		cSuc:= cSuc + cMarca; costoSuc:= costoSuc + costoMarca
+		cMarca:= 0; costoMarca:= 0
+		ResMarca:= Reg.Marca
+	FinProcedimiento
+
+	Procedimiento CorteSucursal es
+		CorteMarca
+		Escribir("Sucursal ", ResSuc, ": ", cSuc, " reparaciones - $", costoSuc)
+		cGral:= cGral + cSuc; costoGral:= costoGral + costoSuc
+		cSuc:= 0; costoSuc:= 0
+		ResSuc:= Reg.Cod_Sucursal
+	FinProcedimiento
+
+Proceso
+	Abrir E/(REPARACIONES); Leer(REPARACIONES, Reg)
+	cTraga:= 0; cModelo:= 0; cMarca:= 0; cSuc:= 0; cGral:= 0
+	costoTraga:= 0; costoModelo:= 0; costoMarca:= 0; costoSuc:= 0; costoGral:= 0
+	ResSuc:= Reg.Cod_Sucursal; ResMarca:= Reg.Marca
+	ResModelo:= Reg.Modelo; ResTraga:= Reg.Cod_Tragamonedas
+	Mientras No FDA(REPARACIONES) hacer
+		Si Reg.Cod_Sucursal <> ResSuc entonces
+			CorteSucursal
+		Sino
+			Si Reg.Marca <> ResMarca entonces
+				CorteMarca
+			Sino
+				Si Reg.Modelo <> ResModelo entonces
+					CorteModelo
+				Sino
+					Si Reg.Cod_Tragamonedas <> ResTraga entonces
+						CorteTraga
+					FinSi
+				FinSi
+			FinSi
+		FinSi
+		cTraga:= cTraga + 1
+		costoTraga:= costoTraga + Reg.Costo_Reparacion
+		Leer(REPARACIONES, Reg)
+	FinMientras
+	CorteSucursal
+	Escribir("Total general: ", cGral, " reparaciones - $", costoGral)
+	Cerrar(REPARACIONES)
+Fin Acción

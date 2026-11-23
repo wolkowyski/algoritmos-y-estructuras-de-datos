@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.9
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.9
+// Una casa deportiva dispone de un archivo de productos, ordenado por código
+// de producto, que contiene los siguientes datos:
+//
+// PRODUCTOS Ordenado por Cod_Producto
+//
+// * Cod_Producto* Tipo (1,2,3)* Marca* Modelo* Descripción*
+// Cantidad_Existente* Precio_Unitario
+//
+// Se ha registrado en el mercado un aumento de precios, el cual no es
+// uniforme para todos los artículos, sino que varía según el tipo de los
+// mismos de la siguiente manera: tipo 1- Calzados: 10%, tipo 2 –
+// Indumentaria: 25%, tipo 3 - Accesorios (pelotas, raquetas, etc.): 50%. Por
+// este motivo el gerente de la empresa solicitó al Departamento de
+// Informática que modifique los precios de acuerdo a los porcentajes antes
+// mencionados.
+// Generar un nuevo fichero de productos para cumplir con la solicitud del
+// gerente.
+// Al terminar el proceso informar cantidad total de artículos de cada tipo
+// hay y total general.
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_2_9 es
+Ambiente
+	Producto = Registro
+		Cod_Producto: N(6)
+		Tipo: 1..3
+		Marca, Modelo: AN(30)
+		Descripcion: AN(100)
+		Cantidad_Existente: N(5)
+		Precio_Unitario: real
+	FinRegistro
+	PRODUCTOS, NUEVOS: Archivo de Producto ordenado por Cod_Producto
+	Reg: Producto
+	cant: arreglo [1..3] de entero // artículos por tipo
+	i, total: entero
+Proceso
+	Para i:= 1 hasta 3 hacer
+		cant[i]:= 0
+	FinPara
+	Abrir E/(PRODUCTOS); Leer(PRODUCTOS, Reg)
+	Abrir /S(NUEVOS)
+	Mientras No FDA(PRODUCTOS) hacer
+		Según Reg.Tipo hacer
+			1: Reg.Precio_Unitario:= Reg.Precio_Unitario * 1,10 // calzados
+			2: Reg.Precio_Unitario:= Reg.Precio_Unitario * 1,25 // indumentaria
+			3: Reg.Precio_Unitario:= Reg.Precio_Unitario * 1,50 // accesorios
+		FinSegún
+		Escribir(NUEVOS, Reg)
+		cant[Reg.Tipo]:= cant[Reg.Tipo] + Reg.Cantidad_Existente
+		Leer(PRODUCTOS, Reg)
+	FinMientras
+	total:= 0
+	Para i:= 1 hasta 3 hacer
+		Escribir("Artículos de tipo ", i, ": ", cant[i])
+		total:= total + cant[i]
+	FinPara
+	Escribir("Total general: ", total)
+	Cerrar(PRODUCTOS); Cerrar(NUEVOS)
+Fin Acción

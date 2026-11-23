@@ -1,0 +1,70 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.14 (corte de control)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.14
+// Dados el siguiente fichero con datos de un censo de la ciudad de
+// Resistencia:
+//
+// CENSO Ordenado por Radio, Manzana, Nro_Vivienda
+//
+// * Radio* Manzana* Nro_Vivienda* Condicion_Vivienda* Cantidad_Habitantes
+//
+// Condición puede ser : Muy Buena, Buena o Mala.
+// Obtener los siguientes totales de personas que habitan en viviendas cuya
+// condición es muy buena: total en la ciudad y totales por Radio y Manzana).
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_2_14 es
+Ambiente
+	Vivienda = Registro
+		Radio, Manzana: N(4)
+		Nro_Vivienda: N(5)
+		Condicion_Vivienda: ("Muy Buena", "Buena", "Mala")
+		Cantidad_Habitantes: N(3)
+	FinRegistro
+	CENSO: Archivo de Vivienda ordenado por Radio, Manzana, Nro_Vivienda
+	Reg: Vivienda
+	ResRadio, ResManzana: N(4)
+	TotManzana, TotRadio, TotCiudad: entero
+
+	Procedimiento CorteManzana es
+		Escribir("   Manzana ", ResManzana, ": ", TotManzana)
+		TotRadio:= TotRadio + TotManzana
+		TotManzana:= 0
+		ResManzana:= Reg.Manzana
+	FinProcedimiento
+
+	Procedimiento CorteRadio es
+		CorteManzana
+		Escribir("Radio ", ResRadio, ": ", TotRadio)
+		TotCiudad:= TotCiudad + TotRadio
+		TotRadio:= 0
+		ResRadio:= Reg.Radio
+	FinProcedimiento
+
+Proceso
+	Abrir E/(CENSO); Leer(CENSO, Reg)
+	TotManzana:= 0; TotRadio:= 0; TotCiudad:= 0
+	ResRadio:= Reg.Radio; ResManzana:= Reg.Manzana
+	Escribir("Personas en viviendas en muy buena condición")
+	Mientras No FDA(CENSO) hacer
+		Si Reg.Radio <> ResRadio entonces
+			CorteRadio
+		Sino
+			Si Reg.Manzana <> ResManzana entonces
+				CorteManzana
+			FinSi
+		FinSi
+		Si Reg.Condicion_Vivienda = "Muy Buena" entonces
+			TotManzana:= TotManzana + Reg.Cantidad_Habitantes
+		FinSi
+		Leer(CENSO, Reg)
+	FinMientras
+	CorteRadio
+	Escribir("Total en la ciudad: ", TotCiudad)
+	Cerrar(CENSO)
+Fin Acción

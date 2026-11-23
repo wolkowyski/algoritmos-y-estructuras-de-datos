@@ -1,0 +1,78 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.18 (mezcla con suma de claves iguales)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.18
+// Un supermercado desea conocer la totalidad de unidades existentes de cada
+// artículo a fin de hacer un control de stock y decidir si se deben comprar
+// nuevas unidades o redistribuir la mercadería existente.
+//
+// El supermercado posee dos sucursales, cada una de las cuales envió su
+// información en un fichero con el siguiente formato:
+//
+// ARTICULOS
+//
+// * Cod_Prod* Tipo* Marca* Descripción* Cant_Unidades
+//
+// Escribir un algortimo que permita obtener un único fichero de salida, con
+// el mismo formato, que contenga la información solicitada y además, emita
+// un listado con los siguientes datos:
+//
+// | Cod_Prod | Tipo | Marca | Descripción | Cant_Suc_1 | Cant_Suc_2 | Total_Unidades |
+// | --- | --- | --- | --- | --- | --- | --- |
+// |  |  |  |  |  |  |  |
+// --------------------------------------------------------------------------
+
+// Se asume que los dos ficheros están ordenados por Cod_Prod. Si un producto
+// está en las dos sucursales se suman las unidades (un solo registro en la salida).
+Accion Ejercicio2_2_18 es
+Ambiente
+	Articulo = Registro
+		Cod_Prod: N(6)
+		Tipo, Marca: AN(20)
+		Descripcion: AN(60)
+		Cant_Unidades: N(6)
+	FinRegistro
+	SUC1, SUC2, TOTAL: Archivo de Articulo ordenado por Cod_Prod
+	R1, R2, RS: Articulo
+	c1, c2: N(6)
+	HV = 999999
+
+	Procedimiento Leer1 es
+		Leer(SUC1, R1)
+		Si FDA(SUC1) entonces R1.Cod_Prod:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento Leer2 es
+		Leer(SUC2, R2)
+		Si FDA(SUC2) entonces R2.Cod_Prod:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Abrir E/(SUC1); Leer1
+	Abrir E/(SUC2); Leer2
+	Abrir /S(TOTAL)
+	Escribir("Cod_Prod | Tipo | Marca | Descripción | Cant_Suc_1 | Cant_Suc_2 | Total_Unidades")
+	Mientras (R1.Cod_Prod <> HV) o (R2.Cod_Prod <> HV) hacer
+		Si R1.Cod_Prod < R2.Cod_Prod entonces // solo en la sucursal 1
+			RS:= R1; c1:= R1.Cant_Unidades; c2:= 0
+			Leer1
+		Sino
+			Si R1.Cod_Prod > R2.Cod_Prod entonces // solo en la sucursal 2
+				RS:= R2; c1:= 0; c2:= R2.Cant_Unidades
+				Leer2
+			Sino // en las dos: se suman
+				RS:= R1; c1:= R1.Cant_Unidades; c2:= R2.Cant_Unidades
+				Leer1
+				Leer2
+			FinSi
+		FinSi
+		RS.Cant_Unidades:= c1 + c2
+		Escribir(TOTAL, RS)
+		Escribir(RS.Cod_Prod, " | ", RS.Tipo, " | ", RS.Marca, " | ", RS.Descripcion, " | ", c1, " | ", c2, " | ", c1 + c2)
+	FinMientras
+	Cerrar(SUC1); Cerrar(SUC2); Cerrar(TOTAL)
+Fin Acción

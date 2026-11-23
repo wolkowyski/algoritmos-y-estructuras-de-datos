@@ -1,0 +1,77 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.12 (corte de control)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.12
+// Dada una secuencia con información de población de un PAIS:
+//
+// POBLACION Ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+//
+// * Provincia* Departamento* Ciudad* Barrio* ID_Casa* Cantidad_Habitantes
+//
+// Generar una secuencia con información de los departamentos de esa
+// provincia, cuyo registro tenga el siguiente formato:
+//
+// POBLACION_SALIDA
+//
+// * Provincia* Departamento* Cantidad_Habitantes
+// --------------------------------------------------------------------------
+
+// El archivo está ordenado por Provincia, Departamento, ...; la salida pide
+// los habitantes por departamento, así que basta con cortar por Provincia y
+// Departamento (los niveles más bajos se acumulan sin cortar).
+Accion Ejercicio2_2_12 es
+Ambiente
+	Casa = Registro
+		Provincia, Departamento, Ciudad, Barrio: AN(30)
+		ID_Casa: N(8)
+		Cantidad_Habitantes: N(3)
+	FinRegistro
+	Salida = Registro
+		Provincia, Departamento: AN(30)
+		Cantidad_Habitantes: N(9)
+	FinRegistro
+	POBLACION: Archivo de Casa ordenado por Provincia, Departamento, Ciudad, Barrio, ID_Casa
+	POBLACION_SALIDA: Archivo de Salida
+	Reg: Casa
+	RegS: Salida
+	ResProv, ResDepto: AN(30)
+	TotDepto: N(9)
+
+	Procedimiento CorteDepto es
+		RegS.Provincia:= ResProv
+		RegS.Departamento:= ResDepto
+		RegS.Cantidad_Habitantes:= TotDepto
+		Escribir(POBLACION_SALIDA, RegS)
+		TotDepto:= 0
+		ResDepto:= Reg.Departamento
+	FinProcedimiento
+
+	Procedimiento CorteProv es
+		CorteDepto
+		ResProv:= Reg.Provincia
+	FinProcedimiento
+
+Proceso
+	Abrir E/(POBLACION); Leer(POBLACION, Reg)
+	Abrir /S(POBLACION_SALIDA)
+	TotDepto:= 0
+	ResProv:= Reg.Provincia
+	ResDepto:= Reg.Departamento
+	Mientras No FDA(POBLACION) hacer
+		Si Reg.Provincia <> ResProv entonces
+			CorteProv
+		Sino
+			Si Reg.Departamento <> ResDepto entonces
+				CorteDepto
+			FinSi
+		FinSi
+		TotDepto:= TotDepto + Reg.Cantidad_Habitantes
+		Leer(POBLACION, Reg)
+	FinMientras
+	CorteProv
+	Cerrar(POBLACION); Cerrar(POBLACION_SALIDA)
+Fin Acción

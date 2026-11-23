@@ -1,0 +1,74 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.8 (apareo de dos archivos)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.8
+// De los datos del siguiente ejercicio:
+//
+// COMPRAS Ordenado por Nro_Cliente
+//
+// * Nro_Cliente* Fecha_Ultima_Compra* Monto
+//
+// CLIENTES Ordenado por Nro_Cliente
+//
+// * Nro_Cliente* Apellido_Nombre* Domicilio* Teléfono* DNI
+//
+// Ambos archivos están ordenados por Nro. de Cliente en forma ascendente.
+// Listar los nombres fecha y monto de última compra, de todos aquellos
+// clientes cuya última compra sea posterior a una fecha dada y el monto
+// supere un monto dado.
+// --------------------------------------------------------------------------
+
+// Los dos archivos están ordenados por Nro_Cliente: se recorren a la par
+// (apareo) para tomar el nombre de CLIENTES y la compra de COMPRAS.
+Accion Ejercicio2_2_8 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Compra = Registro
+		Nro_Cliente: N(6)
+		Fecha_Ultima_Compra: Fecha
+		Monto: real
+	FinRegistro
+	Cliente = Registro
+		Nro_Cliente: N(6)
+		Apellido_Nombre: AN(50)
+		Domicilio: AN(60)
+		Telefono: N(10)
+		DNI: N(8)
+	FinRegistro
+	COMPRAS: Archivo de Compra ordenado por Nro_Cliente
+	CLIENTES: Archivo de Cliente ordenado por Nro_Cliente
+	RC: Compra
+	RCli: Cliente
+	fecha_dada: Fecha
+	monto_dado: real
+	f_dada, f_compra: N(8)
+Proceso
+	Escribir("Ingrese la fecha (aa, mm, dd) y el monto")
+	Leer(fecha_dada.aa, fecha_dada.mm, fecha_dada.dd, monto_dado)
+	f_dada:= fecha_dada.aa * 10000 + fecha_dada.mm * 100 + fecha_dada.dd
+	Abrir E/(COMPRAS); Leer(COMPRAS, RC)
+	Abrir E/(CLIENTES); Leer(CLIENTES, RCli)
+	Mientras No FDA(COMPRAS) y No FDA(CLIENTES) hacer
+		Si RCli.Nro_Cliente < RC.Nro_Cliente entonces // cliente sin compras
+			Leer(CLIENTES, RCli)
+		Sino
+			Si RCli.Nro_Cliente > RC.Nro_Cliente entonces // compra sin cliente (error de datos)
+				Leer(COMPRAS, RC)
+			Sino // misma clave
+				f_compra:= RC.Fecha_Ultima_Compra.aa * 10000 + RC.Fecha_Ultima_Compra.mm * 100 + RC.Fecha_Ultima_Compra.dd
+				Si (f_compra > f_dada) y (RC.Monto > monto_dado) entonces
+					Escribir(RCli.Apellido_Nombre, " - ", RC.Fecha_Ultima_Compra.dd, "/", RC.Fecha_Ultima_Compra.mm, "/", RC.Fecha_Ultima_Compra.aa, " - ", RC.Monto)
+				FinSi
+				Leer(COMPRAS, RC)
+				Leer(CLIENTES, RCli)
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(COMPRAS); Cerrar(CLIENTES)
+Fin Acción

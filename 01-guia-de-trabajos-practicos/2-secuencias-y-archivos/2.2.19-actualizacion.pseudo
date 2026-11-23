@@ -1,0 +1,126 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Ejercicio 2.2.19 (actualización secuencial unitaria)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.19
+// En una Empresa Farmacéutica se posee un archivo MAE_REMEDIOS (ordenado por
+// Clave: Farmacia + Medicamento), el que se actualiza semanalmente, a traves
+// de la información que se encuentra cargada en un archivo de MOVIMIENTOS
+// (ordenado por Clavem: Farmacia + Medicamento, y Cod_Mov), de la siguiente
+// forma:
+//
+// * Si Clave (MAE_REMEDIOS) es menor que Clavem (MOVIMIENTOS), simplemente
+// se transfieren los datos del Maestro a la salida y se graban.
+// * Si Clave (MAE_REMEDIOS) es igual a Clavem (MOVIMIENTOS) y el Codmov es
+// 1, se considera error y se lista un mensaje indicando el tipo de error;
+// pero si el Codmov es 2, entonces es un remedio que deja de fabricarse y se
+// transfiere el registro al archivo de Remedios vencidos (REM_VENC) ; pero
+// si el Cod_Mov es 3, se modifica la cantidad actual con la cantidad
+// recibida.
+// * Si Clave (MAE_REMEDIOS) es mayor que Clavem (MOVIMIENTOS) y el Codmov es
+// 1, se incorpora el remedio a nuestro Vademecum, considerando que la
+// cantidad recibida configura la cantidad actual y la Fecha_Vencimiento es
+// 30 días posterior a la fecha actual; pero si el Codmov es 2 o 3 se
+// considera error y se deben producir los correspondientes mensajes de
+// error.
+//
+// Se considera que solo existe un registro de movimiento para cada registro
+// del maestro.
+//
+// MAE_REMEDIOS Ordenado por Farmacia y Medicamento
+//
+// * Farmacia* Medicamento* Cant_Actual* Fecha_Vencimiento
+//
+// MOVIMIENTOS Ordenado por Farmacia, Medicamento y Cod_Mov
+//
+// * Farmacia* Medicamento* Cod_Mov* Cant_Recibida
+//
+// REM_VENC Ordenado por Medicamento
+//
+// * Medicamento* Cant_Vencida
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_2_19 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Clave = Registro
+		Farmacia: N(4)
+		Medicamento: N(6)
+	FinRegistro
+	Remedio = Registro
+		Clave: Clave
+		Cant_Actual: N(5)
+		Fecha_Vencimiento: Fecha
+	FinRegistro
+	Movimiento = Registro
+		Clave: Clave
+		Cod_Mov: 1..3
+		Cant_Recibida: N(5)
+	FinRegistro
+	Vencido = Registro
+		Medicamento: N(6)
+		Cant_Vencida: N(5)
+	FinRegistro
+	MAE_REMEDIOS, MAE_NUEVO: Archivo de Remedio ordenado por Clave
+	MOVIMIENTOS: Archivo de Movimiento ordenado por Clave y Cod_Mov
+	REM_VENC: Archivo de Vencido
+	RM, RN: Remedio
+	RMov: Movimiento
+	RV: Vencido
+	hoy: Fecha
+	HV = 9999
+	// SumarDias(f, n): función que devuelve la fecha f más n días (dada)
+
+	Procedimiento LeerMae es
+		Leer(MAE_REMEDIOS, RM)
+		Si FDA(MAE_REMEDIOS) entonces RM.Clave.Farmacia:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento LeerMov es
+		Leer(MOVIMIENTOS, RMov)
+		Si FDA(MOVIMIENTOS) entonces RMov.Clave.Farmacia:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Escribir("Ingrese la fecha actual (aa, mm, dd)")
+	Leer(hoy.aa, hoy.mm, hoy.dd)
+	Abrir E/(MAE_REMEDIOS); LeerMae
+	Abrir E/(MOVIMIENTOS); LeerMov
+	Abrir /S(MAE_NUEVO); Abrir /S(REM_VENC)
+	Mientras (RM.Clave.Farmacia <> HV) o (RMov.Clave.Farmacia <> HV) hacer
+		Si RM.Clave < RMov.Clave entonces // sin movimiento: se copia
+			Escribir(MAE_NUEVO, RM)
+			LeerMae
+		Sino
+			Si RM.Clave = RMov.Clave entonces
+				Según RMov.Cod_Mov hacer
+					1: Escribir("Error: alta de un remedio que ya existe")
+					   Escribir(MAE_NUEVO, RM)
+					2: RV.Medicamento:= RM.Clave.Medicamento // deja de fabricarse
+					   RV.Cant_Vencida:= RM.Cant_Actual
+					   Escribir(REM_VENC, RV)
+					3: RM.Cant_Actual:= RMov.Cant_Recibida
+					   Escribir(MAE_NUEVO, RM)
+				FinSegún
+				LeerMae
+				LeerMov
+			Sino // clave nueva
+				Si RMov.Cod_Mov = 1 entonces
+					RN.Clave:= RMov.Clave
+					RN.Cant_Actual:= RMov.Cant_Recibida
+					RN.Fecha_Vencimiento:= SumarDias(hoy, 30)
+					Escribir(MAE_NUEVO, RN)
+				Sino
+					Escribir("Error: baja o modificación de un remedio que no existe")
+				FinSi
+				LeerMov
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(MAE_REMEDIOS); Cerrar(MOVIMIENTOS); Cerrar(MAE_NUEVO); Cerrar(REM_VENC)
+Fin Acción

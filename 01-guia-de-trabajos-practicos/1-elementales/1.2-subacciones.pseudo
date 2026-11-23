@@ -1,6 +1,6 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
-//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos): ejercicios 1.2.1 a 1.2.12
 // ==========================================================================
 
 
@@ -23,7 +23,6 @@ Proceso
     result:= Cuadrado(num)
     Escribir ("El cuadrado del número ingresado es: ", result)
 FinAcción
-
 
 
 // --------------------------------------------------------------------------
@@ -55,7 +54,6 @@ Proceso
     result:= Suma_dig(num) // llamada de la función
     Escribir ("La suma de sus dígitos es: ", result)
 FinAcción
-
 
 
 // --------------------------------------------------------------------------
@@ -91,4 +89,336 @@ Proceso
         Escribir ("¿Desea repetir? S/N")
         Leer (op)
     Hasta que op = "N"
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.4
+// Elaborar una función que reciba un número entero y retorne -1 si el número
+// es negativo.
+// Si el número es positivo debe devolver una clave calculada de la siguiente
+// manera: Se suma cada dígito que compone el número y a esa suma se le
+// calcula el modulo 7.
+// Por ejemplo: para la cifra 513, la clave será 5+1+3 =9; 9 mod 7 = 2.
+// Utilice la función para diseñar un algoritmo que permita leer varios
+// valores y determine, para cada uno, si el número leído fue negativo o, si
+// fue positivo, que clave le corresponde.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_4 es
+Ambiente
+    num, resultado: entero
+    op: caracter
+
+    Función Clave (n: entero): entero es
+        Ambiente
+            suma: entero
+        Proceso
+            Si n < 0 entonces
+                Clave:= -1
+            Sino
+                suma:= 0
+                Mientras n > 0 hacer // sumo los dígitos
+                    suma:= suma + n mod 10
+                    n:= n div 10
+                FinMientras
+                Clave:= suma mod 7 // ej: 513 -> 5+1+3 = 9 -> 9 mod 7 = 2
+            FinSi
+    FinFunción
+
+Proceso
+    Repetir
+        Escribir("Ingrese un número entero")
+        Leer(num)
+        resultado:= Clave(num)
+        Si resultado = -1 entonces
+            Escribir("El número es negativo")
+        Sino
+            Escribir("La clave de ", num, " es ", resultado)
+        FinSi
+        Escribir("¿Otro número? S/N")
+        Leer(op)
+    Hasta que op = "N"
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.5
+// Escribir una función que verifique si un caracter introducido es un dígito
+// o no.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_5 es
+Ambiente
+    c: caracter
+
+    Función EsDigito (c: caracter): lógico es
+        EsDigito:= c en {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+    FinFunción
+
+Proceso
+    Escribir("Ingrese un caracter")
+    Leer(c)
+    Si EsDigito(c) entonces
+        Escribir(c, " es un dígito")
+    Sino
+        Escribir(c, " no es un dígito")
+    FinSi
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.6
+// Escribir una función que reciba las unidades y el precio de un producto
+// que se quiere comprar, y en función de las unidades introducidas calcule
+// un descuento o no, según corresponda: cuando las unidades excedan media
+// docena se aplicará 4% y el 10% cuando excedan la docena. La función debe
+// devolver como resultado el valor del descuento o cero, en caso de que no
+// corresponda.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_6 es
+Ambiente
+    unidades: entero
+    precio: real
+
+    // Devuelve el importe del descuento (no el precio final)
+    Función Descuento (u: entero; p: real): real es
+        Si u > 12 entonces // más de una docena
+            Descuento:= u * p * 0,10
+        Sino
+            Si u > 6 entonces // más de media docena
+                Descuento:= u * p * 0,04
+            Sino
+                Descuento:= 0
+            FinSi
+        FinSi
+    FinFunción
+
+Proceso
+    Escribir("Ingrese unidades y precio unitario")
+    Leer(unidades, precio)
+    Escribir("Descuento: ", Descuento(unidades, precio))
+    Escribir("Total a pagar: ", unidades * precio - Descuento(unidades, precio))
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.7
+// Repita el ejercicio del punto 5 pero utilice procedimiento en lugar de
+// función.
+// --------------------------------------------------------------------------
+
+// Igual al 1.2.5, pero con un procedimiento: el resultado vuelve en un
+// parámetro de salida (por referencia) en lugar del nombre de la función.
+Acción Ejercicio1_2_7 es
+Ambiente
+    c: caracter
+    es_dig: lógico
+
+    Procedimiento EsDigito (c: caracter; Var resultado: lógico) es
+        resultado:= c en {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese un caracter")
+    Leer(c)
+    EsDigito(c, es_dig)
+    Si es_dig entonces
+        Escribir(c, " es un dígito")
+    Sino
+        Escribir(c, " no es un dígito")
+    FinSi
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.8
+// Crear un procedimiento que intercambie los valores de dos variables
+// numéricas.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_8 es
+Ambiente
+    x, y: real
+
+    // Los dos parámetros son por referencia: los cambios se ven afuera
+    Procedimiento Intercambiar (Var a, b: real) es
+        Ambiente
+            aux: real
+        Proceso
+            aux:= a
+            a:= b
+            b:= aux
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese dos números")
+    Leer(x, y)
+    Intercambiar(x, y)
+    Escribir("Ahora x = ", x, " e y = ", y)
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.9
+// Desarrollar los procedimientos `mostrar_0`, `mostrar_1`, `mostrar_9` que
+// visualicen por pantalla, respectivamente, los números 0,1,...,9 en tamaño
+// grande, tal y como se muestra a continuación:
+//
+// *****        *   *****   *****   *   *   *****   *****   *****   *****   *****
+// *   *        *       *       *   *   *   *       *           *   *   *   *   *
+// *   *        *   *****   *****   *****   *****   *****       *   *****   *****
+// *   *        *   *           *       *       *   *   *       *   *   *       *
+// *****        *   *****   *****       *   *****   *****       *   *****   *****
+// --------------------------------------------------------------------------
+
+// Un procedimiento por dígito; cada uno escribe las 5 filas del número.
+// (Se muestran 0, 1 y 9; los demás siguen el mismo patrón.)
+Procedimiento mostrar_0 es
+    Escribir("*****")
+    Escribir("*   *")
+    Escribir("*   *")
+    Escribir("*   *")
+    Escribir("*****")
+FinProcedimiento
+
+Procedimiento mostrar_1 es
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+FinProcedimiento
+
+Procedimiento mostrar_9 es
+    Escribir("*****")
+    Escribir("*   *")
+    Escribir("*****")
+    Escribir("    *")
+    Escribir("*****")
+FinProcedimiento
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.10
+// Escribir un único procedimiento `mostrar_nro` que reciba como parámetro un
+// dígito y lo muestre por pantalla de la misma forma que se indica en el
+// ejercicio 9.
+// --------------------------------------------------------------------------
+
+// Un único procedimiento: cada fila del dígito se arma con una función que
+// devuelve el "dibujo" de esa fila según el dígito.
+Procedimiento mostrar_nro (d: 0..9) es
+    Ambiente
+        fila: 1..5
+
+        Función Fila (d: 0..9; f: 1..5): AN(5) es
+            // Patrones de cada fila: L = "*    "... se usan 4 formas de fila
+            //   T = "*****"  A = "*   *"  D = "    *"  I = "*    "
+            Según d hacer
+                0: Según f hacer 1, 5: Fila:= "*****"  2, 3, 4: Fila:= "*   *" FinSegún
+                1: Fila:= "    *"
+                2: Según f hacer 1, 3, 5: Fila:= "*****"  2: Fila:= "    *"  4: Fila:= "*    " FinSegún
+                3: Según f hacer 1, 3, 5: Fila:= "*****"  2, 4: Fila:= "    *" FinSegún
+                4: Según f hacer 1, 2: Fila:= "*   *"  3: Fila:= "*****"  4, 5: Fila:= "    *" FinSegún
+                5: Según f hacer 1, 3, 5: Fila:= "*****"  2: Fila:= "*    "  4: Fila:= "    *" FinSegún
+                6: Según f hacer 1, 3, 5: Fila:= "*****"  2: Fila:= "*    "  4: Fila:= "*   *" FinSegún
+                7: Según f hacer 1: Fila:= "*****"  2, 3, 4, 5: Fila:= "    *" FinSegún
+                8: Según f hacer 1, 3, 5: Fila:= "*****"  2, 4: Fila:= "*   *" FinSegún
+                9: Según f hacer 1, 3, 5: Fila:= "*****"  2: Fila:= "*   *"  4: Fila:= "    *" FinSegún
+            FinSegún
+        FinFunción
+
+    Proceso
+        Para fila:= 1 hasta 5 hacer
+            Escribir(Fila(d, fila))
+        FinPara
+FinProcedimiento
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.11
+// Diseñe un algoritmo que muestre un menú con las opciones sumar, restar,
+// multiplicar y dividir, el algoritmo solicitará una opción y realizará la
+// tarea elegida, se debe usar un procedimiento para mostrar el menú, pedir
+// los datos en el algoritmo principal y después usar funciones para realizar
+// los cálculos.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_11 es
+Ambiente
+    a, b: real
+    opcion: 1..5
+
+    Procedimiento Menu es
+        Escribir("1- Sumar  2- Restar  3- Multiplicar  4- Dividir  5- Salir")
+    FinProcedimiento
+
+    Función Sumar (x, y: real): real es
+        Sumar:= x + y
+    FinFunción
+
+    Función Restar (x, y: real): real es
+        Restar:= x - y
+    FinFunción
+
+    Función Multiplicar (x, y: real): real es
+        Multiplicar:= x * y
+    FinFunción
+
+    Función Dividir (x, y: real): real es
+        Dividir:= x / y // se llama solo si y <> 0
+    FinFunción
+
+Proceso
+    Menu
+    Leer(opcion)
+    Mientras opcion <> 5 hacer
+        Escribir("Ingrese dos números") // los datos se piden en el algoritmo principal
+        Leer(a, b)
+        Según opcion hacer
+            1: Escribir("Resultado: ", Sumar(a, b))
+            2: Escribir("Resultado: ", Restar(a, b))
+            3: Escribir("Resultado: ", Multiplicar(a, b))
+            4: Si b = 0 entonces
+                   Escribir("No se puede dividir por cero")
+               Sino
+                   Escribir("Resultado: ", Dividir(a, b))
+               FinSi
+        FinSegún
+        Menu
+        Leer(opcion)
+    FinMientras
+FinAcción
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.12
+// Hacer el ejercicio 1.2.6 pero usando un procedimiento.
+// --------------------------------------------------------------------------
+
+// El 1.2.6 con un procedimiento: el descuento sale por un parámetro Var.
+Acción Ejercicio1_2_12 es
+Ambiente
+    unidades: entero
+    precio, desc: real
+
+    Procedimiento Descuento (u: entero; p: real; Var d: real) es
+        Si u > 12 entonces
+            d:= u * p * 0,10
+        Sino
+            Si u > 6 entonces
+                d:= u * p * 0,04
+            Sino
+                d:= 0
+            FinSi
+        FinSi
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese unidades y precio unitario")
+    Leer(unidades, precio)
+    Descuento(unidades, precio, desc)
+    Escribir("Descuento: ", desc, " - Total a pagar: ", unidades * precio - desc)
 FinAcción

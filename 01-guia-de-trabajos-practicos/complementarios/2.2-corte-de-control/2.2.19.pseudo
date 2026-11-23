@@ -1,0 +1,181 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.19
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.19
+// Por su gran desempeño en la cátedra de Algoritmos y Estructuras de Datos,
+// MercadoPago lo ha contratado como pasante para desempeñar una importante
+// tarea dentro de la empresa.
+//
+// Como primera actividad, se le ha solicitado desarrollar un algoritmo para
+// actualizar los saldos de las cuentas de los usuarios. Para esto, se cuenta
+// con los siguientes archivos:
+//
+// CUENTAS archivo secuencial, ordenado por nro_usuario
+//
+// * nro_usuario* apellido* nombre* cvu* cuil* monto* fecha_nacimiento*
+// fecha_alta* estado(V o F)
+//
+// y un archivo de movimientos
+//
+// MOVIMIENTOS ordenado por nro_usuario, cod_movimiento
+//
+// * nro_usuario* cod_movimiento* cuil* importe
+//
+// Donde el cod_movimiento puede ser:
+//
+// * 1: Alta de un nuevo usuario
+// * 2: Transferencia, el usuario ha realizado una transferencia de dinero
+// * 3: Ingreso, el usuario ha recibido un ingreso de dinero
+// * 4: Baja de la cuenta, la cuenta del usuario será desactivada (cambia el
+// estado a Falso)
+//
+// En caso de que se trate del alta de un nuevo usuario, los datos personales
+// del usuario serán capturados de una archivo del RENAPER, el cual se
+// encuentra indexado por el campo cuil
+//
+// RENAPER indexado por cuil
+//
+// * cuil* nombre* apellido* fecha_nacimiento* direccion
+//
+// Se le solicita además, que al finalizar, se informe:
+//
+// * Número de nuevas cuentas
+// * Porcentaje de cuentas que se dieron de baja
+//
+// Para generar la fecha_alta, considerar la existencia de una funcion HOY()
+// que devuelve como dato un registro con la fecha actual.
+//
+// Como segunda actividad, además de lo anterior, se le ha solicitado que,
+// durante el proceso, mantenga actualizado el archivo indexado de USUARIOS,
+// con los nuevos datos ingresados:
+//
+// USUARIOS indexado por cuil
+//
+// * cuil* nro_usuario* nombre* apellido* direccion* fecha_nacimiento
+// --------------------------------------------------------------------------
+
+// Actualización por lotes de CUENTAS con altas desde el RENAPER (indexado) y,
+// como segunda actividad, alta en el indexado USUARIOS.
+Accion Complementario2_2_19 es
+Ambiente
+	Fecha = Registro
+		aa: N(4); mm: 1..12; dd: 1..31
+	FinRegistro
+	Cuenta = Registro
+		nro_usuario: N(8)
+		apellido, nombre: AN(30)
+		cvu: N(22)
+		cuil: N(11)
+		monto: real
+		fecha_nacimiento, fecha_alta: Fecha
+		estado: ("V", "F")
+	FinRegistro
+	Movimiento = Registro
+		nro_usuario: N(8)
+		cod_movimiento: 1..4
+		cuil: N(11)
+		importe: real
+	FinRegistro
+	Persona = Registro
+		cuil: N(11)
+		nombre, apellido: AN(30)
+		fecha_nacimiento: Fecha
+		direccion: AN(60)
+	FinRegistro
+	Usuario = Registro
+		cuil: N(11)
+		nro_usuario: N(8)
+		nombre, apellido: AN(30)
+		direccion: AN(60)
+		fecha_nacimiento: Fecha
+	FinRegistro
+	CUENTAS, CUENTAS_ACT: Archivo de Cuenta ordenado por nro_usuario
+	MOVIMIENTOS: Archivo de Movimiento ordenado por nro_usuario, cod_movimiento
+	RENAPER: Archivo de Persona indexado por cuil
+	USUARIOS: Archivo de Usuario indexado por cuil
+	RC, Aux: Cuenta
+	RM: Movimiento
+	RP: Persona
+	RU: Usuario
+	HV = 99999999
+	existe_cta: booleano
+	nuevas, bajas, total: entero
+
+	Procedimiento LeerCta es
+		Leer(CUENTAS, RC); Si FDA(CUENTAS) entonces RC.nro_usuario:= HV FinSi
+	FinProcedimiento
+	Procedimiento LeerMov es
+		Leer(MOVIMIENTOS, RM); Si FDA(MOVIMIENTOS) entonces RM.nro_usuario:= HV FinSi
+	FinProcedimiento
+
+	Procedimiento Aplicar es // un movimiento sobre Aux
+		Según RM.cod_movimiento hacer
+			1: Si existe_cta entonces
+			       Escribir("Error: alta de un usuario existente ", RM.nro_usuario)
+			   Sino
+			       RP.cuil:= RM.cuil
+			       Leer(RENAPER, RP)
+			       Si EXISTE entonces
+			           Aux.nro_usuario:= RM.nro_usuario
+			           Aux.nombre:= RP.nombre; Aux.apellido:= RP.apellido
+			           Aux.cuil:= RM.cuil
+			           Aux.cvu:= 0 // lo asigna el sistema
+			           Aux.monto:= RM.importe
+			           Aux.fecha_nacimiento:= RP.fecha_nacimiento
+			           Aux.fecha_alta:= HOY()
+			           Aux.estado:= "V"
+			           existe_cta:= Verdadero
+			           nuevas:= nuevas + 1
+			           RU.cuil:= RM.cuil // segunda actividad: alta en USUARIOS
+			           Leer(USUARIOS, RU)
+			           Si No EXISTE entonces
+			               RU.nro_usuario:= RM.nro_usuario
+			               RU.nombre:= RP.nombre; RU.apellido:= RP.apellido
+			               RU.direccion:= RP.direccion
+			               RU.fecha_nacimiento:= RP.fecha_nacimiento
+			               Escribir(USUARIOS, RU)
+			           FinSi
+			       Sino
+			           Escribir("Error: el CUIL ", RM.cuil, " no está en el RENAPER")
+			       FinSi
+			   FinSi
+			2: Si existe_cta entonces Aux.monto:= Aux.monto - RM.importe FinSi // transferencia
+			3: Si existe_cta entonces Aux.monto:= Aux.monto + RM.importe FinSi // ingreso
+			4: Si existe_cta entonces Aux.estado:= "F"; bajas:= bajas + 1 FinSi // baja lógica
+		FinSegún
+	FinProcedimiento
+
+Proceso
+	Abrir E/(CUENTAS); LeerCta
+	Abrir E/(MOVIMIENTOS); LeerMov
+	Abrir E/(RENAPER); Abrir E/S(USUARIOS)
+	Abrir /S(CUENTAS_ACT)
+	nuevas:= 0; bajas:= 0; total:= 0
+	Mientras (RC.nro_usuario <> HV) o (RM.nro_usuario <> HV) hacer
+		Si RC.nro_usuario < RM.nro_usuario entonces
+			Escribir(CUENTAS_ACT, RC); total:= total + 1
+			LeerCta
+		Sino
+			Si RC.nro_usuario = RM.nro_usuario entonces
+				Aux:= RC; existe_cta:= Verdadero
+				LeerCta
+			Sino
+				Aux.nro_usuario:= RM.nro_usuario; existe_cta:= Falso
+			FinSi
+			Mientras RM.nro_usuario = Aux.nro_usuario hacer
+				Aplicar
+				LeerMov
+			FinMientras
+			Si existe_cta entonces
+				Escribir(CUENTAS_ACT, Aux); total:= total + 1
+			FinSi
+		FinSi
+	FinMientras
+	Escribir("Cuentas nuevas: ", nuevas)
+	Si total > 0 entonces Escribir("Cuentas dadas de baja: ", bajas * 100 / total, "%") FinSi
+	Cerrar(CUENTAS); Cerrar(MOVIMIENTOS); Cerrar(RENAPER); Cerrar(USUARIOS); Cerrar(CUENTAS_ACT)
+FinAccion

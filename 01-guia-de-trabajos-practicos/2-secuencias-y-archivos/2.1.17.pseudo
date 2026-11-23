@@ -1,0 +1,47 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.17
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.17
+// Se desea calcular el costo de un telegrama, que se determina en función
+// del número de palabras (que vale V1 cada una), salvo que el promedio de
+// letras por palabra supere las cinco letras, caso en que cada palabra vale
+// V2.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_17 es
+Ambiente
+    Telegrama: secuencia de caracteres
+    v: caracter
+    V1, V2, costo: real
+    palabras, letras: entero
+Proceso
+    Escribir("Ingrese el valor por palabra V1 y el valor V2")
+    Leer(V1, V2)
+    ARR(Telegrama)
+    AVZ(Telegrama, v)
+    palabras:= 0
+    letras:= 0
+    Mientras NFDS(Telegrama) hacer
+        Mientras NFDS(Telegrama) y (v = " ") hacer
+            AVZ(Telegrama, v)
+        FinMientras
+        Si NFDS(Telegrama) entonces
+            palabras:= palabras + 1
+            Mientras NFDS(Telegrama) y (v <> " ") hacer
+                letras:= letras + 1
+                AVZ(Telegrama, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Si (palabras > 0) y (letras / palabras > 5) entonces
+        costo:= palabras * V2
+    Sino
+        costo:= palabras * V1
+    FinSi
+    Escribir("Costo del telegrama: ", costo)
+    CERRAR(Telegrama)
+FinAcción

@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+//  Ejercicio 2.2.3
+// ==========================================================================
+
+Ejercicio 2.2.3
+Dada la siguiente secuencia de datos con el siguiente formato:
+
+Nº de socio
+Nº de teléfono
+Apellido y Nombre
+Carrera (ISI - IEM - IQ - LAR)
+Domicilio
+Cantidad de unidades prestadas
+Correspondiente a los alumnos socios de la Biblioteca, generar la secuencia de los alumnos de “ISI” que tengan prestadas más de 4 unidades bibliográficas.
+
+Accion Ejercicio2_2_3 es
+Ambiente
+
+Biblioteca = Registro
+	Nro_Socio: N(6)
+	Nro_Tel: N(9)
+	Apellido_Nombre: AN(30,20)
+	Carrera: ("ISI","IEM","IQ","LAR")
+	Domicilio: AN(30)
+	Unidades_Prestadas: N(2)
+FinRegistro
+
+ArchBiblio, ArchSocios: Archivo de Biblioteca
+RegBiblio, RegSocios: Biblioteca
+
+Proceso
+	Abrir E/(ArchBiblio)
+	Leer E/(ArchBiblio, RegBiblio)
+	Abrir /S(ArchSocios)
+	Mientras No FDA(ArchBiblio) hacer
+		Si ( (RegBiblio.Carrera) = "ISI" ^ (RegBiblio.Unidades_Prestadas) > 4 ) entonces
+			RegSocios:= RegBiblio
+			Escribir(ArchSocios, RegSocios)
+		FinSi
+		Leer(ArchBiblio, RegBiblio)
+	FinMientras
+	Cerrar(ArchBiblio)
+	Cerrar(ArchSocios)
+Fin	Acción

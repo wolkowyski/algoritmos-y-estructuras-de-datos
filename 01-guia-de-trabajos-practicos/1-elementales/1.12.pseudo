@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.12
+// Escriba un algoritmo que acepte un número entero mayor a 100 y menor a
+// 1000, y muestre cómo está compuesto (unidades, decenas y centenas) y si es
+// múltiplo de 3 (Recordar: todo número cuya suma de sus dígitos sea múltiplo
+// de 3, lo es también).
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_12 es
+//Ambiente
+    Variables
+        num, aux: Entero(3)
+        uni, dec, cent: 0..9
+//Algoritmo
+    Escribir ("Ingrese un número mayor a 100 y menor a 1000")
+    Leer (num)
+    Si (num > 100) y (num < 1000) Entonces
+        aux:= num // trabajo sobre una copia para no perder el número original
+        uni:= aux mod 10
+        aux:= TRUNC(aux / 10)
+        dec:= aux mod 10
+        aux:= TRUNC(aux / 10)
+        cent:= aux mod 10
+        Escribir ("El número ingresado está compuesto por ", uni, " unidades, ", dec, " decenas y ", cent, " centenas.")
+        Si (uni + dec + cent) mod 3 = 0 Entonces
+            Escribir ("Además, es múltiplo de 3")
+        SiNo
+            Escribir ("Pero no es múltiplo de 3")
+        FinSi
+    SiNo
+        Escribir ("Ingrese un valor mayor a 100 y menor a 1000")
+    FinSi
+FinAcción

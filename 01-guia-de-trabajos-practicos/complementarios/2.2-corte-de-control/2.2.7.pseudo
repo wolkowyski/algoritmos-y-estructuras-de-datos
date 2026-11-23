@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.7
+// Reconsidere el problema 2.2.1. Obtener la salida:
+//
+// | Cantidad de Empleados |  |
+// | --- | --- |
+// | Categoria 1 | ------- |
+// | Categoria 2 | ------- |
+// | Categoria 3 | ------- |
+// | Categoria 4 | ------- |
+// | Total | ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_7 es
+Ambiente
+	// (mismo archivo que el 2.2.1, ordenado por categoría)
+	ResCat: 1..4
+	cant, total: entero
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Cantidad de Empleados")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		cant:= 0
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			cant:= cant + 1
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("Categoría ", ResCat, " | ", cant)
+		total:= total + cant
+	FinMientras
+	Escribir("Total | ", total)
+	Cerrar(EMPLEADOS)
+FinAccion

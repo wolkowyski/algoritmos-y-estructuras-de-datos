@@ -1,0 +1,25 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.1
+// Calcular el factorial de un número positivo n. Tener en cuenta la
+// definición matemática de n!:
+//
+//  n! =
+// \begin{cases}
+// 1, & \text{si n = 0} \\
+// n \times (n-1)!, & \text{si n > 0}
+// \end{cases}
+// --------------------------------------------------------------------------
+
+Función Factorial (n: entero): entero es
+	Si n = 0 entonces
+		Factorial:= 1 // caso base
+	Sino
+		Factorial:= n * Factorial(n - 1) // caso recursivo
+	FinSi
+FinFunción

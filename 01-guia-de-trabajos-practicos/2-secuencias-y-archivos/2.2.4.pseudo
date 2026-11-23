@@ -1,0 +1,54 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+//  Ejercicio 2.2.4
+// ==========================================================================
+
+Ejercicio 2.2.4
+A partir de la secuencia del ejercicio 2.2.1 se desea generar otra secuencia con los alumnos de una carrera dada que aprobaron alguna materia este año, con nota mayor a 7 (siete).
+
+Accion Ejercicio2_2_4 es
+Ambiente // Ambiente
+
+Fecha = Registro
+	dd: 1..31
+	mm: 1..12
+	aa: 1900..2023
+FinRegistro
+
+Datos = Registro
+	Apellido_Nombre: AF(30,20)
+	Carrera: ("ISI","IEM","IQ")
+	Nro_Legajo: N(5)
+	FechaNacimiento: Fecha
+	FechaIngreso: Fecha
+	Documento: N(8)
+	Sexo: ("M","F")
+	FechaExamen: Fecha
+	Nota: 1..10
+FinRegistro
+
+ArchFacultad, ArchAlumnos7: Archivo de Datos ordenado por Apellido y Nombre
+RegFacultad, RegAlumnos7: Datos
+carrera_dada: ("ISI","IEM","IQ")
+anio_actual: N(4)
+
+Proceso //Proceso
+	Escribir("Ingrese la carrera y el año actual")
+	Leer(carrera_dada, anio_actual)
+	Abrir E/(ArchFacultad)
+	Leer(ArchFacultad, RegFacultad)
+	Abrir /S(ArchAlumnos7)
+	Mientras No FDA(ArchFacultad) hacer
+		// La carrera es la que ingresa el usuario y el examen tiene que ser de este año
+		Si (RegFacultad.Nota > 7) ^ (RegFacultad.Carrera = carrera_dada) ^ (RegFacultad.FechaExamen.aa = anio_actual) entonces
+			RegAlumnos7:= RegFacultad
+			Escribir(ArchAlumnos7, RegAlumnos7)
+		FinSi
+		Leer(ArchFacultad, RegFacultad)
+	FinMientras
+	Cerrar(ArchFacultad)
+	Cerrar(ArchAlumnos7)
+Fin Acción

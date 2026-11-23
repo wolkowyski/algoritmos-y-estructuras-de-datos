@@ -1,0 +1,61 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.15
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.15
+// Se desea saber la cantidad promedio de palabras que contienen las oraciones
+// de una secuencia de caracteres. Supóngase que los puntos son siempre
+// contiguos al último caracter de la palabra. La secuencia finaliza con una
+// marca.
+// --------------------------------------------------------------------------
+
+ACCIÓN Ejercicio2_1_15 ES
+AMBIENTE
+    s: secuencia de caracteres
+    v: caracter
+    cant_o, cant_p: entero
+    cantprom_p: real // el promedio puede tener decimales
+
+PROCESO
+    ARR(s)
+    AVZ(s, v)
+    cant_o:= 0
+    cant_p:= 0
+
+    MIENTRAS NFDS(s) HACER
+        MIENTRAS NFDS(s) y v <> "." HACER
+            MIENTRAS v = " " HACER
+                AVZ(s, v)
+            FINMIENTRAS
+
+            cant_p:= cant_p + 1
+
+            MIENTRAS NFDS(s) y v <> " " y v <> "." HACER
+                AVZ(s, v)
+            FINMIENTRAS
+        FINMIENTRAS
+
+        SI v = "." ENTONCES
+            cant_o:= cant_o + 1
+            AVZ(s, v) // hay que pasar el punto, si no el ciclo de afuera no avanza nunca
+        FINSI
+    FINMIENTRAS
+
+    SI cant_o > 0 ENTONCES
+        cantprom_p:= cant_p / cant_o
+        ESCRIBIR ("La cantidad promedio de palabras que contienen las oraciones es de: ", cantprom_p)
+    SINO
+        ESCRIBIR ("La secuencia no tiene oraciones")
+    FINSI
+    CERRAR(s)
+FINACCIÓN

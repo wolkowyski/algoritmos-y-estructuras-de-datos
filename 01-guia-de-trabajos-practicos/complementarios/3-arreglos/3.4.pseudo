@@ -1,0 +1,80 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.4
+// Se dispone de una secuencia con datos de alumnos de la Facultad: Nro.
+// legajo, apellido y nombre, domicilio, fecha ingreso, cant. de materias
+// aprobadas, promedio, carrera, edad.
+//
+// 1. Se desea emitir una estadística de cantidad de alumnos con más de 20
+// materias aprobadas, por carreras y grupos de edades, con el siguiente
+// formato:
+//
+//    |  |  |  |  |  |
+//    | --- | --- | --- | --- | --- |
+//    | Edades | 18 - 25 | 26 - 30 | 31 o más | Total por Carrera |
+//    | Carreras |
+//    | ISI |  |  |  |  |
+//    | IQ |  |  |  |  |
+//    | IEM |  |  |  |  |
+//    | Totales por Grupos de Edades |  |  |  |  |
+// 2. Se desea emitir una estadística de cantidad de alumnos con promedio
+// mayor o igual que 7, por carreras y grupos de edades, con el mismo formato
+// que se usó en 4.a.
+// --------------------------------------------------------------------------
+
+// Las dos estadísticas se arman en el mismo recorrido, en dos matrices de
+// 4 x 4 (3 carreras + total, 3 grupos de edad + total).
+Acción Complementario3_4 es
+	Ambiente
+		Fecha = Registro
+			aa: N(4); mm: 1..12; dd: 1..31
+		FinRegistro
+		Alumno = Registro
+			Legajo: N(5)
+			ApyNom: AN(50)
+			Domicilio: AN(60)
+			Fecha_Ingreso: Fecha
+			Aprobadas: N(2)
+			Promedio: real
+			Carrera: ("ISI", "IQ", "IEM")
+			Edad: N(2)
+		FinRegistro
+		ALUMNOS: secuencia de Alumno
+		R: Alumno
+		Mat20, Prom7: arreglo [1..4, 1..4] de entero
+		c, g, i, j: entero
+		Nombre: arreglo [1..4] de AN(25)
+	Proceso
+		Para i:= 1 a 4 hacer Para j:= 1 a 4 hacer Mat20[i,j]:= 0; Prom7[i,j]:= 0 FinPara FinPara
+		ARR(ALUMNOS); AVZ(ALUMNOS, R)
+		Mientras NFDS(ALUMNOS) hacer
+			Según R.Carrera hacer "ISI": c:= 1  "IQ": c:= 2  "IEM": c:= 3 FinSegún
+			Si R.Edad <= 25 entonces g:= 1 Sino Si R.Edad <= 30 entonces g:= 2 Sino g:= 3 FinSi FinSi
+			Si R.Aprobadas > 20 entonces // a.
+				Mat20[c,g]:= Mat20[c,g] + 1; Mat20[c,4]:= Mat20[c,4] + 1
+				Mat20[4,g]:= Mat20[4,g] + 1; Mat20[4,4]:= Mat20[4,4] + 1
+			FinSi
+			Si R.Promedio >= 7 entonces // b.
+				Prom7[c,g]:= Prom7[c,g] + 1; Prom7[c,4]:= Prom7[c,4] + 1
+				Prom7[4,g]:= Prom7[4,g] + 1; Prom7[4,4]:= Prom7[4,4] + 1
+			FinSi
+			AVZ(ALUMNOS, R)
+		FinMientras
+		CERRAR(ALUMNOS)
+		Nombre[1]:= "ISI"; Nombre[2]:= "IQ"; Nombre[3]:= "IEM"; Nombre[4]:= "Totales por edades"
+		Escribir("a. Más de 20 materias aprobadas  |  18-25 | 26-30 | 31 o más | Total")
+		Para i:= 1 a 4 hacer
+			Escribir(Nombre[i])
+			Para j:= 1 a 4 hacer Escribir(Mat20[i,j]) FinPara
+		FinPara
+		Escribir("b. Promedio >= 7  |  18-25 | 26-30 | 31 o más | Total")
+		Para i:= 1 a 4 hacer
+			Escribir(Nombre[i])
+			Para j:= 1 a 4 hacer Escribir(Prom7[i,j]) FinPara
+		FinPara
+FinAcción

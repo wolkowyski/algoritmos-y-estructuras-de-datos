@@ -1,0 +1,53 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.1
+// Dada la siguiente declaración y el siguiente esquema:
+//
+//   P, Q, R:  puntero a NODO
+//     NODO: registro
+//     DATO: entero
+//     PROX: puntero a nodo
+//   Fin registro
+//
+//    P↓              Q↓               R↓
+//    _______        _______         _______
+//   | 3 |   |----→ | 5 |   | ----→ | 9 |nil|
+//    -------       ---------       --------
+//
+// | P | Q | R | Comentario |
+// | --- | --- | --- | --- |
+// |  |  |  |  |
+// |  |  |  |  |
+// |  |  |  |  |
+//
+// ¿Qué hacen las siguientes órdenes?
+//
+// Considerar que se ejecutan secuencialmente.
+//
+// 1.  P:= P↑. PROX
+// 2.  Q:= P
+// 3.  R:= P↑.PROX
+// 4.  P↑.DATO:= Q↑. DATO
+// 5.  P↑.DATO:= (Q↑.PROX)↑. DATO
+// 6.  R↑.PROX:= P
+// --------------------------------------------------------------------------
+
+// Nodos: n1 (3) -> n2 (5) -> n3 (9) -> nil. Al principio P = n1, Q = n2, R = n3.
+//
+// | Orden                         | P  | Q  | R  | Comentario                                  |
+// |-------------------------------|----|----|----|---------------------------------------------|
+// | 1. P:= P↑.PROX                | n2 | n2 | n3 | P avanza al segundo nodo                    |
+// | 2. Q:= P                      | n2 | n2 | n3 | Q ya apuntaba a n2: no cambia nada          |
+// | 3. R:= P↑.PROX                | n2 | n2 | n3 | R ya apuntaba a n3: no cambia nada          |
+// | 4. P↑.DATO:= Q↑.DATO          | n2 | n2 | n3 | P y Q son el mismo nodo: el dato sigue en 5 |
+// | 5. P↑.DATO:= (Q↑.PROX)↑.DATO  | n2 | n2 | n3 | el dato de n2 pasa a ser 9 (el de n3)       |
+// | 6. R↑.PROX:= P                | n2 | n2 | n3 | n3 apunta a n2: n2 y n3 forman un ciclo     |
+//
+// Al final: n2 (9) -> n3 (9) -> n2 ... (lista circular de dos nodos). El nodo
+// n1 (3) sigue apuntando a n2 pero ningún puntero lo apunta a él: quedó
+// inaccesible (memoria que ya no se puede liberar con Disponer).

@@ -1,0 +1,44 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.11
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.11
+// Dada una secuencia de caracteres, determinar la cantidad de palabras de 4
+// caracteres (letras).
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_11 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    cont, largo: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        largo:= 0
+        Mientras NFDS(Sec) y (v <> " ") hacer // cuento las letras de la palabra
+            largo:= largo + 1
+            AVZ(Sec, v)
+        FinMientras
+        Si largo = 4 entonces
+            cont:= cont + 1
+        FinSi
+    FinMientras
+    Escribir ("Palabras de 4 letras: ", cont)
+    CERRAR(Sec)
+FinAcción

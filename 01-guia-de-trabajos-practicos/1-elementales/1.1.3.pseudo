@@ -1,0 +1,20 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Datos elementales
+//  Ejercicio 1.1.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.3
+// Complete las siguientes frases.
+// --------------------------------------------------------------------------
+
+Una (acción) es un acontecimiento producido por un actor, que tiene lugar durante
+un período de tiempo (finito) y produce un (resultado) bien determinado.
+
+El instante de (inicio) de la acción se denomina Ti y el instante de
+(finalización) se denomina Tf.
+
+El conjunto de los valores en el instante t dado del desarrollo del
+acontecimiento se denomina (estado) en el instante t.

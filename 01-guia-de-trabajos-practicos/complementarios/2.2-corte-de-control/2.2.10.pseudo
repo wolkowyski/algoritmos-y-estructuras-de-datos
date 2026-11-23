@@ -1,0 +1,78 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.10
+// Una empresa con varias sucursales que dispone de un archivo de registros
+// de sus empleados con los siguientes datos:
+//
+// * CodSuc* CodEmpl* HorasDia
+//
+// `CodSuc`: código de sucursal
+// `CodEmpl`: código de empleado
+// `HorasDía`: horas trabajadas en el día
+//
+// Teniendo en cuenta que se abona un premio a aquellos empleados que hayan
+// trabajado durante el mes más de 20 días y que cumplan simultáneamente con:
+//
+// * No menos de 180 horas trabajadas, el premio será de $200.
+// * Más de 170 horas y menos de 180 horas, el premio será de $150.
+//
+// Realizar el diagrama que leyendo el archivo de datos determine e imprima:
+//
+// * Código de sucursal, Código de empleado y premio de los empleados que
+// cumplan con las disposiciones anteriores
+// * Importe total de los premios que deben pagar cada sucursal
+// * Importe total que la empresa pagará.
+// --------------------------------------------------------------------------
+
+// Un registro por empleado y día trabajado, ordenado por sucursal y empleado.
+Accion Complementario2_2_10 es
+Ambiente
+	Dia = Registro
+		CodSuc: N(3)
+		CodEmpl: N(5)
+		HorasDia: N(2)
+	FinRegistro
+	EMPLEADOS: Archivo de Dia ordenado por CodSuc, CodEmpl
+	R: Dia
+	ResSuc: N(3)
+	ResEmpl: N(5)
+	dias, horas: entero
+	premio, totSuc, total: real
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Mientras No FDA(EMPLEADOS) hacer
+		ResSuc:= R.CodSuc
+		totSuc:= 0
+		Mientras No FDA(EMPLEADOS) y (R.CodSuc = ResSuc) hacer
+			ResEmpl:= R.CodEmpl
+			dias:= 0; horas:= 0
+			Mientras No FDA(EMPLEADOS) y (R.CodSuc = ResSuc) y (R.CodEmpl = ResEmpl) hacer
+				dias:= dias + 1
+				horas:= horas + R.HorasDia
+				Leer(EMPLEADOS, R)
+			FinMientras
+			premio:= 0
+			Si dias > 20 entonces
+				Si horas >= 180 entonces
+					premio:= 200
+				Sino
+					Si horas > 170 entonces premio:= 150 FinSi
+				FinSi
+			FinSi
+			Si premio > 0 entonces
+				Escribir(ResSuc, " | ", ResEmpl, " | $", premio)
+				totSuc:= totSuc + premio
+			FinSi
+		FinMientras
+		Escribir("Premios de la sucursal ", ResSuc, ": $", totSuc)
+		total:= total + totSuc
+	FinMientras
+	Escribir("Total que paga la empresa: $", total)
+	Cerrar(EMPLEADOS)
+FinAccion

@@ -1,0 +1,25 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.2
+// Dado un número n como parámetro de entrada, calcular el n-ésimo número de
+// la serie de Fibonacci. Tener en cuenta la siguiente definición:
+//
+//  Fib(n) =
+// \begin{cases}
+// 1, & \text{si n = 1, n = 2} \\
+// Fib(n-1) + Fib(n-2), & \text{si n > 2}
+// \end{cases}
+// --------------------------------------------------------------------------
+
+Función Fib (n: entero): entero es
+	Si (n = 1) o (n = 2) entonces
+		Fib:= 1
+	Sino
+		Fib:= Fib(n - 1) + Fib(n - 2) // dos llamadas recursivas por nivel
+	FinSi
+FinFunción

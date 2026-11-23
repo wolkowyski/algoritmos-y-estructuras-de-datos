@@ -1,0 +1,104 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.5
+// Una empresa FARMACÉUTICA, posee una lista simplemente enlazada de pedidos
+// realizados por sus clientes en el último mes. Se desea generar dos grupos
+// con la siguiente información:
+//
+// * Los pedidos de los clientes deudores.
+// * Los pedidos de los clientes regulares.
+//
+// Para ello se cuenta con un archivo “CLIENTES” indexado por Nro_cliente.
+//
+// Deben tenerse en cuenta las siguientes consideraciones:
+//
+// * La lista de entrada está ordenada por Nro_cliente y pueden existir
+// varios pedidos de un mismo cliente.
+// * En el caso de recibir un pedido de un cliente que se encuentre dado de
+// baja, debe ser dado de alta automáticamente.
+// * El total (Monto $) de Dinero_deuda debe ser actualizado con la suma de
+// los pedidos en Cuenta Corriente. Modificar la condición a Deudor si esa
+// suma es mayor a cero.
+//
+// Formato lista de entrada
+//
+// * Nro_cliente* Nro pedido* Precio pedido* TipoPedido (C:Contado, R: Cuenta
+// Corriente)
+//
+// Formato archivo “Clientes”
+//
+// * Nro_cliente* DNI* Domicilio* Dinero_deuda* Deudor (si/no)* Baja
+//
+// Formato lista salida
+//
+// * Nro_cliente* Total pedido
+// --------------------------------------------------------------------------
+
+// La lista está ordenada por cliente: corte de control por Nro_cliente sobre
+// la lista. Por cada cliente se arma un nodo (Nro_cliente, total) en la lista
+// de deudores o en la de regulares, según cómo quede después de actualizarlo.
+Accion Complementario4_5 (prim: puntero a Pedido) es
+Ambiente
+	Pedido = Registro
+		Nro_cliente: N(6)
+		Nro_pedido: N(8)
+		Precio: real
+		Tipo: ("C", "R") // contado o cuenta corriente
+		prox: puntero a Pedido
+	FinRegistro
+	Cliente = Registro
+		Nro_cliente: N(6)
+		DNI: N(8)
+		Domicilio: AN(60)
+		Dinero_deuda: real
+		Deudor: ("si", "no")
+		Baja: ("si", "no")
+	FinRegistro
+	Salida = Registro
+		Nro_cliente: N(6)
+		Total: real
+		prox: puntero a Salida
+	FinRegistro
+	CLIENTES: Archivo de Cliente indexado por Nro_cliente
+	RC: Cliente
+	p: puntero a Pedido
+	q, primDeud, primReg: puntero a Salida
+	res: N(6)
+	total, ctacte: real
+Proceso
+	Abrir E/S(CLIENTES)
+	primDeud:= nil; primReg:= nil
+	p:= prim
+	Mientras p <> nil hacer
+		res:= *p.Nro_cliente
+		total:= 0; ctacte:= 0
+		Mientras (p <> nil) y (*p.Nro_cliente = res) hacer
+			total:= total + *p.Precio
+			Si *p.Tipo = "R" entonces ctacte:= ctacte + *p.Precio FinSi
+			p:= *p.prox
+		FinMientras
+		RC.Nro_cliente:= res
+		Leer(CLIENTES, RC)
+		Si EXISTE entonces
+			Si RC.Baja = "si" entonces RC.Baja:= "no" FinSi // alta automática
+			RC.Dinero_deuda:= RC.Dinero_deuda + ctacte
+			Si RC.Dinero_deuda > 0 entonces RC.Deudor:= "si" FinSi
+			Regrabar(CLIENTES, RC)
+			Nuevo(q)
+			*q.Nro_cliente:= res; *q.Total:= total
+			Si RC.Deudor = "si" entonces
+				*q.prox:= primDeud; primDeud:= q
+			Sino
+				*q.prox:= primReg; primReg:= q
+			FinSi
+		Sino
+			Escribir("Error: el cliente ", res, " no está en el archivo")
+		FinSi
+	FinMientras
+	Cerrar(CLIENTES)
+FinAccion

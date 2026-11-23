@@ -1,0 +1,34 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.9
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.9
+// Se dispone de un árbol binario de enteros. Escribir funciones que
+// calculen:
+//
+// 1. La suma de sus elementos.
+// 2. La suma de sus elementos que son múltiplos de 3.
+// --------------------------------------------------------------------------
+
+Función Suma (p: puntero a Nodo): entero es
+	Si p = nil entonces
+		Suma:= 0
+	Sino
+		Suma:= *p.dato + Suma(*p.izq) + Suma(*p.der)
+	FinSi
+FinFunción
+
+Función SumaMult3 (p: puntero a Nodo): entero es
+	Si p = nil entonces
+		SumaMult3:= 0
+	Sino
+		Si *p.dato mod 3 = 0 entonces
+			SumaMult3:= *p.dato + SumaMult3(*p.izq) + SumaMult3(*p.der)
+		Sino
+			SumaMult3:= SumaMult3(*p.izq) + SumaMult3(*p.der)
+		FinSi
+	FinSi
+FinFunción

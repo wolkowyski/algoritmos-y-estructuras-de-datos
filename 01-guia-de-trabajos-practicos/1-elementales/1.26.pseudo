@@ -1,0 +1,27 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.26
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.26
+// Generar un algoritmo para imprimir las coordenadas (X,Y) de una función
+// cuadrática, de la forma: Y = aX^2+bX+c, haciendo variar X en el intervalo
+// [20, -20] con un decremento de 2.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_26 es
+Ambiente
+    Variables
+        a, b, c, Y: Real
+        X: Entero
+Proceso
+    Escribir ("Ingrese los coeficientes a, b y c")
+    Leer (a, b, c)
+    Para X:= 20 hasta -20, -2 Hacer // paso negativo: decremento de 2
+        Y:= a * X**2 + b * X + c
+        Escribir ("(", X, ", ", Y, ")")
+    FinPara
+FinAcción

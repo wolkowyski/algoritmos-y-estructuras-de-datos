@@ -1,0 +1,51 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.18
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.18 (segundo de la guía con ese número)
+// Suponer que los datos del ejercicio 2.01 se encuentran en 3 secuencias por
+// separado, correspondientes a ISI, IQ y IEM, todas ordenadas por Nro. de
+// Legajo. Generar un algoritmo que permita fusionar estas en una sola
+// secuencia, respetando el orden y la estructura.
+// --------------------------------------------------------------------------
+
+// (En la guía hay dos ejercicios numerados 2.2.18; este es el segundo.)
+// Mezcla de tres archivos con High Value: en cada vuelta se graba el menor.
+Accion Complementario2_2_18_b es
+Ambiente
+	// Datos: el mismo registro de alumnos del ejercicio 2.2.1 de la práctica
+	ISI, IQ, IEM, TODOS: Archivo de Datos ordenado por Nro_Legajo
+	R1, R2, R3: Datos
+	HV = 99999
+
+	Procedimiento Leer1 es
+		Leer(ISI, R1); Si FDA(ISI) entonces R1.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+	Procedimiento Leer2 es
+		Leer(IQ, R2); Si FDA(IQ) entonces R2.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+	Procedimiento Leer3 es
+		Leer(IEM, R3); Si FDA(IEM) entonces R3.Nro_Legajo:= HV FinSi
+	FinProcedimiento
+
+Proceso
+	Abrir E/(ISI); Leer1
+	Abrir E/(IQ); Leer2
+	Abrir E/(IEM); Leer3
+	Abrir /S(TODOS)
+	Mientras (R1.Nro_Legajo <> HV) o (R2.Nro_Legajo <> HV) o (R3.Nro_Legajo <> HV) hacer
+		Si (R1.Nro_Legajo <= R2.Nro_Legajo) y (R1.Nro_Legajo <= R3.Nro_Legajo) entonces
+			Escribir(TODOS, R1); Leer1
+		Sino
+			Si R2.Nro_Legajo <= R3.Nro_Legajo entonces
+				Escribir(TODOS, R2); Leer2
+			Sino
+				Escribir(TODOS, R3); Leer3
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(ISI); Cerrar(IQ); Cerrar(IEM); Cerrar(TODOS)
+FinAccion

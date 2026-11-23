@@ -1,0 +1,53 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales (extra)
+//  Página "Secuencias de datos elementales - Extra" de la guía
+//  Ejercicio 2.1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.1 (extra)
+// Dada una secuencia de caracteres de entrada, producir una secuencia de
+// salida con solo los caracteres "numéricos" correspondientes a dígitos
+// impares. Ej: si en la entrada viniera A125EB% en la salida debería ir 15.
+// Al final informar: cuántos dígitos impares y pares se encontraron, el total
+// de dígitos y el porcentaje de pares e impares.
+// --------------------------------------------------------------------------
+
+Acción Extra2_1_1 es
+    Ambiente
+        PAR = {"0", "2", "4", "6", "8"}   // son caracteres, no números
+        IMPAR = {"1", "3", "5", "7", "9"}
+        Sec, SecF: secuencia de caracteres
+        v: caracter
+        cont_par, cont_impar, total_num: entero
+        porcentaje_par, porcentaje_impar: real
+    Proceso
+        ARR(Sec)
+        AVZ(Sec, v)
+        CREAR(SecF)
+        cont_par:= 0
+        cont_impar:= 0
+        Mientras NFDS(Sec) hacer
+            Si v en PAR entonces
+                cont_par:= cont_par + 1
+            Sino
+                Si v en IMPAR entonces
+                    cont_impar:= cont_impar + 1
+                    ESC(SecF, v) // se escribe en la secuencia de salida, no en la de entrada
+                FinSi
+            FinSi
+            AVZ(Sec, v)
+        FinMientras
+
+        total_num:= cont_par + cont_impar
+        Si total_num > 0 entonces
+            porcentaje_par:= cont_par * 100 / total_num   // parte / total * 100
+            porcentaje_impar:= cont_impar * 100 / total_num
+            Escribir ("La cantidad de dígitos impares encontrados fue de: ", cont_impar, ", representando un ", porcentaje_impar, " %")
+            Escribir ("Por otro lado, la cantidad de dígitos pares fue de: ", cont_par, ", representando un ", porcentaje_par, " %")
+        FinSi
+        Escribir ("Por último, el total de caracteres numéricos fue de: ", total_num)
+        CERRAR(Sec)
+        CERRAR(SecF)
+FinAcción

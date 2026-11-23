@@ -1,0 +1,55 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.19
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.19
+// Dada una secuencia de caracteres, generar otra secuencia con todas las
+// palabras de tres caracteres. Informar el porcentaje de las mismas, sobre
+// el total de palabras de la secuencia de entrada. Considerar que puede
+// haber más de un blanco entre palabras.
+// --------------------------------------------------------------------------
+
+// Una palabra de 3 caracteres no se puede saber hasta terminarla: guardo los
+// 3 primeros caracteres en variables y los escribo solo si el largo es 3.
+Acción Ejercicio2_1_19 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v, c1, c2, c3: caracter
+    largo, total, de_tres: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0
+    de_tres:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer // puede haber más de un blanco
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            largo:= 0
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                largo:= largo + 1
+                Según largo hacer
+                    1: c1:= v
+                    2: c2:= v
+                    3: c3:= v
+                FinSegún
+                AVZ(Sec, v)
+            FinMientras
+            Si largo = 3 entonces
+                de_tres:= de_tres + 1
+                ESC(Salida, c1); ESC(Salida, c2); ESC(Salida, c3); ESC(Salida, " ")
+            FinSi
+        FinSi
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Palabras de 3 caracteres: ", de_tres * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec)
+    CERRAR(Salida)
+FinAcción

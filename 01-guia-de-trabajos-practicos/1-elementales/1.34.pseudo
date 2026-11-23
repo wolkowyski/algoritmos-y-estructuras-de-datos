@@ -1,0 +1,38 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.34
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.34
+// Escribir un algoritmo que permita imprimir la siguiente sucesión.
+// Considere que N es un número par, que se ingresa.
+//
+//     2   4   6   ............    N
+//     2   4   6   ........    N-2
+//     2   4   6   ...     N-4
+//     ...........
+//     2   4   6
+//     2   4
+//     2
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_34 es
+Ambiente
+    Variables
+        N, fin, j: Entero
+Proceso
+    Repetir
+        Escribir ("Ingrese un número par N")
+        Leer (N)
+    Hasta que N mod 2 = 0
+    // Todas las filas empiezan en 2; el final baja de a 2 hasta llegar a 2
+    Para fin:= N hasta 2, -2 Hacer
+        Para j:= 2 hasta fin, 2 Hacer
+            Escribir (j, " ") // en la misma línea
+        FinPara
+        Escribir () // salto de línea
+    FinPara
+FinAcción

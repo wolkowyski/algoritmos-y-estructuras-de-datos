@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.10
+// Suponiendo que un árbol está definido como la estructura recursiva de
+// datos:
+//
+// arbol = registro
+//     x: entero
+//     izq, der: puntero a arbol
+// fin registro
+//
+// Escribir un algoritmo que encuentre un elemento con una clave dada C, y
+// realice una operación P con él.
+// --------------------------------------------------------------------------
+
+// Búsqueda en un árbol binario cualquiera (se recorren los dos subárboles).
+// Si fuera un ABB alcanzaría con bajar por un solo lado según la clave.
+Función Buscar (p: puntero a arbol; C: entero): puntero a arbol es
+	Ambiente
+		r: puntero a arbol
+	Proceso
+		Si (p = nil) o (*p.x = C) entonces
+			Buscar:= p
+		Sino
+			r:= Buscar(*p.izq, C)
+			Si r = nil entonces
+				r:= Buscar(*p.der, C)
+			FinSi
+			Buscar:= r
+		FinSi
+FinFunción
+
+// Uso: se busca la clave y, si está, se le aplica la operación P
+//   q:= Buscar(raiz, C)
+//   Si q <> nil entonces P(q) Sino Escribir("La clave no está") FinSi

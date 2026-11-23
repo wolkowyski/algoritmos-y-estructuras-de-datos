@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.3
+// Dada la expresión de la siguiente línea, dibujar el árbol equivalente
+//
+// `[ ( x - y ) * z ] / ( m + n  p)`
+// --------------------------------------------------------------------------
+
+// El operador que se aplica último queda en la raíz (la división):
+//
+//                 /
+//           *           +
+//         -   z       m    **
+//        x y              n  p

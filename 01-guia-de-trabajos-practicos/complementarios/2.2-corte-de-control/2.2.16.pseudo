@@ -1,0 +1,88 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.16
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.16
+// Una empresa de venta de accesorios de automóviles comercializa 100
+// artículos como máximo. Para controlar sus exigencias y sus ventas genera
+// un archivo con la siguiente información por cada artículo:
+//
+// Un primer registro por cada artículo con:
+//
+// * NroArt* Cant
+//
+// `NroArt`: número de artículo
+// `Cant`: cantidad de unidades en existencia
+//
+// A continuación un lote de registros, uno por cada venta, con:
+//
+// * NroArt* Cant
+//
+// `NroArt`: número de artículo
+// `Cant`: cantidad de unidades de cada venta.
+//
+// Habrá, por lo menos, un artículo con sus ventas. Puede ser que de algún
+// artículo no haya ventas. Imprimir:
+//
+// * Saldo final de cada artículo y su número
+// * Al final del proceso indicar el N° de artículo
+// * Si de algún artículo se vende más de lo que hay en existencia detener el
+// proceso con un texto aclaratorio (sin imprimir el mínimo)
+// * Indicar si se procesaron más de 100 artículos
+// * Calcular el promedio de las cantidades vendidas por artículo
+// exclusivamente para los artículos que tienen ventas
+// --------------------------------------------------------------------------
+
+// Por cada artículo: primero el registro de existencia y después sus ventas
+// (mismo NroArt). Se corta por número de artículo.
+Accion Complementario2_2_16 es
+Ambiente
+	Reg = Registro
+		NroArt: N(5)
+		Cant: N(5)
+	FinRegistro
+	ARCH: Archivo de Reg
+	R: Reg
+	ResArt: N(5)
+	saldo, vendido, articulos, con_ventas, total_vendido: entero
+	error: booleano
+Proceso
+	Abrir E/(ARCH); Leer(ARCH, R)
+	articulos:= 0; con_ventas:= 0; total_vendido:= 0
+	error:= Falso
+	Mientras No FDA(ARCH) y No error hacer
+		ResArt:= R.NroArt
+		saldo:= R.Cant // registro de existencia
+		articulos:= articulos + 1
+		vendido:= 0
+		Leer(ARCH, R)
+		Mientras No FDA(ARCH) y (R.NroArt = ResArt) y No error hacer // sus ventas
+			Si R.Cant > saldo entonces
+				Escribir("Error: el artículo ", ResArt, " vendió más de lo que había en existencia. Proceso detenido.")
+				error:= Verdadero
+			Sino
+				saldo:= saldo - R.Cant
+				vendido:= vendido + R.Cant
+				Leer(ARCH, R)
+			FinSi
+		FinMientras
+		Si No error entonces
+			Escribir("Artículo ", ResArt, " - saldo final ", saldo)
+			Si vendido > 0 entonces
+				con_ventas:= con_ventas + 1
+				total_vendido:= total_vendido + vendido
+			FinSi
+		FinSi
+	FinMientras
+	Si No error entonces
+		Escribir("Último artículo procesado: ", ResArt)
+		Si articulos > 100 entonces Escribir("Se procesaron más de 100 artículos") FinSi
+		Si con_ventas > 0 entonces
+			Escribir("Promedio vendido por artículo con ventas: ", total_vendido / con_ventas)
+		FinSi
+	FinSi
+	Cerrar(ARCH)
+FinAccion

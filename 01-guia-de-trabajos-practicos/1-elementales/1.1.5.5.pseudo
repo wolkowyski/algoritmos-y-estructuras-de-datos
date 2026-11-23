@@ -1,0 +1,29 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.5
+// Se desea calcular el valor de la sección (S) de un conductor, la cual se
+// determina en función de la corriente eléctrica I y de la conductividad C del
+// material (C = I / S). Además, a la sección así obtenida se le incrementa un
+// 25% por razones de seguridad.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_5 es
+//Ambiente
+    Constantes
+        seguridad = 1,25
+    Variables
+        I, C, S: Real
+//Algoritmo
+    Escribir ("Ingrese el valor de la corriente eléctrica")
+    Leer (I)
+    Escribir ("Ingrese el valor de la conductividad del material")
+    Leer (C)
+        S:= (I / C) * seguridad // de C = I / S se despeja S = I / C
+    Escribir ("El valor de la sección del conductor, con un 25% extra por seguridad, es de: ", S)
+FinAcción

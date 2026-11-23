@@ -1,0 +1,39 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 0 - Algoritmos
+//  Acciones, estados, asignaciones y primeros algoritmos
+//  Ejercicio 0.1.5
+// ==========================================================================
+
+Ejercicio 0.1.5
+Diseñe un algoritmo que permita resolver cada uno de los ejercicios enunciados a continuación:
+
+Leer los datos de un automóvil en la forma ¨Marca¨ seguida de ¨Modelo¨, y escribir en la forma ¨Modelo¨ seguido por ¨Marca¨.
+Convertir una suma en dólares a PESOS. Se debe prever que el valor de conversión puede cambiar.
+
+Acción Ejericico0_1_5 es
+	Ambiente
+		Marca: Alfanumérico
+		Modelo: Alfanumérico
+
+	Proceso
+		Escribir("Bienvenido! Por favor, ingrese la marca de su vehiculo")
+		Leer(Marca)
+		Escribir("Ahora ingrese su modelo")
+		Leer(Modelo)
+		Escribir("Su automóvil es: ", Modelo, " de la marca ", Marca) // primero el modelo, después la marca
+FinAcción
+
+Acción Dolares es
+	Ambiente
+		Cotizacion: Numérico
+		Dolares: Numérico
+		Pesos: Numérico
+	Proceso
+		Escribir("Bienvenido! Por favor ingrese la cotización actual del Dólar a Peso")
+		Leer(Cotizacion)
+		Escribir("Ingrese la suma en dolares que desea convertir")
+		Leer(Dolares)
+		Pesos:= Dolares * Cotizacion
+		Escribir(Dolares, " dólares equivalen a: ", Pesos, " pesos.") // la cotización se pide cada vez porque puede cambiar
+FinAcción

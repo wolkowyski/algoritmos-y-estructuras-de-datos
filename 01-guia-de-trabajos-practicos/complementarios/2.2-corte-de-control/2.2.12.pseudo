@@ -1,0 +1,60 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.12
+// Se realiza una encuesta en distintas provincias. Por cada persona que
+// responde se genera un registro con:
+//
+// * Código de la provincia
+// * Edad
+// * Código de los estudios cursados: 1.Primarios; 2.Secundarios;
+// 3.Universitarios; 4.Terciarios; 5.Ninguno
+//
+// La información se ordena por provincia y se graba en un archivo. Se pide:
+//
+// * Cantidad de personas con estudios primarios
+// * Cantidad de personas con estudios secundarios
+// * Para cada provincia:
+//   1. Código de la provincia
+//   2. Total de encuestados
+// * Código de la provincia que tuvo mayor cantidad de personas sin ningún
+// estudio
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_12 es
+Ambiente
+	Encuesta = Registro
+		Provincia: N(2)
+		Edad: N(3)
+		Estudios: 1..5
+	FinRegistro
+	ENCUESTAS: Archivo de Encuesta ordenado por Provincia
+	R: Encuesta
+	ResProv, prov_max: N(2)
+	primarios, secundarios, total_prov, ninguno, max_ninguno: entero
+Proceso
+	Abrir E/(ENCUESTAS); Leer(ENCUESTAS, R)
+	primarios:= 0; secundarios:= 0; max_ninguno:= -1
+	Mientras No FDA(ENCUESTAS) hacer
+		ResProv:= R.Provincia
+		total_prov:= 0; ninguno:= 0
+		Mientras No FDA(ENCUESTAS) y (R.Provincia = ResProv) hacer
+			total_prov:= total_prov + 1
+			Según R.Estudios hacer
+				1: primarios:= primarios + 1
+				2: secundarios:= secundarios + 1
+				5: ninguno:= ninguno + 1
+			FinSegún
+			Leer(ENCUESTAS, R)
+		FinMientras
+		Escribir("Provincia ", ResProv, ": ", total_prov, " encuestados")
+		Si ninguno > max_ninguno entonces max_ninguno:= ninguno; prov_max:= ResProv FinSi
+	FinMientras
+	Escribir("Con estudios primarios: ", primarios, " - secundarios: ", secundarios)
+	Escribir("Provincia con más personas sin estudios: ", prov_max)
+	Cerrar(ENCUESTAS)
+FinAccion

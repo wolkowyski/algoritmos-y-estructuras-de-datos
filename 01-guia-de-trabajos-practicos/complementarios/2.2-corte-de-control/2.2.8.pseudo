@@ -1,0 +1,43 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.8
+// Reconsidere el problema 2.2.3. La compañía debe enviar a cada planta el
+// dinero para abonar los sueldos. Para ello requiere el siguiente listado
+//
+// | Totales de Sueldo por Planta |  |
+// | --- | --- |
+// | Planta A | $ ------- |
+// | Planta B | $ ------- |
+// | Planta C | $ ------- |
+// | -------- | ------- |
+// | Total | $ ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_8 es
+Ambiente
+	// (mismo archivo y arreglo Sueldo que el 2.2.3, ordenado por planta)
+	ResPlanta: caracter
+	totPlanta, total: real
+Proceso
+	Sueldo[1]:= 1500; Sueldo[2]:= 2000; Sueldo[3]:= 3500; Sueldo[4]:= 5000
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Totales de Sueldo por Planta")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		totPlanta:= 0
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			totPlanta:= totPlanta + Sueldo[R.Categoria]
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("Planta ", ResPlanta, " | $", totPlanta)
+		total:= total + totPlanta
+	FinMientras
+	Escribir("Total | $", total)
+	Cerrar(EMPLEADOS)
+FinAccion

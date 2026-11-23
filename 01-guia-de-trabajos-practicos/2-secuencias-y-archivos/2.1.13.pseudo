@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.13
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.13
+// A partir del ejercicio anterior, determinar el porcentaje que representan
+// las palabras que comienzan con "ALG"
+// sobre todas las palabras de la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_13 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    total, con_alg: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    total:= 0
+    con_alg:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer // salteo blancos
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces // empieza una palabra
+            total:= total + 1
+            Si v = "A" entonces
+                AVZ(Sec, v)
+                Si v = "L" entonces
+                    AVZ(Sec, v)
+                    Si v = "G" entonces
+                        con_alg:= con_alg + 1
+                    FinSi
+                FinSi
+            FinSi
+            Mientras NFDS(Sec) y (v <> " ") hacer // termino la palabra
+                AVZ(Sec, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Palabras que empiezan con ALG: ", con_alg * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec)
+FinAcción

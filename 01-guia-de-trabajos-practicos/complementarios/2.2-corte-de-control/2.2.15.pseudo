@@ -1,0 +1,77 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.15
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.15
+// Un banco tiene varias sucursales, cada una de las cuales tiene un gran
+// número de cuentas corrientes. Al final de cada mes se desea conocer el
+// capital existente en:
+//
+// * Sucursal* CtaCte* Importe* Codigo
+//
+// * Cada cuenta corriente
+// * Cada sucursal
+// * Total en el banco
+//
+// Para ello se prepara un archivo de registros clasificado por sucursal y
+// por número de cuenta corriente:
+//
+// Puede haber más de un registro con el mismo número de cuenta corriente.
+// CODIGO puede tomar dos valores: D - depósito, E - Extracción.
+// La planilla que se pide es la siguiente
+//
+// | Empresa NNN |  |  |  |
+// | --- | --- | --- | --- |
+// | Sucursal | Cuenta Corriente | Importe | Codigo |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// |  |  | Total Cta Cte | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Sucursal | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Banco | Xxx.xx |
+// --------------------------------------------------------------------------
+
+// Los depósitos suman y las extracciones restan.
+Accion Complementario2_2_15 es
+Ambiente
+	Movimiento = Registro
+		Sucursal: N(3)
+		CtaCte: N(8)
+		Importe: real
+		Codigo: ("D", "E")
+	FinRegistro
+	MOVIMIENTOS: Archivo de Movimiento ordenado por Sucursal y CtaCte
+	R: Movimiento
+	ResSuc: N(3)
+	ResCta: N(8)
+	totCta, totSuc, totBanco, imp: real
+Proceso
+	Abrir E/(MOVIMIENTOS); Leer(MOVIMIENTOS, R)
+	totBanco:= 0
+	Escribir("Empresa NNN")
+	Escribir("Sucursal | Cuenta Corriente | Importe | Código")
+	Mientras No FDA(MOVIMIENTOS) hacer
+		ResSuc:= R.Sucursal
+		totSuc:= 0
+		Mientras No FDA(MOVIMIENTOS) y (R.Sucursal = ResSuc) hacer
+			ResCta:= R.CtaCte
+			totCta:= 0
+			Mientras No FDA(MOVIMIENTOS) y (R.Sucursal = ResSuc) y (R.CtaCte = ResCta) hacer
+				Escribir(R.Sucursal, " | ", R.CtaCte, " | ", R.Importe, " | ", R.Codigo)
+				Si R.Codigo = "D" entonces imp:= R.Importe Sino imp:= -R.Importe FinSi
+				totCta:= totCta + imp
+				Leer(MOVIMIENTOS, R)
+			FinMientras
+			Escribir("Total Cta Cte | ", totCta)
+			totSuc:= totSuc + totCta
+		FinMientras
+		Escribir("Total Sucursal | ", totSuc)
+		totBanco:= totBanco + totSuc
+	FinMientras
+	Escribir("Total Banco | ", totBanco)
+	Cerrar(MOVIMIENTOS)
+FinAccion

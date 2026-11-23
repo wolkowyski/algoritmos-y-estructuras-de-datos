@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.2
+// Las raíces de una ecuación de segundo grado son reales si y sólo si el
+// discriminante dado por (b^2 - 4ac) no es negativo. Se desea leer el valor
+// de los coeficientes a, b, c e imprimir el resultado del discriminante.
+// Realizar prueba de escritorio.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_2 es
+//Ambiente
+    Variables
+        a, b, c: Real
+        result: Real
+//Algoritmo
+    Escribir ("Ingrese los valores de los coeficientes de a, b y c")
+    Leer (a, b, c)
+        result:= b**2 - 4 * a * c
+    Escribir ("El resultado del discriminante es ", result)
+        Si result >= 0 Entonces // "no negativo" incluye al cero (raíz doble)
+            Escribir ("Las raíces de la ecuación son reales")
+        SiNo
+            Escribir ("El discriminante es negativo: la ecuación no tiene raíces reales (∅ en R)")
+        FinSi
+FinAcción
+
+// Prueba de escritorio: a = 1, b = 5, c = 6
+//   result = 5**2 - 4 * 1 * 6 = 25 - 24 = 1 -> raíces reales
+// Prueba de escritorio: a = 1, b = 2, c = 5
+//   result = 2**2 - 4 * 1 * 5 = 4 - 20 = -16 -> sin raíces reales

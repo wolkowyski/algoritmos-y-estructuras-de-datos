@@ -1,0 +1,26 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.17
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.17
+// Elabore un algoritmo que calcule el producto de dos enteros A y B
+// empleando sólo la operación suma.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_17 es
+//Ambiente
+    Variables
+        a, b, i, result: Entero
+//Algoritmo
+    result:= 0
+    Escribir ("Ingrese 2 números enteros (el segundo no negativo): ")
+    Leer (a, b)
+    Para i:= 1 hasta b Hacer // sumo a consigo mismo b veces
+        result:= result + a
+    FinPara
+    Escribir ("El producto es: ", result)
+FinAcción

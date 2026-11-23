@@ -1,0 +1,30 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.4
+// Dado el siguiente árbol:
+//
+// (ver figura en la guía)
+//
+// 1. Indique el resultado del recorrido post-orden
+// 2. Indique el resultado del recorrido en-orden
+// 3. Elabore un algoritmo para el recorrido en-orden
+// --------------------------------------------------------------------------
+
+// Árbol de la figura (img/5.3.4.svg):     40
+//                                     28      70
+//                                    9  32  52  10
+// 1. Post-orden: 9 32 28 52 10 70 40
+// 2. En-orden:   9 28 32 40 52 70 10
+// 3. Algoritmo del recorrido en-orden:
+Procedimiento EnOrden (p: puntero a Nodo) es
+	Si p <> nil entonces
+		EnOrden(*p.izq)
+		Escribir(*p.dato)
+		EnOrden(*p.der)
+	FinSi
+FinProcedimiento

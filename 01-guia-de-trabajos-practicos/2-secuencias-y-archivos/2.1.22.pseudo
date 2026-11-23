@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.22
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.22
+// La empresa Ideas Argentinas S.A. posee datos de sus empleados en dos
+// secuencias de caracteres; la primera secuencia (Sec1) formada por los
+// nombres (uno por persona) de los empleados separados por blancos y la
+// segunda secuencia (Sec2) posee los números de documento de cada uno de los
+// empleados (palabras de 8 dígitos numéricos).
+// Ambas secuencias poseen la misma cantidad de datos, es decir al primer
+// nombre de la primera secuencia le corresponde el primer número de
+// documento de la segunda secuencia y así sucesivamente. La secuencia de
+// números de documentos no posee espacios en blanco ni ningún otro tipo de
+// caracter que separe un número de documento de otro.
+// A la empresa le interesa tener en una nueva secuencia (Sec3) los datos de
+// todas aquellas personas que cumplan la condición de que el nombre se
+// encuentre en una posición impar.
+// La nueva secuencia debe generarse de la siguiente manera: el número de
+// documento seguido (sin espacios) por una coma y luego (sin espacios) por
+// el nombre y seguido al nombre un #.
+// --------------------------------------------------------------------------
+
+// Por cada nombre de Sec1 le corresponden los 8 dígitos siguientes de Sec2.
+// En la salida el DNI va primero, pero el nombre se lee primero: para no
+// tener que guardar el nombre, leo antes el DNI (8 caracteres) en variables.
+Acción Ejercicio2_1_22 es
+Ambiente
+    Sec1, Sec2, Sec3: secuencia de caracteres
+    v1, v2: caracter
+    dni: arreglo de [1..8] de caracter // se usa solo como 8 variables para el DNI
+    i, pos: entero
+Proceso
+    ARR(Sec1); AVZ(Sec1, v1)
+    ARR(Sec2); AVZ(Sec2, v2)
+    CREAR(Sec3)
+    pos:= 0
+    Mientras NFDS(Sec1) hacer
+        Mientras NFDS(Sec1) y (v1 = " ") hacer
+            AVZ(Sec1, v1)
+        FinMientras
+        Si NFDS(Sec1) entonces
+            pos:= pos + 1
+            Para i:= 1 hasta 8 hacer // DNI de esta persona
+                dni[i]:= v2
+                AVZ(Sec2, v2)
+            FinPara
+            Si pos mod 2 = 1 entonces // posición impar: se copia
+                Para i:= 1 hasta 8 hacer
+                    ESC(Sec3, dni[i])
+                FinPara
+                ESC(Sec3, ",")
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    ESC(Sec3, v1)
+                    AVZ(Sec1, v1)
+                FinMientras
+                ESC(Sec3, "#")
+            Sino
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    AVZ(Sec1, v1)
+                FinMientras
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Sec1); CERRAR(Sec2); CERRAR(Sec3)
+FinAcción

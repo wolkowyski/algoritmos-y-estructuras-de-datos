@@ -1,0 +1,67 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.4
+// El archivo se encuentra ordenado por planta y dentro de cada planta
+// ordenado por categoría.
+// Se supone en este caso que los sueldos que corresponden a cada categoría
+// deben ser introducidos como dato por el teclado
+//
+// | Planilla de Empleados |  |  |
+// | --- | --- | --- |
+// | Planta A |  |  |
+// |  | *Categoria 1* | *Sueldo:* __________ |
+// |  | Molinari |  |
+// |  | Salerno |  |
+// |  | ----- |  |
+// |  | *Categoria 2* | *Sueldo:* __________ |
+// |  | Arce |  |
+// | ----- | ----- | ----- |
+// | Planta B |  |  |
+// |  | *Categoria 1* | *Sueldo:* __________ |
+// |  | Aranda |  |
+// |  | Davis |  |
+// |  | ----- |  |
+// --------------------------------------------------------------------------
+
+// Dos niveles: planta y, dentro de ella, categoría. El sueldo de cada
+// categoría se pide por teclado una vez y se guarda en un arreglo.
+Accion Complementario2_2_4 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Planta y Categoria
+	R: Empleado
+	ResPlanta: caracter
+	ResCat, i: entero
+	Sueldo: arreglo [1..4] de real
+Proceso
+	Para i:= 1 hasta 4 hacer
+		Escribir("Sueldo de la categoría ", i)
+		Leer(Sueldo[i])
+	FinPara
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Planilla de Empleados")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		Escribir("Planta ", ResPlanta)
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			ResCat:= R.Categoria
+			Escribir("    Categoría ", ResCat, "   Sueldo: ", Sueldo[ResCat])
+			Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) y (R.Categoria = ResCat) hacer
+				Escribir("    ", R.Nombre)
+				Leer(EMPLEADOS, R)
+			FinMientras
+			Escribir("    -----")
+		FinMientras
+		Escribir("-----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion

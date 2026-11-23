@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.18
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.18
+// Se dispone de 2 secuencias de caracteres, una contiene caracteres,
+// incluidos espacios y otra contiene caracteres “numéricos”. Se pide crear
+// una nueva secuencia de salida de caracteres donde se copien los caracteres
+// de ambas secuencias en forma alternada, o sea un carácter, un dígito, un
+// carácter, un dígito, etc.
+//
+// Ejemplo:
+// Sec1: `Para habilitar la función de Salas para grupos pequeños para su
+// uso*`
+// Sec2: `13481460918460846161334868461086*`
+// Salida: `P1a3r4a8 1h4...`
+//
+// 1. Analice y responda: Que pasaría en el caso de que una secuencia de
+// entrada termine antes que la otra? se podría cumplir con la consigna?
+// 2. Como modificaría el algoritmo en el caso de que solicite contar la
+// cantidad de caracteres de cada secuencia y mostrar por pantalla al final
+// del proceso?
+// --------------------------------------------------------------------------
+
+// Mismo ejercicio que el 2.1.4 de las secuencias extra
+// (../../2-secuencias-y-archivos/2.1.4-extra.pseudo), donde están
+// resueltas las dos preguntas: si una secuencia termina antes, la
+// alternancia ya no se puede cumplir y se copia el resto de la otra; y para
+// contar los caracteres se usa un contador por secuencia.

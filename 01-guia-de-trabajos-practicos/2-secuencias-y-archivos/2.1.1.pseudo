@@ -1,0 +1,37 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.1
+// Dada una secuencia de letras del alfabeto que finaliza con una marca '*',
+// contar cuántas letras "A" hay en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_1 es
+Ambiente
+    Sec: secuencia de caracteres
+    v: caracter
+    letras: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    letras:= 0
+    Mientras v <> "*" hacer // la marca de fin es el caracter "*"
+        Si v = "A" entonces
+            letras:= letras + 1
+        FinSi
+        AVZ(Sec, v) // sin avanzar el ciclo nunca termina
+    FinMientras
+    Escribir ("Cantidad de letras A: ", letras)
+    CERRAR(Sec)
+FinAcción

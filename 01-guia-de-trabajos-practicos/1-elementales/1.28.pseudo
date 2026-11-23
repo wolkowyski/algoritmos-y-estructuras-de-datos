@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.28
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.28
+// Construya un algoritmo capaz de encontrar todas las cifras de tres dígitos
+// que cumplan con la condición de que la suma de los cubos de sus dígitos
+// sea igual al número que la cifra representa.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_28 es
+Ambiente
+    Variables
+        num, cent, dec, uni: Entero
+Proceso
+    Para num:= 100 hasta 999 Hacer
+        cent:= TRUNC(num / 100)
+        dec:= TRUNC(num / 10) mod 10
+        uni:= num mod 10
+        Si cent**3 + dec**3 + uni**3 = num Entonces
+            Escribir (num)
+        FinSi
+    FinPara
+FinAcción

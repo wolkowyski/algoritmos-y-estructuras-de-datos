@@ -1,0 +1,43 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales (extra)
+//  Página "Secuencias de datos elementales - Extra" de la guía
+//  Ejercicio 2.1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.2 (extra)
+// Dada una secuencia de caracteres de entrada, producir 2 secuencias de
+// salida, una con los caracteres "numéricos" y otra con los que no lo son.
+// Informar al final la cantidad de caracteres de cada secuencia de salida.
+// Ej: A125EB% -> salida1: 125 | salida2: AEB%
+// --------------------------------------------------------------------------
+
+Acción Extra2_1_2 es
+    Ambiente
+        NUM = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"} // faltaba el 0
+        Sec, Sec1, Sec2: secuencia de caracteres
+        v: caracter
+        cont_numero, cont_caracter: entero
+    Proceso
+        ARR(Sec)
+        AVZ(Sec, v)
+        CREAR(Sec1)
+        CREAR(Sec2)
+        cont_numero:= 0
+        cont_caracter:= 0
+        Mientras NFDS(Sec) hacer
+            Si v en NUM entonces
+                cont_numero:= cont_numero + 1
+                ESC(Sec1, v)
+            Sino // si no es número ya sé que va a la otra salida
+                cont_caracter:= cont_caracter + 1
+                ESC(Sec2, v)
+            FinSi
+            AVZ(Sec, v)
+        FinMientras
+        Escribir ("Caracteres numéricos: ", cont_numero, " - Otros caracteres: ", cont_caracter)
+        CERRAR(Sec)
+        CERRAR(Sec1)
+        CERRAR(Sec2)
+FinAcción

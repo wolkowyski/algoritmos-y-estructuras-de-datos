@@ -1,0 +1,48 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.9
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.9
+// Escribir un algoritmo que a partir de una secuencia de palabras dada,
+// genere una secuencia de igual tipo conteniendo solo las palabras de la
+// secuencia original que NO comienzan con vocal . Por final de proceso se
+// deberá informar la cantidad de palabras de ambas secuencias de palabras y
+// el porcentaje de palabras que no cumplieron con la condición enunciada.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_9 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    total, copiadas: entero
+    copiar: booleano
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0; copiadas:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer AVZ(Sec, v) FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            copiar:= No (v en vocales)
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                Si copiar entonces ESC(Salida, v) FinSi
+                AVZ(Sec, v)
+            FinMientras
+            Si copiar entonces
+                ESC(Salida, " ")
+                copiadas:= copiadas + 1
+            FinSi
+        FinSi
+    FinMientras
+    Escribir("Palabras de entrada: ", total, " - de salida: ", copiadas)
+    Si total > 0 entonces
+        // las que no cumplieron la condición (no empezar con vocal) son las que empiezan con vocal
+        Escribir("No cumplieron la condición: ", (total - copiadas) * 100 / total, "%")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción

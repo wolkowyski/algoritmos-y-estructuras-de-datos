@@ -1,0 +1,46 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.3
+// Dada una lista doblemente encadenada que contiene datos de todas las
+// provincias de la República Argentina: nombre, capital, cantidad total de
+// habitantes y cantidad de analfabetos, y está ordenada alfabéticamente por
+// nombre de provincia, se desea generar otra lista simplemente encadenada
+// pero ordenada en orden decreciente por número de habitantes analfabetos.
+// --------------------------------------------------------------------------
+
+Accion Complementario4_3 (prim: puntero a NodoD) es
+Ambiente
+	Prov = Registro
+		Nombre, Capital: AN(40)
+		Habitantes, Analfabetos: N(9)
+	FinRegistro
+	NodoD = Registro
+		dato: Prov
+		ant, prox: puntero a NodoD
+	FinRegistro
+	NodoS = Registro
+		dato: Prov
+		prox: puntero a NodoS
+	FinRegistro
+	p: puntero a NodoD
+	q, r, a, prim2: puntero a NodoS
+Proceso
+	prim2:= nil
+	p:= prim
+	Mientras p <> nil hacer // recorro la doble hacia adelante
+		Nuevo(q)
+		*q.dato:= *p.dato
+		r:= prim2; a:= nil // inserción ordenada decreciente por analfabetos
+		Mientras (r <> nil) y (*r.dato.Analfabetos > *q.dato.Analfabetos) hacer
+			a:= r; r:= *r.prox
+		FinMientras
+		*q.prox:= r
+		Si a = nil entonces prim2:= q Sino *a.prox:= q FinSi
+		p:= *p.prox
+	FinMientras
+FinAccion

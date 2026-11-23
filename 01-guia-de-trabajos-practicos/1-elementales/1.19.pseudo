@@ -1,0 +1,24 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.19
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.19
+// Escribir un algoritmo que ingrese una variable V y emita el valor de ésta,
+// su cuadrado y su cubo.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_19 es
+Ambiente
+    Variables
+        V, V2, V3: Real
+Proceso
+    Escribir ("Ingrese una Variable/Número")
+    Leer (V)
+    V2:= V * V
+    V3:= V * V * V
+    Escribir ("El valor de la Variable es: ", V, " Su cuadrado es: ", V2, " y su cubo es: ", V3)
+FinAcción

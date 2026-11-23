@@ -1,0 +1,58 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.8
+// Igual al anterior, pero la secuencia de salida es de caracteres y los CUIT
+// se separan unos de otros con el caracter "-".
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_8 es
+Ambiente
+    Sec: secuencia de enteros
+    Salida: secuencia de caracteres
+    cuit, divisor: entero
+
+    Función ACaracter (d: entero): caracter es // convierte un dígito en caracter
+        Según d hacer
+            0: ACaracter:= "0"
+            1: ACaracter:= "1"
+            2: ACaracter:= "2"
+            3: ACaracter:= "3"
+            4: ACaracter:= "4"
+            5: ACaracter:= "5"
+            6: ACaracter:= "6"
+            7: ACaracter:= "7"
+            8: ACaracter:= "8"
+            9: ACaracter:= "9"
+        FinSegún
+    FinFunción
+
+Proceso
+    ARR(Sec)
+    CREAR(Salida)
+    AVZ(Sec, cuit)
+    Mientras cuit <> 0 hacer
+        Si (cuit div 10) mod 10 <= 3 entonces
+            divisor:= 10000000000 // el CUIT tiene 11 dígitos
+            Mientras divisor > 0 hacer
+                ESC(Salida, ACaracter((cuit div divisor) mod 10))
+                divisor:= divisor div 10
+            FinMientras
+            ESC(Salida, "-")
+        FinSi
+        AVZ(Sec, cuit)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Salida)
+FinAcción

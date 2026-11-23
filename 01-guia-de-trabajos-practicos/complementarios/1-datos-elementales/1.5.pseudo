@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.5
+// Se desea determinar si un estudiante aprobó una materia. Para ello se le
+// toman 5 exámenes (E1, E2, E3, E4, E5). Se considera aprobada la materia a
+// aquellos alumnos que aprobaron los 5 exámenes: deberán rendir un examen de
+// complemento aquellos que aprobaron 3 exámenes, siempre que uno de estos
+// tres sea el último.
+// Tendrán la posibilidad de volver a rendir el último examen aquellos
+// alumnos que no lo aprobaron, pero aprobaron por lo menos el 3ro. y el 4to.
+// --------------------------------------------------------------------------
+
+Acción Complementario1_5 es
+Ambiente
+    E: arreglo [1..5] de Real // las 5 notas (aprobado = nota >= 6)
+    i, aprobados: Entero
+Proceso
+    aprobados:= 0
+    Para i:= 1 hasta 5 hacer
+        Leer(E[i])
+        Si E[i] >= 6 entonces aprobados:= aprobados + 1 FinSi
+    FinPara
+    Si aprobados = 5 entonces
+        Escribir("Materia aprobada")
+    Sino
+        Si (aprobados = 3) y (E[5] >= 6) entonces
+            Escribir("Debe rendir un examen de complemento")
+        Sino
+            Si (E[5] < 6) y (E[3] >= 6) y (E[4] >= 6) entonces
+                Escribir("Puede volver a rendir el último examen")
+            Sino
+                Escribir("Materia no aprobada")
+            FinSi
+        FinSi
+    FinSi
+FinAcción

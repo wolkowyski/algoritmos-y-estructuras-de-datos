@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Datos elementales
+//  Ejercicio 1.1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.2
+// Indique en cuáles de los siguientes pares es importante el orden de los
+// enunciados (supóngase X<>Y, Y<>Z, Z<>X). Justifique su respuesta.
+// --------------------------------------------------------------------------
+
+X:=Y
+Y:=Z
+Es importante: en este orden X termina valiendo el Y original; si se invierte,
+Y ya vale Z cuando se asigna, y X termina valiendo Z.
+
+X:=Y
+Z:=X
+Es importante: en este orden Z termina valiendo Y; si se invierte, Z toma el
+valor original de X.
+
+X:=Z
+X:=Y
+Es importante: la segunda asignación pisa a la primera, así que X termina
+valiendo Y en este orden y Z si se invierte.
+
+Z:=Y
+X:=Y
+No es importante: las dos asignaciones solo leen Y (que no cambia), así que en
+cualquier orden Z y X terminan valiendo Y.

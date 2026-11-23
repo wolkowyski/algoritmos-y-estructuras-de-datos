@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.12
+// El recorrido en pre-orden de un determinado árbol binario es:
+// GEAIBMCLDFKJH y en-orden IABEGLDCFMKHJ.
+//
+// 1. Dibujar el árbol binario.
+// 2. Dar el recorrido en post-orden.
+// 3. Diseñar un algoritmo para recorrer el árbol en post-orden.
+// --------------------------------------------------------------------------
+
+// 1. La primera letra del pre-orden es la raíz (G); en el en-orden, lo que
+//    está a su izquierda (IABE) es el subárbol izquierdo y lo demás el derecho.
+//    Repitiendo eso en cada subárbol queda:
+//
+//                    G
+//            E               M
+//         A              C        K
+//       I   B          L   F         J
+//                        D          H
+//
+// 2. Post-orden: I B A E D L F C H J K M G
+// 3. Algoritmo del recorrido post-orden:
+Procedimiento PostOrden (p: puntero a Nodo) es
+	Si p <> nil entonces
+		PostOrden(*p.izq)
+		PostOrden(*p.der)
+		Escribir(*p.dato)
+	FinSi
+FinProcedimiento

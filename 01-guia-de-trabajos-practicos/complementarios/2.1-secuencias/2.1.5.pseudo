@@ -1,0 +1,49 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.5
+// Escribir un algoritmo que: dado un fichero de texto que contiene letras y
+// números, permita distinguir palabras de enteros de hasta 5 cifras y
+// desglosarlos en dos secuencias que contengan respectivamente las palabras
+// pares y las impares.
+// --------------------------------------------------------------------------
+
+// Una "palabra" es numérica si todos sus caracteres son dígitos (hasta 5).
+// Su paridad la da el último dígito.
+Acción Complementario2_1_5 es
+Ambiente
+    Fichero, Pares, Impares: secuencia de caracteres
+    v, ultimo: caracter
+    P: arreglo [1..5] de caracter
+    largo, i: entero
+    es_numero: booleano
+Proceso
+    ARR(Fichero); AVZ(Fichero, v)
+    CREAR(Pares); CREAR(Impares)
+    Mientras NFDS(Fichero) hacer
+        Mientras NFDS(Fichero) y (v = " ") hacer AVZ(Fichero, v) FinMientras
+        largo:= 0
+        es_numero:= Verdadero
+        Mientras NFDS(Fichero) y (v <> " ") hacer
+            largo:= largo + 1
+            Si No (v en {"0".."9"}) entonces es_numero:= Falso FinSi
+            Si largo <= 5 entonces P[largo]:= v FinSi
+            ultimo:= v
+            AVZ(Fichero, v)
+        FinMientras
+        Si es_numero y (largo >= 1) y (largo <= 5) entonces
+            Si ultimo en {"0", "2", "4", "6", "8"} entonces
+                Para i:= 1 hasta largo hacer ESC(Pares, P[i]) FinPara
+                ESC(Pares, " ")
+            Sino
+                Para i:= 1 hasta largo hacer ESC(Impares, P[i]) FinPara
+                ESC(Impares, " ")
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Fichero); CERRAR(Pares); CERRAR(Impares)
+FinAcción

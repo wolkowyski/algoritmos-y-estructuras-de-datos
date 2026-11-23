@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.12
+// Hacer el ejercicio 1.2.6 pero usando un procedimiento.
+// --------------------------------------------------------------------------
+
+// El 1.2.6 con un procedimiento: el descuento sale por un parámetro Var.
+Acción Ejercicio1_2_12 es
+Ambiente
+    unidades: entero
+    precio, desc: real
+
+    Procedimiento Descuento (u: entero; p: real; Var d: real) es
+        Si u > 12 entonces
+            d:= u * p * 0,10
+        Sino
+            Si u > 6 entonces
+                d:= u * p * 0,04
+            Sino
+                d:= 0
+            FinSi
+        FinSi
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese unidades y precio unitario")
+    Leer(unidades, precio)
+    Descuento(unidades, precio, desc)
+    Escribir("Descuento: ", desc, " - Total a pagar: ", unidades * precio - desc)
+FinAcción

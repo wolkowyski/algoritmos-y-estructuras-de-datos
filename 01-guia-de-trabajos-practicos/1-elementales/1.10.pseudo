@@ -1,0 +1,51 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.10
+// Una persona decide realizar un viaje a Europa, para lo cual necesita una
+// determinada cantidad de euros. La persona tiene ahorrada una cierta suma
+// en dólares y desea saber si es suficiente y, en caso de haber diferencia
+// (de más o de menos) a cuantos pesos equivale. Realice un algoritmo que
+// solucione el problema, para lo cual deberá prever que se ingresen las
+// equivalencias de monedas que considere necesarias (por ejemplo la
+// cotizacion en pesos de dólar y/o del euro, o a cuantos euros equivale un
+// dólar).
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_10 es
+//Ambiente
+    Variables
+        dolares_ahorrados: Real
+        precio_viaje: Real            // en euros
+        cotizacion_dolar_a_euro: Real // cuántos euros vale 1 dólar
+        cotizacion_euro_a_peso: Real  // cuántos pesos vale 1 euro
+        ahorro_en_euros: Real
+        diferencia_euros: Real
+        diferencia_pesos: Real
+//Algoritmo
+    Escribir ("Ingrese la cantidad de dólares ahorrados")
+    Leer (dolares_ahorrados)
+    Escribir ("Ingrese el precio del viaje en euros")
+    Leer (precio_viaje)
+    Escribir ("Ingrese la cotización actual del dólar a euro")
+    Leer (cotizacion_dolar_a_euro)
+    Escribir ("Ingrese la cotización actual del euro a peso argentino")
+    Leer (cotizacion_euro_a_peso)
+
+        ahorro_en_euros:= dolares_ahorrados * cotizacion_dolar_a_euro
+
+    Si precio_viaje > ahorro_en_euros Entonces
+        diferencia_euros:= precio_viaje - ahorro_en_euros // lo que falta
+        diferencia_pesos:= diferencia_euros * cotizacion_euro_a_peso
+        Escribir ("Los dólares ahorrados no alcanzan: el viaje cuesta ", precio_viaje, " euros y usted dispone de ", ahorro_en_euros, ". Le faltan ", diferencia_pesos, " pesos.")
+    SiNo
+        diferencia_euros:= ahorro_en_euros - precio_viaje // lo que sobra
+        diferencia_pesos:= diferencia_euros * cotizacion_euro_a_peso
+        Escribir ("Los dólares ahorrados alcanzan: el viaje cuesta ", precio_viaje, " euros y usted posee ", ahorro_en_euros, ". Le sobran ", diferencia_pesos, " pesos.")
+    FinSi
+FinAcción

@@ -1,0 +1,34 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.1
+// Escribir un programa que permita calcular el precio de un artículo para un
+// año dado, considerando que la inflación es del 4 por 100 anual.
+// La fórmula del precio es: P = C * (1 + R) ^ (N - A)
+//   C - Precio actual.     N - Año futuro.
+//   R - Tasa de inflación. A - Año actual.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_1 es
+//Ambiente
+    Constantes
+        R = 4 / 100
+    Variables
+        C, P: Real
+        A: Entero(4)
+        N: Entero(4)
+//Algoritmo
+    Escribir ("Ingrese el precio actual del producto")
+    Leer (C)
+    Escribir ("Ingrese el año actual")
+    Leer (A)
+    Escribir ("Ingrese el año futuro")
+    Leer (N)
+        P:= C * (1 + R) ^ (N - A)
+    Escribir ("El precio del producto para el año dado, teniendo en cuenta la inflación del 4 por 100 anual es de ", P, " pesos.")
+FinAcción

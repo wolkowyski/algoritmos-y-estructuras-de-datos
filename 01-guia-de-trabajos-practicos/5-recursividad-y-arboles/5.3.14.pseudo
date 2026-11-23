@@ -1,0 +1,20 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.14
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.14
+// ¿Puede reconstruirse de forma única un ABB dado su inorden? ¿Y dados el
+// preorden y el postorden?
+// --------------------------------------------------------------------------
+
+// - Solo con el inorden, no: el inorden de un ABB siempre es la lista de
+//   claves ordenada, así que árboles con forma distinta dan el mismo inorden.
+// - Con el preorden sí (y lo mismo con el postorden): como el inorden ya se
+//   conoce (las claves ordenadas), con preorden + inorden el árbol queda
+//   determinado. Equivale a insertar las claves en el ABB en el orden del
+//   preorden. Por lo tanto, dados el preorden y el postorden, también.
+// - En un árbol binario cualquiera (no ABB), preorden + postorden no alcanzan
+//   si hay nodos con un solo hijo: no se sabe si es hijo izquierdo o derecho.

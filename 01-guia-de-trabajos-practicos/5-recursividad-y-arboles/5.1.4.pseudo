@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.4
+// Construir un algoritmo recursivo que permita determinar si los dígitos de
+// un número n dado son todos pares.
+// --------------------------------------------------------------------------
+
+Función TodosPares (n: entero): booleano es
+	Si n < 10 entonces // un solo dígito
+		TodosPares:= (n mod 2 = 0)
+	Sino
+		TodosPares:= (n mod 2 = 0) y TodosPares(n div 10) // último dígito y el resto
+	FinSi
+FinFunción

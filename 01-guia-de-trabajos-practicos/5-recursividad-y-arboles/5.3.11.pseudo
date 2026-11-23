@@ -1,0 +1,18 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.11
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.11
+// Conviértase la expresión `((a + b) + c * (d + e) + f) * (g + h)` en
+//
+// 1. expresión prefija
+// 2. expresión postfija
+// --------------------------------------------------------------------------
+
+// Árbol: la raíz es el último "*"; a la izquierda ((a + b) + c * (d + e)) + f
+// (la suma es asociativa a izquierda) y a la derecha (g + h).
+// 1. Prefija:  * + + + a b * c + d e f + g h
+// 2. Postfija: a b + c d e + * + f + g h + *

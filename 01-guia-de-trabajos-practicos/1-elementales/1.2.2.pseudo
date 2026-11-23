@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.2
+// Diseñe una función que devuelva la suma de los dígitos del número natural
+// suministrado como parámetro.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_2 es
+Ambiente
+    num, result: entero
+
+    Función Suma_dig (N: entero): entero es
+        Ambiente
+            acum, dig: entero
+        Proceso
+            acum:= 0
+            Mientras N > 0 hacer
+                dig:= N mod 10      // último dígito
+                acum:= acum + dig
+                N:= N div 10        // lo saco del número
+            FinMientras
+            Suma_dig:= acum // se asigna una sola vez, al terminar el ciclo
+    FinFunción
+
+Proceso
+    Escribir ("Ingrese un número")
+    Leer (num)
+    result:= Suma_dig(num) // llamada de la función
+    Escribir ("La suma de sus dígitos es: ", result)
+FinAcción

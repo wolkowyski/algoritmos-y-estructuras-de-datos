@@ -1,0 +1,79 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 0 - Algoritmos
+//  Acciones, estados, asignaciones y primeros algoritmos
+//  Ejercicio 0.1.2
+// ==========================================================================
+
+Ejercicio 0.1.2
+Para los siguientes enunciados, identifique la acción principal y el objeto sobre el cual se realiza esa acción. Descomponga la acción en acciones más elementales, estableciendo los estados antes y después de cada una de ellas.
+
+Dadas las variables C y D, se desea intercambiar sus valores. Originalmente C vale 18 y D es igual a la mitad de C.
+Acción_Principal:= Intercambiar los valores de las variables C y D
+Objeto:= Variables C y D
+
+Estado_Inicial:= Variable C con valor de 18 y variable D con valor 1/2*C
+Acción_Intermedia:= Obtener el valor de D
+Estado_Intermedio:= Variable C con valor de 18 y variable D con valor 9
+Acción_Final:= Intercambiar valores de las variables
+Estado_Final:= Variable C con valor 9 y Variable D con valor 18
+
+
+En la oficina de correos un empleado controla la correspondencia para colocarle la tarifa. La misma se determina en función del tipo de carta, del destino y del medio por el cual se la envía. Los tipos pueden ser "simple", "expresa" o "certificada"; el destino puede ser "interior" o "exterior"; y los medios pueden ser "aérea" o "terrestre".
+
+Acción_Principal:= Control de correspondencia para colocar tarifa
+Objeto:= Tipo de carta, destino y medio
+
+Estado_Inicial:= Cartas sin controlar
+Acción_Incial:= Determinacion del tipo de carta: simple, expresa o certificada - destino: interior o exterior - medio: aérea o terrestre
+Estado_Intermedio:= Cartas determinadas en funcion de su tipo, destino y medio
+Acción_Final:= Entregar las cartas controladas
+Estado_Final:= Trabajo de correspondecnia finalizado
+
+
+
+Realizar los preparativos para mirar una película de video, teniendo en cuenta que aún no se la alquiló.
+Acción_Principal:= Realizar los preparativos para mirar una pelicula de video
+Objeto:= Pelicula
+
+Estado_Incial:= Pelicual sin alquilar
+Acción_Inicial:= Alquilar Pelicula
+Estado_Intermedio:= pelicula alquilada
+Acción_Final:= Finalizar con los preparativos
+Estado_Final:= Ambiente y pelicula listos
+
+
+
+Preparar mate amargo.
+Acción_Principal:= Preparar mate amargo
+Objeto:= Mate
+
+Estado_Incial:= Mate amargo sin Preparar
+Acción_Inicial:= Calentar agua y poner la yerba
+Estado_Intermedio:= Agua caliente y yerba lista
+Accion_Final:= Darle los ultimos toques
+Estado_Final:= Mate amargo preparado con éxito
+
+
+
+Una familia decide acampar el fin de semana.
+Acción_Principal:= Acampar el fin de semana
+Objeto:= familia
+
+Estado_Inicial:= Familia sin prepararse
+Acción_Inicial:= Preparar comida y ropa
+Estado_Intermedio:= Comida y ropa preparadas
+Acción_Final:= Emprender el viaje, llegar a destino y armar la carpa
+Estado_Final:= Llegada a destino y comienzo del acampaje
+
+
+
+Venir a la facultad en colectivo.
+Acción_Principal:= Venir a la facultad en colectivo
+Objeto:= colectivo
+
+Estado_Inicial:= Colectivo sin tomar
+Acción_Principal:= Tomar el colectivo
+Estado_Intermedio:= Colectivo tomado
+Acción_Final:= Esperar hasta llegar a la facultad
+Estado_Final:= Llegada con éxito a la facultad por medio del colectivo

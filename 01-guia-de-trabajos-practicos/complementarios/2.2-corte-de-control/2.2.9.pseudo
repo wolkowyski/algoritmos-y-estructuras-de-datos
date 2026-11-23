@@ -1,0 +1,62 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.9
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.9
+// Reconsidere el problema 2.2.4. La compañía desea conocer los totales de
+// los sueldos por planta discriminados por categoría, para ello se requiere
+// el siguiente listado:
+//
+// | Totales de Sueldo por Planta y Categoria |  |
+// | --- | --- |
+// | Planta A | $ ------- |
+// | Categoria 1 | $ ------- |
+// | Categoria 2 | $ ------- |
+// | -------- | ------- |
+// | Total planta A | $ ------- |
+// | Planta B | $ ------- |
+// | Categoria 1 | $ ------- |
+// | Categoria 2 | $ ------- |
+// | -------- | ------- |
+// | Total planta B | $ ------- |
+// | ------- | ------- |
+// | ------- | ------- |
+// | Total de Sueldos | $ ------- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_9 es
+Ambiente
+	// (mismo archivo y arreglo Sueldo que el 2.2.4, ordenado por planta y categoría)
+	ResPlanta: caracter
+	ResCat, i: entero
+	totCat, totPlanta, total: real
+Proceso
+	Para i:= 1 hasta 4 hacer
+		Escribir("Sueldo de la categoría ", i); Leer(Sueldo[i])
+	FinPara
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	total:= 0
+	Escribir("Totales de Sueldo por Planta y Categoría")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		totPlanta:= 0
+		Escribir("Planta ", ResPlanta)
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			ResCat:= R.Categoria
+			totCat:= 0
+			Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) y (R.Categoria = ResCat) hacer
+				totCat:= totCat + Sueldo[ResCat]
+				Leer(EMPLEADOS, R)
+			FinMientras
+			Escribir("Categoría ", ResCat, " | $", totCat)
+			totPlanta:= totPlanta + totCat
+		FinMientras
+		Escribir("Total planta ", ResPlanta, " | $", totPlanta)
+		total:= total + totPlanta
+	FinMientras
+	Escribir("Total de Sueldos | $", total)
+	Cerrar(EMPLEADOS)
+FinAccion

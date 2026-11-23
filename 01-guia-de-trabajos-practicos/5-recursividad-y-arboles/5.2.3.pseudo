@@ -1,0 +1,22 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.2 - Procedimientos recursivos
+//  Ejercicio 5.2.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.2.3
+// Dada una lista de nombres ordenada en forma ascendente, construir un
+// procedimiento recursivo que imprima como salida la misma lista, pero en
+// orden descendente, sin modificar la lista original.
+// --------------------------------------------------------------------------
+
+// Recorre la lista hacia adelante y escribe "a la vuelta" de la recursión,
+// así sale en orden inverso sin tocar la lista.
+Procedimiento ImprimirAlReves (p: puntero a Nodo) es
+	Si p <> nil entonces
+		ImprimirAlReves(*p.prox)
+		Escribir(*p.nombre)
+	FinSi
+FinProcedimiento
+// Llamada inicial: ImprimirAlReves(prim)

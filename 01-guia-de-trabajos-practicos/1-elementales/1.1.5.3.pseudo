@@ -1,0 +1,38 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.3
+// Se desea comprar una PC y una impresora. Calcular el precio total: el cual
+// está dado por la suma de los precios de costos, los porcentajes de ganancia
+// del vendedor y un 21% de IVA. Supóngase una ganancia del vendedor del 12% por
+// la PC y 7% por la impresora. Se leen los costos y se imprimen el precio total
+// de ventas.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_3 es
+//Ambiente
+    Constantes
+        ganancia_pc = 0,12
+        ganancia_impresora = 0,07
+        iva = 0,21
+    Variables
+        impresora: Real
+        pc: Real
+        p_ganancia_pc, p_ganancia_impresora, p_iva, total_ventas: Real
+//Algoritmo
+    Escribir ("Ingrese el costo de la impresora")
+    Leer (impresora)
+    Escribir ("Ingrese el costo de la PC")
+    Leer (pc)
+        p_ganancia_pc:= pc * ganancia_pc
+        p_ganancia_impresora:= impresora * ganancia_impresora
+        // El IVA se aplica sobre el precio con la ganancia ya sumada
+        p_iva:= (impresora + pc + p_ganancia_pc + p_ganancia_impresora) * iva
+        total_ventas:= impresora + pc + p_ganancia_pc + p_ganancia_impresora + p_iva
+    Escribir ("El precio total de ventas, incluyendo los costos, la ganancia del vendedor y un 21% de IVA es de: ", total_ventas)
+FinAcción

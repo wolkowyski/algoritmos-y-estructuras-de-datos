@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.8
+// Se desea realizar el cálculo de una serie e^X que se detiene cuando un
+// término es menor o igual que 0,000001.
+// --------------------------------------------------------------------------
+
+Acción Complementario1_8 es
+Ambiente
+    x, termino, suma: Real
+    k: Entero
+Proceso
+    Leer(x)
+    suma:= 1
+    termino:= 1
+    k:= 0
+    Repetir // no se sabe cuántos términos hacen falta: ciclo condicional
+        k:= k + 1
+        termino:= termino * x / k
+        suma:= suma + termino
+    Hasta que ABSO(termino) <= 0,000001
+    Escribir("e^", x, " = ", suma, " (", k, " términos)")
+FinAcción

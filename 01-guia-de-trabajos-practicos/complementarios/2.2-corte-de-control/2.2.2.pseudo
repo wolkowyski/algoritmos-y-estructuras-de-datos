@@ -1,0 +1,58 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.2
+// Una empresa dispone de un archivo de registros con datos de sus empleados:
+//
+// * Reg* Nombre* Categoría* Planta
+//
+// > Tomar los datos del comienzo del trabajo
+//
+// El archivo está ordenado por categorías.
+// Imprimir el siguiente Listado:
+//
+// | Lista del Personal |  |
+// | --- | --- |
+// | Categoria 1 |  |
+// | *Nombre* | *Planta* |
+// | Aranda | B |
+// | Molina | A |
+// | Salerno | A |
+// | ----- | ----- |
+// | Categoria 2 |  |
+// | *Nombre* | *Planta* |
+// | Gutierrez | B |
+// | Cassas | B |
+// | ----- | ----- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_2 es
+Ambiente
+	Empleado = Registro
+		Reg: N(5)
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Categoria
+	R: Empleado
+	ResCat: 1..4
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista del Personal")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		Escribir("Categoría ", ResCat)
+		Escribir("Nombre | Planta")
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			Escribir(R.Nombre, " | ", R.Planta)
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("----- | -----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion

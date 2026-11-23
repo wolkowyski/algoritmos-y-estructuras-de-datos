@@ -1,0 +1,37 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.13
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.13
+// Se tiene una secuencia de caracteres que finaliza con el carácter "*", el
+// problema es que este carácter puede aparecer dentro de la secuencia, para
+// poder distinguirlo con el fin de secuencia se utiliza otro símbolo
+// especial "\" (carácter de escape). Se pide realizar un algoritmo que
+// permita escribir en una secuencia de salida todos los caracteres excepto
+// los de escape, y contar la cantidad de escapes que existen.
+// --------------------------------------------------------------------------
+
+// Un "\" significa que el caracter siguiente es un dato (aunque sea "*").
+Acción Complementario2_1_13 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    escapes: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    escapes:= 0
+    Mientras v <> "*" hacer
+        Si v = "\" entonces
+            escapes:= escapes + 1
+            AVZ(Sec, v) // el caracter escapado se copia sin interpretarlo
+        FinSi
+        ESC(Salida, v)
+        AVZ(Sec, v)
+    FinMientras
+    Escribir("Caracteres de escape: ", escapes)
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción

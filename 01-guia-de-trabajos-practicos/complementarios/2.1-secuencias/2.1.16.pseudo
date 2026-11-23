@@ -1,0 +1,39 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.16
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.16
+// Dada una secuencia de caracteres de entrada, desarrollar un algoritmo que
+// produzca dos secuencias de salida de caracteres; en donde la primera
+// contendrá todos los caracteres numéricos y la segunda los demás. Al final
+// del proceso calcular e informar el porcentaje de caracteres numéricos
+// sobre el total.
+// --------------------------------------------------------------------------
+
+// Mismo ejercicio que el 2.1.2 de las secuencias extra, con el porcentaje.
+Acción Complementario2_1_16 es
+Ambiente
+    Sec, SalNum, SalOtros: secuencia de caracteres
+    v: caracter
+    numericos, total: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(SalNum); CREAR(SalOtros)
+    numericos:= 0; total:= 0
+    Mientras NFDS(Sec) hacer
+        total:= total + 1
+        Si v en {"0".."9"} entonces
+            numericos:= numericos + 1; ESC(SalNum, v)
+        Sino
+            ESC(SalOtros, v)
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Caracteres numéricos: ", numericos * 100 / total, "% del total")
+    FinSi
+    CERRAR(Sec); CERRAR(SalNum); CERRAR(SalOtros)
+FinAcción

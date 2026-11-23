@@ -1,0 +1,42 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.29
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.29
+// Dado el ejercicio anterior, pensar: cómo cambia el algoritmo solución en
+// caso de que el 'estilo de arte' se indique al principio de los datos de
+// cada artista en la secuencia de artistas. Por qué? Hacer el algoritmo.
+// --------------------------------------------------------------------------
+
+// Respuesta: cuando el estilo está al principio de los datos del artista
+// (como en el ejemplo y en la resolución del 2.1.28) se sabe desde el primer
+// caracter si el artista es renacentista, así que su nombre y sus obras se
+// pueden ir copiando a la salida mientras se leen.
+//
+// Si el estilo viniera al final (nombre+lugar+edad+cantidad+estilo?), cuando
+// se lee el estilo ya se pasó el nombre, y una secuencia no se puede
+// retroceder. Hay dos opciones:
+//   - guardar el nombre en una variable alfanumérica mientras se lee, y
+//     copiarlo después de conocer el estilo;
+//   - leer primero el estilo de cada artista recorriendo dos veces ARTISTAS.
+// Con la primera opción, el cambio en el 2.1.28 es:
+
+        nombre:= ""
+        Mientras a <> "+" hacer
+            nombre:= nombre + a // concatenación de alfanuméricos
+            AVZ(ARTISTAS, a)
+        FinMientras
+        // ... lugar, edad y cantidad igual que antes ...
+        AVZ(ARTISTAS, a)
+        estilo:= a // ahora el estilo se conoce recién acá
+        es_renac:= (estilo = "R")
+        AVZ(ARTISTAS, a); AVZ(ARTISTAS, a) // salteo el estilo y el "?"
+        Si es_renac entonces
+            Para i:= 1 hasta Long(nombre) hacer
+                ESC(Salida, nombre[i])
+            FinPara
+        FinSi
+        // ... las obras se procesan igual que en el 2.1.28 ...

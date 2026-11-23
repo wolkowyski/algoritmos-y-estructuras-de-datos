@@ -1,0 +1,20 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.2 - Procedimientos recursivos
+//  Ejercicio 5.2.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.2.2
+// Leer una palabra (una cadena de caracteres) y la cantidad de caracteres y
+// generar su palíndromo. El palíndromo de “Venezuela” es “aleuzeneV”.
+// --------------------------------------------------------------------------
+
+// Se escribe primero el último caracter y se sigue con la palabra sin él.
+Procedimiento Palindromo (palabra: AN(50); n: entero) es
+	Si n > 0 entonces
+		Escribir(palabra[n])
+		Palindromo(palabra, n - 1)
+	FinSi
+FinProcedimiento
+// Palindromo("Venezuela", 9) escribe "aleuzeneV"

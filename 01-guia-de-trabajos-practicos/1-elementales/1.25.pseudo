@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.25
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.25
+// Elabore un algoritmo para calcular los primeros 50 números de FIBONACCI,
+// sabiendo que dichos números cumplen con lo siguiente:
+//
+// A_0=0, A_1=1, A_2=A_0+A_1, ..., A_n=A_{(n-1)}+A_{(n-2)}
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_25 es
+Ambiente
+    Variables
+        anterior, actual, siguiente: Entero
+        i: Entero
+Proceso
+    anterior:= 1
+    actual:= 1
+    Escribir (anterior)
+    Escribir (actual)
+    Para i:= 3 hasta 50 Hacer
+        siguiente:= anterior + actual
+        Escribir (siguiente)
+        anterior:= actual // corro la "ventana" de dos valores
+        actual:= siguiente
+    FinPara
+FinAcción

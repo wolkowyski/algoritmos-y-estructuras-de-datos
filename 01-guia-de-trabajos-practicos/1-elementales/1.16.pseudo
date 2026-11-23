@@ -1,0 +1,77 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.16
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.16
+// 1. Diseñe un algoritmo que obtenga el porcentaje de alumnos de ISI, IQ e
+// IEM, sobre el total de egresados de la UTN-FRRe de un año.
+// 2. Modifique el algoritmo del punto 1. para que permita obtener e informar
+// los mismos porcentajes pero para varias Facultades y al final emitir el
+// total de alumnos por carrera y total general.
+// --------------------------------------------------------------------------
+
+// 1. Un año de egresados de la UTN-FRRe: se ingresa la carrera de cada
+//    egresado y se termina con "FIN".
+Acción Ejercicio1_16_a es
+Ambiente
+    Variables
+        carrera: AN(3)
+        isi, iq, iem, total: Entero
+Proceso
+    isi:= 0; iq:= 0; iem:= 0; total:= 0
+    Escribir ("Carrera del egresado (ISI, IQ, IEM) o FIN para terminar")
+    Leer (carrera)
+    Mientras carrera <> "FIN" Hacer
+        Según carrera Hacer
+            "ISI": isi:= isi + 1
+            "IQ": iq:= iq + 1
+            "IEM": iem:= iem + 1
+        FinSegún
+        total:= total + 1
+        Leer (carrera)
+    FinMientras
+    Si total > 0 Entonces
+        Escribir ("ISI: ", isi * 100 / total, "% - IQ: ", iq * 100 / total, "% - IEM: ", iem * 100 / total, "%")
+    FinSi
+FinAcción
+
+
+// 2. Lo mismo para varias facultades, con totales por carrera y general.
+Acción Ejercicio1_16_b es
+Ambiente
+    Variables
+        facultad: AN(30)
+        carrera: AN(3)
+        isi, iq, iem, total: Entero              // de la facultad actual
+        tot_isi, tot_iq, tot_iem, tot_gral: Entero // de todas las facultades
+Proceso
+    tot_isi:= 0; tot_iq:= 0; tot_iem:= 0; tot_gral:= 0
+    Escribir ("Nombre de la facultad (FIN para terminar)")
+    Leer (facultad)
+    Mientras facultad <> "FIN" Hacer
+        isi:= 0; iq:= 0; iem:= 0; total:= 0 // se reinician en cada facultad
+        Escribir ("Carrera del egresado (ISI, IQ, IEM) o FIN para pasar a otra facultad")
+        Leer (carrera)
+        Mientras carrera <> "FIN" Hacer
+            Según carrera Hacer
+                "ISI": isi:= isi + 1
+                "IQ": iq:= iq + 1
+                "IEM": iem:= iem + 1
+            FinSegún
+            total:= total + 1
+            Leer (carrera)
+        FinMientras
+        Si total > 0 Entonces
+            Escribir (facultad, " -> ISI: ", isi * 100 / total, "% - IQ: ", iq * 100 / total, "% - IEM: ", iem * 100 / total, "%")
+        FinSi
+        tot_isi:= tot_isi + isi; tot_iq:= tot_iq + iq; tot_iem:= tot_iem + iem
+        tot_gral:= tot_gral + total
+        Escribir ("Nombre de la facultad (FIN para terminar)")
+        Leer (facultad)
+    FinMientras
+    Escribir ("Totales -> ISI: ", tot_isi, " - IQ: ", tot_iq, " - IEM: ", tot_iem, " - General: ", tot_gral)
+FinAcción

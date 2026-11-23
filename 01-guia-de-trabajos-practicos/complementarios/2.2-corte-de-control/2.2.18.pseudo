@@ -1,0 +1,218 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.18
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.18
+// Dado un Archivo Maestro secuencial con datos de usuarios de una empresa
+// proveedora de energía eléctrica con la siguiente estructura:
+//
+// * Nro_U* Nombre* Domicilio* Tipo_U a,b,c* Cosumo_Prom
+//
+// El cual se actualiza, mes a mes, a partir de las novedades (altas,
+// modificaciones y bajas) almacenadas en otro archivo secuencial de
+// Movimientos. Puede haber más de una novedad para cada usuario y las bajas
+// son físicas.
+//
+// 1. Diseñe el ambiente, con todas las estructuras de datos necesarias para
+// realizar el proceso de actualización. Tenga en cuenta que los nombres de
+// variables se ajusten al algoritmo del punto 2.
+// 2. Dado los siguientes algoritmos, marque los errores que encuentre y
+// desarrolle las subacciones usadas en el mismo que están subrayadas.
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS (Reg_Mae.Nro_U <> High Value) o (Reg_Mov. Nro_U <> High Value) HACER
+//         SI Reg_Mae. Nro_U < Reg_Mov. Nro_U ENTONCES
+//             ESCRIBIR(Arch_sal, Reg_sal)
+//             Leer_Maestro
+//         SINO
+//             SI (Reg_Mae.Nro_U = Reg_Mov.Nro_U) ENTONCES
+//                 MIENTRAS (Reg_Mae.Nro_U = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMIENTRAS
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//                 Leer_Maestro
+//             SINO
+//                 Aux.Nro_U:= Reg_Mov.Nro_U
+//                 Aux.Nombre:= Reg_Mov.Nombre
+//                 Aux.Domicilio:= Reg_Mov.Domicilio
+//                 Aux.Tipo_U:= Reg_Mov.Tipo_U
+//                 Aux.Consumo_Prom:= Reg_Mov.Consumo_prom
+//                 Leer_Movimiento
+//                 MIENTRAS (Aux = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                 FMIENTRAS
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             FSI
+//         FSI
+//     FMIENTRAS
+//     Cerrar(Arch_sal)
+//
+// 2.
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS (Reg_Mae.Nro_U <> High_Value) o (Reg_Mov.Nro_U <> High_Value) HACER
+//         SI (Reg_Mae.Nro_U < Reg_Mov.Nro_U) ENTONCES
+//             Reg_sal:= Reg_mae
+//             ESCRIBIR(Arch_sal, Reg_sal)
+//         SINO
+//             SI (Reg_Mae.Nro_U = Reg_Mov.Nro_U) ENTONCES
+//                 Aux:= Reg_mae
+//                 MIENTRAS (Reg_Mae.Nro_U = Reg_Mov) HACER
+//                     Proceso_Movim
+//                 FMientras
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//                 Leer_Maestro
+//             SINO
+//                 Leer_Movimiento
+//                 MIENTRAS (Aux.Nro_U = Reg_Mov.Nro_U) HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal:= Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             FSI
+//         FSI
+//     Fmientras;
+//     Cerrar(Arch_sal)
+//
+//     Abrir_Archivos
+//     Leer_Maestro
+//     Leer_Movimiento
+//     MIENTRAS ( ____________ <> High_Value) o (Reg_Mov.Nro_U <> High_Value) HACER
+//         SI Reg_Mae.Nro_U < Reg_Mov.Nro_U ENTONCES
+//             Reg_sal:= Reg_mae
+//             RE-ESCRIBIR(Arch_sal, Reg_sal)
+//             Leer_Maestro
+//         SINO
+//             SI Reg_Mae.Nro_U = Reg_Mov. Nro_U ENTONCES
+//                 Aux : = Reg_mae
+//                 MIENTRAS Reg_Mae.Nro_U = Reg_Mov.nro_U HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal : = Aux
+//                 ESCRIBIR(Arch_sal, Reg_sal)
+//             SINO
+//                 Aux.Nro_U : = Reg_Mov.Nro_U
+//                 Aux.Nombre : = Reg_Mov.Nombre
+//                 Aux.Domicilio : = Reg_Mov.Domicilio
+//                 Aux.Tipo_U : = Reg_Mov.Tipo_U
+//                 Aux.Consumo_Prom : = Reg_Mov.Consumo_prom
+//                 Leer_Movimiento
+//                 MIENTRAS Aux = Reg_Mov.Nro_U HACER
+//                     Proceso_Movim
+//                     Leer_Movimiento
+//                 FMientras
+//                 Reg_sal : = Aux
+//                 ESCRIBIR(......................, Reg_sal)
+//                 Leer_Maestro
+//             FSI;
+//         FSI;
+//     Fmientras;
+//     Cerrar(Arch_sal)
+// --------------------------------------------------------------------------
+
+// 1. Ambiente
+//   Usuario = Registro
+//       Nro_U: N(8); Nombre: AN(40); Domicilio: AN(60)
+//       Tipo_U: ("a", "b", "c"); Consumo_Prom: real
+//   FinRegistro
+//   Movimiento = Registro
+//       Nro_U: N(8); Nombre: AN(40); Domicilio: AN(60)
+//       Tipo_U: ("a", "b", "c"); Consumo_Prom: real
+//       Cod_Mov: ("A", "B", "M")
+//   FinRegistro
+//   Arch_mae, Arch_sal: Archivo de Usuario ordenado por Nro_U
+//   Arch_mov: Archivo de Movimiento ordenado por Nro_U
+//   Reg_mae, Reg_sal, Aux: Usuario
+//   Reg_mov: Movimiento
+//   High_Value = 99999999
+//   baja: booleano
+//
+// 2. Errores de cada versión
+//   Versión 1:
+//   - En la rama "maestro < movimiento" escribe Reg_sal sin haber hecho Reg_sal:= Reg_mae.
+//   - En la rama de claves iguales nunca hace Aux:= Reg_mae antes de procesar.
+//   - En el alta compara "Aux = Reg_mov.Nro_U" (falta .Nro_U en Aux) y el
+//     ciclo no lee el siguiente movimiento: es un ciclo infinito.
+//   - Usa "High Value" con espacio (es un solo identificador).
+//   Versión 2:
+//   - En la rama "maestro < movimiento" no lee el siguiente maestro: ciclo infinito.
+//   - En claves iguales compara contra Reg_mov (falta .Nro_U) y el ciclo no
+//     lee movimientos: ciclo infinito.
+//   - En el alta lee el movimiento antes de cargar Aux, así que pierde los
+//     datos del alta, y Aux nunca se inicializa.
+//   Versión 3:
+//   - Falta la condición del Mientras principal (Reg_Mae.Nro_U).
+//   - Usa RE-ESCRIBIR sobre el archivo de salida (secuencial nuevo: es ESCRIBIR).
+//   - En claves iguales no lee el siguiente maestro después de grabar.
+//   - En el alta lee el maestro (no corresponde: el maestro no avanzó),
+//     compara "Aux = Reg_mov.Nro_U" y el ESCRIBIR no tiene archivo.
+//   - En ninguna versión se contemplan las bajas físicas (no grabar).
+//
+// Versión corregida y subacciones:
+Procedimiento Leer_Maestro es
+	Leer(Arch_mae, Reg_mae)
+	Si FDA(Arch_mae) entonces Reg_mae.Nro_U:= High_Value FinSi
+FinProcedimiento
+
+Procedimiento Leer_Movimiento es
+	Leer(Arch_mov, Reg_mov)
+	Si FDA(Arch_mov) entonces Reg_mov.Nro_U:= High_Value FinSi
+FinProcedimiento
+
+Procedimiento Proceso_Movim es // aplica un movimiento sobre Aux
+	Según Reg_mov.Cod_Mov hacer
+		"A": Si baja entonces // un alta después de una baja la reactiva
+		         Aux.Nombre:= Reg_mov.Nombre; Aux.Domicilio:= Reg_mov.Domicilio
+		         Aux.Tipo_U:= Reg_mov.Tipo_U; Aux.Consumo_Prom:= Reg_mov.Consumo_Prom
+		         baja:= Falso
+		     Sino
+		         Escribir("Error: alta de un usuario existente ", Reg_mov.Nro_U)
+		     FinSi
+		"B": baja:= Verdadero
+		"M": Aux.Nombre:= Reg_mov.Nombre; Aux.Domicilio:= Reg_mov.Domicilio
+		     Aux.Tipo_U:= Reg_mov.Tipo_U; Aux.Consumo_Prom:= Reg_mov.Consumo_Prom
+	FinSegún
+FinProcedimiento
+
+// Algoritmo
+	Abrir E/(Arch_mae); Abrir E/(Arch_mov); Abrir /S(Arch_sal)
+	Leer_Maestro
+	Leer_Movimiento
+	Mientras (Reg_mae.Nro_U <> High_Value) o (Reg_mov.Nro_U <> High_Value) hacer
+		Si Reg_mae.Nro_U < Reg_mov.Nro_U entonces
+			Reg_sal:= Reg_mae
+			Escribir(Arch_sal, Reg_sal)
+			Leer_Maestro
+		Sino
+			Si Reg_mae.Nro_U = Reg_mov.Nro_U entonces
+				Aux:= Reg_mae
+				baja:= Falso
+				Leer_Maestro
+			Sino // el usuario no está en el maestro: el primer movimiento debe ser un alta
+				baja:= Verdadero // "no existe" hasta que llegue el alta
+				Aux.Nro_U:= Reg_mov.Nro_U
+			FinSi
+			Mientras Aux.Nro_U = Reg_mov.Nro_U hacer
+				Proceso_Movim
+				Leer_Movimiento
+			FinMientras
+			Si No baja entonces
+				Reg_sal:= Aux
+				Escribir(Arch_sal, Reg_sal)
+			FinSi
+		FinSi
+	FinMientras
+	Cerrar(Arch_mae); Cerrar(Arch_mov); Cerrar(Arch_sal)

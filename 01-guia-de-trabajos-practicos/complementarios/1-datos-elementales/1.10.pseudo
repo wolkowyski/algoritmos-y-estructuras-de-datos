@@ -1,0 +1,103 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.10
+// Se les pide a los alumnos que implementen un algoritmo en pseudocodigo
+// para un juego de adivinanza de números.
+//
+// Las especificaciones del juego son las siguientes:
+//
+// 1. El algoritmo debe generar un número entero aleatorio entre 1 y 100
+// (inclusive).
+// 2. El algoritmo debe solicitar al usuario que adivine el número generado.
+// 3. Si el número ingresado es menor que el número generado, el algoritmo
+// debe mostrar un mensaje indicando que el número ingresado es menor y
+// permitir al usuario ingresar otro número.
+// 4. Si el número ingresado es mayor que el número generado, el algoritmo
+// debe mostrar un mensaje indicando que el número ingresado es mayor y
+// permitir al usuario ingresar otro número.
+// 5. Si el número ingresado es igual al número generado, el algoritmo debe
+// mostrar un mensaje indicando que el usuario ha ganado el juego y permitir
+// al usuario elegir si desea jugar de nuevo o finalizar el algoritmo.
+// 6. Si el usuario elige jugar de nuevo, el algoritmo debe generar un nuevo
+// número aleatorio y volver al paso 2.
+// 7. El usuario tiene un máximo de 10 intentos para adivinar el número
+// generado. Si el usuario no logra adivinar el número en 10 intentos, el
+// algoritmo debe mostrar un mensaje indicando que el usuario ha perdido y
+// permitir al usuario elegir si desea jugar de nuevo o finalizar el
+// algoritmo.
+// 8. Si el usuario tiene 1 intento restante, el mensaje debe ser "¡Cuidado!
+// Este es tu último intento". Si el usuario tiene 2 a 5 intentos restantes,
+// el mensaje debe ser "¡Vamos! Aún tienes oportunidades para ganar". Si el
+// usuario tiene más de 5 intentos restantes, el mensaje debe ser "Tienes
+// varios intentos, ¡utilízalos sabiamente!".
+// 9. El algoritmo debe llevar un registro de los intentos realizados por el
+// usuario. Al final, si el usuario adivino el numero, informar en que numero
+// de intento lo hizo.
+// 10. El algoritmo debe permitir al usuario finalizar el juego en cualquier
+// momento.
+//
+// Ayuda:
+// Para generar un numero aleatorio incluya la siguiente linea a su algoritmo
+//
+// numero_aleatorio = Random(1, 100)
+// --------------------------------------------------------------------------
+
+// En cualquier intento se puede ingresar 0 para abandonar el juego.
+Acción Complementario1_10 es
+Ambiente
+    numero_aleatorio, intento, nro_intento, restantes: Entero
+    gano, salir: Lógico
+    op: Caracter
+Proceso
+    salir:= Falso
+    Repetir
+        numero_aleatorio:= Random(1, 100)
+        nro_intento:= 0
+        gano:= Falso
+        Repetir
+            nro_intento:= nro_intento + 1
+            restantes:= 10 - nro_intento + 1
+            Si restantes = 1 entonces
+                Escribir("¡Cuidado! Este es tu último intento")
+            Sino
+                Si restantes <= 5 entonces
+                    Escribir("¡Vamos! Aún tienes oportunidades para ganar")
+                Sino
+                    Escribir("Tienes varios intentos, ¡utilízalos sabiamente!")
+                FinSi
+            FinSi
+            Escribir("Intento ", nro_intento, ": ingrese un número (0 para salir)")
+            Leer(intento)
+            Si intento = 0 entonces
+                salir:= Verdadero
+            Sino
+                Si intento < numero_aleatorio entonces
+                    Escribir("El número ingresado es menor")
+                Sino
+                    Si intento > numero_aleatorio entonces
+                        Escribir("El número ingresado es mayor")
+                    Sino
+                        gano:= Verdadero
+                    FinSi
+                FinSi
+            FinSi
+        Hasta que gano o salir o (nro_intento = 10)
+        Si gano entonces
+            Escribir("¡Ganaste! Lo adivinaste en el intento ", nro_intento)
+        Sino
+            Si No salir entonces
+                Escribir("Perdiste: el número era ", numero_aleatorio)
+            FinSi
+        FinSi
+        Si No salir entonces
+            Escribir("¿Jugar de nuevo? S/N")
+            Leer(op)
+            salir:= (op = "N")
+        FinSi
+    Hasta que salir
+FinAcción

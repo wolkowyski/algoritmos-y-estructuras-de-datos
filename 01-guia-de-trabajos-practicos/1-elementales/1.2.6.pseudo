@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.6
+// Escribir una función que reciba las unidades y el precio de un producto
+// que se quiere comprar, y en función de las unidades introducidas calcule
+// un descuento o no, según corresponda: cuando las unidades excedan media
+// docena se aplicará 4% y el 10% cuando excedan la docena. La función debe
+// devolver como resultado el valor del descuento o cero, en caso de que no
+// corresponda.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_6 es
+Ambiente
+    unidades: entero
+    precio: real
+
+    // Devuelve el importe del descuento (no el precio final)
+    Función Descuento (u: entero; p: real): real es
+        Si u > 12 entonces // más de una docena
+            Descuento:= u * p * 0,10
+        Sino
+            Si u > 6 entonces // más de media docena
+                Descuento:= u * p * 0,04
+            Sino
+                Descuento:= 0
+            FinSi
+        FinSi
+    FinFunción
+
+Proceso
+    Escribir("Ingrese unidades y precio unitario")
+    Leer(unidades, precio)
+    Escribir("Descuento: ", Descuento(unidades, precio))
+    Escribir("Total a pagar: ", unidades * precio - Descuento(unidades, precio))
+FinAcción

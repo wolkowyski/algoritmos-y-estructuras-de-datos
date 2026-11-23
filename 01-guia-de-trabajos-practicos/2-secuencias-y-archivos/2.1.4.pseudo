@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.4
+// Se dispone de una secuencia de números de socios, y se desea saber la
+// cantidad de socios que están registrados.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_4 es
+Ambiente
+    Sec: secuencia de enteros
+    v: entero
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        cont:= cont + 1
+        AVZ(Sec, v)
+    FinMientras
+    Escribir ("La cantidad de socios que están registrados es de: ", cont)
+    CERRAR(Sec)
+FinAcción

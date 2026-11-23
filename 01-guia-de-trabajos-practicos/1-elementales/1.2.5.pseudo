@@ -1,0 +1,29 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.5
+// Escribir una función que verifique si un caracter introducido es un dígito
+// o no.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_5 es
+Ambiente
+    c: caracter
+
+    Función EsDigito (c: caracter): lógico es
+        EsDigito:= c en {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+    FinFunción
+
+Proceso
+    Escribir("Ingrese un caracter")
+    Leer(c)
+    Si EsDigito(c) entonces
+        Escribir(c, " es un dígito")
+    Sino
+        Escribir(c, " no es un dígito")
+    FinSi
+FinAcción

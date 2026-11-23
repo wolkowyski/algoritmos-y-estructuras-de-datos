@@ -1,0 +1,61 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 0 - Algoritmos
+//  Acciones, estados, asignaciones y primeros algoritmos
+//  Ejercicio 0.1.4
+// ==========================================================================
+
+Ejercicio 0.1.4
+Indique los estados iniciales, intermedios y finales para cada variable incluida en los siguientes enunciados:
+
+1.
+
+
+A := 1,3; X := 0; Y := 8;
+Z := A + Y * 2 - X/3;
+X := X + 2;
+C := (Z - X) * 1,2;
+    // A = 1,3 | X = 0 -> 2 | Y = 8 | Z = 1,3 + 8*2 - 0/3 = 17,3 | C = (17,3 - 2) * 1,2 = 18,36
+2.
+
+
+C := 1;
+C := 0;
+CA := REDOND (C*2,4 + 1);
+X := CA + 2;
+    // C = 1 -> 0 | CA = REDOND(0*2,4 + 1) = 1 | X = 1 + 2 = 3
+3.
+
+
+BETA := 3/2;
+ALFA := BETA * 2;
+AUXI := ALFA;
+ALFA := BETA;
+BETA := AUXI;
+    // BETA = 1,5 | ALFA = 3 | AUXI = 3 | ALFA = 1,5 | BETA = 3  (se intercambian ALFA y BETA)
+4.
+
+
+C := TRUNC (ABSO (4/-2) + 3);
+B := REDOND (-4,3);
+B := B + C;
+    // C = TRUNC(|4 / -2| + 3) = 5 | B = REDOND(-4,3) = -4 | B = -4 + 5 = 1
+5.
+
+
+ALFA := 2,5; JOTA := 2;
+BETA := ALFA**JOTA;
+I := 2 * JOTA;
+L := JOTA * I;
+ALFA := ALFA + BETA;
+    // ALFA = 2,5 | JOTA = 2 | BETA = 2,5**2 = 6,25 | I = 4 | L = 8 | ALFA = 2,5 + 6,25 = 8,75
+6.
+
+
+NUM := ABSO (-10); A := 3;
+NUM2 := TRUNC (NUM/A) ** 2 /A;
+NUM := NUM2 - NUM * 5;
+B := REDOND (NUM/NUM2);
+A := (A + B) - 9 * 2 -1;
+    // NUM = 10 | A = 3 | NUM2 = TRUNC(10/3)**2 / 3 = 9 / 3 = 3 | NUM = 3 - 10*5 = -47
+    // B = REDOND(-47 / 3) = REDOND(-15,67) = -16 | A = (3 - 16) - 18 - 1 = -32

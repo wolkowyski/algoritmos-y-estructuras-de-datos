@@ -1,0 +1,27 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2
+// Se desea ingresar dos números X, Y. Hallar la media aritmética y la
+// geométrica de ambos valores. Diseñe un algoritmo que sea capaz de hallar
+// el máximo entre los dos valores.
+// --------------------------------------------------------------------------
+
+Acción Complementario1_2 es
+Ambiente
+    X, Y: Real
+Proceso
+    Escribir("Ingrese X e Y (positivos)")
+    Leer(X, Y)
+    Escribir("Media aritmética: ", (X + Y) / 2)
+    Escribir("Media geométrica: ", (X * Y) ** (1/2))
+    Si X >= Y entonces
+        Escribir("El máximo es ", X)
+    Sino
+        Escribir("El máximo es ", Y)
+    FinSi
+FinAcción

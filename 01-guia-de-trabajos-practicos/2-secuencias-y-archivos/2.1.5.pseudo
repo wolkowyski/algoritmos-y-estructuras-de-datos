@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.5
+// La secuencia de socios del problema anterior tiene el inconveniente de que
+// los números están ordenados pero no son correlativos. Se desea generar una
+// secuencia que contenga los números de socios que no figuran en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_5 es
+Ambiente
+    Sec, Faltantes: secuencia de enteros
+    v, anterior, i: entero
+Proceso
+    ARR(Sec)
+    CREAR(Faltantes)
+    AVZ(Sec, v)
+    anterior:= v
+    AVZ(Sec, v)
+    Mientras NFDS(Sec) hacer
+        // Todo lo que hay entre el socio anterior y el actual no está registrado
+        Para i:= anterior + 1 hasta v - 1 hacer
+            ESC(Faltantes, i)
+        FinPara
+        anterior:= v
+        AVZ(Sec, v)
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(Faltantes)
+FinAcción

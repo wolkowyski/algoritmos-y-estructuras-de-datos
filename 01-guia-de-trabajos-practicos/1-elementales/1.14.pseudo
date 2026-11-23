@@ -1,0 +1,46 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.14
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.14
+// Escriba un algoritmo que lea el monto total de una compra en un
+// supermercado y determine el total a pagar según los siguientes criterios:
+//
+// Si el monto de la compra supera los $ 200.000, se aplica un 15% de
+// descuento.
+//
+// Luego se consulta el tipo de entrega (el usuario ingresa el número de
+// opción):
+//
+// * Opción 1 → retiro en sucursal, no se suma ningún cargo adicional.
+// * Opción 2 → envío a domicilio dentro de Resistencia, se suma un 5% sobre
+// el monto final.
+// * Opción 3 → envío a domicilio fuera de Resistencia, se suma un 10% sobre
+// el monto final.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_14 es
+Ambiente
+    Variables
+        monto, total: Real
+        opcion: 1..3
+Proceso
+    Escribir ("Ingrese el monto total de la compra")
+    Leer (monto)
+    total:= monto
+    Si monto > 200000 Entonces
+        total:= monto * 0,85 // 15% de descuento
+    FinSi
+    Escribir ("Tipo de entrega: 1- retiro en sucursal | 2- envío en Resistencia | 3- envío fuera de Resistencia")
+    Leer (opcion)
+    Según opcion Hacer // el recargo se calcula sobre el monto con el descuento ya aplicado
+        1: total:= total
+        2: total:= total * 1,05
+        3: total:= total * 1,10
+    FinSegún
+    Escribir ("El total a pagar es: ", total)
+FinAcción

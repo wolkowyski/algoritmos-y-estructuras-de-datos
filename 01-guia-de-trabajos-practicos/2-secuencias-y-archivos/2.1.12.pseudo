@@ -1,0 +1,54 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.12
+// Se dispone de una secuencia de caracteres. Se desea listar las palabras que
+// comiencen con "ALG" (se copian a una secuencia de salida separadas por " ").
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_12 es
+Ambiente
+    Sec, SecALG: secuencia de caracteres
+    v: caracter
+Proceso
+    ARR(Sec)
+    CREAR(SecALG)
+    AVZ(Sec, v)
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        // Voy comparando letra por letra: si falla alguna, la palabra se descarta
+        Si v = "A" entonces
+            AVZ(Sec, v)
+            Si v = "L" entonces
+                AVZ(Sec, v)
+                Si v = "G" entonces
+                    ESC(SecALG, "A")
+                    ESC(SecALG, "L")
+                    Mientras NFDS(Sec) y (v <> " ") hacer // copio desde la G hasta el final
+                        ESC(SecALG, v)
+                        AVZ(Sec, v)
+                    FinMientras
+                    ESC(SecALG, " ")
+                FinSi
+            FinSi
+        FinSi
+        Mientras NFDS(Sec) y (v <> " ") hacer // descarto lo que quede de la palabra
+            AVZ(Sec, v)
+        FinMientras
+    FinMientras
+    CERRAR(Sec)
+    CERRAR(SecALG)
+FinAcción

@@ -1,0 +1,57 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.31
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.31
+// Una fábrica textil produce telas de dos calidades distintas (primera y
+// segunda) y de dos materiales distintos (seda y algodón). Generar un
+// algoritmo que calcule el peso de varias piezas de tela, el cual está dado
+// por la suma del peso neto, más un porcentaje por el apresto, más el peso
+// del núcleo de cartón.
+// Para realizar el cálculo, tener en cuenta la siguiente información, para
+// cada pieza:
+//
+// * El peso del m2 y la longitud de cada pieza.
+// * Al peso neto de la tela hay que sumarle un porcentaje por cada pieza,
+// debido al apresto, el cual es del 2% para las telas de seda y del 7% para
+// las de algodón.
+// * También se debe considerar el núcleo de cartón, que es de 400 gr. para
+// los rollos de telas de primera y de 300 gr. en los de segunda.
+//
+// Finalizar cuando la variable FIN sea igual a 'SI'.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_31 es
+Ambiente
+    Variables
+        peso_m2, longitud, peso_neto, apresto, nucleo, peso_total: Real
+        calidad: Caracter // "P" primera, "S" segunda
+        material: Caracter // "S" seda, "A" algodón
+        FIN: AN(2)
+Proceso
+    Escribir ("¿Terminar? (SI/NO)")
+    Leer (FIN)
+    Mientras FIN <> "SI" Hacer
+        Escribir ("Ingrese peso del m2 (en gr), longitud, calidad (P/S) y material (S/A)")
+        Leer (peso_m2, longitud, calidad, material)
+        peso_neto:= peso_m2 * longitud
+        Si material = "S" Entonces
+            apresto:= peso_neto * 0,02
+        Sino
+            apresto:= peso_neto * 0,07
+        FinSi
+        Si calidad = "P" Entonces
+            nucleo:= 400
+        Sino
+            nucleo:= 300
+        FinSi
+        peso_total:= peso_neto + apresto + nucleo
+        Escribir ("Peso total de la pieza: ", peso_total, " gr")
+        Escribir ("¿Terminar? (SI/NO)")
+        Leer (FIN)
+    FinMientras
+FinAcción

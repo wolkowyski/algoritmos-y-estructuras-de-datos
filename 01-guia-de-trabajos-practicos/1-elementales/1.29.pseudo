@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.29
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.29
+// Escriba un algoritmo para imprimir los números primos menores a un valor
+// dado n.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_29 es
+Ambiente
+    Variables
+        n, num, divisor: Entero
+        es_primo: Lógico
+Proceso
+    Escribir ("Ingrese n")
+    Leer (n)
+    Para num:= 2 hasta n - 1 Hacer
+        es_primo:= Verdadero
+        divisor:= 2
+        Mientras es_primo y (divisor * divisor <= num) Hacer
+            Si num mod divisor = 0 Entonces
+                es_primo:= Falso
+            FinSi
+            divisor:= divisor + 1
+        FinMientras
+        Si es_primo Entonces
+            Escribir (num)
+        FinSi
+    FinPara
+FinAcción

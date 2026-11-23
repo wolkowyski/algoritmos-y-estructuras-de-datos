@@ -1,0 +1,54 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.5
+// Para las siguientes expresiones:
+//
+// ( 5 + 7 ) / 8 – ( 6 * 7 ) ** 2
+// 3 – 6 + 6 * ( 8 / 3 )
+// 4 / ( 8 – 6 * ( 8 + 3 ) )
+//
+// 1. Grafique el árbol equivalente
+// 2. Indique las expresiones resultantes de los recorridos EN-ORDEN, PRE-
+// ORDEN y POST-ORDEN
+// 3. Calcule los resultados numéricos que arroja la ejecución de cada uno de
+// los recorridos.
+// --------------------------------------------------------------------------
+
+// a) (5 + 7) / 8 – (6 * 7) ** 2
+//                  -
+//            /           **
+//          +   8       *    2
+//         5 7         6 7
+//    EN-ORDEN:   5 + 7 / 8 - 6 * 7 ** 2
+//    PRE-ORDEN:  - / + 5 7 8 ** * 6 7 2
+//    POST-ORDEN: 5 7 + 8 / 6 7 * 2 ** -
+//    Resultados: pre y post-orden respetan el árbol: 12/8 - 42**2 = 1,5 - 1764 = -1762,5.
+//    El en-orden sin paréntesis se evalúa con la precedencia normal:
+//    5 + 0,875 - 6*49 = -288,125 (no coincide: hacen falta los paréntesis).
+//
+// b) 3 – 6 + 6 * (8 / 3)
+//                  +
+//            -           *
+//          3   6       6    /
+//                          8 3
+//    EN-ORDEN:   3 - 6 + 6 * 8 / 3
+//    PRE-ORDEN:  + - 3 6 * 6 / 8 3
+//    POST-ORDEN: 3 6 - 6 8 3 / * +
+//    Resultados: -3 + 6 * 2,667 = 13 en los tres (acá el en-orden coincide).
+//
+// c) 4 / (8 – 6 * (8 + 3))
+//              /
+//          4       -
+//               8      *
+//                    6    +
+//                        8 3
+//    EN-ORDEN:   4 / 8 - 6 * 8 + 3
+//    PRE-ORDEN:  / 4 - 8 * 6 + 8 3
+//    POST-ORDEN: 4 8 6 8 3 + * - /
+//    Resultados: pre y post-orden: 4 / (8 - 66) = 4 / -58 = -0,069.
+//    En-orden sin paréntesis: 0,5 - 48 + 3 = -44,5.

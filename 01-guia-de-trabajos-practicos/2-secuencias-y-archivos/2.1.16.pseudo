@@ -1,0 +1,30 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.16
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.16
+// Se dispone de una secuencia de números de DNI asignados a un circuito
+// electoral, generar otra secuencia de números que contenga los DNI
+// múltiplos de 3.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_16 es
+Ambiente
+    DNIS, Mult3: secuencia de enteros
+    dni: entero
+Proceso
+    ARR(DNIS)
+    AVZ(DNIS, dni)
+    CREAR(Mult3)
+    Mientras NFDS(DNIS) hacer
+        Si dni mod 3 = 0 entonces
+            ESC(Mult3, dni)
+        FinSi
+        AVZ(DNIS, dni)
+    FinMientras
+    CERRAR(DNIS)
+    CERRAR(Mult3)
+FinAcción

@@ -1,0 +1,50 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.7
+// Diseñe un algoritmo que basándose en los datos del ejercicio anterior
+// construya los siguientes cuadros:
+//
+// * Partido actual/Partido anterior
+// * Partido actual/Edad
+// * Partido actual/Edad/Sexo
+// --------------------------------------------------------------------------
+
+// Con el arreglo E del 3.31 de la práctica ya cargado, cada cuadro se obtiene
+// sumando las dimensiones que no aparecen en él.
+Acción Complementario3_7 es
+	Ambiente
+		E: arreglo [1..7, 1..6, 1..2, 1..7] de entero // (cargado como en el 3.31)
+		a, b, c, d, total: entero
+	Proceso
+		Escribir("Partido actual / Partido anterior")
+		Para a:= 1 a 7 hacer
+			Para d:= 1 a 7 hacer
+				total:= 0
+				Para b:= 1 a 6 hacer Para c:= 1 a 2 hacer total:= total + E[a,b,c,d] FinPara FinPara
+				Escribir(total)
+			FinPara
+		FinPara
+		Escribir("Partido actual / Edad")
+		Para a:= 1 a 7 hacer
+			Para b:= 1 a 6 hacer
+				total:= 0
+				Para c:= 1 a 2 hacer Para d:= 1 a 7 hacer total:= total + E[a,b,c,d] FinPara FinPara
+				Escribir(total)
+			FinPara
+		FinPara
+		Escribir("Partido actual / Edad / Sexo")
+		Para a:= 1 a 7 hacer
+			Para b:= 1 a 6 hacer
+				Para c:= 1 a 2 hacer
+					total:= 0
+					Para d:= 1 a 7 hacer total:= total + E[a,b,c,d] FinPara
+					Escribir(total)
+				FinPara
+			FinPara
+		FinPara
+FinAcción

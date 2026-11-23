@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.9
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.9
+// Realizar un algoritmo que muestre el cambio en billetes de 100, 50, 20,
+// 10, 5; 2 y monedas de $1, de un monto ingresado por teclado. Considere que
+// este monto siempre sera entero.
+//
+// Ej: ingresa → 377 muestra → 3 billetes de 100, 1 billete de 50, 1 billete
+// 20, 1 billete 5, 1 billete $2
+// --------------------------------------------------------------------------
+
+Acción Complementario1_9 es
+Ambiente
+    monto, i, cant: Entero
+    Den: arreglo [1..7] de Entero
+Proceso
+    Den[1]:= 100; Den[2]:= 50; Den[3]:= 20; Den[4]:= 10; Den[5]:= 5; Den[6]:= 2; Den[7]:= 1
+    Escribir("Ingrese el monto")
+    Leer(monto)
+    Para i:= 1 hasta 7 hacer // siempre la denominación más grande posible
+        cant:= monto div Den[i]
+        monto:= monto mod Den[i]
+        Si cant > 0 entonces
+            Si Den[i] = 1 entonces
+                Escribir(cant, " moneda/s de $1")
+            Sino
+                Escribir(cant, " billete/s de $", Den[i])
+            FinSi
+        FinSi
+    FinPara
+FinAcción

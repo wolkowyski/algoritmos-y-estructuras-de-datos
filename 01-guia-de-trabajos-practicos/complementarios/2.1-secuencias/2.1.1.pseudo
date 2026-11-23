@@ -1,0 +1,39 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.1
+// Dada una secuencia TEXTO construir un algoritmo que cuente e informe por
+// oración cuántas palabras terminan con la sílaba "LA".
+// --------------------------------------------------------------------------
+
+// Las palabras se separan con blancos y las oraciones terminan en "." pegado
+// a la última palabra. Se guardan las dos últimas letras de cada palabra.
+Acción Complementario2_1_1 es
+Ambiente
+    TEXTO: secuencia de caracteres
+    v, ant, ult: caracter
+    cont, nro_or: entero
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    nro_or:= 0
+    Mientras NFDS(TEXTO) hacer
+        nro_or:= nro_or + 1
+        cont:= 0
+        Mientras NFDS(TEXTO) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(TEXTO, v) FinMientras
+            ant:= " "; ult:= " "
+            Mientras (v <> " ") y (v <> ".") hacer
+                ant:= ult; ult:= v
+                AVZ(TEXTO, v)
+            FinMientras
+            Si (ant = "L") y (ult = "A") entonces cont:= cont + 1 FinSi
+        FinMientras
+        Escribir("Oración ", nro_or, ": ", cont, " palabras terminan en LA")
+        AVZ(TEXTO, v) // paso el punto
+    FinMientras
+    CERRAR(TEXTO)
+FinAcción

@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.8
+// Crear un procedimiento que intercambie los valores de dos variables
+// numéricas.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_8 es
+Ambiente
+    x, y: real
+
+    // Los dos parámetros son por referencia: los cambios se ven afuera
+    Procedimiento Intercambiar (Var a, b: real) es
+        Ambiente
+            aux: real
+        Proceso
+            aux:= a
+            a:= b
+            b:= aux
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese dos números")
+    Leer(x, y)
+    Intercambiar(x, y)
+    Escribir("Ahora x = ", x, " e y = ", y)
+FinAcción

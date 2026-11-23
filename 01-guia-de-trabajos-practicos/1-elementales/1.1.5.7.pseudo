@@ -1,0 +1,26 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.7
+// Escriba un algoritmo que halle la media geométrica de tres valores. Este debe
+// emitir los tres valores por separado y luego el valor medio.
+// Media geométrica = raíz cúbica de (x * y * z)
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_7 es
+//Ambiente
+    Variables
+        x, y, z, media_geom: Real
+//Algoritmo
+    Escribir ("Ingrese el valor de X, Y & Z")
+    Leer (x, y, z)
+        // (x + y + z) / 3 sería la media aritmética; la geométrica es la raíz cúbica del producto
+        media_geom:= (x * y * z) ** (1/3)
+    Escribir ("El valor de X es: ", x, " , el valor de Y es: ", y, " y el valor de Z es: ", z)
+    Escribir ("Por último, la media geométrica es: ", media_geom)
+FinAcción

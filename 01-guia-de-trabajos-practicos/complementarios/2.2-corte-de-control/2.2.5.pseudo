@@ -1,0 +1,69 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.5
+// Una escuela dispone de un archivo con los registros de sus alumnos:
+//
+// * Nombre* Año 1..5* División A..D* Nota1 0..10* Nota2 0..10* Nota3 0..10
+//
+// Estos registros están ordenados en forma decreciente por el AÑO y dentro
+// de cada año están ordenados en forma creciente por la división.
+// Obtener el siguiente listado:
+//
+// | Lista de Promedios |  |  |
+// | --- | --- | --- |
+// | 5to Año |  |  |
+// | *Division A* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | *Division B* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | 4to Año |  |  |
+// | *Division A* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | *Division B* |  |  |
+// |  | *Nombre* | *Promedio:* |
+// |  | ------ | ------ |
+// |  | ------ | ------ |
+// | ------ | ------ | ------ |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_5 es
+Ambiente
+	Alumno = Registro
+		Nombre: AN(30)
+		Anio: 1..5
+		Division: "A".."D"
+		Nota1, Nota2, Nota3: 0..10
+	FinRegistro
+	ALUMNOS: Archivo de Alumno ordenado por Anio (decreciente) y Division
+	R: Alumno
+	ResAnio: 1..5
+	ResDiv: caracter
+Proceso
+	Abrir E/(ALUMNOS); Leer(ALUMNOS, R)
+	Escribir("Lista de Promedios")
+	Mientras No FDA(ALUMNOS) hacer
+		ResAnio:= R.Anio
+		Escribir(ResAnio, "º Año")
+		Mientras No FDA(ALUMNOS) y (R.Anio = ResAnio) hacer
+			ResDiv:= R.Division
+			Escribir("  División ", ResDiv)
+			Escribir("    Nombre | Promedio")
+			Mientras No FDA(ALUMNOS) y (R.Anio = ResAnio) y (R.Division = ResDiv) hacer
+				Escribir("    ", R.Nombre, " | ", (R.Nota1 + R.Nota2 + R.Nota3) / 3)
+				Leer(ALUMNOS, R)
+			FinMientras
+		FinMientras
+	FinMientras
+	Cerrar(ALUMNOS)
+FinAccion

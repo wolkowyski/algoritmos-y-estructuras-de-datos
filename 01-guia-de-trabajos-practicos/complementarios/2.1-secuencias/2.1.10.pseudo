@@ -1,0 +1,38 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.10
+// Escribir un algoritmo que permita efectuar la operación de diferencia
+// entre dos secuencias (ordenadas crecientes), esto es, que genere el
+// conjunto de los elementos no comunes a las dos secuencias.
+// --------------------------------------------------------------------------
+
+// Diferencia simétrica de dos secuencias ordenadas: es una mezcla en la que
+// los elementos comunes no se copian.
+Acción Complementario2_1_10 es
+Ambiente
+    S1, S2, Dif: secuencia de enteros
+    a, b: entero
+Proceso
+    ARR(S1); AVZ(S1, a)
+    ARR(S2); AVZ(S2, b)
+    CREAR(Dif)
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Si a < b entonces
+            ESC(Dif, a); AVZ(S1, a)
+        Sino
+            Si a > b entonces
+                ESC(Dif, b); AVZ(S2, b)
+            Sino // común a las dos: no va
+                AVZ(S1, a); AVZ(S2, b)
+            FinSi
+        FinSi
+    FinMientras
+    Mientras NFDS(S1) hacer ESC(Dif, a); AVZ(S1, a) FinMientras
+    Mientras NFDS(S2) hacer ESC(Dif, b); AVZ(S2, b) FinMientras
+    CERRAR(S1); CERRAR(S2); CERRAR(Dif)
+FinAcción

@@ -1,0 +1,52 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.6
+// Usando las operaciones de Lista, escribir un procedimiento AGRUPA (PRIM,
+// ULT: puntero a nodo; A:entero) que, dada una lista doblemente encadenada
+// de enteros L agrupe (sume) elementos de tal manera que en L queden sólo
+// elementos mayores o iguales que A. El algoritmo recorre la lista y cuando
+// encuentra un elemento menor empieza a agrupar (sumar) el elemento con los
+// siguientes hasta llegar al valor A o hasta que se acabe la lista (el
+// elemento menor se debe eliminar de la lista.)
+//
+// Por ejemplo si:
+//
+// L = {3,4,2,4,1,4,4,3,2,2,4,1,4,1,4,4,1,4,4,2},
+//
+// entonces AGRUPA(PRIM, ULT,10) da
+//
+// L = {13,12,13,10,10}.
+//
+// En la lista final NO deben quedar elementos menores que A, salvo,
+// eventualmente, el último.
+// --------------------------------------------------------------------------
+
+// Cuando un elemento es menor que A, se le van sumando los siguientes (que
+// se eliminan de la lista) hasta llegar a A o al final.
+Procedimiento AGRUPA (Var PRIM, ULT: puntero a nodo; A: entero) es
+	Ambiente
+		p, s: puntero a nodo
+	Proceso
+		p:= PRIM
+		Mientras p <> nil hacer
+			Mientras (*p.dato < A) y (*p.prox <> nil) hacer
+				s:= *p.prox // el siguiente se suma a p y se elimina
+				*p.dato:= *p.dato + *s.dato
+				*p.prox:= *s.prox
+				Si *s.prox <> nil entonces
+					*(*s.prox).ant:= p
+				Sino
+					ULT:= p
+				FinSi
+				Disponer(s)
+			FinMientras
+			p:= *p.prox
+		FinMientras
+FinProcedimiento
+// Con L = {3,4,2,4,1,4,4,3,2,2,4,1,4,1,4,4,1,4,4,2} y A = 10:
+// 3+4+2+4 = 13 | 1+4+4+3 = 12 | 2+2+4+1+4 = 13 | 1+4+4+1 = 10 | 4+4+2 = 10

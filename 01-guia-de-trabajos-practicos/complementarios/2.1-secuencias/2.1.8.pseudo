@@ -1,0 +1,52 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.8
+// Escribir un algoritmo que a partir de una secuencia de palabras dada,
+// genere dos secuencias de salida. Una de ellas contendrá solo las palabras
+// de la secuencia original que comienzan con vocal y la otra será una
+// secuencia numérica en la que se almacenarán las longitudes de las palabras
+// que cumplieron tal condición. Por final de proceso se deberá informar la
+// cantidad de palabras de ambas secuencias de palabras y la longitud de la
+// palabra más larga que cumplió la condición enunciada.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_8 es
+Ambiente
+    Sec, SalPal: secuencia de caracteres
+    SalLong: secuencia de enteros
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    total, cumplen, largo, max_largo: entero
+    cumple: booleano
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(SalPal); CREAR(SalLong)
+    total:= 0; cumplen:= 0; max_largo:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer AVZ(Sec, v) FinMientras
+        Si NFDS(Sec) entonces
+            total:= total + 1
+            cumple:= v en vocales
+            largo:= 0
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                largo:= largo + 1
+                Si cumple entonces ESC(SalPal, v) FinSi
+                AVZ(Sec, v)
+            FinMientras
+            Si cumple entonces
+                ESC(SalPal, " ")
+                ESC(SalLong, largo)
+                cumplen:= cumplen + 1
+                Si largo > max_largo entonces max_largo:= largo FinSi
+            FinSi
+        FinSi
+    FinMientras
+    Escribir("Palabras de entrada: ", total, " - de salida: ", cumplen)
+    Escribir("Palabra más larga que empieza con vocal: ", max_largo, " letras")
+    CERRAR(Sec); CERRAR(SalPal); CERRAR(SalLong)
+FinAcción

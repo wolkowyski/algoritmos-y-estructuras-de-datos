@@ -1,0 +1,38 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.2
+// Dada una secuencia de letras del alfabeto que finaliza con la letra "Z",
+// contar cuántas consonantes hay en la secuencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_2 es
+Ambiente
+    vocales = {"A", "E", "I", "O", "U"}
+    Sec: secuencia de caracteres
+    v: caracter
+    cont: entero
+Proceso
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras v <> "Z" hacer // la Z es la marca de fin, no se cuenta
+        Si No (v en vocales) entonces // se cuentan las que NO son vocales
+            cont:= cont + 1
+        FinSi
+        AVZ(Sec, v)
+    FinMientras
+    Escribir ("Cantidad de consonantes: ", cont)
+    CERRAR(Sec)
+FinAcción

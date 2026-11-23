@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.22
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.22
+// Escriba un algoritmo que determine si un número es primo.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_22 es
+Ambiente
+    Variables
+        num, divisor: Entero
+        es_primo: Lógico
+Proceso
+    Escribir ("Ingrese un número entero mayor a 1")
+    Leer (num)
+    es_primo:= (num > 1)
+    divisor:= 2
+    // Alcanza con probar hasta la raíz cuadrada del número
+    Mientras es_primo y (divisor * divisor <= num) Hacer
+        Si num mod divisor = 0 Entonces
+            es_primo:= Falso
+        FinSi
+        divisor:= divisor + 1
+    FinMientras
+    Si es_primo Entonces
+        Escribir (num, " es primo")
+    Sino
+        Escribir (num, " no es primo")
+    FinSi
+FinAcción

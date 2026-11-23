@@ -1,0 +1,46 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.2
+// Dada una secuencia de caracteres que contiene un texto compuesto por
+// oraciones, crear una secuencia de salida que contenga sólo las palabras
+// que comiencen con la sílaba "MA". Informar para cada oración cuántas
+// palabras cumplen con la condición.
+// --------------------------------------------------------------------------
+
+Acción Complementario2_1_2 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    cont, nro_or: entero
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    nro_or:= 0
+    Mientras NFDS(TEXTO) hacer
+        nro_or:= nro_or + 1
+        cont:= 0
+        Mientras NFDS(TEXTO) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(TEXTO, v) FinMientras
+            Si v = "M" entonces
+                AVZ(TEXTO, v)
+                Si v = "A" entonces // empieza con MA: la copio entera
+                    cont:= cont + 1
+                    ESC(Salida, "M")
+                    Mientras (v <> " ") y (v <> ".") hacer
+                        ESC(Salida, v); AVZ(TEXTO, v)
+                    FinMientras
+                    ESC(Salida, " ")
+                FinSi
+            FinSi
+            Mientras (v <> " ") y (v <> ".") hacer AVZ(TEXTO, v) FinMientras
+        FinMientras
+        Escribir("Oración ", nro_or, ": ", cont, " palabras empiezan con MA")
+        AVZ(TEXTO, v)
+    FinMientras
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción

@@ -1,0 +1,68 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+//  Ejercicio 2.2.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.6
+// Se cuenta con una secuencia que contiene el Apellido y Nombre y Promedio
+// General de los Graduados de una Facultad, y se solicita generar un listado
+// con diversas recomendaciones para cubrir vacantes en una importante
+// Empresa. Las mencionadas recomendaciones serán establecidas del siguiente
+// modo: si el promedio es menor que 7, la recomendación será negativa
+// ("NO"); por el contrario, si el promedio es menor que 8, la recomendación
+// será positiva ("SI"); de lo contrario, si el promedio es menor que 9, la
+// recomendación será favorable ("F"); por último, si el promedio supera los
+// 9 puntos, la recomendación será muy favorable("MF").
+// El listado deber respetar el siguiente formato:
+//
+// * Apellido_Nombre* Promedio* Recomendación
+//
+// Además, se solicita la impresión del total de graduados que recibieron
+// cada una de las recomendaciones, y el promedio global de los mismos.
+// --------------------------------------------------------------------------
+
+Accion Ejercicio2_2_6 es
+Ambiente
+	Graduado = Registro
+		Apellido_Nombre: AN(50)
+		Promedio: real
+	FinRegistro
+	ArchGrad: Archivo de Graduado
+	Reg: Graduado
+	rec: AN(2)
+	cont_no, cont_si, cont_f, cont_mf, total: entero
+	suma_prom: real
+Proceso
+	Abrir E/(ArchGrad)
+	Leer(ArchGrad, Reg)
+	cont_no:= 0; cont_si:= 0; cont_f:= 0; cont_mf:= 0
+	total:= 0; suma_prom:= 0
+	Mientras No FDA(ArchGrad) hacer
+		Si Reg.Promedio < 7 entonces
+			rec:= "NO"; cont_no:= cont_no + 1
+		Sino
+			Si Reg.Promedio < 8 entonces
+				rec:= "SI"; cont_si:= cont_si + 1
+			Sino
+				Si Reg.Promedio < 9 entonces
+					rec:= "F"; cont_f:= cont_f + 1
+				Sino
+					rec:= "MF"; cont_mf:= cont_mf + 1
+				FinSi
+			FinSi
+		FinSi
+		Escribir(Reg.Apellido_Nombre, " - ", Reg.Promedio, " - ", rec)
+		total:= total + 1
+		suma_prom:= suma_prom + Reg.Promedio
+		Leer(ArchGrad, Reg)
+	FinMientras
+	Escribir("NO: ", cont_no, " | SI: ", cont_si, " | F: ", cont_f, " | MF: ", cont_mf)
+	Si total > 0 entonces
+		Escribir("Promedio global: ", suma_prom / total)
+	FinSi
+	Cerrar(ArchGrad)
+Fin Acción

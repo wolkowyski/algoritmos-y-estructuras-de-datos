@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.2 - Procedimientos recursivos
+//  Ejercicio 5.2.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.2.1
+// Imprimir las cifras de un número n (siendo n \ge 0) en orden inverso al
+// original. Por ej.: el inverso de 254 es 452.
+// --------------------------------------------------------------------------
+
+Procedimiento Inverso (n: entero) es
+	Escribir(n mod 10) // primero la última cifra, sin salto de línea
+	Si n >= 10 entonces
+		Inverso(n div 10) // después el resto del número
+	FinSi
+FinProcedimiento
+// Inverso(254) escribe 4, después Inverso(25) escribe 5 y Inverso(2) escribe 2: 452

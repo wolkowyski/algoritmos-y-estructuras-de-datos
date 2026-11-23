@@ -1,0 +1,54 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.6
+// Una empresa dispone de un archivo de registros con los siguientes datos de
+// los pasajeros que volaron en el día:
+//
+// * Nombre* Nro de Vuelo
+//
+// El archivo está ordenado por n° de vuelo. Imprimir la cantidad De
+// pasajeros que viajaron en cada vuelo y la cantidad total de pasajeros que
+// viajaron ese día por la compañía:
+//
+// | Cantidad de Pasajeros |  |
+// | --- | --- |
+// | Vuelo 067 | 83 |
+// | Vuelo 123 | 123 |
+// | Vuelo 451 | 321 |
+// | ------- | ------- |
+// | ------- | ------- |
+// | Total | 1432 |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_6 es
+Ambiente
+	Pasajero = Registro
+		Nombre: AN(30)
+		Nro_Vuelo: N(3)
+	FinRegistro
+	PASAJEROS: Archivo de Pasajero ordenado por Nro_Vuelo
+	R: Pasajero
+	ResVuelo: N(3)
+	cant, total: entero
+Proceso
+	Abrir E/(PASAJEROS); Leer(PASAJEROS, R)
+	total:= 0
+	Escribir("Cantidad de Pasajeros")
+	Mientras No FDA(PASAJEROS) hacer
+		ResVuelo:= R.Nro_Vuelo
+		cant:= 0
+		Mientras No FDA(PASAJEROS) y (R.Nro_Vuelo = ResVuelo) hacer
+			cant:= cant + 1
+			Leer(PASAJEROS, R)
+		FinMientras
+		Escribir("Vuelo ", ResVuelo, " | ", cant)
+		total:= total + cant
+	FinMientras
+	Escribir("Total | ", total)
+	Cerrar(PASAJEROS)
+FinAccion

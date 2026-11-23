@@ -1,0 +1,45 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.6
+// Escriba un algoritmo que permita recorrer el siguiente árbol en los tres
+// procedimientos, realice la prueba de escritorio
+//
+// (ver figura en la guía)
+// --------------------------------------------------------------------------
+
+// Árbol de la figura (img/5.3.6.svg):        F
+//                                      C           I
+//                                    A           G
+//                                      B           H
+Procedimiento PreOrden (p: puntero a Nodo) es
+	Si p <> nil entonces
+		Escribir(*p.dato)
+		PreOrden(*p.izq)
+		PreOrden(*p.der)
+	FinSi
+FinProcedimiento
+
+Procedimiento EnOrden (p: puntero a Nodo) es
+	Si p <> nil entonces
+		EnOrden(*p.izq)
+		Escribir(*p.dato)
+		EnOrden(*p.der)
+	FinSi
+FinProcedimiento
+
+Procedimiento PostOrden (p: puntero a Nodo) es
+	Si p <> nil entonces
+		PostOrden(*p.izq)
+		PostOrden(*p.der)
+		Escribir(*p.dato)
+	FinSi
+FinProcedimiento
+// Prueba de escritorio:
+//   Pre-orden:  F C A B I G H
+//   En-orden:   A B C F G H I
+//   Post-orden: B A C H G I F

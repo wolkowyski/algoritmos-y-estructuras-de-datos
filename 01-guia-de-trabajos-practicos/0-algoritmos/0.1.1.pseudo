@@ -1,0 +1,34 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 0 - Algoritmos
+//  Acciones, estados, asignaciones y primeros algoritmos
+//  Ejercicio 0.1.1
+// ==========================================================================
+
+Ejercicio 0.1.1
+Para los siguientes enunciados, identifique la acción principal y determine el estado inicial y final de los objetos sobre los que se actúa.
+
+Elaboración de una torta.
+Acción_Principal:= Elaborar una torta
+Estado_Inicial:= Torta sin elaborar
+Estado_Final:= Torta elaborada
+
+Dados los valores iniciales de A y C (23 y 7 respectivamente) y la relación existente en la fórmula A = 2B + C; hallar el valor de B.
+Accion Principal: Despejar y obtener el valor de "B"
+Estado_Inicial:= Variable "B" sin despejar y con valor desconocido
+Estado_Final:= Variable "B" despejada y con valor hallado: 8
+
+A partir de una nota de pedidos, un empleado administrativo obtiene la factura de un cliente.
+Acción_Principal:= Obtener la factura de un cliente
+Estado_Inicial:= Empleado administrativo sin factura de un cliente
+Estado_Final:= Empleado administrativo con factura de un cliente a partir de una nota de pedidos
+
+Se desea descargar determinado software desde Internet.
+Acción_Principal:= Descargar software de Internet
+Estado_Inicial:= Software sin descargar
+Estado_Final:= Software descargado y listo para usar
+
+Se quiere colocar una repisa en la pared, para lo cual se cuenta con un taladro, tacos fisher, tornillos, destornillador, etc.
+Acción_Principal:= Colocar una repisa en la pared
+Estado_Incicial:= Taladro, tacos fisher, tornillos y destornillados sin usar - Repisa sin colocar
+Estado_Final:= Taladro, tacos fisher, tornillos y destornillados utilizados - Repisa colocada en la pared

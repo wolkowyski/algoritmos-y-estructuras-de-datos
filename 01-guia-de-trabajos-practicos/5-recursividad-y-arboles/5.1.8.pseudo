@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.8
+// Dado un vector de 10 números enteros, calcular la suma de sus elementos
+// --------------------------------------------------------------------------
+
+Función SumaVector (V: arreglo [1..10] de entero; i: entero): entero es
+	Si i = 10 entonces // caso base: último elemento
+		SumaVector:= V[i]
+	Sino
+		SumaVector:= V[i] + SumaVector(V, i + 1)
+	FinSi
+FinFunción
+// Llamada inicial: total:= SumaVector(V, 1)

@@ -1,0 +1,24 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.2 - Procedimientos recursivos
+//  Ejercicio 5.2.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.2.4
+// Para convertir un número decimal a binario, simplemente debe dividirse
+// sucesivas veces por dos (2) hasta quedarnos con el cociente cero (0).
+// Todos los restos de las divisiones, tomados en orden inverso, forman el
+// número binario objetivo. Escribir un procedimiento recursivo que,
+// recibiendo como parámetro un número entero positivo, muestre en pantalla
+// el mismo número codificado en binario.
+// --------------------------------------------------------------------------
+
+// Los restos se escriben a la vuelta de la recursión: así quedan en orden inverso.
+Procedimiento Binario (n: entero) es
+	Si n >= 2 entonces
+		Binario(n div 2)
+	FinSi
+	Escribir(n mod 2)
+FinProcedimiento
+// Binario(6): Binario(3) -> Binario(1) escribe 1, vuelve y escribe 1, vuelve y escribe 0 -> 110

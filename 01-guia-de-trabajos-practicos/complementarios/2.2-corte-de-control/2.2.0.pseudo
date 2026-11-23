@@ -1,0 +1,45 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.0
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.0
+// Una empresa dispone de un archivo de registros con los siguientes datos de
+// sus empleados ordenados por planta:
+//
+// * Nombre* Categoría* Planta
+//
+// La categoría está codificada del 1 al 4. La fábrica cuenta con dos plantas
+// A y B.
+// A continuación se presenta el listado de empleados con su categoría y
+// lugar de trabajo:
+//
+// | Nombre | Categoria | Planta | Nombre | Categoria | Planta |
+// | --- | --- | --- | --- | --- | --- |
+// | Perez | 3 | A | Cassas | 2 | B |
+// | Gutierrez | 2 | A | Portales | 2 | B |
+// | Aranda | 1 | A | Morales | 3 | B |
+// | Molina | 1 | A | Arce | 2 | B |
+// | Salerno | 1 | A | Cortez | 1 | B |
+// | Mendez | 4 | A | Milan | 4 | B |
+// | Corrales | 4 | A | Davis | 1 | B |
+// | Derqui | 3 | A | Diaz | 1 | B |
+// | Biondi | 4 | A | Vera | 2 | B |
+// | Nogueria | 1 | A | Basualdo | 1 | B |
+// --------------------------------------------------------------------------
+
+// Este "ejercicio" es el juego de datos que usan los ejercicios 2.2.1 a
+// 2.2.4. Definición del archivo en el ambiente:
+//
+//   Empleado = Registro
+//       Nombre: AN(30)
+//       Categoria: 1..4
+//       Planta: ("A", "B")
+//   FinRegistro
+//   EMPLEADOS: Archivo de Empleado
+//   R: Empleado
+//
+// Según el ejercicio, el archivo está ordenado por categoría, por planta o
+// por planta y categoría: el orden define en qué campos se puede cortar.

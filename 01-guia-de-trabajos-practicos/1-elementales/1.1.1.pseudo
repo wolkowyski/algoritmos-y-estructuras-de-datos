@@ -1,0 +1,59 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Datos elementales
+//  Ejercicio 1.1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.1
+// Encuentre el valor de la variable RESULT después de la ejecución de las
+// siguientes secuencias de operaciones. Realizar prueba de escritorio.
+// Prioridad: ** primero, después * / MOD, y por último + -
+// --------------------------------------------------------------------------
+
+RESULT := 5 + 2**3*2;
+    // 2**3 = 8 -> 8*2 = 16 -> 5 + 16 = 21
+    El valor de la variable RESULT es: 21
+
+X := 2; Y := 3;
+RESULT := X**Y - X;
+    // 2**3 = 8 -> 8 - 2 = 6
+    El valor de la variable RESULT es: 6
+
+UNO := 10; DOS := 200;
+RESULT := ABSO (UNO - DOS);
+UNO := TRUNC ( RESULT / 3 ) - UNO ** 2;
+RESULT := (DOS - UNO) * 2;
+    // RESULT = |10 - 200| = 190
+    // UNO = TRUNC(190 / 3) - 10**2 = 63 - 100 = -37
+    // RESULT = (200 - (-37)) * 2 = 237 * 2 = 474
+    El valor de la variable RESULT es: 474
+
+VBLE1 := 10; VBLE2 := 3;
+RESULT := TRUNC (VBLE1 / VBLE2);
+VBLE1 := VBLE1 + VBLE2;
+RESULT := ABSO (VBLE2 - VBLE1) ** 2;
+RESULT := RESULT * 0,1;
+    // RESULT = TRUNC(10 / 3) = 3
+    // VBLE1 = 10 + 3 = 13
+    // RESULT = |3 - 13| ** 2 = 10 ** 2 = 100
+    // RESULT = 100 * 0,1 = 10
+    El valor de la variable RESULT es: 10
+
+X := 10; RESULT := 3;
+TRES := ABSO (RESULT - X) + 2 * RESULT;
+X := REDOND (TRES / 2);
+Z := X MOD RESULT;
+RESULT := (2*(-5) + X)**2;
+    // TRES = |3 - 10| + 2*3 = 7 + 6 = 13
+    // X = REDOND(13 / 2) = REDOND(6,5) = 7
+    // Z = 7 MOD 3 = 1
+    // RESULT = (-10 + 7) ** 2 = (-3) ** 2 = 9
+    El valor de la variable RESULT es: 9
+
+UNO := 1; DOS := 2; TRES := 4;
+DOS := ABSO (UNO - TRES);
+RESULT := DOS * TRES;
+    // DOS = |1 - 4| = 3 -> RESULT = 3 * 4 = 12
+    El valor de la variable RESULT es: 12

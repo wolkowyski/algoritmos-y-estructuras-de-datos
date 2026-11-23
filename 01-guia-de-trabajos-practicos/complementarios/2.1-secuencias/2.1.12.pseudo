@@ -1,0 +1,59 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.12
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.12
+// Dada una secuencia de caracteres con datos de personas con el siguiente
+// formato:
+//
+// `Nombre | Domicilio | DNI (8 caracteres) Región (1-2-3) Nombre | Domicilio
+// | DNI (8 caracteres) Región (1-2-3).......*(marca de fin)`
+//
+// DNI, Región y Nombre de la siguiente persona no están separados por ningún
+// carácter, Región tiene un solo carácter.
+// Generar una secuencia de caracteres de salida que contenga todos los DNI
+// que comiencen con dígito par y pertenezcan a la Región 1.
+// Al final informar cantidad de personas de cada región y porcentaje de las
+// mismas sobre el total de personas
+// --------------------------------------------------------------------------
+
+// Formato: Nombre|Domicilio|DNI(8)Región(1)Nombre|... * . El DNI se guarda
+// en un arreglo porque la región (que decide si se copia) viene después.
+Acción Complementario2_1_12 es
+Ambiente
+    Sec, Salida: secuencia de caracteres
+    v: caracter
+    D: arreglo [1..8] de caracter
+    i, total, r1, r2, r3: entero
+Proceso
+    ARR(Sec); AVZ(Sec, v)
+    CREAR(Salida)
+    total:= 0; r1:= 0; r2:= 0; r3:= 0
+    Mientras v <> "*" hacer
+        Mientras v <> "|" hacer AVZ(Sec, v) FinMientras // nombre
+        AVZ(Sec, v)
+        Mientras v <> "|" hacer AVZ(Sec, v) FinMientras // domicilio
+        AVZ(Sec, v)
+        Para i:= 1 hasta 8 hacer D[i]:= v; AVZ(Sec, v) FinPara
+        total:= total + 1
+        Según v hacer // región
+            "1": r1:= r1 + 1
+                 Si D[1] en {"0", "2", "4", "6", "8"} entonces
+                     Para i:= 1 hasta 8 hacer ESC(Salida, D[i]) FinPara
+                     ESC(Salida, " ")
+                 FinSi
+            "2": r2:= r2 + 1
+            "3": r3:= r3 + 1
+        FinSegún
+        AVZ(Sec, v) // empieza la siguiente persona (o la marca de fin)
+    FinMientras
+    Si total > 0 entonces
+        Escribir("Región 1: ", r1, " (", r1 * 100 / total, "%)")
+        Escribir("Región 2: ", r2, " (", r2 * 100 / total, "%)")
+        Escribir("Región 3: ", r3, " (", r3 * 100 / total, "%)")
+    FinSi
+    CERRAR(Sec); CERRAR(Salida)
+FinAcción

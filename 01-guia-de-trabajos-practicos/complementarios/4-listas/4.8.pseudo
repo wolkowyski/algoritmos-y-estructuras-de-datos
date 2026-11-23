@@ -1,0 +1,63 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.8
+// Se dispone de una lista doblemente enlazada con un conjunto de números
+// naturales. Este conjunto está dividido en 10 grupos. En cada grupo el
+// primer elemento indica la cantidad de números subsiguientes a él que
+// integran dicho grupo.
+// Se desea generar una nueva lista circular, simplemente encadenada, en la
+// cual cada nodo contendrá el valor máximo de cada grupo. Dicha lista debe
+// quedar ordenada en forma ascendente y, al final se debe informar cuál es
+// el promedio de todos los máximos.
+// --------------------------------------------------------------------------
+
+Accion Complementario4_8 (prim: puntero a NodoD) es
+Ambiente
+	NodoD = Registro
+		dato: entero
+		ant, prox: puntero a NodoD
+	FinRegistro
+	NodoC = Registro
+		max: entero
+		prox: puntero a NodoC
+	FinRegistro
+	p: puntero a NodoD
+	q, r, a, primC, ultC: puntero a NodoC
+	g, i, cant, maximo, suma: entero
+Proceso
+	primC:= nil; ultC:= nil
+	suma:= 0
+	p:= prim
+	Para g:= 1 a 10 hacer
+		cant:= *p.dato // el primero del grupo indica cuántos siguen
+		p:= *p.prox
+		maximo:= *p.dato
+		Para i:= 1 a cant hacer
+			Si *p.dato > maximo entonces maximo:= *p.dato FinSi
+			p:= *p.prox
+		FinPara
+		suma:= suma + maximo
+		// inserción ordenada ascendente en la lista circular
+		Nuevo(q); *q.max:= maximo
+		Si primC = nil entonces
+			*q.prox:= q; primC:= q; ultC:= q
+		Sino
+			Si maximo <= *primC.max entonces // nuevo primero
+				*q.prox:= primC; *ultC.prox:= q; primC:= q
+			Sino
+				a:= primC; r:= *primC.prox
+				Mientras (r <> primC) y (*r.max < maximo) hacer
+					a:= r; r:= *r.prox
+				FinMientras
+				*q.prox:= r; *a.prox:= q
+				Si r = primC entonces ultC:= q FinSi // quedó último
+			FinSi
+		FinSi
+	FinPara
+	Escribir("Promedio de los máximos: ", suma / 10)
+FinAccion

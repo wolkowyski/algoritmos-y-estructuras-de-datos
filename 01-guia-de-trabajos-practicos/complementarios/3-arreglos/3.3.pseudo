@@ -1,0 +1,75 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.3
+// En el Laboratorio de I.S.I. se desea emitir un listado de los totales de
+// horas ociosas de cada uno de los equipos (son 20 en total), ordenados en
+// forma decreciente. Para ello se tiene la siguiente información almacenada
+// en un fichero secuencial:
+//
+// |  |  |  |  |  |  |
+// | --- | --- | --- | --- | --- | --- |
+// | Codigo Equipo | Descrip | Fecha Falla | | | Cant HS Ociosas |
+// |  |  | AAAA | MM | DD |  |
+//
+// 1. Considerar que el fichero se encuentra ordenado por código de equipo.
+// 2. Considerar que el fichero está desordenado.
+// --------------------------------------------------------------------------
+
+// Los códigos de equipo se toman como 1..20. En los dos casos se acumula en
+// un arreglo de 20 y después se ordena de mayor a menor; lo que cambia es
+// cómo se acumula.
+Acción Complementario3_3 es
+	Ambiente
+		Fecha = Registro
+			aaaa: N(4); mm: 1..12; dd: 1..31
+		FinRegistro
+		Falla = Registro
+			Codigo: 1..20
+			Descrip: AN(40)
+			Fecha_Falla: Fecha
+			Horas: N(4)
+		FinRegistro
+		FALLAS: Archivo de Falla
+		R: Falla
+		Equipo = Registro
+			Codigo: 1..20
+			Horas: N(6)
+		FinRegistro
+		T: arreglo [1..20] de Equipo
+		x: Equipo
+		i, j, res: entero
+	Proceso
+		Para i:= 1 a 20 hacer T[i].Codigo:= i; T[i].Horas:= 0 FinPara
+		Abrir E/(FALLAS); Leer(FALLAS, R)
+
+		// Caso 1: fichero ordenado por código -> corte de control por equipo
+		Mientras No FDA(FALLAS) hacer
+			res:= R.Codigo
+			Mientras No FDA(FALLAS) y (R.Codigo = res) hacer
+				T[res].Horas:= T[res].Horas + R.Horas
+				Leer(FALLAS, R)
+			FinMientras
+		FinMientras
+		// Caso 2: fichero desordenado -> proceso estadístico, acceso directo por código
+		//   Mientras No FDA(FALLAS) hacer
+		//       T[R.Codigo].Horas:= T[R.Codigo].Horas + R.Horas
+		//       Leer(FALLAS, R)
+		//   FinMientras
+		Cerrar(FALLAS)
+
+		Para i:= 2 a 20 hacer // inserción, decreciente por horas
+			x:= T[i]; j:= i - 1
+			Mientras (j > 0) y (T[j].Horas < x.Horas) hacer
+				T[j + 1]:= T[j]; j:= j - 1
+			FinMientras
+			T[j + 1]:= x
+		FinPara
+		Para i:= 1 a 20 hacer
+			Escribir("Equipo ", T[i].Codigo, ": ", T[i].Horas, " horas ociosas")
+		FinPara
+FinAcción

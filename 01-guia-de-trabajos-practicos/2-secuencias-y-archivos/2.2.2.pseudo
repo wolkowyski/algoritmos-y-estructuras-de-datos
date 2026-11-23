@@ -1,0 +1,53 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+//  Ejercicio 2.2.2
+// ==========================================================================
+
+Ejercicio 2.2.2
+Se dispone de una secuencia de facturas con los siguientes datos:
+
+Nº de Factura
+Fecha
+Total
+Se desea un listado de las facturas cuyas fechas sean posteriores a una fecha dada, y cuyos importes totales no alcancen los $1000, con el siguiente formato:
+Nro_Factura - Fecha - Importe_Total
+
+Accion Ejercicio2_2_2 es
+Ambiente //Ambiente
+
+Fecha = Registro
+	aa: N(4)
+	mm: 1..12
+	dd: 1..31
+FinRegistro
+
+Facturas = Registro
+	Nro_Factura: N(20)
+	FechaFact: Fecha
+	Importe_Total: N(6,2)
+FinRegistro
+
+ArchFacturas: Archivo de Facturas
+RegFacturas: Facturas
+FechaUsuario: Fecha //fecha ingresada
+fecha_dada, fecha_fact: N(8)
+
+Proceso //Proceso
+	Abrir E/(ArchFacturas)
+	Leer(ArchFacturas, RegFacturas)
+	Escribir("Ingrese una fecha con el formato A/M/D")
+	Leer(FechaUsuario.aa, FechaUsuario.mm, FechaUsuario.dd) // respeta la estructura del registro de fecha
+	fecha_dada:= FechaUsuario.aa * 10000 + FechaUsuario.mm * 100 + FechaUsuario.dd
+	Mientras No FDA(ArchFacturas) hacer
+		// Dos registros no se comparan directamente: paso cada fecha a un número aaaammdd
+		fecha_fact:= RegFacturas.FechaFact.aa * 10000 + RegFacturas.FechaFact.mm * 100 + RegFacturas.FechaFact.dd
+		Si (RegFacturas.Importe_Total < 1000) ^ (fecha_fact > fecha_dada) entonces
+			Escribir(RegFacturas.Nro_Factura, " - ", RegFacturas.FechaFact.dd, "/", RegFacturas.FechaFact.mm, "/", RegFacturas.FechaFact.aa, " - ", RegFacturas.Importe_Total)
+		FinSi
+		Leer(ArchFacturas, RegFacturas)
+	FinMientras
+	Cerrar(ArchFacturas)
+Fin Acción

@@ -1,0 +1,55 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.7
+// Escriba un algoritmo que permita ingresar 3 valores numéricos y determine
+// cuál es el mayor, el medio y el menor.
+// (era el 3 de los complementarios)
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_7 es
+//Ambiente
+    Variables
+        a, b, c: Real
+        mayor, medio, menor: Real
+//Algoritmo
+    Escribir ("Ingrese 3 valores numéricos")
+    Leer (a, b, c)
+        // Primero busco el mayor; los otros dos se ordenan entre sí
+        Si (a >= b) y (a >= c) Entonces
+            mayor:= a
+            Si b >= c Entonces
+                medio:= b
+                menor:= c
+            Sino
+                medio:= c
+                menor:= b
+            FinSi
+        Sino
+            Si (b >= a) y (b >= c) Entonces
+                mayor:= b
+                Si a >= c Entonces
+                    medio:= a
+                    menor:= c
+                Sino
+                    medio:= c
+                    menor:= a
+                FinSi
+            Sino
+                mayor:= c
+                Si a >= b Entonces
+                    medio:= a
+                    menor:= b
+                Sino
+                    medio:= b
+                    menor:= a
+                FinSi
+            FinSi
+        FinSi
+    Escribir ("El número mayor es: ", mayor, ", el intermedio es: ", medio, " y el menor es: ", menor)
+FinAcción

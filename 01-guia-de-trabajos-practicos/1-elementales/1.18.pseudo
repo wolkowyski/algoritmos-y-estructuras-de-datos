@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.18
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.18
+// Elabore un algoritmo que calcule el Cociente de dos enteros y el Resto de
+// la operación, empleando sólo las operaciones suma y diferencia.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_18 es
+//Ambiente
+    Variables
+        F, G, cociente, resto: Entero
+//Algoritmo
+    Escribir ("Ingrese 2 valores enteros positivos (dividendo y divisor)")
+    Leer (F, G)
+    cociente:= 0
+    resto:= F
+    Mientras resto >= G Hacer // con >= también se cuenta la resta que deja resto 0
+        resto:= resto - G
+        cociente:= cociente + 1
+    FinMientras
+    Escribir ("El cociente es: ", cociente, " y el resto es: ", resto)
+FinAcción

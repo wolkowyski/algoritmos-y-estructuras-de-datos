@@ -1,0 +1,23 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.6
+// Determine recursivamente si un número dado es par o impar, usando sólo la
+// operación resta.
+// --------------------------------------------------------------------------
+
+Función EsPar (n: entero): booleano es // n >= 0
+	Si n = 0 entonces
+		EsPar:= Verdadero
+	Sino
+		Si n = 1 entonces
+			EsPar:= Falso
+		Sino
+			EsPar:= EsPar(n - 2)
+		FinSi
+	FinSi
+FinFunción

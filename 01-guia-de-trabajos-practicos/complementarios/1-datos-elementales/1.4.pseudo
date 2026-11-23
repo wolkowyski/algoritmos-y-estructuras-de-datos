@@ -1,0 +1,23 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.4
+// Genere un algoritmo que determine el factorial de un número dado N.
+// --------------------------------------------------------------------------
+
+Acción Complementario1_4 es
+Ambiente
+    N, i, fact: Entero
+Proceso
+    Escribir("Ingrese N (>= 0)")
+    Leer(N)
+    fact:= 1 // 0! = 1
+    Para i:= 2 hasta N hacer
+        fact:= fact * i
+    FinPara
+    Escribir(N, "! = ", fact)
+FinAcción

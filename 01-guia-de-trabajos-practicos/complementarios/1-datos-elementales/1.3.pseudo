@@ -1,0 +1,22 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.3
+// Escriba un algoritmo que determine si un valor entero es par o impar.
+// --------------------------------------------------------------------------
+
+Acción Complementario1_3 es
+Ambiente
+    n: Entero
+Proceso
+    Leer(n)
+    Si n mod 2 = 0 entonces
+        Escribir(n, " es par")
+    Sino
+        Escribir(n, " es impar")
+    FinSi
+FinAcción

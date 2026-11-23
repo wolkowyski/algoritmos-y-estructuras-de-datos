@@ -1,0 +1,52 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.2 - Archivos secuenciales
+//  Primitivas: Abrir E/ (entrada) | Abrir /S (salida) | Leer | Escribir |
+//              FDA (fin de archivo) | Cerrar
+//  Ejercicio 2.2.5
+// ==========================================================================
+
+Ejercicio 2.2.5
+A partir de la secuencia del ejercicio 2.2.1 se desea generar un listado con los alumnos que aprobaron la última materia rendida con nota superior a 7, e ingresaron el año pasado, con el siguiente formato:
+
+Nro_Legajo - Apellido_Nombre - Carrera
+
+Accion Ejercicio2_2_5 es
+Ambiente
+
+Fecha = Registro
+	dd: 1..31
+	mm: 1..12
+	aa: 1900..2023
+FinRegistro
+
+Datos = Registro
+	Apellido_Nombre: AF(30,20)
+	Carrera: ("ISI","IEM","IQ")
+	Nro_Legajo: N(5)
+	FechaNacimiento: Fecha
+	FechaIngreso: Fecha
+	Documento: N(8)
+	Sexo: ("M","F")
+	FechaExamen: Fecha
+	Nota: 1..10
+FinRegistro
+
+ArchFacultad: Archivo de Datos ordenado por Apellido y Nombre
+RegFacultad: Datos
+anio_actual: N(4)
+
+Proceso
+	Escribir("Ingrese el año actual")
+	Leer(anio_actual)
+	Abrir E/(ArchFacultad)
+	Leer(ArchFacultad, RegFacultad)
+	Mientras No FDA(ArchFacultad) hacer
+		// Es un listado por pantalla, así que no hace falta un archivo de salida
+		Si (RegFacultad.Nota > 7) ^ (RegFacultad.FechaIngreso.aa = anio_actual - 1) entonces
+			Escribir(RegFacultad.Nro_Legajo, " - ", RegFacultad.Apellido_Nombre, " - ", RegFacultad.Carrera)
+		FinSi
+		Leer(ArchFacultad, RegFacultad)
+	FinMientras
+	Cerrar(ArchFacultad)
+Fin Acción

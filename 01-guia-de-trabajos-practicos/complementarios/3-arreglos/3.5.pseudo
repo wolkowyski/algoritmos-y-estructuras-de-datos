@@ -1,0 +1,50 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.5
+// Dada una matriz de N x N confeccionar un algoritmo para cargarla de la
+// siguiente forma:
+//
+// * Cada a[i,j] = i + j
+// * Los elementos de la última fila  a[N,j] =  Sumatoria de  a[i,j] donde i
+// varía entre 1...(n-1)
+// * Los elementos de la última columna a[i,N] =  Sumatoria de  a[i,j] donde
+// j varía entre 1...(n-1)
+// * La posición a[N,N] = Sumatoria de a[i,j] donde i = j
+//
+// Ejemplo:
+//
+// |  |  |  |  |
+// | --- | --- | --- | --- |
+// | 2 | 3 | 4 | 9 |
+// | 3 | 4 | 5 | 12 |
+// | 2 | 3 | 4 | 9 |
+// | 4 | 5 | 6 | 15 |
+// | 9 | 12 | 15 | 12 |
+// --------------------------------------------------------------------------
+
+Acción Complementario3_5 es
+	Ambiente
+		N = 5
+		a: arreglo [1..N, 1..N] de entero
+		i, j: entero
+	Proceso
+		Para i:= 1 a N - 1 hacer
+			Para j:= 1 a N - 1 hacer
+				a[i,j]:= i + j
+			FinPara
+		FinPara
+		Para i:= 1 a N - 1 hacer a[i,N]:= 0; a[N,i]:= 0 FinPara
+		a[N,N]:= 0
+		Para i:= 1 a N - 1 hacer
+			Para j:= 1 a N - 1 hacer
+				a[i,N]:= a[i,N] + a[i,j] // suma de la fila
+				a[N,j]:= a[N,j] + a[i,j] // suma de la columna
+			FinPara
+			a[N,N]:= a[N,N] + a[i,i] // suma de la diagonal
+		FinPara
+FinAcción

@@ -1,0 +1,42 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.1
+// Responda las siguientes preguntas para el árbol de la figura:
+//
+// 1. ¿Qué nodos son hojas?
+// 2. ¿Qué nodo es raíz?
+// 3. ¿Cuál es el padre del nodo C?
+// 4. ¿Qué nodos son los hijos de C?
+// 5. ¿Qué nodos son los antecesores de C?
+// 6. ¿Qué nodos son los descendientes de E?
+// 7. ¿Cuáles son los hermanos derechos de D y E?
+// 8. ¿Qué nodos están a izquierda y qué nodos a derecha de G?
+// 9. ¿Cuál es la profundidad del árbol?
+// 10. ¿Cuál es la altura del nodo C?
+//
+// (ver figura en la guía)
+// --------------------------------------------------------------------------
+
+// Árbol de la figura (img/5.3.1.svg):
+//                 A
+//           B            C
+//         D   E       F  G   H
+//             I         J K    L
+//            M N
+//
+// 1. Hojas: D, M, N, F, J, K, L
+// 2. Raíz: A
+// 3. Padre de C: A
+// 4. Hijos de C: F, G, H
+// 5. Antecesores de C: A
+// 6. Descendientes de E: I, M, N
+// 7. Hermano derecho de D: E. E no tiene hermano derecho.
+// 8. A la izquierda de G: B, D, E, I, M, N y F. A la derecha: H y L.
+//    (J y K no están a ningún lado: son descendientes de G)
+// 9. Profundidad del árbol: 4 (camino A-B-E-I-M)
+// 10. Altura del nodo C: 2 (C-G-J)

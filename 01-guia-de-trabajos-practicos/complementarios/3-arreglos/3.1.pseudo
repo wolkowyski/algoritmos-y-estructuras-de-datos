@@ -1,0 +1,42 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.1
+// Escribir un algoritmo que tome como entrada 2 arreglos A y B de enteros,
+// de longitud n y devuelva como salida otro vector C, conteniendo los
+// componentes de B para los que los correspondientes de A sean negativos.
+// Además emitir el vector C e informar el valor y la posición del elemento
+// mayor de C.
+// --------------------------------------------------------------------------
+
+Acción Complementario3_1 es
+	Ambiente
+		N = 100
+		A, B, C: arreglo [1..N] de entero
+		n, i, k, pos_max: entero
+	Proceso
+		Escribir("Longitud n de los arreglos")
+		Leer(n)
+		Para i:= 1 a n hacer Leer(A[i], B[i]) FinPara
+		k:= 0
+		Para i:= 1 a n hacer
+			Si A[i] < 0 entonces
+				k:= k + 1
+				C[k]:= B[i]
+			FinSi
+		FinPara
+		Si k = 0 entonces
+			Escribir("C quedó vacío")
+		Sino
+			pos_max:= 1
+			Para i:= 1 a k hacer
+				Escribir(C[i])
+				Si C[i] > C[pos_max] entonces pos_max:= i FinSi
+			FinPara
+			Escribir("Mayor de C: ", C[pos_max], " en la posición ", pos_max)
+		FinSi
+FinAcción

@@ -1,0 +1,88 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.15
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.15
+// 1. Hacer un algoritmo que calcule la altura aproximada de un edificio en
+// pies, ingresando como dato la cantidad de pisos del mismo y la altura
+// promedio de cada piso, en metros. (1 m = 3.28 pies)
+// 2. Modifique el algoritmo del punto 1. para que permita calcular la altura
+// de 50 edificios.
+// 3. Modifique el algoritmo del punto 1. para que permita calcular la altura
+// de una cantidad indeterminada de edificios. Prevea una condición de fin.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_15 es
+//Ambiente
+    Constantes
+        conversion = 3,28
+    Variables
+        pisos: Entero
+        prom_h: Real
+        alt_edif, alt_edif_pies: Real
+//Algoritmo
+    Escribir ("Ingrese la cantidad de pisos")
+    Leer (pisos)
+    Escribir ("Ingrese la altura promedio de cada piso, en metros")
+    Leer (prom_h)
+    alt_edif:= pisos * prom_h
+    alt_edif_pies:= alt_edif * conversion
+    Escribir ("La altura aproximada del edificio en pies es de ", alt_edif_pies)
+FinAcción
+
+
+// Modifique el algoritmo del punto 1 para que permita calcular la altura de
+// 50 edificios.
+
+Acción Ejercicio1_15_b es
+//Ambiente
+    Constantes
+        conversion = 3,28
+    Variables
+        pisos, i: Entero
+        prom_h: Real
+        alt_edif, alt_edif_pies: Real
+//Algoritmo
+    Para i:= 1 hasta 50 Hacer // cantidad conocida de antemano: ciclo Para
+        Escribir ("Edificio ", i, ": ingrese la cantidad de pisos")
+        Leer (pisos)
+        Escribir ("Ingrese la altura promedio de cada piso, en metros")
+        Leer (prom_h)
+        alt_edif:= pisos * prom_h
+        alt_edif_pies:= alt_edif * conversion
+        Escribir ("La altura aproximada del edificio en pies es de ", alt_edif_pies)
+    FinPara
+FinAcción
+
+
+// Modifique el algoritmo del punto 1 para que permita calcular la altura de
+// una cantidad indeterminada de edificios. Prevea una condición de fin.
+
+Acción Ejercicio1_15_c es
+//Ambiente
+    Constantes
+        conversion = 3,28
+    Variables
+        pisos: Entero
+        prom_h: Real
+        alt_edif, alt_edif_pies: Real
+        op: Caracter // como op puede ser S o N, es un carácter
+//Algoritmo
+    Escribir ("¿Posee algún edificio para calcular? S/N")
+    Leer (op)
+    Mientras op = "S" Hacer // cantidad desconocida: ciclo Mientras
+        Escribir ("Ingrese la cantidad de pisos")
+        Leer (pisos)
+        Escribir ("Ingrese la altura promedio de cada piso, en metros")
+        Leer (prom_h)
+        alt_edif:= pisos * prom_h
+        alt_edif_pies:= alt_edif * conversion
+        Escribir ("La altura aproximada del edificio en pies es de ", alt_edif_pies)
+        Escribir ("¿Desea continuar? S/N") // pregunto si tiene más edificios para calcular, sino se vuelve un bucle infinito
+        Leer (op) // vuelvo a leer y se repite el ciclo hasta que op sea distinto de S
+    FinMientras
+FinAcción

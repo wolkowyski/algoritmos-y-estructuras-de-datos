@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.1 - Funciones recursivas
+//  Ejercicio 5.1.5
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.1.5
+// Dados dos números enteros, divídalos (división entera) y muestre el
+// resultado, usando sólo la operación resta.
+// --------------------------------------------------------------------------
+
+Función Division (a, b: entero): entero es // a >= 0, b > 0
+	Si a < b entonces
+		Division:= 0
+	Sino
+		Division:= 1 + Division(a - b, b) // cada resta suma 1 al cociente
+	FinSi
+FinFunción

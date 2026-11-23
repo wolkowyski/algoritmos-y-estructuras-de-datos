@@ -1,0 +1,64 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.20
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.20
+// Se dispone de dos secuencias texto formadas por oraciones bimembres
+// (sujeto y predicado, separados por comas ‘,’). Se desea una secuencia
+// texto de salida formada por oraciones bimembres, de la siguiente forma:
+//
+// *El sujeto, de la secuencia 1, y el predicado, de la secuencia 2.*
+//
+// Al finalizar informar cuántas oraciones tiene cada secuencia.
+// --------------------------------------------------------------------------
+
+// Las dos secuencias se recorren a la par: de S1 se copia el sujeto (hasta la
+// coma) y de S2 el predicado (desde la coma hasta el punto). Si una tiene más
+// oraciones que la otra, las que sobran solo se cuentan.
+Acción Ejercicio2_1_20 es
+Ambiente
+    S1, S2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    or1, or2: entero
+
+    Procedimiento SaltarOracion (Var S: secuencia de caracteres; Var v: caracter; Var cont: entero) es
+        Mientras v <> "." hacer
+            AVZ(S, v)
+        FinMientras
+        AVZ(S, v)
+        cont:= cont + 1
+    FinProcedimiento
+
+Proceso
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(Salida)
+    or1:= 0; or2:= 0
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Mientras v1 <> "," hacer // sujeto de la secuencia 1
+            ESC(Salida, v1)
+            AVZ(S1, v1)
+        FinMientras
+        Mientras v2 <> "," hacer // salteo el sujeto de la secuencia 2
+            AVZ(S2, v2)
+        FinMientras
+        Mientras v2 <> "." hacer // predicado de la secuencia 2 (incluye la coma)
+            ESC(Salida, v2)
+            AVZ(S2, v2)
+        FinMientras
+        ESC(Salida, ".")
+        SaltarOracion(S1, v1, or1) // termino la oración 1 (su predicado no se usa)
+        AVZ(S2, v2); or2:= or2 + 1
+    FinMientras
+    Mientras NFDS(S1) hacer
+        SaltarOracion(S1, v1, or1)
+    FinMientras
+    Mientras NFDS(S2) hacer
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Escribir("Oraciones de la secuencia 1: ", or1, " - de la secuencia 2: ", or2)
+    CERRAR(S1); CERRAR(S2); CERRAR(Salida)
+FinAcción

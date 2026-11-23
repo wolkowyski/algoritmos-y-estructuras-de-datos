@@ -1,0 +1,74 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.26
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.26
+// Se posee 2 secuencias (S1 y S2) con las cuales se desea generar una nueva
+// secuencia (SAL) donde se intercalen las palabras de las secuencias de
+// entrada, de la siguiente manera: copiar de S1 aquellas palabras que
+// empiezan con una letra que ingresa el usuario y de S2 aquellas palabras
+// que estén en posición par.
+// --------------------------------------------------------------------------
+
+// Se intercala: una palabra que cumple de S1, una que cumple de S2, y así;
+// cuando una secuencia se agota se copian las que cumplen de la otra.
+Acción Ejercicio2_1_26 es
+Ambiente
+    S1, S2, SAL: secuencia de caracteres
+    v1, v2, letra: caracter
+    pos2: entero
+    copio: booleano
+
+    // Avanza en S1 hasta copiar una palabra que empieza con la letra (o hasta el fin)
+    Procedimiento ProximaDeS1 es
+        copio:= Falso
+        Mientras NFDS(S1) y No copio hacer
+            Mientras NFDS(S1) y (v1 = " ") hacer
+                AVZ(S1, v1)
+            FinMientras
+            Si NFDS(S1) entonces
+                copio:= (v1 = letra)
+                Mientras NFDS(S1) y (v1 <> " ") hacer
+                    Si copio entonces ESC(SAL, v1) FinSi
+                    AVZ(S1, v1)
+                FinMientras
+                Si copio entonces ESC(SAL, " ") FinSi
+            FinSi
+        FinMientras
+    FinProcedimiento
+
+    // Avanza en S2 hasta copiar una palabra en posición par (o hasta el fin)
+    Procedimiento ProximaDeS2 es
+        copio:= Falso
+        Mientras NFDS(S2) y No copio hacer
+            Mientras NFDS(S2) y (v2 = " ") hacer
+                AVZ(S2, v2)
+            FinMientras
+            Si NFDS(S2) entonces
+                pos2:= pos2 + 1
+                copio:= (pos2 mod 2 = 0)
+                Mientras NFDS(S2) y (v2 <> " ") hacer
+                    Si copio entonces ESC(SAL, v2) FinSi
+                    AVZ(S2, v2)
+                FinMientras
+                Si copio entonces ESC(SAL, " ") FinSi
+            FinSi
+        FinMientras
+    FinProcedimiento
+
+Proceso
+    Escribir("Ingrese la letra")
+    Leer(letra)
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(SAL)
+    pos2:= 0
+    Mientras NFDS(S1) o NFDS(S2) hacer
+        ProximaDeS1
+        ProximaDeS2
+    FinMientras
+    CERRAR(S1); CERRAR(S2); CERRAR(SAL)
+FinAcción

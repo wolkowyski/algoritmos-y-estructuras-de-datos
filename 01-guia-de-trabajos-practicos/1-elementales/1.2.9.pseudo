@@ -1,0 +1,44 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.9
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.9
+// Desarrollar los procedimientos `mostrar_0`, `mostrar_1`, `mostrar_9` que
+// visualicen por pantalla, respectivamente, los números 0,1,...,9 en tamaño
+// grande, tal y como se muestra a continuación:
+//
+// *****        *   *****   *****   *   *   *****   *****   *****   *****   *****
+// *   *        *       *       *   *   *   *       *           *   *   *   *   *
+// *   *        *   *****   *****   *****   *****   *****       *   *****   *****
+// *   *        *   *           *       *       *   *   *       *   *   *       *
+// *****        *   *****   *****       *   *****   *****       *   *****   *****
+// --------------------------------------------------------------------------
+
+// Un procedimiento por dígito; cada uno escribe las 5 filas del número.
+// (Se muestran 0, 1 y 9; los demás siguen el mismo patrón.)
+Procedimiento mostrar_0 es
+    Escribir("*****")
+    Escribir("*   *")
+    Escribir("*   *")
+    Escribir("*   *")
+    Escribir("*****")
+FinProcedimiento
+
+Procedimiento mostrar_1 es
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+    Escribir("    *")
+FinProcedimiento
+
+Procedimiento mostrar_9 es
+    Escribir("*****")
+    Escribir("*   *")
+    Escribir("*****")
+    Escribir("    *")
+    Escribir("*****")
+FinProcedimiento

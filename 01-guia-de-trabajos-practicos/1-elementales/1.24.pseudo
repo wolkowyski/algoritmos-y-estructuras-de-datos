@@ -1,0 +1,49 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.24
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.24
+// Escribir un algoritmo que, dado un importe dinero, permia calcular e
+// informar cuanto corresponde pagar por un impuesto, en cuantas cuotas y el
+// valor de las mismas. Tener en cuenta los siguientes datos:
+//
+// * IMPUESTO = 10% del importe dado.
+// * Los importes mayores que 500 y menor o igual que 1000 se pagan en dos
+// cuotas.
+// * Los mayores de $1000 en tres cuotas.
+//   El algoritmo debe permitir tratar varios importes finalizando cuando se
+//   ingresa 9999 como importe.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_24 es
+Ambiente
+    Constantes
+        tasa = 0,10
+        fin = 9999
+    Variables
+        importe, impuesto, valor_cuota: Real
+        cuotas: 1..3
+Proceso
+    Escribir ("Ingrese un importe (9999 para terminar)")
+    Leer (importe)
+    Mientras importe <> fin Hacer
+        impuesto:= importe * tasa
+        Si importe > 1000 Entonces
+            cuotas:= 3
+        Sino
+            Si importe > 500 Entonces
+                cuotas:= 2
+            Sino
+                cuotas:= 1
+            FinSi
+        FinSi
+        valor_cuota:= impuesto / cuotas
+        Escribir ("Impuesto: ", impuesto, " en ", cuotas, " cuota/s de ", valor_cuota)
+        Escribir ("Ingrese un importe (9999 para terminar)")
+        Leer (importe)
+    FinMientras
+FinAcción

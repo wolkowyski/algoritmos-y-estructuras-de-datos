@@ -1,0 +1,70 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.1.14 (versión anterior de la guía)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.14
+// En un experimento se obtuvieron un conjunto de pares de valores (S, V) y se
+// requiere que desarrolle un programa que determine e imprima:
+//   a. Cuántos pares (S, V) tienen el mismo valor de S que el primer par.
+//   b. Primer valor de S mayor que V.
+//   c. En cuántos pares (S, V) se cumple que S es el doble de V.
+//   d. Productoria de los valores de S no nulos, donde V es nulo.
+// Fin de datos: se ingresa S = 9999.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_14 es
+//Ambiente
+    Constantes
+        fin = 9999
+    Variables
+        S, V, primer_S, primer_S_mayor: Real
+        cont_igual_primero, cont_doble: Entero
+        productoria: Real
+        encontrado, hay_producto: Lógico
+//Algoritmo
+    cont_igual_primero:= 0
+    cont_doble:= 0
+    productoria:= 1 // neutro de la multiplicación
+    encontrado:= Falso
+    hay_producto:= Falso
+
+    Escribir ("Ingrese el primer par S, V (S = 9999 para terminar)")
+    Leer (S, V)
+    primer_S:= S
+
+    Mientras S <> fin Hacer
+        Si S = primer_S Entonces // a. incluye al primer par
+            cont_igual_primero:= cont_igual_primero + 1
+        FinSi
+        Si (S > V) y (No encontrado) Entonces // b. me quedo solo con el primero
+            primer_S_mayor:= S
+            encontrado:= Verdadero
+        FinSi
+        Si S = 2 * V Entonces // c.
+            cont_doble:= cont_doble + 1
+        FinSi
+        Si (V = 0) y (S <> 0) Entonces // d.
+            productoria:= productoria * S
+            hay_producto:= Verdadero
+        FinSi
+        Escribir ("Ingrese el siguiente par S, V (S = 9999 para terminar)")
+        Leer (S, V)
+    FinMientras
+
+    Escribir ("a. Pares con el mismo S que el primero: ", cont_igual_primero)
+    Si encontrado Entonces
+        Escribir ("b. Primer S mayor que V: ", primer_S_mayor)
+    Sino
+        Escribir ("b. Ningún par cumple S > V")
+    FinSi
+    Escribir ("c. Pares donde S es el doble de V: ", cont_doble)
+    Si hay_producto Entonces
+        Escribir ("d. Productoria de los S no nulos con V nulo: ", productoria)
+    Sino
+        Escribir ("d. No hubo pares con V nulo y S no nulo")
+    FinSi
+FinAcción

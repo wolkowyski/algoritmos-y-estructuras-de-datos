@@ -1,0 +1,36 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.7
+// Se desea obtener una tabla con 5 valores de e^X, usando para ello la
+// siguiente fórmula:
+//
+// e^x = 1 - (x/1)! + (x^2/2)! - (x^3/3)! + ... + (x^{20}/20)!
+// --------------------------------------------------------------------------
+
+// La fórmula de la guía es la serie de Taylor: cada término es x^k / k!.
+// Se respetan los signos alternados del enunciado (eso da e^-x); para e^x
+// todos los términos serían positivos.
+Acción Complementario1_7 es
+Ambiente
+    x, termino, suma: Real
+    k, j, signo: Entero
+Proceso
+    Para j:= 1 hasta 5 hacer // tabla de 5 valores
+        Escribir("Ingrese x")
+        Leer(x)
+        suma:= 1
+        termino:= 1
+        signo:= 1
+        Para k:= 1 hasta 20 hacer
+            termino:= termino * x / k // x^k / k! a partir del término anterior
+            signo:= -signo
+            suma:= suma + signo * termino
+        FinPara
+        Escribir("x = ", x, " -> ", suma)
+    FinPara
+FinAcción

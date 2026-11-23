@@ -1,0 +1,38 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.20
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.20
+// Teniendo en cuenta el ejercicio anterior, realizar un incremento de la
+// variable V en forma constante y creciente recalculando los demás valores
+// 10 veces. Por ejemplo
+//
+// V=2
+//
+//    V    V2    V3
+//    2     4     8
+//    3     9    27
+// ....  ....  ....
+//   12   144  1728
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_20 es
+Ambiente
+    Variables
+        V, V2, V3: Real
+        i: Entero
+Proceso
+    Escribir ("Ingrese una Variable/Número")
+    Leer (V)
+    Para i:= 1 hasta 10 Hacer
+        V2:= V * V
+        V3:= V * V * V
+        // Emito dentro del ciclo para mostrar los 10 recálculos, no solo el último
+        Escribir ("V: ", V, " - Cuadrado: ", V2, " - Cubo: ", V3)
+        V:= V + 1
+    FinPara
+FinAcción

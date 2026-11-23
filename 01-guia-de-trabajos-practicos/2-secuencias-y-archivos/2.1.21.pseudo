@@ -1,0 +1,55 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.21
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.21
+// Se dispone de dos secuencias texto formadas por oraciones bimembres
+// (sujeto y predicado, separados por comas ‘,’). Se desea una secuencia
+// texto de salida formada por oraciones bimembres, de la siguiente forma:
+//
+// *El sujeto de la secuencia 2, y el predicado de la secuencia 1.*
+//
+// Al finalizar informar cuantas oraciones tiene cada secuencia.
+// --------------------------------------------------------------------------
+
+// Es el 2.1.20 con los papeles invertidos: el sujeto sale de S2 y el
+// predicado de S1. Solo cambia el cuerpo del ciclo principal.
+Acción Ejercicio2_1_21 es
+Ambiente
+    S1, S2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    or1, or2: entero
+    // (mismo procedimiento SaltarOracion que en el 2.1.20)
+Proceso
+    ARR(S1); AVZ(S1, v1)
+    ARR(S2); AVZ(S2, v2)
+    CREAR(Salida)
+    or1:= 0; or2:= 0
+    Mientras NFDS(S1) y NFDS(S2) hacer
+        Mientras v2 <> "," hacer // sujeto de la secuencia 2
+            ESC(Salida, v2)
+            AVZ(S2, v2)
+        FinMientras
+        Mientras v1 <> "," hacer // salteo el sujeto de la secuencia 1
+            AVZ(S1, v1)
+        FinMientras
+        Mientras v1 <> "." hacer // predicado de la secuencia 1
+            ESC(Salida, v1)
+            AVZ(S1, v1)
+        FinMientras
+        ESC(Salida, ".")
+        AVZ(S1, v1); or1:= or1 + 1
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Mientras NFDS(S1) hacer
+        SaltarOracion(S1, v1, or1)
+    FinMientras
+    Mientras NFDS(S2) hacer
+        SaltarOracion(S2, v2, or2)
+    FinMientras
+    Escribir("Oraciones de la secuencia 1: ", or1, " - de la secuencia 2: ", or2)
+    CERRAR(S1); CERRAR(S2); CERRAR(Salida)
+FinAcción

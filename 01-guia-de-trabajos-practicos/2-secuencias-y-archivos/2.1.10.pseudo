@@ -1,0 +1,46 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.10
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.10
+// Se dispone de una secuencia de caracteres. Contar la cantidad de palabras
+// que comienzan con una letra dada.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_10 es
+Ambiente
+    Sec: secuencia de caracteres
+    v, letra: caracter
+    cont: entero
+Proceso
+    Escribir ("Escriba una letra")
+    Leer (letra)
+    ARR(Sec)
+    AVZ(Sec, v)
+    cont:= 0
+    Mientras NFDS(Sec) hacer
+        Mientras NFDS(Sec) y (v = " ") hacer
+            AVZ(Sec, v)
+        FinMientras
+        Si NFDS(Sec) entonces
+            Si v = letra entonces // solo se compara la primera letra de la palabra
+                cont:= cont + 1
+            FinSi
+            Mientras NFDS(Sec) y (v <> " ") hacer
+                AVZ(Sec, v)
+            FinMientras
+        FinSi
+    FinMientras
+    Escribir ("Palabras que empiezan con ", letra, ": ", cont)
+    CERRAR(Sec)
+FinAcción

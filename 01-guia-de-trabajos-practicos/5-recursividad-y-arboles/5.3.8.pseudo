@@ -1,0 +1,28 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.8
+// Escribir una función recursiva que encuentre la altura de un árbol
+// binario.
+// --------------------------------------------------------------------------
+
+Función Altura (p: puntero a Nodo): entero es
+	Ambiente
+		ai, ad: entero
+	Proceso
+		Si p = nil entonces
+			Altura:= 0
+		Sino
+			ai:= Altura(*p.izq)
+			ad:= Altura(*p.der)
+			Si ai > ad entonces
+				Altura:= 1 + ai
+			Sino
+				Altura:= 1 + ad
+			FinSi
+		FinSi
+FinFunción

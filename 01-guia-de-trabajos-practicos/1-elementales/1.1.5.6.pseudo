@@ -1,0 +1,27 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.6
+// Realizar un programa que lea dos números complejos, y calcule su producto.
+// (a + bi) * (c + di) = (a*c - b*d) + (a*d + b*c)i
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_6 es
+//Ambiente
+    Variables
+        a, b, c, d: Real
+        parte_real, parte_imaginaria: Real
+//Algoritmo
+    Escribir ("Ingrese 2 números complejos en este formato (a, b) y (c, d)")
+    Leer (a, b, c, d)
+        // La parte real y la imaginaria se calculan por separado:
+        // no se pueden sumar entre sí porque i no es un número real
+        parte_real:= a*c - b*d
+        parte_imaginaria:= a*d + b*c
+    Escribir ("El producto entre los números complejos ingresados es: (", parte_real, ", ", parte_imaginaria, ")")
+FinAcción

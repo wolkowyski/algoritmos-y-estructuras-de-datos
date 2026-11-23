@@ -1,0 +1,29 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 1: datos y estructuras elementales
+//  Ejercicio 1.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1
+// La Mutual del personal del Banco, a pedido de un socio canjea un plazo
+// fijo, pagándole el capital inicial. Luego, al cobrarse el plazo fijo, le
+// paga los intereses, descontando los días correspondientes y $5 por gastos.
+// Se desea liquidar el pago de la diferencia entre el capital inicial y
+// capital con intereses, sabiendo que el interés es el 5% a 30 días y
+// teniendo como datos el capital inicial, capital con intereses y los días
+// de anticipo.
+// --------------------------------------------------------------------------
+
+// Interés del 5% cada 30 días: se descuenta el interés de los días de
+// anticipo y $5 de gastos.
+Acción Complementario1_1 es
+Ambiente
+    capital, capital_int, dias, interes_anticipo, pago: Real
+Proceso
+    Escribir("Capital inicial, capital con intereses y días de anticipo")
+    Leer(capital, capital_int, dias)
+    interes_anticipo:= capital * 0,05 * dias / 30 // interés de los días que se adelantaron
+    pago:= (capital_int - capital) - interes_anticipo - 5
+    Escribir("Diferencia a pagar al socio: ", pago)
+FinAcción

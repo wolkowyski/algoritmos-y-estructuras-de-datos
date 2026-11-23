@@ -1,0 +1,54 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.4
+// Elaborar una función que reciba un número entero y retorne -1 si el número
+// es negativo.
+// Si el número es positivo debe devolver una clave calculada de la siguiente
+// manera: Se suma cada dígito que compone el número y a esa suma se le
+// calcula el modulo 7.
+// Por ejemplo: para la cifra 513, la clave será 5+1+3 =9; 9 mod 7 = 2.
+// Utilice la función para diseñar un algoritmo que permita leer varios
+// valores y determine, para cada uno, si el número leído fue negativo o, si
+// fue positivo, que clave le corresponde.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_4 es
+Ambiente
+    num, resultado: entero
+    op: caracter
+
+    Función Clave (n: entero): entero es
+        Ambiente
+            suma: entero
+        Proceso
+            Si n < 0 entonces
+                Clave:= -1
+            Sino
+                suma:= 0
+                Mientras n > 0 hacer // sumo los dígitos
+                    suma:= suma + n mod 10
+                    n:= n div 10
+                FinMientras
+                Clave:= suma mod 7 // ej: 513 -> 5+1+3 = 9 -> 9 mod 7 = 2
+            FinSi
+    FinFunción
+
+Proceso
+    Repetir
+        Escribir("Ingrese un número entero")
+        Leer(num)
+        resultado:= Clave(num)
+        Si resultado = -1 entonces
+            Escribir("El número es negativo")
+        Sino
+            Escribir("La clave de ", num, " es ", resultado)
+        FinSi
+        Escribir("¿Otro número? S/N")
+        Leer(op)
+    Hasta que op = "N"
+FinAcción

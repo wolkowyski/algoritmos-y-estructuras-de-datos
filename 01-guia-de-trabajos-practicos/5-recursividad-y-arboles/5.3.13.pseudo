@@ -1,0 +1,37 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.13
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.13
+// Supongamos que tenemos una función valor tal que dado un valor de tipo
+// char (una letra del alfabeto) devuelve un valor entero asociado a dicho
+// identificador.
+// Supongamos también la existencia de un árbol de expresión T cuyos nodos
+// hoja son letras del alfabeto y cuyos nodos interiores son los caracteres
+// *, +, -, /.
+// Diseñar una función que tome como parámetros un nodo y un árbol binario y
+// devuelva el resultado entero de la evaluación de la expresión
+// representada.
+// --------------------------------------------------------------------------
+
+// La recursión reemplaza al ciclo: cada llamada resuelve un subárbol.
+Función Evaluar (p: puntero a T): entero es
+	Ambiente
+		izquierda, derecha: entero
+	Proceso
+		Si (*p.izq = nil) y (*p.der = nil) entonces // hoja: una letra
+			Evaluar:= Valor(*p.dato)
+		Sino // operador con dos subárboles
+			izquierda:= Evaluar(*p.izq)
+			derecha:= Evaluar(*p.der)
+			Según *p.dato hacer
+				"+": Evaluar:= izquierda + derecha
+				"-": Evaluar:= izquierda - derecha
+				"*": Evaluar:= izquierda * derecha
+				"/": Evaluar:= izquierda div derecha // resultado entero
+			FinSegún
+		FinSi
+FinFunción

@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.25
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.25
+// Dada una secuencia texto de entrada que contiene palabras alfanuméricas,
+// escribir un algoritmo que genere dos secuencias de salida. Una de ellas
+// contendrá solo las palabras de la secuencia original que comienzan con
+// vocal, en las cuales se reemplazarán todas las vocales por ‘#’, por
+// ejemplo: entrada 'avión1', salida '#v##n1' y la otra será una secuencia
+// numérica en la que se almacenarán las cantidades de vocales que se
+// encontraron en cada una de las palabras que cumplieron la condición. Por
+// final de proceso se deberá informar el promedio de palabras por oración.
+// --------------------------------------------------------------------------
+
+// Las oraciones terminan en "." pegado a la última palabra.
+Acción Ejercicio2_1_25 es
+Ambiente
+    Texto, SalPalabras: secuencia de caracteres
+    SalVocales: secuencia de enteros
+    v: caracter
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+    cant_voc, palabras, oraciones: entero
+Proceso
+    ARR(Texto); AVZ(Texto, v)
+    CREAR(SalPalabras); CREAR(SalVocales)
+    palabras:= 0; oraciones:= 0
+    Mientras NFDS(Texto) hacer
+        Mientras NFDS(Texto) y (v = " ") hacer
+            AVZ(Texto, v)
+        FinMientras
+        Si NFDS(Texto) entonces
+            palabras:= palabras + 1
+            Si v en vocales entonces // la palabra cumple: reemplazo sus vocales
+                cant_voc:= 0
+                Mientras (v <> " ") y (v <> ".") hacer
+                    Si v en vocales entonces
+                        ESC(SalPalabras, "#")
+                        cant_voc:= cant_voc + 1
+                    Sino
+                        ESC(SalPalabras, v)
+                    FinSi
+                    AVZ(Texto, v)
+                FinMientras
+                ESC(SalPalabras, " ")
+                ESC(SalVocales, cant_voc)
+            Sino
+                Mientras (v <> " ") y (v <> ".") hacer
+                    AVZ(Texto, v)
+                FinMientras
+            FinSi
+            Si v = "." entonces
+                oraciones:= oraciones + 1
+                AVZ(Texto, v)
+            FinSi
+        FinSi
+    FinMientras
+    Si oraciones > 0 entonces
+        Escribir("Promedio de palabras por oración: ", palabras / oraciones)
+    FinSi
+    CERRAR(Texto); CERRAR(SalPalabras); CERRAR(SalVocales)
+FinAcción

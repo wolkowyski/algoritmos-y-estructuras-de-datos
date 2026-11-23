@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.8
+// Escriba un algoritmo que acepte dos números, calcule la suma e imprima el
+// mensaje de acuerdo al resultado obtenido.
+//
+// * Suma <= 50
+// * Suma > 50 y <= 100
+// * Suma > 100 y <= 200
+// * Suma > 200
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_8 es
+//Ambiente
+    Variables
+        num1, num2, suma: Real
+//Algoritmo
+    Escribir ("Ingrese 2 números")
+    Leer (num1, num2)
+        suma:= num1 + num2
+        // Según solo sirve para valores puntuales; para rangos uso Si anidados
+        Si suma <= 50 Entonces
+            Escribir ("El resultado de la suma es menor o igual que 50")
+        Sino
+            Si suma <= 100 Entonces
+                Escribir ("El resultado de la suma es mayor que 50 y menor o igual que 100")
+            Sino
+                Si suma <= 200 Entonces
+                    Escribir ("El resultado de la suma es mayor que 100 y menor o igual que 200")
+                Sino
+                    Escribir ("El resultado de la suma es mayor que 200")
+                FinSi
+            FinSi
+        FinSi
+FinAcción

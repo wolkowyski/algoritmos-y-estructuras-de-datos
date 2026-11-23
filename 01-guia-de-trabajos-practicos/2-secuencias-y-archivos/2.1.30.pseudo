@@ -1,0 +1,95 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.30
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.30
+// El siguiente es un ejercicio del primer recuperatorio del primer parcial
+// del año 2017:
+//
+// La AFIP dispone de dos secuencias de caracteres:
+//
+// * PERSONAS
+//   Contiene los siguientes datos de personas físicas o Empresas: nombre
+//   completo y fecha (de nacimiento o de creación, respectivamente),
+//   agrupadas por provincias. No existe carácter separador entre personas,
+//   el fin de cada provincia se indica con el carácter &.
+//   Ejemplo: `María Góm-14021977Carlos Alberto Rodriguez-20061990....&Lionel
+//   Messi-24061987....&....{fin}`
+//   `nombre-ddmmaaaanombre-ddmmaa....&`
+// * CUIT: contiene la Clave Unica de Identificación Tributaria de las
+// personas de la secuencia PERSONAS (existiendo una correspondencia una a
+// una, es decir la primer persona con el primer cuit, la segunda con el
+// segundo y asi sucesivamente)
+//   Cada número de CUIT se almacena por medio de 11 caracteres: los 2
+//   primeros indican el tipo, los 6 siguientes el número de DNI (en caso de
+//   personas físicas) o de sociedad (en caso de Empresas) y el último es un
+//   digito verificador.
+//   Ejemplo: `201234567862313456782330712434445`
+//
+// Los tipos pueden ser:20, 23, 24 y 27 para Personas Físicas y 30, 33 y 34
+// para Empresas.
+//
+// Se solicita.
+//
+// 1. Generar una secuencia de salida que contenga DNI, y el nombre completo
+// de todas las personas físicas cuyo nombre comience con vocal.
+// 2. Para cada Provincia calcular el total de personas físicas y el
+// porcentaje sobre el total de la provincia.
+// --------------------------------------------------------------------------
+
+// Cada persona de PERSONAS es "nombre-ddmmaaaa"; las provincias terminan con
+// "&". A cada persona le corresponden 11 caracteres de CUIT.
+// Para escribir el DNI en la salida hay que leer el CUIT antes que el nombre,
+// así que el CUIT se guarda en un arreglo de 11 caracteres.
+Acción Ejercicio2_1_30 es
+Ambiente
+    PERSONAS, CUIT, Salida: secuencia de caracteres
+    p, c: caracter
+    cuit: arreglo de [1..11] de caracter
+    i, fisicas, total_prov: entero
+    es_fisica, copiar: booleano
+    vocales = {"A", "E", "I", "O", "U", "a", "e", "i", "o", "u"}
+Proceso
+    ARR(PERSONAS); AVZ(PERSONAS, p)
+    ARR(CUIT); AVZ(CUIT, c)
+    CREAR(Salida)
+    Mientras NFDS(PERSONAS) hacer // una provincia por vuelta
+        fisicas:= 0
+        total_prov:= 0
+        Mientras p <> "&" hacer // una persona por vuelta
+            total_prov:= total_prov + 1
+            Para i:= 1 hasta 11 hacer
+                cuit[i]:= c
+                AVZ(CUIT, c)
+            FinPara
+            // tipos 20, 23, 24 y 27 son personas físicas
+            es_fisica:= (cuit[1] = "2")
+            Si es_fisica entonces
+                fisicas:= fisicas + 1
+            FinSi
+            copiar:= es_fisica y (p en vocales)
+            Si copiar entonces // DNI = posiciones 3 a 8 del CUIT
+                Para i:= 3 hasta 8 hacer
+                    ESC(Salida, cuit[i])
+                FinPara
+                ESC(Salida, " ")
+            FinSi
+            Mientras p <> "-" hacer // nombre completo
+                Si copiar entonces ESC(Salida, p) FinSi
+                AVZ(PERSONAS, p)
+            FinMientras
+            Si copiar entonces ESC(Salida, "#") FinSi
+            Para i:= 1 hasta 9 hacer // "-" y la fecha ddmmaaaa
+                AVZ(PERSONAS, p)
+            FinPara
+        FinMientras
+        Si total_prov > 0 entonces
+            Escribir("Provincia: ", fisicas, " personas físicas (", fisicas * 100 / total_prov, "%)")
+        FinSi
+        AVZ(PERSONAS, p) // paso el "&"
+    FinMientras
+    CERRAR(PERSONAS); CERRAR(CUIT); CERRAR(Salida)
+FinAcción

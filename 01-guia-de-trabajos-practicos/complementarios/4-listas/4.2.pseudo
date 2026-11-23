@@ -1,0 +1,41 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.2
+// Dada una lista simplemente encadenada de números enteros, diseñar un
+// algoritmo que a partir de ella genere otra lista conteniendo los nodos
+// cuyos datos sean múltiplos de 3, dichos elementos deberán ser eliminados
+// de la lista original. Se asume que la lista está cargada y que el
+// algoritmo recibe como parámetro de entrada la dirección del primer
+// elemento.
+// --------------------------------------------------------------------------
+
+// Igual al 4.2 de la práctica (múltiplos de 10) con múltiplos de 3. Se
+// mueven los mismos nodos, sin Nuevo ni Disponer.
+Accion Complementario4_2 (Var prim: puntero a Nodo) es
+Ambiente
+	Nodo = Registro
+		dato: entero
+		prox: puntero a Nodo
+	FinRegistro
+	p, a, sig, prim2: puntero a Nodo
+Proceso
+	prim2:= nil
+	a:= nil
+	p:= prim
+	Mientras p <> nil hacer
+		sig:= *p.prox
+		Si *p.dato mod 3 = 0 entonces
+			Si a = nil entonces prim:= sig Sino *a.prox:= sig FinSi // lo saco
+			*p.prox:= prim2 // carga apilada en la lista nueva
+			prim2:= p
+		Sino
+			a:= p
+		FinSi
+		p:= sig
+	FinMientras
+FinAccion

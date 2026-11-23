@@ -1,0 +1,57 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.11
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.11
+// Una empresa que vende lubricantes registra en un archivo de registros:
+//
+// * NroCli* NroLubr* CantVen* PU
+//
+// `NroCli`: N° de Cliente
+// `NroLubr`: N° de Lubricantes
+// `CantVen`: Cantidad vendida
+// `PU`: Precio por Unidad
+//
+// Toda está información está ordenada por N° de Cliente. Determinar e
+// imprimir:
+//
+// * El N° de Cliente que compró más en pesos
+// * Cuantos Clientes compraron más de 100 latas en total
+// * Cantidad de latas vendidas de lubricante 31667 entre todos los clientes.
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_11 es
+Ambiente
+	Venta = Registro
+		NroCli, NroLubr: N(6)
+		CantVen: N(4)
+		PU: real
+	FinRegistro
+	VENTAS: Archivo de Venta ordenado por NroCli
+	R: Venta
+	ResCli, cli_max: N(6)
+	latas, mas_de_100, latas_31667: entero
+	pesos, max_pesos: real
+Proceso
+	Abrir E/(VENTAS); Leer(VENTAS, R)
+	max_pesos:= -1; mas_de_100:= 0; latas_31667:= 0
+	Mientras No FDA(VENTAS) hacer
+		ResCli:= R.NroCli
+		pesos:= 0; latas:= 0
+		Mientras No FDA(VENTAS) y (R.NroCli = ResCli) hacer
+			pesos:= pesos + R.CantVen * R.PU
+			latas:= latas + R.CantVen
+			Si R.NroLubr = 31667 entonces latas_31667:= latas_31667 + R.CantVen FinSi
+			Leer(VENTAS, R)
+		FinMientras
+		Si pesos > max_pesos entonces max_pesos:= pesos; cli_max:= ResCli FinSi
+		Si latas > 100 entonces mas_de_100:= mas_de_100 + 1 FinSi
+	FinMientras
+	Escribir("Cliente que más compró: ", cli_max, " ($", max_pesos, ")")
+	Escribir("Clientes con más de 100 latas: ", mas_de_100)
+	Escribir("Latas vendidas del lubricante 31667: ", latas_31667)
+	Cerrar(VENTAS)
+FinAccion

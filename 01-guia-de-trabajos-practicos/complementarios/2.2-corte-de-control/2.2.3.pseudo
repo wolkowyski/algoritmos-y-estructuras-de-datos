@@ -1,0 +1,61 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.3
+// El archivo de la empresa está ahora ordenado por planta. Los empleados
+// cobran los siguientes sueldos según la categoría.
+//
+// 1. $1.500
+// 2. $2.000
+// 3. $3.500
+// 4. $5.000
+//
+// Imprimir el siguiente listado considerando la categoría de cada empleado:
+//
+// | Lista de sueldos |  |
+// | --- | --- |
+// | Planta A |  |
+// | *Nombre* | *Sueldo* |
+// | Aranda | 1500 |
+// | Molina | 1500 |
+// | Salerno | 5000 |
+// | ----- | ----- |
+// | Categoria 2 |  |
+// | *Nombre* | *Sueldo* |
+// | Perez | 3500 |
+// | Gutierrez | 2000 |
+// | Aranda | 1500 |
+// | ----- | ----- |
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_3 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+		Planta: ("A", "B")
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Planta
+	R: Empleado
+	ResPlanta: caracter
+	Sueldo: arreglo [1..4] de real
+Proceso
+	Sueldo[1]:= 1500; Sueldo[2]:= 2000; Sueldo[3]:= 3500; Sueldo[4]:= 5000
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista de sueldos")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResPlanta:= R.Planta
+		Escribir("Planta ", ResPlanta)
+		Escribir("Nombre | Sueldo")
+		Mientras No FDA(EMPLEADOS) y (R.Planta = ResPlanta) hacer
+			Escribir(R.Nombre, " | ", Sueldo[R.Categoria])
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("----- | -----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion

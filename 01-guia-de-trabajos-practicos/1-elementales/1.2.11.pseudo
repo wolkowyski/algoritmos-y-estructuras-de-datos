@@ -1,0 +1,60 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.11
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.11
+// Diseñe un algoritmo que muestre un menú con las opciones sumar, restar,
+// multiplicar y dividir, el algoritmo solicitará una opción y realizará la
+// tarea elegida, se debe usar un procedimiento para mostrar el menú, pedir
+// los datos en el algoritmo principal y después usar funciones para realizar
+// los cálculos.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_11 es
+Ambiente
+    a, b: real
+    opcion: 1..5
+
+    Procedimiento Menu es
+        Escribir("1- Sumar  2- Restar  3- Multiplicar  4- Dividir  5- Salir")
+    FinProcedimiento
+
+    Función Sumar (x, y: real): real es
+        Sumar:= x + y
+    FinFunción
+
+    Función Restar (x, y: real): real es
+        Restar:= x - y
+    FinFunción
+
+    Función Multiplicar (x, y: real): real es
+        Multiplicar:= x * y
+    FinFunción
+
+    Función Dividir (x, y: real): real es
+        Dividir:= x / y // se llama solo si y <> 0
+    FinFunción
+
+Proceso
+    Menu
+    Leer(opcion)
+    Mientras opcion <> 5 hacer
+        Escribir("Ingrese dos números") // los datos se piden en el algoritmo principal
+        Leer(a, b)
+        Según opcion hacer
+            1: Escribir("Resultado: ", Sumar(a, b))
+            2: Escribir("Resultado: ", Restar(a, b))
+            3: Escribir("Resultado: ", Multiplicar(a, b))
+            4: Si b = 0 entonces
+                   Escribir("No se puede dividir por cero")
+               Sino
+                   Escribir("Resultado: ", Dividir(a, b))
+               FinSi
+        FinSegún
+        Menu
+        Leer(opcion)
+    FinMientras
+FinAcción

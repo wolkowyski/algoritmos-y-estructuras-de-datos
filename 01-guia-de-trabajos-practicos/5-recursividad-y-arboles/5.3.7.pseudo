@@ -1,0 +1,19 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.7
+// Escribir una función recursiva que encuentre el número de nodos de un
+// árbol binario.
+// --------------------------------------------------------------------------
+
+Función CantNodos (p: puntero a Nodo): entero es
+	Si p = nil entonces
+		CantNodos:= 0
+	Sino
+		CantNodos:= 1 + CantNodos(*p.izq) + CantNodos(*p.der)
+	FinSi
+FinFunción

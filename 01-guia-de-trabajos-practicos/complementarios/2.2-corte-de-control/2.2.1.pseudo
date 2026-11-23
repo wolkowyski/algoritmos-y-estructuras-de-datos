@@ -1,0 +1,52 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.1
+// Una empresa dispone de un archivo de registros con datos de sus empleados
+//
+// * Nombre* Categoría
+//
+// El archivo está ordenado por categoría
+//
+// Obtener el listado con el siguiente diseño:
+//
+// | Lista del Personal |
+// | --- |
+// | Categoria 1 |
+// | Aranda |
+// | Molina |
+// | Salerno |
+// | ----- |
+// | Categoria 2 |
+// | Gutierrez |
+// | Cassas |
+// --------------------------------------------------------------------------
+
+// Corte de un nivel: cada vez que cambia la categoría se escribe el título.
+Accion Complementario2_2_1 es
+Ambiente
+	Empleado = Registro
+		Nombre: AN(30)
+		Categoria: 1..4
+	FinRegistro
+	EMPLEADOS: Archivo de Empleado ordenado por Categoria
+	R: Empleado
+	ResCat: 1..4
+Proceso
+	Abrir E/(EMPLEADOS); Leer(EMPLEADOS, R)
+	Escribir("Lista del Personal")
+	Mientras No FDA(EMPLEADOS) hacer
+		ResCat:= R.Categoria
+		Escribir("Categoría ", ResCat)
+		Mientras No FDA(EMPLEADOS) y (R.Categoria = ResCat) hacer
+			Escribir(R.Nombre)
+			Leer(EMPLEADOS, R)
+		FinMientras
+		Escribir("-----")
+	FinMientras
+	Cerrar(EMPLEADOS)
+FinAccion

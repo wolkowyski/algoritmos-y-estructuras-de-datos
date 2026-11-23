@@ -1,0 +1,56 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Primitivas de secuencias usadas en la cátedra
+//    ARR(S)     arranca (abre) la secuencia S para leer
+//    AVZ(S, v)  avanza y deja en v el elemento actual
+//    CREAR(S)   crea una secuencia de salida
+//    ESC(S, v)  escribe v en la secuencia de salida
+//    NFDS(S)    "no fin de secuencia"
+//    CERRAR(S)  cierra la secuencia
+//  Ejercicio 2.1.6
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.6
+// Dada una secuencia de enteros que almacena la cantidad de habitantes de las
+// ciudades capitales de las 23 provincias, discriminados en 4 categorías
+// (en este orden: menores varones, menores mujeres, mayores varones, mayores
+// mujeres), determinar la población total y los porcentajes de masculinos,
+// femeninos, mayores de 18 y menores de 18.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio2_1_6 es
+Ambiente
+    Sec: secuencia de enteros
+    v, i: entero
+    poblacion_total, poblacion_hombres, poblacion_mujeres: entero
+    poblacion_mayores, poblacion_menores: entero
+Proceso
+    ARR(Sec)
+    poblacion_hombres:= 0
+    poblacion_mujeres:= 0
+    poblacion_mayores:= 0
+    poblacion_menores:= 0
+    Para i:= 1 hasta 23 hacer // una vuelta por provincia, 4 valores cada una
+        AVZ(Sec, v) // menores varones
+        poblacion_menores:= poblacion_menores + v
+        poblacion_hombres:= poblacion_hombres + v
+        AVZ(Sec, v) // menores mujeres
+        poblacion_menores:= poblacion_menores + v
+        poblacion_mujeres:= poblacion_mujeres + v
+        AVZ(Sec, v) // mayores varones
+        poblacion_mayores:= poblacion_mayores + v
+        poblacion_hombres:= poblacion_hombres + v
+        AVZ(Sec, v) // mayores mujeres
+        poblacion_mayores:= poblacion_mayores + v
+        poblacion_mujeres:= poblacion_mujeres + v
+    FinPara
+    poblacion_total:= poblacion_hombres + poblacion_mujeres
+    Escribir ("Población total: ", poblacion_total)
+    Escribir ("% masculinos: ", poblacion_hombres * 100 / poblacion_total)
+    Escribir ("% femeninos: ", poblacion_mujeres * 100 / poblacion_total)
+    Escribir ("% mayores de 18: ", poblacion_mayores * 100 / poblacion_total)
+    Escribir ("% menores de 18: ", poblacion_menores * 100 / poblacion_total)
+    CERRAR(Sec)
+FinAcción

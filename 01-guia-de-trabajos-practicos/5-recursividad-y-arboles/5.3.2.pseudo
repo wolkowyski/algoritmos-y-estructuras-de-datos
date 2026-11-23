@@ -1,0 +1,14 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.2
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.2
+// ¿Cuántos caminos de longitud 3 hay en el árbol representado en la figura
+// anterior?
+// --------------------------------------------------------------------------
+
+// Caminos de longitud 3 (tres aristas, de un nodo hacia un descendiente):
+//   A-B-E-I, A-C-G-J, A-C-G-K, A-C-H-L, B-E-I-M, B-E-I-N  ->  6 caminos

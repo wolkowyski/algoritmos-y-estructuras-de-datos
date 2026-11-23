@@ -1,0 +1,76 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 3: arreglos
+//  Ejercicio 3.8
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 3.8
+// Con la secuencia de facturas del ejercicio 26, se precisa generar otra
+// secuencia actualizada, a partir de una secuencia de Descuentos a clientes,
+// la cual solamente contiene el Número correspondiente al cliente, su Razón
+// Social, y Porcentaje de descuento. Dicho porcentaje se fija a través de
+// una tabla que establece la relación entre el total (con IVA) de las
+// compras realizadas en el mes, considerado por rangos, y un determinado
+// descuento del que gozará el cliente en el mes siguiente. Se desea además
+// contar con un listado de los descuentos establecidos para el mes.
+// Construya un algoritmo que satisfaga los requerimientos enunciados;
+// considere que la secuencia de facturas es consistente, es decir no hay
+// facturas de clientes no registrados, pero pueden existir clientes que no
+// hayan efectuado compras en el mes.
+// --------------------------------------------------------------------------
+
+// Se asume que las dos secuencias están ordenadas por número de cliente
+// (facturas del ejercicio 3.27 de la práctica). La tabla de descuentos por
+// rango de compras se guarda en un arreglo de registros.
+Acción Complementario3_8 es
+	Ambiente
+		Factura = Registro
+			Nro_Factura, Nro_Cliente: N(8)
+			Zona: 1..9
+			Tipo: 1..4
+			Cantidad: N(6)
+			Gravado, Exento, IVA: real
+		FinRegistro
+		Descuento = Registro
+			Nro_Cliente: N(8)
+			Razon_Social: AN(50)
+			Porcentaje: real
+		FinRegistro
+		Rango = Registro
+			Hasta: real // tope del rango (total con IVA)
+			Porc: real
+		FinRegistro
+		FACTURAS: secuencia de Factura
+		DESCUENTOS, DESCUENTOS_ACT: secuencia de Descuento
+		RF: Factura
+		RD: Descuento
+		Tabla: arreglo [1..5] de Rango
+		total: real
+		i: entero
+	Proceso
+		// Tabla de ejemplo: hasta $10.000 -> 0%, hasta 50.000 -> 2%, ...
+		Tabla[1].Hasta:= 10000;    Tabla[1].Porc:= 0
+		Tabla[2].Hasta:= 50000;    Tabla[2].Porc:= 2
+		Tabla[3].Hasta:= 100000;   Tabla[3].Porc:= 5
+		Tabla[4].Hasta:= 500000;   Tabla[4].Porc:= 8
+		Tabla[5].Hasta:= 999999999; Tabla[5].Porc:= 10
+		ARR(FACTURAS); AVZ(FACTURAS, RF)
+		ARR(DESCUENTOS); AVZ(DESCUENTOS, RD)
+		CREAR(DESCUENTOS_ACT)
+		Escribir("Descuentos para el mes siguiente")
+		Mientras NFDS(DESCUENTOS) hacer // un registro por cliente
+			total:= 0
+			Mientras NFDS(FACTURAS) y (RF.Nro_Cliente = RD.Nro_Cliente) hacer
+				total:= total + RF.Gravado + RF.Exento + RF.IVA
+				AVZ(FACTURAS, RF)
+			FinMientras
+			i:= 1 // busco el rango (lineal con centinela)
+			Mientras total > Tabla[i].Hasta hacer i:= i + 1 FinMientras
+			RD.Porcentaje:= Tabla[i].Porc // sin compras -> primer rango
+			ESC(DESCUENTOS_ACT, RD)
+			Escribir(RD.Nro_Cliente, " - ", RD.Razon_Social, " - ", RD.Porcentaje, "%")
+			AVZ(DESCUENTOS, RD)
+		FinMientras
+		CERRAR(FACTURAS); CERRAR(DESCUENTOS); CERRAR(DESCUENTOS_ACT)
+FinAcción

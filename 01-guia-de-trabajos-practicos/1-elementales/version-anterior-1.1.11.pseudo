@@ -1,0 +1,33 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.1.11 (versión anterior de la guía)
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.11
+// Dado un año ingresado por el usuario, emitir el mensaje 'ACTUAL' si
+// corresponde al año en curso, 'PASADO' si es menor y 'FUTURO' si es mayor.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_11 es
+//Ambiente
+    Constantes
+        año_actual = 2023
+    Variables
+        año: Entero(4)
+//Algoritmo
+    Escribir ("Ingrese un año")
+    Leer (año)
+    // Se compara contra el año en curso, no contra valores fijos como 2022 o 2024
+    Si año = año_actual Entonces
+        Escribir ("ACTUAL")
+    Sino
+        Si año < año_actual Entonces
+            Escribir ("PASADO")
+        Sino
+            Escribir ("FUTURO")
+        FinSi
+    FinSi
+FinAcción

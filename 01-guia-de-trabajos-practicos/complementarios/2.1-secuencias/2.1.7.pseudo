@@ -1,0 +1,51 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.7
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.7
+// Dada una secuencia texto de entrada, desarrollar un algoritmo que produzca
+// una secuencia oración de salida; la que contendrá palabras numéricas
+// formadas con los dígitos pares que contenga las palabras correspondientes
+// de entrada. Ej.: entrada (q12w34e58) → salida (248). Al final del proceso
+// informar cual es el promedio de palabras por oración encontradas en la
+// secuencia de entrada.
+// --------------------------------------------------------------------------
+
+// Igual al 2.1.4 de esta guía, con los dígitos pares.
+Acción Complementario2_1_7 es
+Ambiente
+    TEXTO, Salida: secuencia de caracteres
+    v: caracter
+    palabras, oraciones: entero
+    escribio: booleano
+Proceso
+    ARR(TEXTO); AVZ(TEXTO, v)
+    CREAR(Salida)
+    palabras:= 0; oraciones:= 0
+    Mientras NFDS(TEXTO) hacer
+        Mientras NFDS(TEXTO) y (v = " ") hacer AVZ(TEXTO, v) FinMientras
+        Si NFDS(TEXTO) entonces
+            palabras:= palabras + 1
+            escribio:= Falso
+            Mientras NFDS(TEXTO) y (v <> " ") y (v <> ".") hacer
+                Si v en {"0", "2", "4", "6", "8"} entonces
+                    ESC(Salida, v); escribio:= Verdadero
+                FinSi
+                AVZ(TEXTO, v)
+            FinMientras
+            Si escribio entonces ESC(Salida, " ") FinSi
+            Si v = "." entonces
+                oraciones:= oraciones + 1
+                AVZ(TEXTO, v)
+            FinSi
+        FinSi
+    FinMientras
+    ESC(Salida, ".")
+    Si oraciones > 0 entonces
+        Escribir("Promedio de palabras por oración: ", palabras / oraciones)
+    FinSi
+    CERRAR(TEXTO); CERRAR(Salida)
+FinAcción

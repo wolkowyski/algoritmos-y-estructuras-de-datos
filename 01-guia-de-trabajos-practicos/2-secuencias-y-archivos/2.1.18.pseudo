@@ -1,0 +1,50 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.18
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.18
+// Escribir un algoritmo que produzca una secuencia de salida que contenga
+// una oración formada por las palabras en posición par de cada oración de
+// una secuencia texto de entrada, que además comienzan con la letra 'M'.
+// --------------------------------------------------------------------------
+
+// La posición de la palabra se cuenta dentro de cada oración (las oraciones
+// terminan en "." pegado a la última palabra). En la salida las palabras se
+// separan con " " y la oración termina con ".".
+Acción Ejercicio2_1_18 es
+Ambiente
+    Texto, Salida: secuencia de caracteres
+    v: caracter
+    pos: entero
+Proceso
+    ARR(Texto)
+    AVZ(Texto, v)
+    CREAR(Salida)
+    Mientras NFDS(Texto) hacer
+        pos:= 0 // nueva oración
+        Mientras NFDS(Texto) y (v <> ".") hacer
+            Mientras v = " " hacer
+                AVZ(Texto, v)
+            FinMientras
+            pos:= pos + 1
+            Si (pos mod 2 = 0) y (v = "M") entonces // la copio
+                Mientras (v <> " ") y (v <> ".") hacer
+                    ESC(Salida, v)
+                    AVZ(Texto, v)
+                FinMientras
+                ESC(Salida, " ")
+            Sino // la descarto
+                Mientras (v <> " ") y (v <> ".") hacer
+                    AVZ(Texto, v)
+                FinMientras
+            FinSi
+        FinMientras
+        AVZ(Texto, v) // paso el punto
+    FinMientras
+    ESC(Salida, ".")
+    CERRAR(Texto)
+    CERRAR(Salida)
+FinAcción

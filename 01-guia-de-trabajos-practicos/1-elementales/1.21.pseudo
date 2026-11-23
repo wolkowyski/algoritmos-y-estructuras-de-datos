@@ -1,0 +1,35 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.21
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.21
+// Repita el ejercicio anterior con un cálculo de n veces, con n > 1. Por
+// final emitir la suma de los cuadrados de V.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_21 es
+Ambiente
+    Variables
+        V, V2, V3, suma_cuadrados: Real
+        n, i: Entero
+Proceso
+    Escribir ("Ingrese una Variable/Número")
+    Leer (V)
+    Repetir
+        Escribir ("¿Cuántas veces desea recalcular? (n > 1)")
+        Leer (n)
+    Hasta que n > 1
+    suma_cuadrados:= 0
+    Para i:= 1 hasta n Hacer
+        V2:= V * V
+        V3:= V * V * V
+        Escribir ("V: ", V, " - Cuadrado: ", V2, " - Cubo: ", V3)
+        suma_cuadrados:= suma_cuadrados + V2
+        V:= V + 1
+    FinPara
+    Escribir ("La suma de los cuadrados es: ", suma_cuadrados)
+FinAcción

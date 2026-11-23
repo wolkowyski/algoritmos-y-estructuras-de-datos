@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.13
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.13
+// En una empresa se preparan registros por cada venta individual según se
+// indica:
+//
+// * Mes* Importe
+//
+// Estos registros, están grabados en un archivo, y están ordenados por mes.
+// Se pide calcular:
+//
+// * Total y promedio de ventas de cada mes
+// * Promedio anual de ventas
+// * Total anual de ventas
+//   Imprimir además la siguiente planilla con los títulos que se indican:
+//
+// | Empresa NNN |  |  |
+// | --- | --- | --- |
+// | Mes | Total | Promedio |
+// | Xx | Xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx |
+// |  | Promedio Anual | Xxx.xx |
+// |  | Total Anual | Xxx.xx |
+// --------------------------------------------------------------------------
+
+// Promedio anual = total anual / cantidad de ventas del año.
+Accion Complementario2_2_13 es
+Ambiente
+	Venta = Registro
+		Mes: 1..12
+		Importe: real
+	FinRegistro
+	VENTAS: Archivo de Venta ordenado por Mes
+	R: Venta
+	ResMes: 1..12
+	cant_mes, cant_anio: entero
+	tot_mes, tot_anio: real
+Proceso
+	Abrir E/(VENTAS); Leer(VENTAS, R)
+	tot_anio:= 0; cant_anio:= 0
+	Escribir("Empresa NNN")
+	Escribir("Mes | Total | Promedio")
+	Mientras No FDA(VENTAS) hacer
+		ResMes:= R.Mes
+		tot_mes:= 0; cant_mes:= 0
+		Mientras No FDA(VENTAS) y (R.Mes = ResMes) hacer
+			tot_mes:= tot_mes + R.Importe
+			cant_mes:= cant_mes + 1
+			Leer(VENTAS, R)
+		FinMientras
+		Escribir(ResMes, " | ", tot_mes, " | ", tot_mes / cant_mes)
+		tot_anio:= tot_anio + tot_mes
+		cant_anio:= cant_anio + cant_mes
+	FinMientras
+	Si cant_anio > 0 entonces
+		Escribir("Promedio Anual | ", tot_anio / cant_anio)
+	FinSi
+	Escribir("Total Anual | ", tot_anio)
+	Cerrar(VENTAS)
+FinAccion

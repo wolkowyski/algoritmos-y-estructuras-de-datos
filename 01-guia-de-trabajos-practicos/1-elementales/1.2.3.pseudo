@@ -1,0 +1,40 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.3
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.3
+// Diseñe una función que permita ingresar 3 números y devuelva el mínimo valor.
+// El programa principal debe permitir que este proceso se repita la cantidad
+// de veces que el usuario desee.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_3 es
+Ambiente
+    op: caracter
+
+    Función Minimo: real es
+        Ambiente
+            a, b, c, min: real
+        Proceso
+            Escribir ("Ingrese 3 números")
+            Leer (a, b, c)
+            min:= a
+            Si b < min entonces
+                min:= b
+            FinSi
+            Si c < min entonces
+                min:= c
+            FinSi
+            Minimo:= min
+    FinFunción
+
+Proceso
+    Repetir
+        Escribir ("El mínimo es: ", Minimo)
+        Escribir ("¿Desea repetir? S/N")
+        Leer (op)
+    Hasta que op = "N"
+FinAcción

@@ -1,0 +1,62 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 4: listas
+//  Ejercicio 4.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.4
+// Dada una lista circular con los datos de los socios de un club: número,
+// nombre y condición ( ´A´= alta, ´B´= baja); hacer un algoritmo que cree
+// otra lista simplemente encadenada con los socios múltiplos de 100, que no
+// estén dados de baja y eliminar de la lista original los socios dados de
+// baja ( cond = ´B´).
+// --------------------------------------------------------------------------
+
+// Recorrido de una vuelta completa a la lista circular. Para borrar el
+// primero hay que reenganchar el último con el nuevo primero.
+Accion Complementario4_4 (Var prim: puntero a NodoC) es
+Ambiente
+	NodoC = Registro
+		numero: N(6)
+		nombre: AN(40)
+		cond: ("A", "B")
+		prox: puntero a NodoC
+	FinRegistro
+	NodoS = Registro
+		numero: N(6)
+		nombre: AN(40)
+		prox: puntero a NodoS
+	FinRegistro
+	p, a, ult, sig: puntero a NodoC
+	q, prim2, ult2: puntero a NodoS
+	n, i: entero
+Proceso
+	prim2:= nil; ult2:= nil
+	Si prim <> nil entonces
+		n:= 1; ult:= prim // cuento los nodos y busco el último
+		Mientras *ult.prox <> prim hacer ult:= *ult.prox; n:= n + 1 FinMientras
+		a:= ult; p:= prim
+		Para i:= 1 a n hacer // una vuelta
+			sig:= *p.prox
+			Si *p.cond = "B" entonces // baja: se elimina
+				Si p = sig entonces // era el único nodo
+					prim:= nil
+				Sino
+					*a.prox:= sig
+					Si p = prim entonces prim:= sig FinSi
+				FinSi
+				Disponer(p)
+			Sino
+				Si *p.numero mod 100 = 0 entonces // carga encolada en la simple
+					Nuevo(q)
+					*q.numero:= *p.numero; *q.nombre:= *p.nombre; *q.prox:= nil
+					Si prim2 = nil entonces prim2:= q Sino *ult2.prox:= q FinSi
+					ult2:= q
+				FinSi
+				a:= p
+			FinSi
+			p:= sig
+		FinPara
+	FinSi
+FinAccion

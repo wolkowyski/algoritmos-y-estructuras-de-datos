@@ -1,0 +1,74 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.27
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.27
+// Elaborar un procedimiento que dada una secuencia de caracteres como
+// entrada genere otra del mismo tipo como salida.
+// La secuencia de caracteres que se recibe incluye números de tarjetas de
+// crédito, donde cada número tiene 16 dígitos. Se desea obtener como
+// resultado una nueva secuencia de salida con los números de tarjetas
+// válidos.
+// El algoritmo para la validación de números de tarjetas de crédito es el
+// siguiente:
+// Para entender mejor el método usaremos un número correcto:
+// 4073-7001-0977-4812, al que nos referiremos en el texto. Nos centramos en
+// los caracteres que ocupan las posiciones 1 y 3.
+//
+// 4 0 7 3 7 0 0 1 0 9 7 7 4 8 1 2
+//
+// Por cada uno de ellos obtenemos el doble del valor que representan. Si el
+// número resultante es menor que 9, se deja tal cual; en caso contrario, se
+// le resta 9. En nuestro ejemplo: 4 * 2 = 8; 7 * 2 = 14, mayor que nueve, se
+// le resta 9. 14 - 9 = 5. Si el número resultante de la suma de las
+// multiplicaciones y de los dígitos en las posiciones 1 y 3, es múltiplo de
+// 2 y a la vez menor o igual a 15, es un número de tarjeta válido.
+//
+// Para nuestro ejemplo: 8 + 5 = 13; por lo tanto el número es válido.
+// --------------------------------------------------------------------------
+
+// Se asume que los números vienen como 16 dígitos seguidos (sin guiones) uno
+// después de otro. Como recién se sabe si es válido después de leer los 16,
+// se guardan en un arreglo de 16 caracteres antes de copiarlos.
+// Posiciones "1 y 3" del enunciado: las impares contando desde 1 (4, 7, 7, ...).
+Procedimiento TarjetasValidas (Var Entrada, Salida: secuencia de caracteres) es
+    Ambiente
+        v: caracter
+        num: arreglo de [1..16] de caracter
+        i, d, suma: entero
+
+        Función Valor (c: caracter): entero es
+            Según c hacer
+                "0": Valor:= 0  "1": Valor:= 1  "2": Valor:= 2  "3": Valor:= 3  "4": Valor:= 4
+                "5": Valor:= 5  "6": Valor:= 6  "7": Valor:= 7  "8": Valor:= 8  "9": Valor:= 9
+            FinSegún
+        FinFunción
+
+    Proceso
+        ARR(Entrada); AVZ(Entrada, v)
+        CREAR(Salida)
+        Mientras NFDS(Entrada) hacer
+            suma:= 0
+            Para i:= 1 hasta 16 hacer
+                num[i]:= v
+                Si i mod 2 = 1 entonces // posiciones que se duplican
+                    d:= Valor(v) * 2
+                    Si d > 9 entonces
+                        d:= d - 9
+                    FinSi
+                    suma:= suma + d
+                FinSi
+                AVZ(Entrada, v)
+            FinPara
+            Si (suma mod 2 = 0) y (suma <= 15) entonces
+                Para i:= 1 hasta 16 hacer
+                    ESC(Salida, num[i])
+                FinPara
+            FinSi
+        FinMientras
+        CERRAR(Entrada)
+        CERRAR(Salida)
+FinProcedimiento

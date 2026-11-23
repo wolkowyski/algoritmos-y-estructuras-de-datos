@@ -1,0 +1,108 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.17
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.17
+// Se conocen
+//
+// * Las tarifas particular y comercial del KW
+// * El consumo mínimo de ambas categorías
+//
+// Además se dispone de un archivo de usuarios en el que cada registro
+// contiene
+//
+// * NroZona* Nombre* Calle* Nro* TipoUsuario* Consumo
+//
+// Los usuarios están ordenados por zona "P" o "C". Se pide:
+//
+// * Listar para cada zona de aquellos usuarios que superen el consumo mínimo
+// lo siguiente
+//   + Tipo de Usuario
+//   + Nombre
+//   + Calle y Número
+//   + Consumo e importe
+// * Informar para cada zona
+//   + Nombre y consumo promedio de los usuarios particulares
+//   + La dirección del usuario comercial cuyo consumo haya sido el máximo
+//   registrado en esa zona.
+//   + El total facturado y la cant. De usuarios de cada categoría que abonen
+//   el mínimo.
+// * Informar además al final del listado
+//   + Zona con mayor cantidad de usuarios comerciales
+//   + Zona que registra el menor consumo.
+// --------------------------------------------------------------------------
+
+// Se interpreta: el archivo está ordenado por zona; el tipo de usuario es
+// "P" (particular) o "C" (comercial). Las tarifas y los consumos mínimos se
+// ingresan al principio. Si el consumo no supera el mínimo se abona el mínimo.
+Accion Complementario2_2_17 es
+Ambiente
+	Usuario = Registro
+		NroZona: N(3)
+		Nombre: AN(40)
+		Calle: AN(40)
+		Nro: N(5)
+		TipoUsuario: ("P", "C")
+		Consumo: real
+	FinRegistro
+	USUARIOS: Archivo de Usuario ordenado por NroZona
+	R: Usuario
+	tarifaP, tarifaC, minP, minC, importe: real
+	ResZona, zona_mas_com, zona_menor: N(3)
+	cantP, cantC, minimosP, minimosC, max_com_zona: entero
+	consP, facturado, consumo_zona, max_cons_com, menor_consumo: real
+	calle_max: AN(40)
+	nro_max: N(5)
+Proceso
+	Escribir("Tarifa particular y comercial del KW, y consumo mínimo de cada categoría")
+	Leer(tarifaP, tarifaC, minP, minC)
+	Abrir E/(USUARIOS); Leer(USUARIOS, R)
+	max_com_zona:= -1
+	menor_consumo:= 999999999
+	Mientras No FDA(USUARIOS) hacer
+		ResZona:= R.NroZona
+		cantP:= 0; cantC:= 0; minimosP:= 0; minimosC:= 0
+		consP:= 0; facturado:= 0; consumo_zona:= 0; max_cons_com:= -1
+		Escribir("Zona ", ResZona)
+		Mientras No FDA(USUARIOS) y (R.NroZona = ResZona) hacer
+			consumo_zona:= consumo_zona + R.Consumo
+			Si R.TipoUsuario = "P" entonces
+				cantP:= cantP + 1
+				consP:= consP + R.Consumo
+				Si R.Consumo > minP entonces
+					importe:= R.Consumo * tarifaP
+				Sino
+					importe:= minP * tarifaP
+					minimosP:= minimosP + 1
+				FinSi
+			Sino
+				cantC:= cantC + 1
+				Si R.Consumo > max_cons_com entonces
+					max_cons_com:= R.Consumo; calle_max:= R.Calle; nro_max:= R.Nro
+				FinSi
+				Si R.Consumo > minC entonces
+					importe:= R.Consumo * tarifaC
+				Sino
+					importe:= minC * tarifaC
+					minimosC:= minimosC + 1
+				FinSi
+			FinSi
+			Si ((R.TipoUsuario = "P") y (R.Consumo > minP)) o ((R.TipoUsuario = "C") y (R.Consumo > minC)) entonces
+				Escribir("  ", R.TipoUsuario, " | ", R.Nombre, " | ", R.Calle, " ", R.Nro, " | ", R.Consumo, " | $", importe)
+			FinSi
+			facturado:= facturado + importe
+			Leer(USUARIOS, R)
+		FinMientras
+		Si cantP > 0 entonces Escribir("  Consumo promedio de particulares: ", consP / cantP) FinSi
+		Si cantC > 0 entonces Escribir("  Comercial de mayor consumo: ", calle_max, " ", nro_max) FinSi
+		Escribir("  Total facturado: $", facturado, " - abonan el mínimo: ", minimosP, " particulares y ", minimosC, " comerciales")
+		Si cantC > max_com_zona entonces max_com_zona:= cantC; zona_mas_com:= ResZona FinSi
+		Si consumo_zona < menor_consumo entonces menor_consumo:= consumo_zona; zona_menor:= ResZona FinSi
+	FinMientras
+	Escribir("Zona con más usuarios comerciales: ", zona_mas_com)
+	Escribir("Zona con menor consumo: ", zona_menor)
+	Cerrar(USUARIOS)
+FinAccion

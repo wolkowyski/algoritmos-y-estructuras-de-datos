@@ -1,0 +1,72 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.2: corte de control
+//  Ejercicio 2.2.14
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.2.14
+// En una empresa se emiten comprobantes por cada venta que se realiza. Cada
+// comprobante da origen a un registro de un archivo con la siguiente
+// información:
+//
+// * Año* Mes* Día* Importe
+//
+// A fin de año se procesa el archivo que está ordenado secuencialmente por
+// mes y por día.
+// Se pide la planilla siguiente:
+//
+// | Empresa NNN |  |  |  |
+// | --- | --- | --- | --- |
+// | Año | Mes | Día | Importe |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// | Xx | Xx | Xxx.xx | Xxx.xx |
+// |  |  | Total Diario | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Mensual | Xxx.xx |
+// | ----- | ----- | ----- | ----- |
+// |  |  | Total Anual | Xxx.xx |
+//
+// Cuando se produce el corte
+// Por día: dar el total diario.
+// Por cambio de mes: dar el total mensual.
+// Al final: total diario, mensual y anual.
+// --------------------------------------------------------------------------
+
+Accion Complementario2_2_14 es
+Ambiente
+	Comprobante = Registro
+		Anio: N(4)
+		Mes: 1..12
+		Dia: 1..31
+		Importe: real
+	FinRegistro
+	COMPROBANTES: Archivo de Comprobante ordenado por Mes y Dia
+	R: Comprobante
+	ResMes, ResDia: entero
+	totDia, totMes, totAnio: real
+Proceso
+	Abrir E/(COMPROBANTES); Leer(COMPROBANTES, R)
+	totAnio:= 0
+	Escribir("Empresa NNN")
+	Escribir("Año | Mes | Día | Importe")
+	Mientras No FDA(COMPROBANTES) hacer
+		ResMes:= R.Mes
+		totMes:= 0
+		Mientras No FDA(COMPROBANTES) y (R.Mes = ResMes) hacer
+			ResDia:= R.Dia
+			totDia:= 0
+			Mientras No FDA(COMPROBANTES) y (R.Mes = ResMes) y (R.Dia = ResDia) hacer
+				Escribir(R.Anio, " | ", R.Mes, " | ", R.Dia, " | ", R.Importe)
+				totDia:= totDia + R.Importe
+				Leer(COMPROBANTES, R)
+			FinMientras
+			Escribir("Total Diario | ", totDia)
+			totMes:= totMes + totDia
+		FinMientras
+		Escribir("Total Mensual | ", totMes)
+		totAnio:= totAnio + totMes
+	FinMientras
+	Escribir("Total Anual | ", totAnio)
+	Cerrar(COMPROBANTES)
+FinAccion

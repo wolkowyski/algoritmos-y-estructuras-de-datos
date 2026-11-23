@@ -1,0 +1,57 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales (extra)
+//  Página "Secuencias de datos elementales - Extra" de la guía
+//  Ejercicio 2.1.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.4 (extra)
+// Se dispone de 2 secuencias de caracteres (ambas terminan en "*"): una con
+// caracteres, incluidos espacios, y otra con caracteres "numéricos". Crear una
+// secuencia de salida copiando los caracteres de ambas en forma alternada.
+// Ej: Sec1 "Para habilitar..." Sec2 "1348146..." -> Salida: P1a3r4a8 1h4...
+//
+// ¿Qué pasa si una secuencia termina antes que la otra? Con la condición
+// "mientras no termine ninguna" la alternancia se corta; para no perder datos
+// se copia el resto de la secuencia que quedó (dos ciclos al final).
+// Para contar los caracteres de cada secuencia alcanza con un contador por
+// secuencia que se incrementa cada vez que se copia un caracter de ella.
+// --------------------------------------------------------------------------
+
+Acción Extra2_1_4 es
+Ambiente
+    Sec1, Sec2, SecFinal: secuencia de caracteres
+    v1, v2: caracter
+    cont1, cont2: entero
+Proceso
+    ARR(Sec1)
+    AVZ(Sec1, v1)
+    ARR(Sec2)
+    AVZ(Sec2, v2)
+    CREAR(SecFinal)
+    cont1:= 0
+    cont2:= 0
+    Mientras (v1 <> "*") y (v2 <> "*") hacer // un caracter de cada una por vuelta
+        ESC(SecFinal, v1)
+        cont1:= cont1 + 1
+        AVZ(Sec1, v1)
+        ESC(SecFinal, v2)
+        cont2:= cont2 + 1
+        AVZ(Sec2, v2)
+    FinMientras
+    Mientras v1 <> "*" hacer // copio lo que sobró de la primera
+        ESC(SecFinal, v1)
+        cont1:= cont1 + 1
+        AVZ(Sec1, v1)
+    FinMientras
+    Mientras v2 <> "*" hacer // o lo que sobró de la segunda
+        ESC(SecFinal, v2)
+        cont2:= cont2 + 1
+        AVZ(Sec2, v2)
+    FinMientras
+    Escribir ("Caracteres de la secuencia 1: ", cont1, " - de la secuencia 2: ", cont2)
+    CERRAR(Sec1)
+    CERRAR(Sec2)
+    CERRAR(SecFinal)
+FinAcción

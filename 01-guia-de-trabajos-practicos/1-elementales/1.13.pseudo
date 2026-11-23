@@ -1,0 +1,32 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras condicionales y repetitivas
+//  Ejercicio 1.13
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.13
+// Escriba un algoritmo que acepte un número entero mayor a 100 y menor a
+// 1000 que representa una suma de
+// dinero e indique cuantos billetes de cada denominación necesita,
+// suponiendo que solo existen billetes de 100, 10 y 1 peso.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_13 es
+//Ambiente
+    Variables
+        num: Entero(4)
+        b100, b10, b1: Entero
+//Algoritmo
+    Escribir ("Ingrese un número entero mayor a 100 y menor a 1000")
+    Leer (num)
+        Si (num > 100) y (num < 1000) Entonces
+            b100:= TRUNC(num / 100)
+            b10:= TRUNC((num - b100 * 100) / 10)
+            b1:= num - b100 * 100 - b10 * 10
+            Escribir ("Se necesitan ", b100, " billetes de 100 pesos, ", b10, " billetes de 10 pesos y ", b1, " billetes de 1 peso")
+        SiNo
+            Escribir ("El número ingresado no cumple con los requisitos solicitados")
+        FinSi
+FinAcción

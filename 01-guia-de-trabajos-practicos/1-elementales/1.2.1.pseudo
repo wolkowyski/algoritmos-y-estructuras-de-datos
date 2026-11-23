@@ -1,0 +1,25 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.2 - Subacciones (funciones y procedimientos)
+//  Ejercicio 1.2.1
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.2.1
+// Realice una función que dado un número devuelva su cuadrado.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_2_1 es
+Ambiente
+    num, result: entero
+
+    Función Cuadrado (n: entero): entero es
+        Cuadrado:= n ** 2 // el valor se devuelve asignándolo al nombre de la función
+    FinFunción
+
+Proceso
+    Escribir ("Bienvenido! Este programa calcula el cuadrado de un número... Por favor, ingrese un número entero.")
+    Leer (num)
+    result:= Cuadrado(num)
+    Escribir ("El cuadrado del número ingresado es: ", result)
+FinAcción

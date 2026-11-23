@@ -1,0 +1,62 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos - Complementarios 2.1: secuencias
+//  Ejercicio 2.1.11
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.11
+// Escribir un algoritmo que dado dos ficheros de texto (caracter, palabra,
+// oraciones) denominadas TEX1 y TEX2 genere otro fichero oración, mediante
+// la composición de palabras en posiciones pares dentro de las oraciones del
+// TEX1 y palabras en posiciones impares dentro del TEX2. Al final del
+// proceso emitir los siguientes contadores:
+//
+// 1. Cantidad de palabras del archivo de salida.
+// 2. Promedio de palabras por oración de TEX1 Y TEX2.
+// --------------------------------------------------------------------------
+
+// Por cada par de oraciones (una de TEX1 y una de TEX2) se arma una oración
+// de salida: primero las palabras pares de TEX1 y después las impares de TEX2.
+Acción Complementario2_1_11 es
+Ambiente
+    TEX1, TEX2, Salida: secuencia de caracteres
+    v1, v2: caracter
+    pos, pal_sal, pal1, pal2, or1, or2: entero
+
+    // Copia de la oración actual las palabras en posiciones de la paridad pedida
+    Procedimiento Oracion (Var T: secuencia de caracteres; Var v: caracter; par: booleano; Var cont_pal, cont_or: entero) es
+        pos:= 0
+        Mientras NFDS(T) y (v <> ".") hacer
+            Mientras v = " " hacer AVZ(T, v) FinMientras
+            pos:= pos + 1
+            cont_pal:= cont_pal + 1
+            Si (pos mod 2 = 0) = par entonces
+                Mientras (v <> " ") y (v <> ".") hacer ESC(Salida, v); AVZ(T, v) FinMientras
+                ESC(Salida, " ")
+                pal_sal:= pal_sal + 1
+            Sino
+                Mientras (v <> " ") y (v <> ".") hacer AVZ(T, v) FinMientras
+            FinSi
+        FinMientras
+        Si NFDS(T) entonces
+            cont_or:= cont_or + 1
+            AVZ(T, v) // paso el punto
+        FinSi
+    FinProcedimiento
+
+Proceso
+    ARR(TEX1); AVZ(TEX1, v1)
+    ARR(TEX2); AVZ(TEX2, v2)
+    CREAR(Salida)
+    pal_sal:= 0; pal1:= 0; pal2:= 0; or1:= 0; or2:= 0
+    Mientras NFDS(TEX1) o NFDS(TEX2) hacer
+        Oracion(TEX1, v1, Verdadero, pal1, or1) // posiciones pares de TEX1
+        Oracion(TEX2, v2, Falso, pal2, or2)     // posiciones impares de TEX2
+        ESC(Salida, ".")
+    FinMientras
+    Escribir("Palabras de la salida: ", pal_sal)
+    Si or1 > 0 entonces Escribir("Promedio de palabras por oración de TEX1: ", pal1 / or1) FinSi
+    Si or2 > 0 entonces Escribir("Promedio de palabras por oración de TEX2: ", pal2 / or2) FinSi
+    CERRAR(TEX1); CERRAR(TEX2); CERRAR(Salida)
+FinAcción

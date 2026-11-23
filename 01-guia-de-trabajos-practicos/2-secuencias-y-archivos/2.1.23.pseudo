@@ -1,0 +1,53 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 2.1 - Secuencias de datos elementales
+//  Ejercicio 2.1.23
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 2.1.23
+// Realice un algoritmo para el enunciado del ejercicio 1.22, pero
+// considerando que los datos que se deben copiar en la Sec3 son los de
+// aquellas personas que cumplan la condición de que: el número de documento
+// comienza con un número impar.
+// --------------------------------------------------------------------------
+
+// Igual al 2.1.22; solo cambia la condición: el DNI empieza con un dígito impar.
+Acción Ejercicio2_1_23 es
+Ambiente
+    Sec1, Sec2, Sec3: secuencia de caracteres
+    v1, v2: caracter
+    dni: arreglo de [1..8] de caracter
+    i: entero
+Proceso
+    ARR(Sec1); AVZ(Sec1, v1)
+    ARR(Sec2); AVZ(Sec2, v2)
+    CREAR(Sec3)
+    Mientras NFDS(Sec1) hacer
+        Mientras NFDS(Sec1) y (v1 = " ") hacer
+            AVZ(Sec1, v1)
+        FinMientras
+        Si NFDS(Sec1) entonces
+            Para i:= 1 hasta 8 hacer
+                dni[i]:= v2
+                AVZ(Sec2, v2)
+            FinPara
+            Si dni[1] en {"1", "3", "5", "7", "9"} entonces
+                Para i:= 1 hasta 8 hacer
+                    ESC(Sec3, dni[i])
+                FinPara
+                ESC(Sec3, ",")
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    ESC(Sec3, v1)
+                    AVZ(Sec1, v1)
+                FinMientras
+                ESC(Sec3, "#")
+            Sino
+                Mientras NFDS(Sec1) y (v1 <> " ") hacer
+                    AVZ(Sec1, v1)
+                FinMientras
+            FinSi
+        FinSi
+    FinMientras
+    CERRAR(Sec1); CERRAR(Sec2); CERRAR(Sec3)
+FinAcción

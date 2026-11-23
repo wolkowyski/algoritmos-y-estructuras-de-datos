@@ -1,0 +1,26 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 1.1 - Datos y Estructuras Elementales
+//  Estructuras secuenciales
+//  Ejercicio 1.1.5.4
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 1.1.5.4
+// Se desea calcular la superficie de un trapecio, para la cual se ingresa la
+// longitud de ambas bases y la altura. Finalizando el proceso, emitir dicha
+// superficie y los valores ingresados.
+// --------------------------------------------------------------------------
+
+Acción Ejercicio1_1_5_4 es
+//Ambiente
+    Variables
+        b_may, b_men, h, Sup: Real
+//Algoritmo
+    Escribir ("Ingrese los datos de la base mayor y menor del trapecio")
+    Leer (b_may, b_men)
+    Escribir ("Ingrese los datos de la altura")
+    Leer (h)
+        Sup:= ((b_may + b_men) * h) / 2
+    Escribir ("La superficie del trapecio es de ", Sup, " en base a los valores ingresados -> Base Mayor: ", b_may, " Base Menor: ", b_men, " y Altura: ", h)
+FinAcción

@@ -1,0 +1,24 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 5.3 - Árboles
+//  Ejercicio 5.3.16
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Ejercicio 5.3.16
+// Dados los siguientes árboles indicar cuál es AVL y cuál no.
+//
+// (ver figura en la guía)
+// (ver figura en la guía)
+// --------------------------------------------------------------------------
+
+// Un árbol es AVL si en cada nodo las alturas de sus subárboles difieren a lo
+// sumo en 1 (factor de equilibrio -1, 0 o 1).
+//
+// Árbol a (img/5.3.17.a.svg): A(B(-, D), C(E(G, H), F))
+//   B: 0 y 1 -> ok   E: 1 y 1 -> ok   C: 2 y 1 -> ok   A: 2 y 3 -> ok
+//   Es AVL (está equilibrado en altura).
+//
+// Árbol b (img/5.3.17.b.svg): J(K(M, N(Q, R(T, -))), I(O, P(-, S)))
+//   N: 1 y 2 -> ok, pero K: 1 (M) y 3 (N) -> diferencia 2
+//   No es AVL.

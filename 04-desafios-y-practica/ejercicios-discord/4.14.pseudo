@@ -1,41 +1,44 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.14 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Se desea ingresar una serie de números, e imprimirlos en el orden contrario al de ingreso. Diseñar un
-algoritmo que satisfaga tal requerimiento, utilizando la estructura de datos más apropiada.
+// Se desea ingresar una serie de números e imprimirlos en el orden contrario
+// al de ingreso. Diseñar un algoritmo que satisfaga tal requerimiento,
+// utilizando la estructura de datos más apropiada.
 
-ACCION 4.14 ES
+// La estructura más apropiada es una PILA (LIFO): cada número se agrega
+// adelante (apilar) y se imprimen sacándolos desde adelante (desapilar),
+// así salen al revés de como entraron.
+
+ACCION Ejercicio4_14 ES
 AMBIENTE
 NODO = registro
-    dato:N(8)
-    prox:puntero a NODO
-fin_registro
-prim,q:puntero a NODO
-respuesta:N(1)
+    dato: N(8)
+    prox: puntero a NODO
+FIN_REGISTRO
+prim,q: puntero a NODO
+respuesta: N(1)
 
 ALGORITMO
-prim:=nil
-respuesta:= 1
-MIENTRAS respuesta <> 2 HACER
+prim := nil
+ESCRIBIR("Desea agregar un numero? 1:SI, cualquier otro numero: NO")
+LEER(respuesta)
+MIENTRAS respuesta = 1 HACER        // corregido: con una respuesta distinta de 1 y 2
+    NUEVO(q)                        // imprimía y volvía a preguntar
+    ESCRIBIR("INGRESE UN NUMERO")
+    LEER(*q.dato)
+    *q.prox := prim                 // apilar (sirve también con la pila vacía)
+    prim := q
     ESCRIBIR("Desea agregar un numero? 1:SI, cualquier otro numero: NO")
     LEER(respuesta)
-    SI respuesta = 1 ENTONCES
-        NUEVO(q)
-        ESCRIBIR("INGRESE UN NUMERO")
-        LEER(*q.dato)
-        SI prim = nil ENTONCES
-            prim:= q
-        SINO
-            *q.prox:= prim
-            prim:=q
-        FIN_SI
-    SINO
-        MIENTRAS q <> nil HACER
-            ESCRIBIR(*q.dato)
-            q:=*q.prox
-        FIN_MIENTRAS
-    FIN_SI
+FIN_MIENTRAS
+
+MIENTRAS prim <> nil HACER          // desapilar e imprimir
+    q := prim
+    ESCRIBIR(*q.dato)
+    prim := *q.prox
+    DISPONER(q)                     // corregido: la memoria no se liberaba
 FIN_MIENTRAS
 FIN_ACCION.

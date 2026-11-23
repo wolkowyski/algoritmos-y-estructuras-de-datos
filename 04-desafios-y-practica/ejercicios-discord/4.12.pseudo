@@ -1,108 +1,121 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.12 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-En el nuevo DELIVERY VAMOS-RAPIDO se está diseñando una solución informática para la atención de clientes. Se ha pensado en una LISTA por su dinamismo en cuanto a la cantidad de
-elementos. Diseñe un algoritmo que realice las siguientes funciones:
+// En el nuevo DELIVERY VAMOS-RAPIDO se está diseñando una solución
+// informática para la atención de clientes. Se ha pensado en una LISTA por su
+// dinamismo en cuanto a la cantidad de elementos. Diseñe un algoritmo que
+// realice las siguientes funciones:
+//   - Registrar su pedido en una lista doble (se agrega en Estado P
+//     (Pendiente) y se mantiene ordenado por Nombre del Cliente).
+//   - Realizar el envío (cambia el estado del pedido de P (pendiente) a E
+//     (Enviado)).
+//   - Eliminar del listado de atención una vez recibido el cobro (al atender
+//     el cobro del cadete que hizo el trabajo).
+// Datos a almacenar por pedido: Nombre, Dirección, Teléfono y Total.
+// La información almacenada debe mantenerse ordenada por Nombre del cliente.
 
-Registrar su pedido en una lista Doble (se agrega en Estado P (Pendiente), y se mantiene ordenado por Nombre del Cliente).
-Realizar el envío (cambia estado del pedido de P (pendiente) a E (Enviado)).
-Eliminar del listado de atención una vez recibido el cobro (al atender el cobro del cadete que hizo el trabajo).
-Datos a almacenar por pedido: Nombre, Dirección, Teléfono y Total.
-La información almacenada debe mantenerse ordenada por Nombre del cliente.
-
-ACCION 4.12 ES
+ACCION Ejercicio4_12 ES
 AMBIENTE
 NODO = registro
-    Nombre:AN(50)
-    Dirección:AN(50)
-    Teléfono:N(12)
-    Total:real(6)
+    Nombre: AN(50)
+    Direccion: AN(50)
+    Telefono: N(12)
+    Total: real
     Estado: AN(1)
-    ant:puntero a NODO
-    prox:punero a NODO
-fin_registro
-prim,q,p,a:puntero a NODO
-respuesta: entero(1)
+    ant: puntero a NODO
+    prox: puntero a NODO            // corregido: decía punero
+FIN_REGISTRO
+prim,q,p,a,s: puntero a NODO
+respuesta: entero
 busqueda: AN(50)
+
+// deja en p el pedido de ese cliente, o nil si no está
+PROCEDIMIENTO Buscar()
+    ESCRIBIR("Ingrese Nombre del Cliente")
+    LEER(busqueda)
+    p := prim
+    MIENTRAS (p <> nil) y (*p.Nombre <> busqueda) HACER    // corregido: primero p <> nil
+        p := *p.prox
+    FIN_MIENTRAS
+FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Registrar()
     NUEVO(q)
     ESCRIBIR("Ingrese Nombre del cliente")
-    Leer(*q.Nombre)
+    LEER(*q.Nombre)
     ESCRIBIR("Ingrese la Dirección")
-    Leer(*q.Dirección)
+    LEER(*q.Direccion)
     ESCRIBIR("Ingrese el Teléfono")
-    Leer(*q.Teléfono)
+    LEER(*q.Telefono)
     ESCRIBIR("Ingrese el Total")
-    Leer(*q.Total)
-    *q.Estado:= P
-    SI prim = nil ENTONCES
-        prim = q
+    LEER(*q.Total)
+    *q.Estado := "P"                // corregido: faltaban las comillas
+    // busco el lugar: a queda en el anterior y p en el siguiente
+    a := nil
+    p := prim
+    MIENTRAS (p <> nil) y (*p.Nombre < *q.Nombre) HACER
+        a := p
+        p := *p.prox
+    FIN_MIENTRAS
+    *q.ant := a                     // corregido: ant y prox quedaban sin cargar
+    *q.prox := p                    // en el primero y en el único
+    SI a = nil ENTONCES
+        prim := q                   // corregido: decía prim = q
     SINO
-        p:= prim
-        SI *q.Nombre < *p.Nombre ENTONCES
-            *q.prox:= p
-            *p.ant:= q
-            prim:=q
-        SINO
-            MIENTRAS *q.Nombre > *p.Nombre y p <> nil  HACER
-                a:= p
-                p:=*p.prox
-            FIN_MIENTRAS
-            *a.prox:= q
-            *q.prox:= p
-            *q.ant:= a
-            SI p <> nil ENTONCES
-                *p.ant:= q
-            FIN_SI
-        FIN_SI
+        *a.prox := q
+    FIN_SI
+    SI p <> nil ENTONCES
+        *p.ant := q
     FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Cambiar()
-    ESCRIBIR("Ingrese Nombre del Cliente")
-    Leer(busqueda)
-    p:=prim
-    MIENTRAS *p.Nombre <> busqueda y p <> nil HACER
-        p:=*p.prox
-    FIN_MIENTRAS
+    Buscar()
     SI p = nil ENTONCES
-        ESCRIBIR("ERROR NO SE ECONTRO UN CLIENTE REGISTRADO CON ESE NOMBRE")
+        ESCRIBIR("ERROR NO SE ENCONTRO UN CLIENTE REGISTRADO CON ESE NOMBRE")
     SINO
-        *p.Estado:= E
+        *p.Estado := "E"
     FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Eliminar()
-    ESCRIBIR("Ingrese Nombre del Cliente")
-    Leer(busqueda)
-    p:=prim
-    MIENTRAS *p.Nombre <> busqueda y p <> nil HACER
-        a:=p
-        p:=*p.prox
-    FIN_MIENTRAS
+    Buscar()
     SI p = nil ENTONCES
-        ESCRIBIR("ERROR NO SE ECONTRO UN CLIENTE REGISTRADO CON ESE NOMBRE")
+        ESCRIBIR("ERROR NO SE ENCONTRO UN CLIENTE REGISTRADO CON ESE NOMBRE")
     SINO
-        *a.prox:= *p.prox
-        a:= *a.prox
-        *a.ant:= *p.ant
-        DISPONER(p)
+        SI *p.Estado <> "E" ENTONCES    // se cobra cuando el cadete ya lo llevó
+            ESCRIBIR("EL PEDIDO TODAVIA NO FUE ENVIADO")
+        SINO
+            // corregido: fallaba al borrar el primero (a sin valor) y el
+            // último (*p.prox = nil); en la lista doble se usa *p.ant
+            a := *p.ant
+            s := *p.prox
+            SI a = nil ENTONCES
+                prim := s
+            SINO
+                *a.prox := s
+            FIN_SI
+            SI s <> nil ENTONCES
+                *s.ant := a
+            FIN_SI
+            DISPONER(p)
+        FIN_SI
     FIN_SI
 FIN_PROCEDIMIENTO
 
 ALGORITMO
-prim:=nil
-respuesta:=0
+prim := nil
+respuesta := 0
 MIENTRAS respuesta <> 4 HACER
-    ESCRIBIR("QUE DESEA HACER?   1: Registrar un pedido, 2: Cambiar el estado de un pedido, 3:Eliminar,  4:SALIR)
-    Leer(respuesta)
+    ESCRIBIR("QUE DESEA HACER?  1: Registrar un pedido, 2: Realizar el envío, 3: Eliminar (cobrado), 4: SALIR")
+    LEER(respuesta)
     SEGUN respuesta HACER
-        1:Registrar()
-        2:Cambiar()
-        3:Eliminar()
+        =1: Registrar()
+        =2: Cambiar()
+        =3: Eliminar()
     FIN_SEGUN
 FIN_MIENTRAS
 FIN_ACCION.

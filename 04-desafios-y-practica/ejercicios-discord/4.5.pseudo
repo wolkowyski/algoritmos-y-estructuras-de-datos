@@ -1,89 +1,102 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.5 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Dada una lista simplemente encadenada que contiene datos de todas las provincias de la República Argentina: nombre, capital, cantidad total de habitantes y cantidad de analfabetos, y
-está ordenada en forma decreciente por número de habitantes analfabetos, generar otras tres listas que contengan el nombre, la capital y el porcentaje de analfabetos de las Provincias
-que respondan a las siguientes restricciones.
+// Dada una lista simplemente encadenada que contiene datos de todas las
+// provincias de la República Argentina: nombre, capital, cantidad total de
+// habitantes y cantidad de analfabetos, y está ordenada en forma decreciente
+// por número de habitantes analfabetos, generar otras tres listas que
+// contengan el nombre, la capital y el porcentaje de analfabetos de las
+// provincias que respondan a las siguientes restricciones:
+//   L1: <= 10 % analfabetos
+//   L2: 16 a 25 % analfabetos
+//   L3: >= 26 % analfabetos
 
-L1: <= 10 % analfabetos
-L2: 16 a 25 % analfabetos
-L3: => 26 % analfabetos
+// Supuesto: el porcentaje se toma entero (DIV), como en la resolución
+// original. Las provincias con 11 a 15 % no van a ninguna lista, porque la
+// consigna no las incluye.
 
-ACCION 4.5 ES(prim_LP:puntero a NODO1)
+ACCION Ejercicio4_5 ES(prim_LP: puntero a NODO1)
 AMBIENTE
 NODO1 = registro
-    nombre:AN(30)
-    capital:AN(30)
+    nombre: AN(30)
+    capital: AN(30)
     habitantes: entero
     analfabetos: entero
     prox: puntero a NODO1
-fin_registro
-prim_LP,LP:puntero a nodo
-
+FIN_REGISTRO
 NODO2 = registro
-    nombre:AN(30)
-    capital:AN(30)
-    porcentaje:entero
-    prox:puntero a NODO2
-fin_registro
-prim_L1,A1,prim_L2,A2,prim_L3,A3,L:puntero a NODO2
+    nombre: AN(30)
+    capital: AN(30)
+    porcentaje: entero
+    prox: puntero a NODO2
+FIN_REGISTRO
+LP: puntero a NODO1                 // corregido: prim_LP estaba declarado dos veces
+prim_L1,A1,prim_L2,A2,prim_L3,A3,L: puntero a NODO2
+porc: entero
 
-
+// corregido: el NUEVO(L) se hacía para todas las provincias, aunque no
+// fueran a ninguna lista; ahora se pide el nodo solo cuando se usa
 PROCEDIMIENTO ASIGNAR_L()
-    *L.nombre:= *LP.nombre
-    *L.capital:= *LP.capital
-    *L.porcentaje:= (*LP.analfabetos * 100) DIV *LP.habitantes
+    NUEVO(L)
+    *L.nombre := *LP.nombre
+    *L.capital := *LP.capital
+    *L.porcentaje := porc
+    *L.prox := nil
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO TRATAR_L1()
     ASIGNAR_L()
     SI prim_L1 = nil ENTONCES
-        prim_L1 = L
-        A1:= prim_L1
+        prim_L1 := L                // corregido: decía prim_L1 = L
     SINO
-        *A1.prox:= L
-        A1:= L
-    fin_si
+        *A1.prox := L
+    FIN_SI
+    A1 := L
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO TRATAR_L2()
     ASIGNAR_L()
     SI prim_L2 = nil ENTONCES
-        prim_L2 = L
-        A2:= prim_L2
+        prim_L2 := L
     SINO
-        *A2.prox:= L
-        A2:= L
-    fin_si
+        *A2.prox := L
+    FIN_SI
+    A2 := L
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO TRATAR_L3()
     ASIGNAR_L()
     SI prim_L3 = nil ENTONCES
-        prim_L3 = L
-        A3:= prim_L3
+        prim_L3 := L
     SINO
-        *A3.prox:= L
-        A3:= L
-    fin_si
+        *A3.prox := L
+    FIN_SI
+    A3 := L
 FIN_PROCEDIMIENTO
 
-
 ALGORITMO
-L1:=nil
-L2:=nil
-L3:=nil
-LP:= prim_LP
+prim_L1 := nil                      // corregido: se inicializaban L1, L2 y L3, que no existen
+prim_L2 := nil
+prim_L3 := nil
+LP := prim_LP
 MIENTRAS LP <> nil HACER
-    NUEVO(L)
-    SEGUN ((*LP.analfabetos * 100) DIV *LP.habitantes) HACER
-        <=10: TRATAR_L1()
-        <25: TRATAR_L2()
-        >=25: TRATAR_L3()
-    FIN_SEGUN
-    LP:= *LP.prox
+    porc := (*LP.analfabetos * 100) DIV *LP.habitantes
+    // corregido: los rangos del SEGUN no coincidían con la consigna
+    // (<25 metía en L2 desde el 11 %, y el 25 % iba a L3)
+    SI porc <= 10 ENTONCES
+        TRATAR_L1()
+    SINO
+        SI (porc >= 16) y (porc <= 25) ENTONCES
+            TRATAR_L2()
+        SINO
+            SI porc >= 26 ENTONCES
+                TRATAR_L3()
+            FIN_SI
+        FIN_SI
+    FIN_SI
+    LP := *LP.prox
 FIN_MIENTRAS
-
 FIN_ACCION.

@@ -1,130 +1,121 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.6 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-En el restaurante ÑOQUIS se está pensando en una solución informática para el soporte de datos del nuevo sistema de atención a clientes. Se han decidido por LISTAS por su dinamismo en
-cuanto a la cantidad de elementos. Diseñe un algoritmo que realice las siguientes funciones:
+// En el restaurante ÑOQUIS se está pensando en una solución informática para
+// el soporte de datos del nuevo sistema de atención a clientes. Se han
+// decidido por LISTAS por su dinamismo en cuanto a la cantidad de elementos.
+// Diseñe un algoritmo que realice las siguientes funciones:
+//   - Añadir cliente al ser atendido (lista simple ordenada por Nombre del Cliente).
+//   - Registrar su consumo (acumular el Total Consumido en valores de montos).
+//   - Realizar el cobro (emitir ticket con Nombre, Fecha, Número de Mesa y Total).
+//   - Eliminar del listado de atención.
+// La información almacenada debe mantenerse ordenada por Nombre del cliente.
 
--Añadir cliente al ser atendido (lista simple ordenada por Nombre del Cliente).
--Registrar su consumo (Acumular el Total Consumido en valores de montos).
--Realizar el cobro (emitir ticket con Nombre, Fecha, Número de Mesa y Total).
--Eliminar del listado de atención.
-
-La información almacenada debe mantenerse ordenada por Nombre del cliente.
-
-ACCION 4.6 ES
-
+ACCION Ejercicio4_6 ES
 AMBIENTE
 NODO = registro
     Nombre: AN(30)
-    Consumo: entero
+    Mesa: entero                    // corregido: el número de mesa se guarda al atenderlo
+    Consumo: real
     prox: puntero a NODO
-fin_registro
-prim,p,q,a:puntero a NODO
-respuesta,Mesa,carga:entero
-buscar:AN(30)
+FIN_REGISTRO
+prim,p,q,a: puntero a NODO
+respuesta: entero
+carga: real
+buscar: AN(30)
+fecha: AN(10)
+
+// Deja en p el cliente con Nombre = buscar (o nil si no está) y en a su anterior.
+// Como la lista está ordenada, se puede cortar en cuanto el nombre se pasa.
+PROCEDIMIENTO Buscar()
+    ESCRIBIR("Ingrese el Nombre del cliente")
+    LEER(buscar)
+    a := nil
+    p := prim
+    MIENTRAS (p <> nil) y (*p.Nombre < buscar) HACER   // corregido: primero p <> nil
+        a := p
+        p := *p.prox
+    FIN_MIENTRAS
+    SI p <> nil ENTONCES
+        SI *p.Nombre <> buscar ENTONCES
+            p := nil
+        FIN_SI
+    FIN_SI
+FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Añadir()
-    SI prim = nil ENTONCES
-        NUEVO(q)
-        ESCRIBIR("Ingrese Nombre del cliente")
-        LEER(*q.Nombre)
-        *p.Consumo:=0
-        prim:=q
+    NUEVO(q)
+    ESCRIBIR("Ingrese Nombre del cliente")
+    LEER(*q.Nombre)
+    ESCRIBIR("Ingrese el número de mesa")
+    LEER(*q.Mesa)
+    *q.Consumo := 0                 // corregido: decía *p.Consumo
+    a := nil
+    p := prim
+    MIENTRAS (p <> nil) y (*q.Nombre > *p.Nombre) HACER
+        a := p
+        p := *p.prox
+    FIN_MIENTRAS
+    *q.prox := p
+    SI a = nil ENTONCES             // corregido: va primero (lista vacía o nombre menor)
+        prim := q
     SINO
-        a:=nil
-        p:=prim
-        NUEVO(q)
-        ESCRIBIR("Ingrese Nombre del cliente")
-        LEER(*q.Nombre)
-        MIENTRAS *q.Nombre > *p.Nombre y p <> nil HACER
-            a:=p
-            p:=*p.prox
-        FIN_MIENTRAS
-        SI p= prim ENTONCES
-            q= prim
-        FIN_SI
-        *a.prox:=q
-        *q.prox:=p
+        *a.prox := q
     FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Registrar()
-    SI prim = nil ENTONCES
-        ESCRIBIR("Error no se añadio ningun cliente a una Mesa");
+    Buscar()
+    SI p = nil ENTONCES             // corregido: si no estaba, *p.Nombre se rompía
+        ESCRIBIR("ERROR NO SE ENCONTRO EL CLIENTE")
     SINO
-        ESCRIBIR("Ingrese el Nombre del cliente")
-        LEER(buscar)
-        p:=prim
-        MIENTRAS *p.Nombre <> buscar y p <> nil HACER
-            p:= *p.prox
-        FIN_MIENTRAS
-        SI buscar = *p.Nombre ENTONCES
-            ESCRIBIR("Ingrese el monto a agregrar")
-            LEER(carga)
-            *p.Consumo:=*p.Consumo + carga
-        SINO
-            ESCRIBIR("ERROR NO SE ECONTRO EL CLIENTE")
-        FIN_SI
+        ESCRIBIR("Ingrese el monto a agregar")
+        LEER(carga)
+        *p.Consumo := *p.Consumo + carga
     FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Cobrar()
-    SI prim = nil ENTONCES
-            ESCRIBIR("Error no se añadio ningun cliente a una Mesa");
+    Buscar()
+    SI p = nil ENTONCES
+        ESCRIBIR("ERROR NO SE ENCONTRO EL CLIENTE")
     SINO
-        Mesa:= 1
-        ESCRIBIR("Ingrese el Nombre del cliente")
-        LEER(buscar)
-        p:=prim
-        MIENTRAS *p.Nombre <> buscar y p <> nil HACER
-            p:= *p.prox
-            Mesa:=Mesa +1
-        FIN_MIENTRAS
-        SI buscar = *p.Nombre ENTONCES
-            ESCRIBIR("NOMBRE: ",*p.Nombre,"Fecha: ",funcion_para_obtener_la_fecha_de_hoy_que_asumo_que_no_tengo_que_definir.......o_eso_espero(),"NRO de Mesa: ",Mesa,"Monto a cobrar: ",*p.consumo)
-        SINO
-            ESCRIBIR("ERROR NO SE ECONTRO EL CLIENTE")
-        FIN_SI
+        ESCRIBIR("Ingrese la fecha de hoy (dd/mm/aaaa)")
+        LEER(fecha)
+        // corregido: la mesa no es la posición en la lista (la lista está por nombre)
+        ESCRIBIR("NOMBRE: ", *p.Nombre, " FECHA: ", fecha, " MESA: ", *p.Mesa, " TOTAL: ", *p.Consumo)
     FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO Eliminar()
-    SI prim = nil ENTONCES
-        ESCRIBIR("Error no se añadio ningun cliente a una Mesa");
+    Buscar()
+    SI p = nil ENTONCES
+        ESCRIBIR("ERROR NO SE ENCONTRO EL CLIENTE")
     SINO
-        ESCRIBIR("Ingrese el Nombre del cliente")
-        LEER(buscar)
-        p:=prim
-        a:=nil
-        MIENTRAS *p.Nombre <> buscar y p <> nil HACER
-            a:= p
-            p:= *p.prox
-        FIN_MIENTRAS
-        SI buscar = *p.Nombre ENTONCES
-            SI p= prim ENTONCES
-                prim:= *p.prox
-            SINO
-            *a.prox:= *p.prox
-            FIN_SI
-            DISPONER(p)
+        SI a = nil ENTONCES
+            prim := *p.prox
         SINO
-            ESCRIBIR("ERROR NO SE ECONTRO EL CLIENTE")
+            *a.prox := *p.prox
         FIN_SI
+        DISPONER(p)
+    FIN_SI                          // corregido: faltaba este FIN_SI
 FIN_PROCEDIMIENTO
 
 ALGORITMO
-prim:=nil
+prim := nil
+respuesta := 0                      // corregido: se usaba sin inicializar
 MIENTRAS respuesta <> 5 HACER
-    ESCRIBIR("Que desea hacer?  1:Añadir Cliente  2:Registrar Consumo   3:Realizar Cobro  4:Eliminar")
+    ESCRIBIR("Que desea hacer?  1:Añadir Cliente  2:Registrar Consumo  3:Realizar Cobro  4:Eliminar  5:Salir")
     LEER(respuesta)
     SEGUN respuesta HACER
-        =1:Añadir()
-        =2:Registrar()
-        =3:Cobrar()
-        =4:Eliminar()
-        =5:ESCRIBIR("HASTA PRONTO")
+        =1: Añadir()
+        =2: Registrar()
+        =3: Cobrar()
+        =4: Eliminar()
+        =5: ESCRIBIR("HASTA PRONTO")
     FIN_SEGUN
 FIN_MIENTRAS
 FIN_ACCION.

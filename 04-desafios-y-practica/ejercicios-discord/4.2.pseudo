@@ -1,59 +1,54 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.2 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Se dispone de una lista simplemente encadenada de números enteros, diseñar un algoritmo que a partir de ella genere otra lista conteniendo los nodos cuyos datos terminan en cero;
-dichos elementos, deberán ser eliminados de la lista original. Se asume que la lista está cargada, y que el algoritmo recibe como parámetro de entrada la dirección del primer elemento.
+// Se dispone de una lista simplemente encadenada de números enteros, diseñar
+// un algoritmo que a partir de ella genere otra lista conteniendo los nodos
+// cuyos datos terminan en cero; dichos elementos deberán ser eliminados de la
+// lista original. Se asume que la lista está cargada, y que el algoritmo
+// recibe como parámetro de entrada la dirección del primer elemento.
 
-ACCION 4.2 ES(prim:puntero a NODO)
+ACCION Ejercicio4_2 ES(prim: puntero a NODO)
 AMBIENTE
 NODO = registro
-    dato:enteros
-    prox: puntero a nodo
-fin_registro
-prim2,p,q,a1,a2:puntero a nodo
+    dato: entero
+    prox: puntero a NODO
+FIN_REGISTRO
+prim2,p,a1,a2,sig: puntero a NODO
 
-PROCEDIMIENTO Tratar_prim()
-    NUEVO(q)
-    q:= prim
-    p:=*p.prox
-    DISPONER(prim)
-    prim:=p
-    prim2:= q
-    a2:=q
-FIN_PROCEDIMIENTO
-
+// Saca el nodo p de la lista original y lo engancha al final de la nueva.
+// corregido: antes se hacía NUEVO(q), q := p y después DISPONER(p), así que
+// el nodo que se pasaba a la lista nueva quedaba liberado. No hace falta
+// pedir memoria: el mismo nodo se mueve de una lista a la otra.
 PROCEDIMIENTO Tratar()
-    NUEVO(q)
-    q:=p
-    SI prim2 = nil ENTONCES
-        prim2:=p
-        a2:=p
-        p:=*p.prox
-        DISPONER(prim)
-        prim:= p
+    sig := *p.prox
+    SI a1 = nil ENTONCES            // p era el primero de la original
+        prim := sig
     SINO
-        *a2.prox := q
-        a2:= q
-        *a1.prox := *p.prox
-        DISPONER(p)
-        p:=a1
+        *a1.prox := sig
     FIN_SI
-
+    *p.prox := nil
+    SI prim2 = nil ENTONCES
+        prim2 := p
+    SINO
+        *a2.prox := p
+    FIN_SI
+    a2 := p
+    p := sig                        // a1 no cambia: sigue siendo el anterior
 FIN_PROCEDIMIENTO
 
 ALGORITMO
-p:=prim
-prim2:=nil
+prim2 := nil
+a1 := nil
+p := prim
 MIENTRAS p <> nil HACER
-    SI (*p.dato = 0) o (*p.dato MOD 10 = 0)ENTONCES
-        SI p = prim ENTONCES
-            Tratar_prim()
-        SINO
-            Tratar()
-        FIN_SI
+    SI *p.dato MOD 10 = 0 ENTONCES  // el 0 también "termina en cero"
+        Tratar()
+    SINO
+        a1 := p                     // corregido: solo avanzo a1 si p se queda
+        p := *p.prox
     FIN_SI
-    a1:=p
-    p:=*p.prox
 FIN_MIENTRAS
+FIN_ACCION.

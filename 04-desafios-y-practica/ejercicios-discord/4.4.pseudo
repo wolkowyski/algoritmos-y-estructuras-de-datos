@@ -1,37 +1,48 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.4 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Se dispone de una lista simplemente encadenada cuyos registros están ordenados en forma ascendente por una
- clave de tipo entero; diseñar un algoritmo que invierta el orden de la lista.
+// Se dispone de una lista simplemente encadenada cuyos registros están
+// ordenados en forma ascendente por una clave de tipo entero; diseñar un
+// algoritmo que invierta el orden de la lista.
 
-ACCION 4.4 ES(prim: puntero a NODO)
+// Idea: me paro en el último nodo (que va a ser el nuevo primero) y, de atrás
+// para adelante, a cada nodo le hago apuntar a su anterior. Para encontrar el
+// anterior recorro desde el primero original, así que es O(n²); la forma
+// clásica en O(n) es recorrer una sola vez con tres punteros (anterior,
+// actual, siguiente) dando vuelta cada enlace.
+
+ACCION Ejercicio4_4 ES(prim: puntero a NODO)
 AMBIENTE
 NODO = registro
     clave: entero
-    prox: entero
+    prox: puntero a NODO            // corregido: decía prox: entero
 FIN_REGISTRO
-r_prim,p,q: puntero a nodo
-cant_elementos,i :entero
+r_prim,p,q: puntero a NODO
+cant_elementos,i: entero
 
 ALGORITMO
-r_prim:= prim
-p:=prim
-cant_elementos:= 0;
-MIENTRAS *p.prox <> nil HACER
-    cant_elementos:=cant_elementos +1
-    p:= *p.prox
-FIN_MIENTRAS
-cant_elementos:= cant_elementos + 1
-prim:=p
-
-PARA i:= 1 hasta cant_elementos-1 HACER
-    q:= r_prim
-    MIENTRAS *q.prox <> p HACER
-        q:=*q.prox
+SI prim <> nil ENTONCES             // corregido: con la lista vacía no hay nada que invertir
+    r_prim := prim
+    p := prim
+    cant_elementos := 1
+    MIENTRAS *p.prox <> nil HACER
+        cant_elementos := cant_elementos + 1
+        p := *p.prox
     FIN_MIENTRAS
-    *p.prox:= q
-    p:= q
-FIN_PARA
+    prim := p                       // el último pasa a ser el primero
+
+    PARA i := 1 hasta cant_elementos - 1 HACER
+        q := r_prim                 // busco el anterior de p
+        MIENTRAS *q.prox <> p HACER
+            q := *q.prox
+        FIN_MIENTRAS
+        *p.prox := q
+        p := q
+    FIN_PARA
+    *p.prox := nil                  // corregido: el viejo primero queda último; sin esto
+                                    // seguía apuntando al segundo y la lista quedaba en ciclo
+FIN_SI
 FIN_ACCION.

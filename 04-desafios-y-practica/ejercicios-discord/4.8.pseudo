@@ -1,59 +1,96 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.8 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Escribir un algoritmo que permita buscar, insertar o borrar un elemento identificado con una clave
-determinada en una lista circular simplemente encadenada.
+// Escribir un algoritmo que permita buscar, insertar o borrar un elemento
+// identificado con una clave determinada en una lista circular simplemente
+// encadenada.
 
+// Supuesto (el mismo de la resolución original): la lista está ordenada en
+// forma ascendente por clave y prim apunta al nodo de clave más chica. El
+// último nodo apunta otra vez a prim.
 
-ACCION 4.8 ES(prim: puntero a NODO)
+ACCION Ejercicio4_8 ES(prim: puntero a NODO)
 AMBIENTE
 NODO = registro
-    clave:entero
-    prox:puntero a NODO
-fin_registro
-p,a,q :puntero a NODO
+    clave: entero
+    prox: puntero a NODO
+FIN_REGISTRO
+p,a,q: puntero a NODO
 res_b,res_a: entero
 
 ALGORITMO
 ESCRIBIR("Que desea hacer?, 1:BUSCAR, 2:INSERTAR, 3:BORRAR")
 LEER(res_a)
-ESCRIBIR("INGRESE UN CLAVE")
+ESCRIBIR("INGRESE UNA CLAVE")
 LEER(res_b)
-p:=prim
-a:=p
-p:=*p.prox
-SI res_a = 1 ENTONCES
-    MIENTRAS p <> prim y *p.clave <> res_b hacer
-        a:= p
-        p:= *p.prox
-    FIN_MIENTRAS
-    SI *p.clave = res_b ENTONCES
-        ESCRIBIR("SE ECONTRO LA CLAVE INGRESADA");
+SI prim = nil ENTONCES              // corregido: la lista vacía no estaba contemplada
+    SI res_a = 2 ENTONCES
+        NUEVO(q)
+        *q.clave := res_b
+        *q.prox := q                // un solo nodo: se apunta a sí mismo
+        prim := q
     SINO
-        ESCRIBIR("NO SE ECONTRO LA CLAVE INGRESADA")
+        ESCRIBIR("LA LISTA ESTA VACIA")
     FIN_SI
 SINO
-    SI res_a = 2 ENTONCES
-        MIENTRAS p <> prim y res_b > *p.clave HACER
-            a:=p
-            p:= *p.prox
+    a := prim
+    p := *prim.prox
+    SI res_a = 1 ENTONCES
+        MIENTRAS p <> prim y *p.clave <> res_b HACER
+            a := p
+            p := *p.prox
         FIN_MIENTRAS
-        NUEVO(q)
-        *a.prox := q
-        *q.prox := p
-        *q.clave := res_b
-    SINO
-        MIENTRAS p <> prim y res_b <> *.clave
-            a:= p
-            p:= *p.prox
-        FIN_MIENTRAS
-        SI p = prim ENTONCES
-            ESCRIBIR("Error no se puede eliminar porque no se econtro el elemento")
+        SI *p.clave = res_b ENTONCES    // si volvió a prim, también se revisa prim
+            ESCRIBIR("SE ENCONTRO LA CLAVE INGRESADA")
         SINO
-            a:= *p.prox
-            DISPONER(p)
+            ESCRIBIR("NO SE ENCONTRO LA CLAVE INGRESADA")
+        FIN_SI
+    SINO
+        SI res_a = 2 ENTONCES
+            NUEVO(q)
+            *q.clave := res_b
+            SI res_b < *prim.clave ENTONCES
+                // corregido: si va antes del primero, hay que engancharlo
+                // después del último y moverle prim
+                a := prim
+                MIENTRAS *a.prox <> prim HACER
+                    a := *a.prox
+                FIN_MIENTRAS
+                *a.prox := q
+                *q.prox := prim
+                prim := q
+            SINO
+                MIENTRAS p <> prim y res_b > *p.clave HACER
+                    a := p
+                    p := *p.prox
+                FIN_MIENTRAS
+                *a.prox := q
+                *q.prox := p
+            FIN_SI
+        SINO
+            MIENTRAS p <> prim y *p.clave <> res_b HACER    // corregido: decía *.clave y faltaba HACER
+                a := p
+                p := *p.prox
+            FIN_MIENTRAS
+            // si p volvió a prim, a quedó en el último nodo
+            SI *p.clave <> res_b ENTONCES
+                ESCRIBIR("Error no se puede eliminar porque no se encontro el elemento")
+            SINO
+                SI p = prim ENTONCES    // corregido: antes prim no se podía borrar nunca
+                    SI *prim.prox = prim ENTONCES
+                        prim := nil     // era el único nodo
+                    SINO
+                        prim := *prim.prox
+                        *a.prox := prim
+                    FIN_SI
+                SINO
+                    *a.prox := *p.prox  // corregido: decía a := *p.prox, que no desenganchaba nada
+                FIN_SI
+                DISPONER(p)
+            FIN_SI
         FIN_SI
     FIN_SI
 FIN_SI

@@ -1,70 +1,79 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.7 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Genere un algoritmo que recorra una secuencia texto y genere una lista simplemente encadenada con la
-frecuencia de utilización de cada letra. La lista debe mantenerse ordenada alfabéticamente y al final
-informar cual fue la frecuencia de cada letra y cuáles fueron la de mayor y menor frecuencia.
+// Genere un algoritmo que recorra una secuencia texto y genere una lista
+// simplemente encadenada con la frecuencia de utilización de cada letra. La
+// lista debe mantenerse ordenada alfabéticamente y al final informar cuál fue
+// la frecuencia de cada letra y cuáles fueron la de mayor y menor frecuencia.
 
-ACCION 4.7 ES
+// Supuesto: se cuentan solo las letras (los espacios, signos y números se
+// saltean) y mayúsculas y minúsculas se cuentan por separado.
+
+ACCION Ejercicio4_7 ES
 AMBIENTE
-sec:secuencia de caracteres
-v:caracter
+sec: secuencia de caracteres
+v: caracter
 NODO = registro
     letra: caracter
     frecuencia: entero
     prox: puntero a NODO
-fin_registro
+FIN_REGISTRO
 prim,p,a,q: puntero a NODO
 mayor,menor: puntero a NODO
 
 ALGORITMO
-prim:=nil
-arr(sec)
-avz(sec,v)
+prim := nil
+ARR(sec)
+AVZ(sec,v)
 MIENTRAS NFDS(sec) HACER
-    SI prim = nil ENTONCES
-        NUEVO(q)
-        *q.letra:= v
-        *q.frecuencia:= 1
-    SINO
-        SI v < *prim.letra ENTONCES
-            NUEVO(q)
-            *q.letra
-            *q.frecuencia:= 1
-            *q.prox:=prim
-            prim:=q
+    SI ((v >= "a") y (v <= "z")) o ((v >= "A") y (v <= "Z")) ENTONCES
+        // busco la letra o el lugar donde va (a = anterior)
+        // corregido: los tres casos (lista vacía, va primero, va en el medio)
+        // tenían errores; con a = nil se resuelven juntos
+        a := nil
+        p := prim
+        MIENTRAS (p <> nil) y (*p.letra < v) HACER
+            a := p
+            p := *p.prox
+        FIN_MIENTRAS
+        SI (p <> nil) y (*p.letra = v) ENTONCES     // corregido: con p = nil se rompía
+            *p.frecuencia := *p.frecuencia + 1
         SINO
-            p:= prim
-            MIENTRAS p <> nil y v > *p.letra HACER
-                a:=p
-                p:= *p.prox
-            FIN_MIENTRAS
-            SI v = *p.letra ENTONCES
-                *p.frecuencia:= *p.frecuencia + 1
+            NUEVO(q)
+            *q.letra := v                       // corregido: faltaba el := v
+            *q.frecuencia := 1
+            *q.prox := p                        // corregido: no se enganchaba el siguiente
+            SI a = nil ENTONCES
+                prim := q                       // corregido: con la lista vacía nunca se asignaba prim
             SINO
-                NUEVO(q)
-                *q.letra:= v
-                *q.frecuencia:= 1
-                *a.prox:= q
+                *a.prox := q
             FIN_SI
         FIN_SI
     FIN_SI
     AVZ(sec,v)
 FIN_MIENTRAS
-p:=prim
-mayor:=p
-menor:=prim
-MIENTRAS p<> nil HACER
-    SI *mayor.frecuencia < *p.frecuencia ENTONCES
-        mayor:= p
-    FIN_SI
-    SI *menor.frecuencia < *p.frecuencia ENTONCES
-        menor:=p
-    FIN_SI
-    p:=*p.prox
-FIN_MIENTRAS
-ESCRIBIR("La letra con mayor frecuencia es ",*mayor.letra ,"la letra con menor frecuencia es ,"*menor.letra)
-cerrar(sec)
+CERRAR(sec)
+
+SI prim = nil ENTONCES
+    ESCRIBIR("EL TEXTO NO TIENE LETRAS")
+SINO
+    // corregido: faltaba informar la frecuencia de cada letra
+    mayor := prim
+    menor := prim
+    p := prim
+    MIENTRAS p <> nil HACER
+        ESCRIBIR(*p.letra, ": ", *p.frecuencia)
+        SI *p.frecuencia > *mayor.frecuencia ENTONCES
+            mayor := p
+        FIN_SI
+        SI *p.frecuencia < *menor.frecuencia ENTONCES   // corregido: el signo estaba al revés
+            menor := p
+        FIN_SI
+        p := *p.prox
+    FIN_MIENTRAS
+    ESCRIBIR("La letra con mayor frecuencia es ", *mayor.letra, " y la de menor frecuencia es ", *menor.letra)
+FIN_SI
 FIN_ACCION.

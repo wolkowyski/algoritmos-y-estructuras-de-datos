@@ -1,54 +1,82 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.1 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-/*Ejercicio 4.1
-Diseñar un algoritmo para acceder, eliminar o insertar el k-ésimo elemento de una lista (siendo k una posición dada). Si la lista está vacía o si el valor de k esta fuera del rango
-del índice de la lista, invocar al procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento solicitado.*/
+// Diseñar un algoritmo para acceder, eliminar o insertar el k-ésimo elemento
+// de una lista (siendo k una posición dada). Si la lista está vacía o si el
+// valor de k está fuera del rango del índice de la lista, invocar al
+// procedimiento de ERROR. En cualquier otro caso, efectuar el procedimiento
+// solicitado.
 
-ACCION 4.1 ES(Prim:puntero a NODO)
+ACCION Ejercicio4_1 ES(prim: puntero a NODO)
 AMBIENTE
-Nodo = registro
+NODO = registro
     Dato: AN(5)
-    Prox: puntero a nodo
+    Prox: puntero a NODO
 FIN_REGISTRO
-p,q,a:puntero a nodo
-cant_elementos,respuesta,posición:entero
+p,q,a: puntero a NODO
+cant_elementos,respuesta,posicion,limite,i: entero
+
+PROCEDIMIENTO ERROR()
+    ESCRIBIR("ERROR: la lista está vacía o la posición está fuera de rango")
+FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO acceder()
     ESCRIBIR(*p.Dato)
 FIN_PROCEDIMIENTO
 
 PROCEDIMIENTO eliminar()
-    *a.Prox := *p.prox
+    SI a = nil ENTONCES             // corregido: si es el primero hay que mover prim
+        prim := *p.Prox
+    SINO
+        *a.Prox := *p.Prox
+    FIN_SI
     DISPONER(p)
 FIN_PROCEDIMIENTO
 
-PROCEDIMIENTO insertar()
+PROCEDIMIENTO insertar()            // el nuevo queda en la posición k, antes de p
     NUEVO(q)
-    a*Prox := q
+    ESCRIBIR("INGRESE EL DATO A INSERTAR")
+    LEER(*q.Dato)                   // corregido: faltaba cargar el dato
     *q.Prox := p
+    SI a = nil ENTONCES             // corregido: insertar en la posición 1
+        prim := q
+    SINO
+        *a.Prox := q                // corregido: decía a*Prox
+    FIN_SI
 FIN_PROCEDIMIENTO
 
 PROCESO
-prim:=nil
-ESCRIBIR("QUE DESEA HACER?  1:ACCEDER, 2:eliminar, 3:insertar, 4:promocionar algoritmo")
-Leer(respuesta)
+// corregido: acá estaba prim := nil, que borraba la lista que se recibe
+ESCRIBIR("QUE DESEA HACER?  1:ACCEDER, 2:ELIMINAR, 3:INSERTAR")
+LEER(respuesta)
 ESCRIBIR("INGRESE UNA POSICION")
-Leer(posición)
-cant_elementos:=1
-p:=Prim
-MIENTRAS (*p.Prox <> nil) y (Prim <> nil) HACER
-    p:= *p.Prox
-    cant_elementos:= cant_elementos + 1
+LEER(posicion)
+
+// cuento los elementos (corregido: con la lista vacía no se puede hacer *p.Prox)
+cant_elementos := 0
+p := prim
+MIENTRAS p <> nil HACER
+    cant_elementos := cant_elementos + 1
+    p := *p.Prox
 FIN_MIENTRAS
-SI Prim = nil o posición > cant_elementos ENTONCES
+
+// para insertar también vale k = cant_elementos + 1 (agregar al final)
+SI respuesta = 3 ENTONCES
+    limite := cant_elementos + 1
+SINO
+    limite := cant_elementos
+FIN_SI
+
+SI (prim = nil) o (posicion < 1) o (posicion > limite) o (respuesta < 1) o (respuesta > 3) ENTONCES
     ERROR()
 SINO
-    a := p
-    p := Prim
-    PARA cant_elementos:=  1 hasta posición HACER
+    // me paro en el k-ésimo (p) y dejo en a el anterior
+    a := nil
+    p := prim
+    PARA i := 1 hasta posicion - 1 HACER    // corregido: avanzaba una posición de más
         a := p
         p := *p.Prox
     FIN_PARA
@@ -56,8 +84,6 @@ SINO
         =1: acceder()
         =2: eliminar()
         =3: insertar()
-        >=4: ERROR()
     FIN_SEGUN
 FIN_SI
-
 FIN_ACCION.

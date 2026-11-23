@@ -1,69 +1,84 @@
 // ==========================================================================
 //  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
 //  Guía de TP 4 (Listas) - Ejercicio 4.10 - resolución compartida en Discord
+//  Revisado: los cambios están marcados con "// corregido"
 // ==========================================================================
 
-Se dispone de una lista circular con un conjunto de números naturales. Este conjunto está dividido
-en 6 grupos. En cada grupo el primer elemento indica la cantidad de números
-subsiguientes a él que integran dicho grupo. Se desea generar una nueva lista doblemente encadenada
-en la cual cada nodo contendrá el promedio de cada grupo. Dicha lista debe quedar
-ordenada en forma ascendente y, al final se debe informar cuál fue el máximo y el mínimo promedio de
-todo el conjunto de números.
+// Se dispone de una lista circular con un conjunto de números naturales. Este
+// conjunto está dividido en 6 grupos. En cada grupo el primer elemento indica
+// la cantidad de números subsiguientes a él que integran dicho grupo. Se desea
+// generar una nueva lista doblemente encadenada en la cual cada nodo contendrá
+// el promedio de cada grupo. Dicha lista debe quedar ordenada en forma
+// ascendente y, al final, se debe informar cuál fue el máximo y el mínimo
+// promedio de todo el conjunto de números.
 
-ACCION 4.10 ES(prim1)
+// Supuesto: prim1 apunta al primer elemento del primer grupo (un contador).
+
+ACCION Ejercicio4_10 ES(prim1: puntero a NODO)
 AMBIENTE
-NODO = registro
-    dato:N(3)
-    ant:puntero a NODO
-    prox:puntero a NODO
-fin_registro
+NODO = registro                     // la lista circular es simple: no hace falta ant
+    dato: N(3)
+    prox: puntero a NODO
+FIN_REGISTRO
 NODO2 = registro
-    prom:real(3)
-    ant:puntero a NODO2
-    prox:puntero a NODO2
-fin_registro
-p1:puntero a NODO
-p2,q,prim2,ult:puntero a NODO2
-i,j,cantidad:entero
-promedio:real
+    prom: real
+    ant: puntero a NODO2
+    prox: puntero a NODO2
+FIN_REGISTRO
+p1: puntero a NODO
+p2,a2,q,prim2,ult: puntero a NODO2
+i,j,cantidad: entero
+suma: real
 
 ALGORITMO
-p:prim
-prim2:=nil
-PARA i:= 1 hasta 6 HACER
-    cantidad:= *p.dato
-    promedio:=0
-    PARA j:=1 hasta cantidad HACER
-        *p.prox
-        promedio:= *p.dato + promedio
+p1 := prim1                         // corregido: decía p:prim (variables que no existen)
+prim2 := nil
+PARA i := 1 hasta 6 HACER
+    cantidad := *p1.dato
+    suma := 0
+    PARA j := 1 hasta cantidad HACER
+        p1 := *p1.prox              // corregido: decía solo *p.prox, sin asignar
+        suma := suma + *p1.dato
     FIN_PARA
     NUEVO(q)
-    *q.prom:= promedio / cantidad
+    SI cantidad > 0 ENTONCES        // corregido: un grupo vacío dividía por cero
+        *q.prom := suma / cantidad
+    SINO
+        *q.prom := 0
+    FIN_SI
+    *q.ant := nil
+    *q.prox := nil
+    // inserción ordenada en la lista doble
+    // corregido: el MIENTRAS avanzaba con *p.prox en vez de *p2.prox, preguntaba
+    // *p2.prom antes de ver si p2 era nil y no contemplaba agregar al final
     SI prim2 = nil ENTONCES
-        ult:=q
-        prim2:=q
-        *prim2.prox:=nil
-        *prim2.ant:=nil
+        prim2 := q
+        ult := q
     SINO
         SI *q.prom < *prim2.prom ENTONCES
-            *q.prox = prim2
-            *prim2.ant = q
-            prim2:= q
+            *q.prox := prim2
+            *prim2.ant := q
+            prim2 := q
         SINO
-            p2:=prim2
-            MIENTRAS *q.prom > *p2.prom y p2 <> nil HACER
-                p2:= *p.prox
+            p2 := prim2
+            MIENTRAS (p2 <> nil) y (*p2.prom <= *q.prom) HACER
+                p2 := *p2.prox
             FIN_MIENTRAS
-            *q.ant:= *p2.ant
-            *q.prox:= p2
-            *p2.ant:= q
-            *(*p2.ant).prox:= q
-        FIN_SI
-        SI *ult.prom < *ult.prom ENTONCES
-            ult:=q
+            SI p2 = nil ENTONCES    // es el más grande: va al final
+                *ult.prox := q
+                *q.ant := ult
+                ult := q
+            SINO                    // va entre a2 y p2
+                a2 := *p2.ant
+                *q.prox := p2
+                *q.ant := a2
+                *a2.prox := q
+                *p2.ant := q
+            FIN_SI
         FIN_SI
     FIN_SI
-    p:= *p.prox
+    p1 := *p1.prox                  // paso al contador del grupo siguiente
 FIN_PARA
-ESCRIBIR("EL mayor promedio fue ",*ult.prom,"el menor promedio fue",*prim2.prom)
+// como la lista queda ordenada, el mínimo es el primero y el máximo el último
+ESCRIBIR("El mayor promedio fue ", *ult.prom, " y el menor promedio fue ", *prim2.prom)
 FIN_ACCION.

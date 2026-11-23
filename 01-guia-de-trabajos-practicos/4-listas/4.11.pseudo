@@ -1,0 +1,95 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.11 (lista doble como turnero)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.11
+// En una empresa de servicios motorizados que NO posee una cantidad fija de
+// integrantes, pero siempre es mayor que 1 (uno). Los datos de las personas
+// está almacenados en un archivo (DNI, Nombre, Antigüedad) ordenado por DNI.
+// Realizar un algoritmo que permita generar una lista de asignación (usando
+// una estructura de lista doblemente encadenada), ordenada al principio por
+// antigüedad, y un proceso que realice dicha asignación, en cada solicitud,
+// por turno según orden en la lista. Una vez asignado dicha persona se va al
+// final de la lista para esperar su nueva asignación. Al final del día
+// informar cuantas asignaciones tuvo cada integrante.
+//
+// PERSONAL
+//
+// * Nro_Personal N(5)* Nombre AN(50)* Asignaciones N(5)* Antigüedad N(2)
+// --------------------------------------------------------------------------
+
+// 1. Se carga una lista doble ordenada por antigüedad (inserción ordenada).
+// 2. Cada solicitud se asigna al primero de la lista, que pasa al final.
+// 3. Al final del día se informan las asignaciones de cada integrante.
+Accion Ejercicio4_11 es
+Ambiente
+	Persona = Registro
+		Nro_Personal: N(5)
+		Nombre: AN(50)
+		Asignaciones: N(5)
+		Antiguedad: N(2)
+	FinRegistro
+	PERSONAL: Archivo de Persona ordenado por Nro_Personal
+	R: Persona
+	Nodo = Registro
+		dato: Persona
+		ant, prox: puntero a Nodo
+	FinRegistro
+	prim, ult, p, q: puntero a Nodo
+	op: ("S", "N")
+Proceso
+	prim:= nil; ult:= nil
+	Abrir E/(PERSONAL); Leer(PERSONAL, R)
+	Mientras No FDA(PERSONAL) hacer // inserción ordenada por antigüedad
+		Nuevo(q)
+		*q.dato:= R
+		*q.dato.Asignaciones:= 0
+		p:= prim
+		Mientras (p <> nil) y (*p.dato.Antiguedad <= R.Antiguedad) hacer
+			p:= *p.prox
+		FinMientras
+		Si prim = nil entonces
+			*q.ant:= nil; *q.prox:= nil; prim:= q; ult:= q
+		Sino
+			Si p = prim entonces
+				*q.ant:= nil; *q.prox:= prim; *prim.ant:= q; prim:= q
+			Sino
+				Si p = nil entonces
+					*q.prox:= nil; *q.ant:= ult; *ult.prox:= q; ult:= q
+				Sino
+					*q.prox:= p; *q.ant:= *p.ant
+					*(*p.ant).prox:= q; *p.ant:= q
+				FinSi
+			FinSi
+		FinSi
+		Leer(PERSONAL, R)
+	FinMientras
+	Cerrar(PERSONAL)
+
+	Escribir("¿Hay una solicitud? S/N")
+	Leer(op)
+	Mientras op = "S" hacer
+		p:= prim // le toca al primero
+		*p.dato.Asignaciones:= *p.dato.Asignaciones + 1
+		Escribir("Asignado a ", *p.dato.Nombre)
+		Si p <> ult entonces // lo paso al final (siempre hay más de uno)
+			prim:= *p.prox
+			*prim.ant:= nil
+			*p.ant:= ult
+			*p.prox:= nil
+			*ult.prox:= p
+			ult:= p
+		FinSi
+		Escribir("¿Otra solicitud? S/N")
+		Leer(op)
+	FinMientras
+
+	p:= prim
+	Mientras p <> nil hacer
+		Escribir(*p.dato.Nombre, ": ", *p.dato.Asignaciones, " asignaciones")
+		p:= *p.prox
+	FinMientras
+FinAccion

@@ -1,0 +1,65 @@
+// ==========================================================================
+//  Algoritmos y Estructuras de Datos - UTN FRRe (Ing. en Sistemas)
+//  Guía de Trabajos Prácticos 4 - Listas - Ejercicio 4.15 (cola FIFO)
+// ==========================================================================
+
+
+// --------------------------------------------------------------------------
+// Ejercicio 4.15
+// Supóngase que, utilizando una lista encadenada, se implementa una cola Q
+// (estructura 'FIFO', es decir, 'primero en entrar, primero en salir').
+// Diseñar un algoritmo que permita insertar o extraer un elemento,
+// comprobando siempre si la cola está vacía o no.
+// --------------------------------------------------------------------------
+
+// Cola con dos punteros: frente (por donde se extrae) y fondo (por donde se
+// inserta). Insertar y extraer cuestan lo mismo sin importar el tamaño.
+Accion Ejercicio4_15 es
+Ambiente
+	Nodo = Registro
+		dato: entero
+		prox: puntero a Nodo
+	FinRegistro
+	frente, fondo, q: puntero a Nodo
+	valor: entero
+	op: 1..3
+
+	Función Vacia: booleano es
+		Vacia:= (frente = nil)
+	FinFunción
+
+	Procedimiento Insertar (x: entero) es // al final
+		Nuevo(q)
+		*q.dato:= x
+		*q.prox:= nil
+		Si Vacia entonces
+			frente:= q
+		Sino
+			*fondo.prox:= q
+		FinSi
+		fondo:= q
+	FinProcedimiento
+
+	Procedimiento Extraer (Var x: entero) es // del principio
+		Si Vacia entonces
+			Escribir("Error: la cola está vacía")
+		Sino
+			q:= frente
+			x:= *q.dato
+			frente:= *q.prox
+			Si frente = nil entonces fondo:= nil FinSi
+			Disponer(q)
+		FinSi
+	FinProcedimiento
+
+Proceso
+	frente:= nil; fondo:= nil
+	Repetir
+		Escribir("1- Insertar  2- Extraer  3- Salir")
+		Leer(op)
+		Según op hacer
+			1: Leer(valor); Insertar(valor)
+			2: Si No Vacia entonces Extraer(valor); Escribir("Salió: ", valor) Sino Escribir("Cola vacía") FinSi
+		FinSegún
+	Hasta que op = 3
+FinAccion
